@@ -10,27 +10,26 @@ role: research-assistant
 team_size: 2+
 collaborators: [Prof. Juan Jose Castellon, Ceramica Cumella]
 institution: Rice University
-tags: [parametric-design, topology-optimization, kinematic-canopy, digital-twin, ceramic-fabrication, kangaroo, robotic-fabrication, iass-2024]
+tags: [parametric-design, topology-optimization, kinematic-canopy, digital-twin, ceramic-fabrication, kangaroo, robotic-fabrication, iass-2024, bone-inspired]
 categories: [Parametric Design, Digital Fabrication, Architecture]
 github: null
 notion_url: https://www.notion.so/chentianle1117/Fiber-based-Experimental-Models-Parametric-Pavilion-with-Topological-Column-and-Kinematic-Canopy-16933d12d95a81b8af48f62d152c3998
 publication: "Segmental Ceramic Hollow Structures: Prefabricated Post-tensioned Columns for Ecological Urban Infrastructures (IASS 2024 Symposium)"
 publication_url: https://www.researchgate.net/publication/384055100_Segmental_Ceramic_Hollow_Structures_Prefabricated_posttensioned_columns_for_ecological_urban_infrastructures
 local_path: null
-hero_image: /assets/fiber-based-pavilion/bone-inspiration.png
+hero_image: /assets/fiber-based-pavilion/column-catalogue-1.png
 images:
-  - /assets/fiber-based-pavilion/inspiration-bone-comparison.png
+  - /assets/fiber-based-pavilion/column-catalogue-1.png
   - /assets/fiber-based-pavilion/column-form-finding.gif
+  - /assets/fiber-based-pavilion/form-finding-detail-1.gif
+  - /assets/fiber-based-pavilion/form-finding-detail-2.jpg
+  - /assets/fiber-based-pavilion/form-finding-detail-3.jpg
+  - /assets/fiber-based-pavilion/form-finding-detail-4.jpg
   - /assets/fiber-based-pavilion/design-catalogue-1.png
   - /assets/fiber-based-pavilion/design-catalogue-2.png
   - /assets/fiber-based-pavilion/design-catalogue-3.png
-  - /assets/fiber-based-pavilion/design-catalogue-4.png
   - /assets/fiber-based-pavilion/robot-simulation.gif
   - /assets/fiber-based-pavilion/robot-fabrication.png
-  - /assets/fiber-based-pavilion/kinematic-canopy-1.gif
-  - /assets/fiber-based-pavilion/kinematic-canopy-2.gif
-  - /assets/fiber-based-pavilion/kinematic-canopy-3.gif
-  - /assets/fiber-based-pavilion/kinematic-canopy-still.png
 video: https://www.youtube.com/watch?v=ATiN7TGZwvQ
 video_canopy: https://www.youtube.com/watch?v=ne-7-3s7RPQ
 artifacts:
@@ -39,49 +38,78 @@ artifacts:
   - Robotic fabrication code
   - Kangaroo simulation files
 priority: flagship
-status: draft
+status: ready
 publish: true
 ---
 # Fiber-based Experimental Models — Parametric Pavilion with Topological Column and Kinematic Canopy
 
-> Bone-inspired ceramic hollow columns (topology-optimized, robotically fabricated) + kinematic canopy system that adapts to sunlight and wind — published in IASS 2024.
+> Bone-inspired ceramic hollow columns (topology-optimized, robotically fabricated) paired with a kinematic canopy system that adapts to sunlight and wind. Published in the IASS 2024 Symposium.
 
-![inspiration](/assets/fiber-based-pavilion/inspiration-bone-comparison.png)
+As **computational research assistant** at Rice University 2021-2024, collaborating with **Professor Juan Jose Castellon**.
 
-## Hook
-Inspired by how bones evolve material + voids to balance strength and efficiency, this research designs segmental ceramic hollow columns that integrate structural + ecological functions. Topology optimization refines column geometry; robotic subtractive manufacturing enables modular adaptability. A parallel kinematic canopy system uses digital-twin simulation (Kangaroo/Grasshopper form-finding) to adapt to environmental conditions.
+This research explores innovative approaches to designing and fabricating segmental ceramic hollow columns that integrate structural and ecological functions. Inspired by Miguel Fisac's pioneering work, the project employs a topological optimization process to refine column geometry, balancing structural performance and aesthetic expression. The methodology combines subtractive manufacturing techniques with robotic precision, enabling modular adaptability and efficient material use.
 
-## Context
-**Role:** Computational Research Assistant at Rice University, 2021-2024.
-**Collaborators:** Prof. Juan Jose Castellon (Rice); Ceramica Cumella (fabrication partner).
-**Inspiration:** Miguel Fisac's segmental ceramic column work.
-**Output:** Published paper at **IASS 2024 Symposium** — *Segmental Ceramic Hollow Structures: Prefabricated Post-tensioned Columns for Ecological Urban Infrastructures*.
+The research extends to include a **kinematic canopy system**, which integrates with the column structure to enhance its functionality and adaptability. Leveraging **digital twin technology**, the project simulates and visualizes the **kinematic stages of a moving adaptive canopy**. Using advanced computational tools like **Kangaroo for Grasshopper**, the research conducts form-finding and dynamic simulations to optimize the canopy's motion and structural behavior — ensuring the canopy can adapt to environmental conditions (sunlight, wind) while maintaining structural stability and aesthetic coherence.
 
-## Approach
+The research was published in the paper:
+[Segmental Ceramic Hollow Structures: Prefabricated Post-tensioned Columns for Ecological Urban Infrastructures](https://www.researchgate.net/publication/384055100_Segmental_Ceramic_Hollow_Structures_Prefabricated_posttensioned_columns_for_ecological_urban_infrastructures) (IASS 2024 Symposium).
 
-**Topological column:**
-1. **Form-finding** — topology optimization (Millipede / custom solver in Grasshopper) refines column cross-sections
-2. **Material efficiency** — iterative voiding preserves structural performance while reducing material
-3. **Design catalogue** — optimized shapes documented as a family of variants
-4. **Robotic fabrication** — subtractive manufacturing via robotic arm; simulation validated before physical runs
-5. **Post-tensioning** — segmental assembly held together by post-tension cables
+## Inspiration
 
-**Kinematic canopy:**
-1. **Digital twin** — Kangaroo physics simulation of canopy membrane
-2. **Environmental input** — sunlight + wind drive canopy deformation
-3. **Form-finding + dynamic simulation** — optimize motion + structural stability
-4. **Integration with column** — canopy anchored to column capital; overall pavilion is a single adaptive system
+The research is inspired by the natural evolution process observed in bones, where material and voids are strategically distributed over generations. This adaptation to environmental conditions reflects an intrinsic balance of strength and efficiency — a principle the column design reproduces through computational topology optimization.
+
+![column form-finding](/assets/fiber-based-pavilion/column-form-finding.gif)
+
+## Topological column form-finding
+
+The column geometry is refined through iterative topology optimization, producing a family of variants that balance structural performance with material efficiency. Voids are introduced where material is structurally redundant; mass is preserved where forces concentrate. The process yields a design catalogue of optimized shapes.
+
+![form-finding detail 1](/assets/fiber-based-pavilion/form-finding-detail-1.gif)
+
+![form-finding details](/assets/fiber-based-pavilion/form-finding-detail-2.jpg)
+![form-finding details](/assets/fiber-based-pavilion/form-finding-detail-3.jpg)
+![form-finding details](/assets/fiber-based-pavilion/form-finding-detail-4.jpg)
+
+## Ceramic columns design catalogue with optimized shapes
+
+The optimization process yields a family of variants, each structurally viable and aesthetically distinct.
+
+![design catalogue 1](/assets/fiber-based-pavilion/design-catalogue-1.png)
+![design catalogue 2](/assets/fiber-based-pavilion/design-catalogue-2.png)
+![design catalogue 3](/assets/fiber-based-pavilion/design-catalogue-3.png)
+
+## Robotic-arm simulation and fabrication (with Ceramica Cumella)
+
+The segmental post-tensioned columns are fabricated via subtractive robotic manufacturing, in collaboration with ceramic manufacturer **Ceramica Cumella**. The fabrication pipeline moves from digital simulation → robotic toolpath → physical ceramic output.
+
+![robot simulation](/assets/fiber-based-pavilion/robot-simulation.gif)
+
+![robot fabrication](/assets/fiber-based-pavilion/robot-fabrication.png)
+
+**Fabrication video:** [youtube.com/watch?v=ATiN7TGZwvQ](https://www.youtube.com/watch?v=ATiN7TGZwvQ)
+
+## Kinematic canopy form-finding
+
+The canopy system is designed as a digital-twin simulation using Kangaroo for Grasshopper. The form-finding process couples physical simulation with environmental inputs — sunlight and wind — so the canopy can adapt its geometry while remaining structurally stable. The canopy integrates seamlessly with the column capital as a single adaptive pavilion.
+
+**Canopy video:** [youtube.com/watch?v=ne-7-3s7RPQ](https://www.youtube.com/watch?v=ne-7-3s7RPQ)
 
 ## Outcomes
+
 - **Peer-reviewed publication** at IASS 2024 (International Association for Shell and Spatial Structures)
 - Full design catalogue of optimized column variants with fabrication documentation
-- Working robotic-fabrication pipeline with simulation → physical production
+- Working robotic-fabrication pipeline — simulation → physical production
 - Kinematic canopy digital twin with environmental responsiveness
-- **Flagship portfolio piece** — the only published research on this portfolio, spans parametric design + digital fabrication + computational research
+- Flagship portfolio piece — the only published research on this portfolio, spans parametric design + digital fabrication + computational research
 
 ## Links
+
 - **[IASS 2024 paper](https://www.researchgate.net/publication/384055100_Segmental_Ceramic_Hollow_Structures_Prefabricated_posttensioned_columns_for_ecological_urban_infrastructures)**
-- [Notion page (full images + process)](https://www.notion.so/chentianle1117/Fiber-based-Experimental-Models-Parametric-Pavilion-with-Topological-Column-and-Kinematic-Canopy-16933d12d95a81b8af48f62d152c3998)
-- [YouTube — column fabrication](https://www.youtube.com/watch?v=ATiN7TGZwvQ)
-- [YouTube — canopy form-finding](https://www.youtube.com/watch?v=ne-7-3s7RPQ)
-- **Local folder needed** — Rice archive files; David to locate
+- [Notion page (full process documentation)](https://www.notion.so/chentianle1117/Fiber-based-Experimental-Models-Parametric-Pavilion-with-Topological-Column-and-Kinematic-Canopy-16933d12d95a81b8af48f62d152c3998)
+- [YouTube — robotic column fabrication](https://www.youtube.com/watch?v=ATiN7TGZwvQ)
+- [YouTube — kinematic canopy form-finding](https://www.youtube.com/watch?v=ne-7-3s7RPQ)
+
+## Related cards
+
+- [[2021-2024-Rice--membrane-form-finding]] — parallel Rice parametric studio work
+- [[2025-Spring--generative-urbanism]] — Rice architecture studio work

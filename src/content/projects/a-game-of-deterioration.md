@@ -8,7 +8,7 @@ semester: "Fall 2024"
 year: 2024
 role: individual
 team_size: 1
-tags: [python, game-design, procedural-textures, pillow, numpy, cmu-graphics, simulation]
+tags: [python, game-design, procedural-textures, pillow, numpy, cmu-graphics, simulation, user-generated-content]
 categories: [Game]
 github: chentianle1117/A-Game-of-Deterioration---Time-Reversal
 github_url: https://github.com/chentianle1117/A-Game-of-Deterioration---Time-Reversal
@@ -30,46 +30,84 @@ artifacts:
   - character.py
   - assets/ (sprites, textures)
 priority: flagship
-status: draft
+status: ready
 publish: true
 ---
 # A Game of Deterioration — Time Reversal
 
-> A 2D simulation game where you heal a user-generated world before it collapses. Procedural texture deterioration, real-time restoration, and survival mechanics — built in pure Python.
+> A 2D simulation game where you heal a user-generated world before it collapses. Pillow + NumPy + cmu_graphics. Draw your own map, then drop in as a character with healing abilities to slow the decay.
 
-![gameplay](/assets/a-game-of-deterioration/gameplay.gif)
+**Deterioration & Restoration** (a.k.a. *Can You Reverse Time?*) is a 2D simulation game that challenges you to heal a user-generated world before it collapses into a fully apocalyptic state. Built in Python with **cmu_graphics**, **Pillow**, and **NumPy**, the project emphasizes procedural texture manipulation and dynamic terrain deterioration.
 
-## Hook
-Draw your own map Photoshop-style (white = elevated terrain, black = water), then drop in as a character with healing abilities to slow the decay. Textures visibly degrade over time. Collect power-ups to expand your radius or burst-heal. Two modes: timed survival or open-ended endurance.
+[GitHub repository →](https://github.com/chentianle1117/A-Game-of-Deterioration---Time-Reversal)
+
+## Key features
+
+### 1. User-generated terrain
+
+Start by "drawing" your own map in an editor reminiscent of Photoshop.
+- **White regions** become elevated terrain
+- **Black regions** become water
+- Quick brush tools and contrast adjustments let you shape a unique world before entering the game.
+
+### 2. Deterioration & restoration
+
+- Textures degrade over time, introducing visible wear and tear on land and foliage.
+- Control a character with special healing abilities to reverse or slow the decay.
+- Collect power-ups and inventory items that boost your healing radius or allow instantaneous bursts of restoration.
+
+### 3. Multiple game modes
+
+- **Timed Mode** — survive until the countdown expires without letting overall deterioration exceed 80%.
+- **Infinite Mode** — face continuous global deterioration with no countdown. Sustain your environment as long as possible, then end the game when you're ready.
+
+### 4. Real-time feedback
+
+- Visual cues show deterioration in real time, from subtle texture fading to severe breakdown.
+- A final results screen reveals how your world changed over time and charts your character's growth in healing power.
+
+### 5. Easy to run & expand
+
+- Simple Python 3.6+ codebase with clear dependencies (`cmu_graphics`, `Pillow`, `NumPy`).
+- Organized file structure (`main.py`, `game.py`, `menu.py`, and an `assets/` folder for textures) for easy customization.
+- Debug keys and commands allow on-the-fly testing of terrain, zoom, and texture states.
+
+## Game assets
+
+**Equipment icons** — speed, radius, burst, power.
+**Character sprite** — four-directional sprite (back, left, front, right).
+**Textures** — paired samples of original and deteriorated states (BIGLEAVES, BRICKS, DIRT, PATHROCKS).
+
+## Technical highlights
+
+- **Procedural texture deterioration** — implemented via Pillow image enhancements (contrast, brightness, color adjustments), plus Gaussian blur for water effects
+- **NumPy-based editing** — efficient brush masking and terrain upscaling with NumPy arrays, ensuring smooth real-time drawing and quick texture generation
+- **Grid-based movement & collision** — character movement is restricted by highly deteriorated cells, creating strategic challenges in navigating the environment
+- **Data visualization** — end-game charts display how quickly the terrain deteriorated vs. how fast the player's abilities grew
+
+## Inspirations
+
+- **Don't Starve**, **RimWorld**, and **Hyper Light Drifter** for 2D aesthetic, procedural terrain ideas, and survival elements
+- The concept of "time reversal" through healing is inspired by games that fuse resource management with real-time crisis mitigation
+
+**Deterioration & Restoration** shows how iterative texture manipulation, user-generated terrain, and survival mechanics can combine into a compelling 2D experience. The balance between decay and healing — along with two distinct game modes — adds replayability, while the real-time data visualizations make each session feel unique.
 
 ## Context
+
 **Course:** 15-112 Fundamentals of Programming and Computer Science — term project final, Fall 2024.
 **Role:** solo.
 **Stack:** Python 3.6+, `cmu_graphics`, `Pillow`, `NumPy`.
 
-## Approach
-
-**Five pillars:**
-
-1. **User-generated terrain** — brush-based editor with contrast adjustment; bitmap → playable terrain
-2. **Procedural deterioration** — Pillow image enhancements (contrast, brightness, color), Gaussian blur for water; textures fade over time
-3. **Restoration mechanics** — character with healing radius; power-ups modify radius / grant bursts
-4. **Two game modes** — Timed (survive until countdown with <80% global deterioration) vs. Infinite (continuous decay, sustain as long as possible)
-5. **Data visualization end-screen** — charts terrain deterioration vs. player ability growth
-
-**Technical highlights:**
-- NumPy arrays for efficient brush masking + terrain upscaling
-- Grid-based movement with collision against highly-deteriorated cells
-- Debug keys for on-the-fly texture / zoom / terrain testing
-
-## Outcomes
-- Full playable game submitted as 15-112 final
-- Procedural texture manipulation + user-generated content in pure Python
-- Inspired by *Don't Starve*, *RimWorld*, *Hyper Light Drifter*
-- Strong conceptual throughline with Fall 2024's *Synthetic Tool for Visualizing Texture Deterioration* and later *Spectral Facades* — "deterioration" as a cross-project motif
-
 ## Links
+
 - [GitHub repo](https://github.com/chentianle1117/A-Game-of-Deterioration---Time-Reversal)
 - [Notion page (full write-up + asset samples)](https://www.notion.so/chentianle1117/A-Game-of-Deterioration-Time-Reversal-16a33d12d95a80779ab7f488cbc13f1f)
 - [YouTube demo](https://youtu.be/WJJb2UKv4MY)
 - Local: `W:\CMU_Academics\Fall 2024 CMU\112 Term Project - Final - Submission\`
+
+## Related cards
+
+This "deterioration" theme became a cross-project motif in Fall 2024:
+
+- [[2024-Fall--synthetic-texture-deterioration]] — the tool-side exploration (architectural texture aging as a design simulation)
+- [[2024-Fall--spectral-facades]] — the installation-side exploration (diffusion-driven transition between pristine and decayed façades)
