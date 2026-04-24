@@ -1,0 +1,35 @@
+# Build output
+dist/
+.output/
+.vercel/
+.netlify/
+
+# Dependencies
+node_modules/
+.pnpm-store/
+
+# Astro
+.astro/
+
+# Environment
+.env
+.env.local
+.env.production
+
+# Editor
+.vscode/*
+!.vscode/settings.json
+!.vscode/extensions.json
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+*.swp
+
+# Logs
+*.log
+npm-debug.log*
+
+# Sync tool scratch
+.sync_tmp/

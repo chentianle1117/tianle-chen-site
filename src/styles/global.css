@@ -1,0 +1,89 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: dark;
+  }
+
+  html {
+    @apply bg-ink-950 text-ink-100 font-sans antialiased;
+    scroll-behavior: smooth;
+    font-feature-settings: "ss01", "cv11";
+  }
+
+  body {
+    @apply min-h-screen;
+  }
+
+  ::selection {
+    @apply bg-accent text-ink-950;
+  }
+
+  a {
+    @apply transition-colors duration-200;
+  }
+
+  h1, h2, h3, h4 {
+    @apply font-display tracking-tight text-balance;
+  }
+
+  h1 { @apply text-5xl md:text-7xl leading-[1.02]; }
+  h2 { @apply text-3xl md:text-5xl leading-[1.05]; }
+  h3 { @apply text-2xl md:text-3xl leading-tight; }
+  h4 { @apply text-xl md:text-2xl leading-snug; }
+
+  img, video {
+    @apply max-w-full h-auto;
+  }
+
+  /* Monospace UI elements */
+  code, pre, .mono {
+    @apply font-mono;
+  }
+}
+
+@layer components {
+  .container-narrow {
+    @apply mx-auto w-full max-w-3xl px-6 md:px-8;
+  }
+  .container-wide {
+    @apply mx-auto w-full max-w-6xl px-6 md:px-8;
+  }
+  .container-full {
+    @apply mx-auto w-full max-w-[1400px] px-6 md:px-12;
+  }
+
+  .prose-custom {
+    @apply prose prose-invert max-w-none;
+    @apply prose-headings:font-display prose-headings:tracking-tight prose-headings:text-balance;
+    @apply prose-a:text-accent-300 hover:prose-a:text-accent-200 prose-a:no-underline hover:prose-a:underline;
+    @apply prose-img:rounded-lg prose-img:shadow-2xl;
+    @apply prose-strong:text-ink-50 prose-code:text-accent-200 prose-code:before:content-none prose-code:after:content-none;
+    @apply prose-hr:border-ink-700;
+  }
+
+  .tag {
+    @apply inline-block px-2 py-0.5 text-xs uppercase tracking-widest font-mono text-ink-300 border border-ink-700 rounded-full;
+  }
+
+  .btn {
+    @apply inline-flex items-center gap-2 px-5 py-2.5 border border-ink-600 rounded-full text-sm font-medium transition-all duration-200;
+    @apply hover:border-accent hover:text-accent;
+  }
+
+  .btn-primary {
+    @apply btn bg-accent text-ink-950 border-accent hover:bg-accent-400 hover:text-ink-950;
+  }
+}
+
+/* GIF priority: auto-play, no hover pause */
+img[src$=".gif"] {
+  @apply bg-ink-900;
+}
+
+/* Skip link for a11y */
+.skip-link {
+  @apply absolute left-4 top-4 -translate-y-20 focus:translate-y-0 bg-accent text-ink-950 px-4 py-2 rounded z-50 transition-transform;
+}

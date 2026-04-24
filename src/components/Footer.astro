@@ -1,0 +1,42 @@
+---
+const year = new Date().getFullYear();
+const links = [
+  { href: "https://github.com/chentianle1117", label: "GitHub" },
+  { href: "https://www.linkedin.com/in/tianle-chen", label: "LinkedIn" },
+  { href: "mailto:davidchen1117@gmail.com", label: "Email" },
+];
+---
+
+<footer class="border-t border-ink-800/50 mt-32">
+  <div class="container-full py-16 md:py-20 grid md:grid-cols-2 gap-12">
+    <div>
+      <h3 class="font-display text-3xl md:text-4xl leading-tight mb-6">
+        Open to <span class="text-accent">design-AI roles</span>, collaboration, and conversations.
+      </h3>
+      <p class="text-ink-300 max-w-md">
+        Based in Pittsburgh. Open to remote and relocation. Shipping tools at the
+        intersection of computational design and ML.
+      </p>
+    </div>
+    <div class="flex flex-col items-start md:items-end gap-6">
+      <ul class="flex flex-wrap gap-4 font-mono text-xs uppercase tracking-widest">
+        {links.map((link) => (
+          <li>
+            <a
+              href={link.href}
+              class="text-ink-200 hover:text-accent transition-colors border-b border-ink-700 hover:border-accent pb-1"
+              target={link.href.startsWith("http") ? "_blank" : undefined}
+              rel={link.href.startsWith("http") ? "noopener noreferrer" : undefined}
+            >
+              {link.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </div>
+  <div class="container-full py-6 border-t border-ink-800/50 flex justify-between text-xs font-mono text-ink-500">
+    <span>© {year} Tianle Chen</span>
+    <span>Built with Astro · hosted on Cloudflare Pages</span>
+  </div>
+</footer>

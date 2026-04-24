@@ -1,0 +1,41 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import ProjectCard from "../../components/ProjectCard.astro";
+import { getCollection } from "astro:content";
+
+const all = await getCollection("projects", ({ data }) => data.publish === true);
+
+// Exclude Rice architecture (they live at /architecture)
+const isArchitectureTier = (p: typeof all[0]) =>
+  p.data.institution === "Rice University" ||
+  (p.data.categories && p.data.categories.includes("Architecture") && p.data.year && p.data.year <= 2024);
+
+const work = all
+  .filter((p) => !isArchitectureTier(p))
+  .sort((a, b) => {
+    // flagship first
+    if (a.data.priority === "flagship" && b.data.priority !== "flagship") return -1;
+    if (b.data.priority === "flagship" && a.data.priority !== "flagship") return 1;
+    // then by year desc
+    return (b.data.year ?? 0) - (a.data.year ?? 0);
+  });
+---
+
+<BaseLayout title="Work" description="Tianle Chen's body of work — generative ML, interactive tools, design research.">
+  <section class="container-full pt-20 md:pt-28 pb-12">
+    <p class="font-mono text-xs uppercase tracking-[0.25em] text-accent mb-4">Work</p>
+    <h1 class="max-w-4xl mb-8">Projects, tools, and research.</h1>
+    <p class="text-xl text-ink-300 max-w-2xl leading-relaxed font-light">
+      Generative 3D, interactive ML tools, design-AI integration, and data-driven
+      visualization. <a href="/architecture" class="text-accent-300 hover:text-accent-200 underline decoration-accent/40 underline-offset-4">Architecture work</a> from Rice is kept separately.
+    </p>
+  </section>
+
+  <section class="container-full py-8 md:py-12">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+      {work.map((project) => (
+        <ProjectCard project={project} size="default" />
+      ))}
+    </div>
+  </section>
+</BaseLayout>

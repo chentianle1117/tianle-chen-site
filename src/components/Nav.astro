@@ -1,0 +1,37 @@
+---
+const currentPath = Astro.url.pathname;
+
+const links = [
+  { href: "/work", label: "Work" },
+  { href: "/architecture", label: "Architecture" },
+  { href: "/about", label: "About" },
+];
+
+const isActive = (href: string) =>
+  href === "/" ? currentPath === "/" : currentPath.startsWith(href);
+---
+
+<header class="sticky top-0 z-40 backdrop-blur-md bg-ink-950/75 border-b border-ink-800/50">
+  <div class="container-full flex items-center justify-between py-5">
+    <a
+      href="/"
+      class="font-display text-xl font-medium tracking-tight hover:text-accent transition-colors"
+      aria-label="Tianle Chen — home"
+    >
+      Tianle Chen
+    </a>
+    <nav class="flex items-center gap-8 font-mono text-xs uppercase tracking-widest">
+      {links.map((link) => (
+        <a
+          href={link.href}
+          class:list={[
+            "transition-colors hover:text-accent",
+            isActive(link.href) ? "text-accent" : "text-ink-300",
+          ]}
+        >
+          {link.label}
+        </a>
+      ))}
+    </nav>
+  </div>
+</header>

@@ -1,0 +1,32 @@
+{
+  "name": "tianle-chen-site",
+  "type": "module",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Tianle Chen's portfolio — computational designer + creative ML engineer",
+  "homepage": "https://tianle-chen.com",
+  "scripts": {
+    "dev": "astro dev",
+    "start": "astro dev",
+    "build": "astro check && astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "sync": "python scripts/sync_from_vault.py"
+  },
+  "engines": {
+    "node": ">=18.17.0"
+  },
+  "dependencies": {
+    "@astrojs/check": "^0.9.0",
+    "@astrojs/mdx": "^4.0.0",
+    "@astrojs/rss": "^4.0.0",
+    "@astrojs/sitemap": "^3.2.0",
+    "@astrojs/tailwind": "^5.1.0",
+    "astro": "^5.0.0",
+    "tailwindcss": "^3.4.0",
+    "typescript": "^5.5.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0"
+  }
+}

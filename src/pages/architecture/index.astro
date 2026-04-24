@@ -1,0 +1,44 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import ProjectCard from "../../components/ProjectCard.astro";
+import { getCollection } from "astro:content";
+
+const all = await getCollection("projects", ({ data }) => data.publish === true);
+
+const architecture = all
+  .filter(
+    (p) =>
+      p.data.institution === "Rice University" ||
+      (p.data.categories && p.data.categories.includes("Architecture") && (p.data.year ?? 0) <= 2024)
+  )
+  .sort((a, b) => (b.data.year ?? 0) - (a.data.year ?? 0));
+---
+
+<BaseLayout
+  title="Architecture"
+  description="Tianle Chen's architecture work — Rice University research and studio projects 2021-2024."
+>
+  <section class="container-full pt-20 md:pt-28 pb-12">
+    <p class="font-mono text-xs uppercase tracking-[0.25em] text-accent mb-4">Before CMU</p>
+    <h1 class="max-w-4xl mb-8">Architecture.</h1>
+    <p class="text-xl text-ink-300 max-w-2xl leading-relaxed font-light">
+      Research and studio work from Rice University (2021-2024), including collaboration
+      with Prof. Juan Jose Castellon on ceramic-hollow column fabrication published at
+      IASS 2024.
+    </p>
+  </section>
+
+  <section class="container-full py-8 md:py-12">
+    {architecture.length === 0 ? (
+      <p class="text-ink-400 font-mono text-sm">
+        Architecture projects sync from the vault. Run <code>npm run sync</code>.
+      </p>
+    ) : (
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
+        {architecture.map((project) => (
+          <ProjectCard project={project} size="default" />
+        ))}
+      </div>
+    )}
+  </section>
+</BaseLayout>
