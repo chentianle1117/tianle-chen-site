@@ -2,42 +2,18 @@
 // @ts-nocheck
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import SectionBreak from "../../components/SectionBreak.astro";
-import PlaceholderHero from "../../components/PlaceholderHero.astro";
-import { existsSync } from "node:fs";
-import { fileURLToPath } from "node:url";
+import ProjectCard from "../../components/ProjectCard.astro";
 import { getProjectCounts, ARCHITECTURE_SLUGS } from "../../lib/projectCounts";
 
-function publicFileExists(webPath) {
-  if (!webPath || !webPath.startsWith("/")) return false;
-  const url = new URL(`../../../public${webPath}`, import.meta.url);
-  return existsSync(fileURLToPath(url));
-}
-
-// Round-5 Fix 4: route counts through projectCounts.ts (single source of truth)
+// Round-6: /architecture now uses ProjectCard (uniform 4/3 grid) — same
+// component as /work, so visual rhythm is identical across the site.
 const { arch: archProjects, counts, years: yearRanges } = await getProjectCounts();
 const architectureSlugs = Array.from(ARCHITECTURE_SLUGS);
 
 const architecture = architectureSlugs
   .map((slug) => archProjects.find((p) => p.data.slug === slug || (p as any).slug === slug))
-  .filter(Boolean)
-  .map((p: any) => {
-    const d: any = p.data;
-    const heroSrc = d.gif_hero || d.hero_image || (d.images && d.images[0]) || null;
-    const slug = d.slug ?? p.slug ?? p.id?.replace(/\.md$/, "");
-    return {
-      slug,
-      title: d.title,
-      hero: heroSrc,
-      heroOk: heroSrc && publicFileExists(heroSrc),
-      year: d.year ?? "",
-      institution: d.institution ?? "",
-      role: d.role ?? "",
-      categories: d.categories ?? [],
-      isIASS: slug === "fiber-based-pavilion",
-    };
-  });
+  .filter(Boolean);
 
-// Round-5 Fix 4: pull count + year range from projectCounts.ts (single source of truth)
 const archCount = counts.arch;
 const archYearRange = `${yearRanges.arch.min}—${yearRanges.arch.max}`;
 const archKicker = `${archCount} PROJECTS · ${archYearRange} · RICE UNIVERSITY`;
@@ -66,65 +42,20 @@ const archKicker = `${archCount} PROJECTS · ${archYearRange} · RICE UNIVERSITY
   <section class="zone-raised">
     <SectionBreak label="PROJECTS" />
 
-    {/* 2-col grid */}
     <div class="container-wide pb-24 md:pb-32">
       {architecture.length === 0 ? (
-      <p class="font-mono text-sm" style="color: rgb(var(--text-mono));">
-        Architecture projects sync from the vault. Run <code>npm run sync</code>.
-      </p>
-    ) : (
-      <div class="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-x-12 gap-y-16" data-stagger>
-        {architecture.map((card) => (
-          <a href={`/work/${card.slug}`} class="group block" data-reveal>
-            <div
-              class="relative aspect-[3/4] overflow-hidden"
-              style="border: 1px solid rgb(var(--surface-border)); border-radius: 6px; background: rgb(var(--surface-1-rgb));"
-            >
-              {card.heroOk ? (
-                <img
-                  src={card.hero}
-                  alt={card.title}
-                  loading="lazy"
-                  decoding="async"
-                  class="w-full h-full object-cover transition-all duration-420 ease-out-soft group-hover:scale-[1.02] group-hover:brightness-[1.05]"
-                />
-              ) : (
-                <PlaceholderHero
-                  slug={card.slug}
-                  title={card.title}
-                  categories={card.categories}
-                  size="hero"
-                />
-              )}
-              {card.isIASS && (
-                <span
-                  class="absolute top-4 left-4 font-mono uppercase"
-                  style="font-size: 10px; letter-spacing: 0.1em; color: rgb(var(--accent-rgb)); background: rgba(0,0,0,0.72); border: 1px solid rgb(var(--accent-rgb) / 0.5); border-radius: 4px; padding: 4px 8px;"
-                >
-                  IASS 2024 · Published
-                </span>
-              )}
+        <p class="font-mono text-sm" style="color: rgb(var(--text-mono));">
+          Architecture projects sync from the vault. Run <code>npm run sync</code>.
+        </p>
+      ) : (
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-12" data-stagger>
+          {architecture.map((project, i) => (
+            <div data-reveal>
+              <ProjectCard project={project} eager={i < 3} />
             </div>
-
-            <div class="mt-4 flex items-center justify-between gap-4">
-              <p class="mono-label">
-                {card.year}{card.institution ? ` · ${card.institution}` : ""}
-              </p>
-              {card.role && (
-                <p class="mono-label">{card.role.replace(/-/g, " ")}</p>
-              )}
-            </div>
-
-            <h3
-              class="mt-2 group-hover:text-[rgb(var(--accent-rgb))] transition-colors duration-280"
-              style="font-family: theme(fontFamily.display); font-size: var(--step-3); font-weight: 380; line-height: 1.15; letter-spacing: -0.01em; color: rgb(var(--text-primary));"
-            >
-              {card.title}
-            </h3>
-          </a>
-        ))}
-      </div>
-    )}
+          ))}
+        </div>
+      )}
     </div>
   </section>
 </BaseLayout>

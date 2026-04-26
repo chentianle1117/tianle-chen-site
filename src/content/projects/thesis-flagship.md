@@ -31,7 +31,11 @@ local_path_writeup: W:\CMU_Academics\2025 Fall\Thesis\Thesis_Writeup\overleaf\th
 priority: flagship
 program: MSCD (Master of Science in Computational Design)
 proposal_video: Proposal Final Presentation 1204.mp4 (103 MB, 2025-12-03, local only)
-publish: true
+# Round-6 Bug 5: hidden from /work + scatter — the canonical thesis surface is
+# /thesis (which renders from semantic-canvas.md). Keeping the .md file so its
+# pre-thesis writeup metadata stays in the vault, but it no longer publishes
+# as a /work card or appears in counts.
+publish: false
 related_cards:
 - '[[2025-Fall--semantic-canvas-thesis-tool]]'
 - '[[2025-Spring--live-ai-feedback-design-assistant]]'

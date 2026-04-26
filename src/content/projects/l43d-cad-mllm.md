@@ -19,11 +19,14 @@ github_personal_fork_url: https://github.com/chentianle1117/CAD-MLLM-unofficial
 github_upstream: veoery/CAD-MLLM-unofficial
 github_upstream_url: https://github.com/veoery/CMU16825_Final_project
 github_url: https://github.com/chentianle1117/CAD-MLLM-unofficial
-hero_image: null
+hero_image: /assets/l43d-cad-mllm/poster-page-1.png
 huggingface_dataset: omnicad-lab-L3d/omnicad-multimodal-subset-fast
 huggingface_org: omnicad-lab-L3d
 huggingface_personal: chentianle1117/autocomplete-stage3-8000
 images:
+- /assets/l43d-cad-mllm/poster-page-1.png
+- /assets/l43d-cad-mllm/report-page-1.png
+- /assets/l43d-cad-mllm/report-page-2.png
 - /assets/l43d-cad-mllm/data-amplification.png
 - /assets/l43d-cad-mllm/operations-comparison.png
 - /assets/l43d-cad-mllm/versions-per-model.png

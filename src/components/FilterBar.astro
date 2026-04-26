@@ -90,7 +90,6 @@ const yearsSorted = [...years].sort((a, b) => b - a);
           const ay = parseInt(a.dataset.cardYear || "0", 10);
           const by = parseInt(b.dataset.cardYear || "0", 10);
           if (by !== ay) return by - ay;
-          // flagship before standard
           if (a.dataset.cardPriority === "flagship" && b.dataset.cardPriority !== "flagship") return -1;
           if (b.dataset.cardPriority === "flagship" && a.dataset.cardPriority !== "flagship") return 1;
           return 0;
@@ -99,29 +98,9 @@ const yearsSorted = [...years].sort((a, b) => b - a);
       sorted.forEach((c) => grid.appendChild(c));
     }
 
-    function applySpan() {
-      // In recent (default) mode, give the first visible card the large span.
-      // In A–Z mode, force uniform col-span-4 on every card.
-      const visible = cards.filter((c) => c.style.display !== "none");
-      cards.forEach((c) => {
-        c.classList.remove("col-span-12", "col-span-8", "col-span-6", "col-span-4");
-        c.classList.remove("aspect-[16/10]", "aspect-[4/3]");
-      });
-      if (state.sort === "az") {
-        cards.forEach((c) => c.classList.add("col-span-12", "md:col-span-6", "lg:col-span-4"));
-      } else {
-        const noFilters = state.cats.size === 0 && state.years.size === 0;
-        visible.forEach((c, i) => {
-          if (noFilters && i === 0) {
-            c.classList.add("col-span-12", "md:col-span-8");
-          } else if (c.dataset.cardPriority === "flagship") {
-            c.classList.add("col-span-12", "md:col-span-6");
-          } else {
-            c.classList.add("col-span-12", "md:col-span-6", "lg:col-span-4");
-          }
-        });
-      }
-    }
+    // Round-6: dropped applySpan() — uniform grid across breakpoints means
+    // there's no "first card large" treatment to maintain. Tailwind classes
+    // on the grid itself handle responsive columns.
 
     function applyFilters() {
       let visible = 0;
@@ -141,7 +120,6 @@ const yearsSorted = [...years].sort((a, b) => b - a);
       if (counter) counter.textContent = String(visible);
       if (empty) empty.style.display = visible === 0 ? "" : "none";
       grid.style.display = visible === 0 ? "none" : "";
-      applySpan();
     }
 
     function syncURL() {

@@ -10,11 +10,14 @@ categories:
 - Game
 course: 15-112 Fundamentals of Programming and Computer Science — Final
 course_code: 15-112
-gif_hero: null
+gif_hero: /assets/a-game-of-deterioration/gameplay-terrain-editor.gif
 github: chentianle1117/A-Game-of-Deterioration---Time-Reversal
 github_url: https://github.com/chentianle1117/A-Game-of-Deterioration---Time-Reversal
-hero_image: null
+hero_image: /assets/a-game-of-deterioration/story-board.jpg
 images:
+- /assets/a-game-of-deterioration/gameplay-terrain-editor.gif
+- /assets/a-game-of-deterioration/gameplay-deterioration-restoration.gif
+- /assets/a-game-of-deterioration/story-board.jpg
 - /assets/a-game-of-deterioration/char1-back.png
 - /assets/a-game-of-deterioration/char1-front.png
 - /assets/a-game-of-deterioration/char1-left.png

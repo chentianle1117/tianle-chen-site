@@ -15,7 +15,7 @@ course: 62-706 Generative System Design (Gen Sys Des)
 course_code: 62-706
 github: null
 github_note: UE5 project — not on GitHub (repo size + binary assets prohibitive)
-hero_image: null
+hero_image: /assets/aurora-citadel-gen-game/Module Layout.jpg
 images:
 - /assets/aurora-citadel-gen-game/Module Layout.jpg
 - /assets/aurora-citadel-gen-game/Module Layout plan.jpg

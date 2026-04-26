@@ -25,12 +25,7 @@
  * the page section break.
  */
 
-import { useEffect, useMemo, useRef, useState } from "react";
-import { Canvas } from "@react-three/fiber";
-import { EffectComposer, Bloom, Noise } from "@react-three/postprocessing";
-import { BlendFunction } from "postprocessing";
-import * as THREE from "three";
-import type { OrbitControls as OrbitControlsImpl } from "three-stdlib";
+import { Suspense, lazy, useEffect, useState } from "react";
 
 import {
   detectWebGL,
@@ -42,14 +37,18 @@ import {
 } from "../../lib/layoutData";
 import { useNavStore } from "../../lib/nav-store";
 
-import ProjectCloud from "./ProjectCloud";
-import CameraRig from "./CameraRig";
 import ModePanel from "./ModePanel";
 import AxisInputs from "./AxisInputs";
-import AxisLines from "./AxisLines";
 import Tooltip from "./Tooltip";
 import SemanticPlane from "./SemanticPlane";
 import MobileStrip from "./MobileStrip";
+
+// Round-6 Bug 1: lazy-load Canvas3D so R3F / three.js / postprocessing are only
+// fetched when the user toggles 3D. Previously these were eager top-level
+// imports — when Vite's dep cache returned a wrong Content-Type for any of
+// them, the entire HeroNavigator island failed to mount and the 2D scatter
+// never appeared.
+const Canvas3D = lazy(() => import("./Canvas3D"));
 
 type LoadState =
   | { status: "loading" }
@@ -215,7 +214,24 @@ export default function HeroNavigator() {
           reserveBottomForInputs
         />
       ) : (
-        <Canvas3D data={data} reducedMotion={reduced} />
+        <Suspense
+          fallback={
+            <div
+              className="relative h-[78vh] min-h-[640px] w-full"
+              style={{
+                background: "#0b0d0f",
+                borderTop: "1px solid rgba(94, 99, 107, 0.40)",
+                borderBottom: "1px solid rgba(94, 99, 107, 0.40)",
+              }}
+            >
+              <div className="flex h-full items-center justify-center font-mono text-[12px] text-graphite-400">
+                loading 3d…
+              </div>
+            </div>
+          }
+        >
+          <Canvas3D data={data} reducedMotion={reduced} />
+        </Suspense>
       )}
 
       {/* Shared overlays — z-index contract:
@@ -235,110 +251,6 @@ export default function HeroNavigator() {
           year: p.year,
         }))}
       />
-    </div>
-  );
-}
-
-// ──────────────────────────────────────────────────────────────────────────
-// Canvas3D — the existing WebGL view, now a toggle target rather than the
-// primary. Kept inline so HeroNavigator can swap views without re-mounting
-// shared overlays.
-// ──────────────────────────────────────────────────────────────────────────
-
-interface Canvas3DProps {
-  data: LayoutDataBundle;
-  reducedMotion: boolean;
-}
-
-function Canvas3D({ data, reducedMotion }: Canvas3DProps) {
-  const controlsRef = useRef<OrbitControlsImpl | null>(null);
-  const [theme, setTheme] = useState<"dark" | "light">("dark");
-
-  // Theme reactivity (3D scene background follows theme on light mode the
-  // hero container itself stays dark per contracts; we keep the canvas dark
-  // too for consistency with the 2D plane).
-  useEffect(() => {
-    const root = document.documentElement;
-    setTheme(root.classList.contains("light") ? "light" : "dark");
-    const handler = (e: Event) => {
-      const next = (e as CustomEvent<{ theme: "dark" | "light" }>).detail
-        ?.theme;
-      if (next === "dark" || next === "light") setTheme(next);
-    };
-    window.addEventListener("theme-change", handler);
-    return () => window.removeEventListener("theme-change", handler);
-  }, []);
-
-  // Hero stays dark in both themes (contract). bgColor is fixed to graphite-900.
-  const bgColor = "#0b0d0f";
-  // theme is observed but only relevant if we ever want to react; kept for
-  // future-proofing. Acknowledge to satisfy the linter.
-  void theme;
-
-  const presetCache = useMemo(
-    () => data.layouts.thesis_axes_cache,
-    [data],
-  );
-
-  return (
-    <div
-      className="relative h-[78vh] min-h-[640px] w-full"
-      style={{
-        background: bgColor,
-        borderTop: "1px solid rgba(94, 99, 107, 0.40)",
-        borderBottom: "1px solid rgba(94, 99, 107, 0.40)",
-      }}
-    >
-      <Canvas
-        frameloop="demand"
-        dpr={[1, 2]}
-        camera={{
-          fov: 38,
-          position: [0, 0.2, 2.3],
-          near: 0.1,
-          far: 50,
-        }}
-        gl={{ antialias: true, alpha: false }}
-        onCreated={({ gl, scene }) => {
-          gl.setClearColor(new THREE.Color(bgColor), 1);
-          scene.fog = new THREE.Fog(bgColor, 4, 8);
-        }}
-      >
-        <ambientLight intensity={0.6} />
-        <directionalLight position={[2, 3, 2]} intensity={0.4} />
-        <AxisLines presets={presetCache} />
-        <ProjectCloud
-          data={data}
-          controlsRef={controlsRef}
-          reducedMotion={reducedMotion}
-        />
-        <CameraRig ref={controlsRef} />
-        <EffectComposer>
-          <Bloom
-            intensity={0.08}
-            luminanceThreshold={0.85}
-            luminanceSmoothing={0.2}
-            mipmapBlur
-          />
-          <Noise
-            premultiply
-            blendFunction={BlendFunction.MULTIPLY}
-            opacity={0.025}
-          />
-        </EffectComposer>
-      </Canvas>
-      <div
-        className="absolute left-4 top-4 rounded-md border px-2.5 py-1.5 font-mono text-[10px] uppercase tracking-[0.18em] text-graphite-300"
-        style={{
-          backdropFilter: "blur(12px)",
-          WebkitBackdropFilter: "blur(12px)",
-          background: "rgba(11,13,15,0.72)",
-          borderColor: "rgba(94, 99, 107, 0.30)",
-          zIndex: 30,
-        }}
-      >
-        Live Thesis Demo · 3D
-      </div>
     </div>
   );
 }

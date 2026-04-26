@@ -67,32 +67,20 @@ const cardsWithBuckets = work.map((p) => ({
 
   <section class="zone-raised">
     <div class="container-wide py-8 md:py-12 pb-24 md:pb-32">
-      <div id="work-grid" class="grid grid-cols-12 gap-x-6 gap-y-12">
-        {cardsWithBuckets.map(({ project, buckets }, i) => {
-          const isFlagship = project.data.priority === "flagship";
-          const isFirst = i === 0;
-          const span = isFirst
-            ? "col-span-12 md:col-span-8"
-            : isFlagship
-            ? "col-span-12 md:col-span-6"
-            : "col-span-12 md:col-span-6 lg:col-span-4";
-          return (
-            <div
-              class:list={[span]}
-              data-card-slug={(project as any).slug ?? project.data.slug}
-              data-card-buckets={buckets.join("|")}
-              data-card-year={project.data.year ?? ""}
-              data-card-priority={project.data.priority ?? "standard"}
-              data-card-title={project.data.title}
-            >
-              <ProjectCard
-                project={project}
-                size={isFirst ? "large" : "default"}
-                eager={isFirst}
-              />
-            </div>
-          );
-        })}
+      {/* Round-6 Bug 3+4: uniform grid — every card same size, same aspect.
+            Mobile: 1-up. Tablet: 2-up. Desktop: 3-up. */}
+      <div id="work-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-12">
+        {cardsWithBuckets.map(({ project, buckets }, i) => (
+          <div
+            data-card-slug={(project as any).slug ?? project.data.slug}
+            data-card-buckets={buckets.join("|")}
+            data-card-year={project.data.year ?? ""}
+            data-card-priority={project.data.priority ?? "standard"}
+            data-card-title={project.data.title}
+          >
+            <ProjectCard project={project} eager={i < 3} />
+          </div>
+        ))}
       </div>
 
       <div id="work-empty" class="hidden text-center py-24">

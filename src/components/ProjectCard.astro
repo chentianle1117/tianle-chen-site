@@ -7,7 +7,6 @@ import { fileURLToPath } from "node:url";
 
 interface Props {
   project: CollectionEntry<"projects">;
-  size?: "default" | "large" | "small";
   eager?: boolean;
 }
 
@@ -17,15 +16,14 @@ function publicFileExists(webPath: string | null | undefined): boolean {
   return existsSync(fileURLToPath(url));
 }
 
-const { project, size = "default", eager = false } = Astro.props;
+const { project, eager = false } = Astro.props;
 const { data } = project;
 const dataAny = data as any;
 
-const aspect = {
-  large: "aspect-[16/10]",
-  default: "aspect-[4/3]",
-  small: "aspect-square",
-}[size];
+// Round-6: ALL cards are 4/3 horizontal — uniform grid across /work and
+// /architecture. No more size variants (large/default/small were a Round-3
+// hero-card treatment that broke visual rhythm).
+const aspect = "aspect-[4/3]";
 
 // Media resolution: gif_hero > video (local mp4) > hero_image > placeholder
 // gif_hero renders as <img> (browsers loop GIFs natively)
@@ -49,23 +47,20 @@ const videoExists = localVideo && publicFileExists(localVideo);
 
 const slug = (project as any).slug ?? data.slug ?? project.id?.replace(/\.md$/, "");
 const yearLabel = data.year ? String(data.year) : "";
-const courseOrCat =
+// Round-6: every card's metadata row is YEAR · CONTEXT — same shape across
+// /work and /architecture. CONTEXT is course_code (CMU coursework) →
+// institution (architecture studios) → first category (fallback).
+const contextBit =
   (data.course_code && String(data.course_code)) ||
+  (dataAny.institution && String(dataAny.institution)) ||
   (data.categories && data.categories[0]) ||
   "";
-const monoBits = [yearLabel, courseOrCat].filter(Boolean);
-// Round-4 Direction 4 — fixed taxonomy of tag-pills above the title.
-// Replaces the prior comma-separated lowercase category list under the title.
+const monoBits = [yearLabel, contextBit].filter(Boolean);
 const tagPills: string[] = getTagsForProject(data);
 ---
 
 <a
   href={`/work/${slug}`}
-  data-card-slug={slug}
-  data-card-categories={(data.categories ?? []).join("|")}
-  data-card-year={data.year ?? ""}
-  data-card-priority={data.priority ?? "standard"}
-  data-card-title={data.title}
   class="card-surface group block"
 >
   <div class:list={["relative overflow-hidden", aspect]} style="background: rgb(var(--surface-bg)); border-bottom: 1px solid rgb(var(--surface-border));">
@@ -114,19 +109,13 @@ const tagPills: string[] = getTagsForProject(data);
     )}
   </div>
 
-  <div class="p-5 md:p-6 flex flex-col gap-3">
-    {monoBits.length > 0 && (
-      <div class="mono-label flex items-center gap-2">
-        {monoBits.map((bit, i) => (
-          <>
-            {i > 0 && <span aria-hidden="true" style="color: rgb(var(--text-muted));">·</span>}
-            <span>{bit}</span>
-          </>
-        ))}
-      </div>
-    )}
+  <div class="p-5 md:p-6 flex flex-col gap-2.5">
+    {/* Round-6 unified metadata layout (every card, every page):
+          row 1: TAG pills — type identification
+          row 2: title — display serif
+          row 3: YEAR · CONTEXT — mono kicker (muted) */}
     {tagPills.length > 0 && (
-      <div class="flex flex-wrap" style="gap: 6px; margin-bottom: -4px;">
+      <div class="flex flex-wrap" style="gap: 6px;">
         {tagPills.map((tag) => (
           <span class="tag">{tag}</span>
         ))}
@@ -138,5 +127,15 @@ const tagPills: string[] = getTagsForProject(data);
     >
       {data.title}
     </h3>
+    {monoBits.length > 0 && (
+      <div class="mono-label flex items-center gap-2" style="color: rgb(var(--text-muted));">
+        {monoBits.map((bit, i) => (
+          <>
+            {i > 0 && <span aria-hidden="true">·</span>}
+            <span>{bit}</span>
+          </>
+        ))}
+      </div>
+    )}
   </div>
 </a>
