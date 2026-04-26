@@ -45,6 +45,10 @@ role: team-member
 semester: Spring 2025
 slug: 3t3d-vit-2d-to-3d
 status: ready
+summary: A vision-transformer pipeline that lifts a single 2D architectural floorplan
+  into a structured 3D massing model. Trained on a synthetic dataset of paired plans
+  and meshes generated procedurally in Grasshopper. Tests whether ViT attention can
+  learn architectural priors directly from 2D-3D pairs.
 tags:
 - vision-transformer
 - dinov2

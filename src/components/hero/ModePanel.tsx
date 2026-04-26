@@ -238,70 +238,35 @@ export default function ModePanel({
   }
 
   // ──────────────────────────────────────────────────────────────────────
-  // PANEL variant — top-right glass overlay.
+  // PANEL variant — top-right glass overlay, BELOW AxisInputs (Round-8b).
+  // 3D toggle removed entirely; only Layout group remains, with one-line
+  // descriptions of what each layout means and how things are encoded.
   // ──────────────────────────────────────────────────────────────────────
+  const layoutDescriptions: Record<LayoutKey, string> = {
+    thesis: "Custom semantic axes — type any concept and projects re-sort.",
+    umap: "Auto-clustered by content similarity (non-linear neighbors).",
+    pca: "Top 2 principal components of the embedding (linear).",
+    metadata: "Year × category — no ML, just published facts.",
+  };
+
   return (
     <div
-      className={`absolute right-4 top-4 w-[224px] rounded-md border p-3 font-mono ${className ?? ""}`}
+      className={`absolute right-4 w-[240px] rounded-md border p-3 font-mono ${className ?? ""}`}
       style={{
+        // Round-8b: anchored below AxisInputs (which sits at top: 16 with
+        // ~190px height + 12px gap). 220 keeps a clean visual stack.
+        top: 220,
         backdropFilter: "blur(12px)",
         WebkitBackdropFilter: "blur(12px)",
         background: "rgba(11,13,15,0.82)",
         borderColor: "rgba(94, 99, 107, 0.30)",
-        // z-index 30 — sits above the sprite layer (z=10) per stacking contract.
         zIndex: 30,
       }}
     >
-      {/* VIEW group */}
-      <header className="mb-2 text-[11px] uppercase tracking-[0.14em] text-graphite-300">
-        View
-      </header>
-      <div className="mb-3 flex items-center gap-1.5">
-        {VIEWS.map(({ key, label }) => {
-          const active = key === viewMode;
-          const disabled = key === "3d" && threeDDisabled;
-          const isThreeD = key === "3d";
-          return (
-            <div key={key} className="relative flex-1">
-              <button
-                type="button"
-                onClick={() => {
-                  if (!disabled) setViewMode(key);
-                }}
-                disabled={disabled}
-                aria-pressed={active}
-                onMouseEnter={isThreeD ? on3DEnter : undefined}
-                onMouseLeave={isThreeD ? on3DLeave : undefined}
-                onFocus={isThreeD ? on3DEnter : undefined}
-                onBlur={isThreeD ? on3DLeave : undefined}
-                title={
-                  isThreeD
-                    ? threeDTipMessage
-                    : "Switch to 2D view"
-                }
-                className={`w-full rounded border px-2 py-1 text-[12px] tracking-[0.06em] transition-colors duration-180 ${
-                  active
-                    ? "border-oxide-500 text-oxide-500"
-                    : disabled
-                      ? "border-graphite-800 text-graphite-700 cursor-not-allowed"
-                      : "border-graphite-700 text-graphite-200 hover:border-oxide-500 hover:text-graphite-100"
-                }`}
-              >
-                {label}
-              </button>
-              {isThreeD ? (
-                <ThreeDHoverTip active={show3DTip} message={threeDTipMessage} />
-              ) : null}
-            </div>
-          );
-        })}
-      </div>
-
-      {/* LAYOUT group */}
       <header className="mb-2 text-[11px] uppercase tracking-[0.14em] text-graphite-300">
         Layout
       </header>
-      <ul className="space-y-1.5">
+      <ul className="space-y-2">
         {LAYOUTS.map(({ key, label }) => {
           const active = key === activeLayout;
           return (
@@ -310,7 +275,7 @@ export default function ModePanel({
                 type="button"
                 onClick={() => setLayout(key)}
                 aria-pressed={active}
-                className={`flex w-full items-center gap-2 text-left text-[13px] transition-colors duration-180 ${
+                className={`flex w-full items-start gap-2 text-left transition-colors duration-180 ${
                   active
                     ? "text-oxide-500"
                     : "text-graphite-200 hover:text-graphite-100"
@@ -318,23 +283,37 @@ export default function ModePanel({
               >
                 <span
                   aria-hidden
-                  className="inline-block h-[8px] w-[8px] rounded-full"
+                  className="mt-1.5 inline-block h-[8px] w-[8px] shrink-0 rounded-full"
                   style={
                     active
                       ? { background: "#b8623f" }
                       : { boxShadow: "inset 0 0 0 1px #5a5e66" }
                   }
                 />
-                <span className="tracking-[0.06em]">{label}</span>
+                <span className="flex-1">
+                  <span className="block text-[12px] tracking-[0.10em]">{label}</span>
+                  <span
+                    className="mt-0.5 block text-[10px] leading-snug"
+                    style={{
+                      color: active ? "rgba(207, 127, 84, 0.85)" : "rgba(168, 172, 177, 0.7)",
+                      letterSpacing: 0,
+                      fontFamily:
+                        "'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+                    }}
+                  >
+                    {layoutDescriptions[key]}
+                  </span>
+                </span>
               </button>
             </li>
           );
         })}
       </ul>
 
-      {/* CAPTION */}
       <hr className="my-3 border-graphite-700/60" />
-      <p className="text-[11px] leading-snug text-graphite-200">{captionNode}</p>
+      <p className="text-[10px] leading-snug text-graphite-300" style={{ letterSpacing: 0, fontFamily: "'Inter', sans-serif" }}>
+        {captionNode}
+      </p>
     </div>
   );
 }

@@ -36,6 +36,10 @@ stack:
 - PolyHaven
 - Megascans
 status: draft
+summary: A modular procedural-architecture generative game built in Unreal Engine
+  5 with the Wave Function Collapse plugin. Each level samples from a library of fourteen
+  hand-crafted FBX modules under spatial-grammar constraints, exploring rule-based
+  generation as narrative architecture.
 tags:
 - unreal-engine-5
 - wave-function-collapse

@@ -35,6 +35,10 @@ stack_frontend:
 - Three.js
 - JavaScript
 status: draft
+summary: A 3D visualization web app for academic-paper relationships. Team project
+  for CMU 17-637 — built in Django + Three.js, visualizes citation graphs and topical
+  similarity across a Google Scholar dataset. David served as Sprint-1 Product Owner;
+  Graham scraped data, Sheen led UI/UX.
 tags:
 - django
 - threejs

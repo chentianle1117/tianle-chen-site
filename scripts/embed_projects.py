@@ -145,9 +145,19 @@ def _hero_for(project: dict, placeholder_size: int = 256) -> tuple[Image.Image, 
 
 
 def _text_blob(project: dict) -> str:
+    """Round-7: prefer the hand-written `summary:` frontmatter field over the
+    body text. The image-weighted embedding (0.7 image + 0.3 body) was producing
+    inaccurate latent placements because sprite/poster pixels and rambling body
+    prose don't capture conceptual content. A 280-char author-curated summary
+    is dense, on-message, and produces meaningful axis projections."""
     title = project["title"] or project["slug"]
+    summary = project["meta"].get("summary")
+    if isinstance(summary, str) and summary.strip():
+        # Title is already in the summary's information field; embed both for
+        # robustness (model gets a small prior from the title).
+        return f"{title}. {summary.strip()}"
+    # Fallback: body excerpt for projects without a summary yet.
     body = project["body"] or ""
-    # Strip frontmatter-leftover whitespace; keep first 1500 chars of body
     return f"{title}\n\n{body[:1500]}"
 
 
@@ -223,7 +233,16 @@ def main() -> int:
     text_emb = normalize(text_emb)
     image_emb = normalize(image_emb)
 
-    combined = 0.7 * image_emb + 0.3 * text_emb
+    # Round-7: text-dominant blend (was 0.7 image + 0.3 text). Reasoning:
+    # CLIP image embeddings of project hero thumbnails (sprites, posters,
+    # rendered UI screenshots) reflect VISUAL similarity, not conceptual
+    # similarity. A pixelated game sprite reads as "play" to CLIP regardless
+    # of whether the project IS research about deterioration models. Per-axis
+    # placements were misleading. We now embed each project's hand-written
+    # summary (frontmatter `summary:` field, ~280 chars) and use that as the
+    # primary signal. Image gets a small residual weight so visually-distinct
+    # projects don't pile up at identical text-space coordinates.
+    combined = 0.10 * image_emb + 0.90 * text_emb
     combined = normalize(combined)
 
     payload = {
@@ -233,6 +252,8 @@ def main() -> int:
         "projects": [],
     }
     for i, p in enumerate(projects):
+        meta = p["meta"] or {}
+        summary_str = meta.get("summary")
         payload["projects"].append({
             "slug": p["slug"],
             "title": p["title"],
@@ -240,6 +261,9 @@ def main() -> int:
             "categories": p["categories"],
             "priority": p["priority"],
             "placeholder": bool(placeholder_flags[i]),
+            # Round-7: ship the summary into embeddings.json so the hero side
+            # panel can render it without a second fetch.
+            "summary": summary_str if isinstance(summary_str, str) else None,
             "embedding": combined[i].astype(float).tolist(),
             "image_embedding": image_emb[i].astype(float).tolist(),
             "text_embedding": text_emb[i].astype(float).tolist(),

@@ -37,6 +37,10 @@ role: team-member
 semester: Fall 2024
 slug: spectral-facades
 status: ready
+summary: A generative-design pipeline for adaptive facade systems, training StreamDiffusion
+  on architectural daylight-simulation outputs to produce facade variations conditioned
+  on environmental performance. Demonstrates that diffusion models can be conditioned
+  on continuous performance criteria.
 tags:
 - projection-mapping
 - stream-diffusion

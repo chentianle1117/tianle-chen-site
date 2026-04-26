@@ -41,6 +41,10 @@ role: research-assistant
 semester: 2021-2024
 slug: fiber-based-pavilion
 status: ready
+summary: A parametric pavilion built from kinematic folding canopy systems and fiber-reinforced
+  ceramic columns. Co-authored research at IASS 2024 with Prof. Castellon. Kangaroo-physics
+  simulation drives the canopy origami; stereotomic CNT-fiber columns hold up the
+  assembly.
 tags:
 - parametric-design
 - topology-optimization

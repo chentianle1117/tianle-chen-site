@@ -78,9 +78,14 @@ export default function AxisInputs({
         }
       : {};
 
+  // Round-8b: AxisInputs moved from bottom-center to TOP-RIGHT — the axis
+  // change is the most important interaction in the scatter, and the prior
+  // bottom anchor put it in conflict with the description strip below.
+  // Now anchored top-right, just inside the right reservation, with
+  // ModePanel stacking below it.
   const containerClass =
     variant === "overlay"
-      ? `absolute bottom-5 left-1/2 w-[380px] max-w-[calc(100%-2rem)] -translate-x-1/2 rounded-md border p-3 font-mono ${className ?? ""}`
+      ? `absolute right-4 top-4 w-[240px] rounded-md border p-3 font-mono ${className ?? ""}`
       : `relative w-full font-mono ${className ?? ""}`;
 
   return (

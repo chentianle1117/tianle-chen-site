@@ -36,6 +36,10 @@ role: research-assistant
 semester: Fall 2024
 slug: wire-bending
 status: ready
+summary: A mixed-reality robotic wire-bending workflow combining Microsoft HoloLens
+  with a 6-axis robotic arm. The designer sketches in HoloLens; the workflow synchronizes
+  with Grasshopper for fabrication. Bridges digital and physical for complex wire-form
+  fabrication. CMU CodeLab research.
 tags:
 - mixed-reality
 - hololens

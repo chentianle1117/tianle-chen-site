@@ -17,6 +17,10 @@ export interface ProjectEmbedding {
   text_embedding: number[];
   /** [u, v, w, h] in 0-1 GL convention into atlas.png */
   thumbnail_uv: [number, number, number, number];
+  /** Round-7: hand-written 1-3 sentence project summary, used both for the
+   * latent-space embedding source and the hero side-panel description. */
+  summary?: string | null;
+  priority?: string;
 }
 
 export interface EmbeddingsBundle {

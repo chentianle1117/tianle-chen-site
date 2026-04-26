@@ -42,6 +42,10 @@ role: individual
 semester: Fall 2024
 slug: a-game-of-deterioration
 status: ready
+summary: A 2D simulation game where the player heals a procedurally deteriorating
+  world before it collapses. Built in Python with cmu_graphics, Pillow, and NumPy.
+  Real-time texture decay and restoration mechanics turn environmental survival into
+  a time-reversal puzzle. CMU 15-112 final.
 tags:
 - python
 - game-design

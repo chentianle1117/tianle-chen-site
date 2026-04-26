@@ -25,30 +25,27 @@
  * the page section break.
  */
 
-import { Suspense, lazy, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 
-import {
-  detectWebGL,
-  prefersReducedMotion,
-} from "../../lib/detectWebGL";
+import { prefersReducedMotion } from "../../lib/detectWebGL";
 import {
   loadLayoutData,
   type LayoutDataBundle,
 } from "../../lib/layoutData";
-import { useNavStore } from "../../lib/nav-store";
 
 import ModePanel from "./ModePanel";
 import AxisInputs from "./AxisInputs";
-import Tooltip from "./Tooltip";
 import SemanticPlane from "./SemanticPlane";
 import MobileStrip from "./MobileStrip";
 
-// Round-6 Bug 1: lazy-load Canvas3D so R3F / three.js / postprocessing are only
-// fetched when the user toggles 3D. Previously these were eager top-level
-// imports — when Vite's dep cache returned a wrong Content-Type for any of
-// them, the entire HeroNavigator island failed to mount and the 2D scatter
-// never appeared.
-const Canvas3D = lazy(() => import("./Canvas3D"));
+// Round-8b: dropped 3D entirely. The toggle was confusing (most visitors
+// never used it), and the latent-space scatter is best read at 2D + hover-
+// zoom-on-tile. Canvas3D file remains in the repo for future revival but is
+// no longer imported anywhere.
+// Also dropped: the cursor-following Tooltip and the description strip below
+// the scatter. Both were noisy and overlapped with the axis controls. The
+// HoverCard rendered next to each tile (in SemanticPlane) is now the single
+// detail surface.
 
 type LoadState =
   | { status: "loading" }
@@ -74,15 +71,11 @@ function useViewportWidth(): number {
 
 export default function HeroNavigator() {
   const [state, setState] = useState<LoadState>({ status: "loading" });
-  const [hasWebGL, setHasWebGL] = useState<boolean>(true);
   const [reduced, setReduced] = useState<boolean>(false);
   const viewportWidth = useViewportWidth();
 
-  const storedView = useNavStore((s) => s.viewMode);
-
   // Capability detection on mount.
   useEffect(() => {
-    setHasWebGL(detectWebGL());
     setReduced(prefersReducedMotion());
   }, []);
 
@@ -109,12 +102,10 @@ export default function HeroNavigator() {
     };
   }, []);
 
-  // Effective view: only allow 3D if desktop + WebGL + not reduced-motion.
+  // Round-8b: 3D toggle removed. Always 2D.
   const isMobile = viewportWidth < MOBILE_BREAKPOINT;
   const isCompact = viewportWidth < DESKTOP_BREAKPOINT;
-  const canToggle3D = !isMobile && !isCompact && hasWebGL && !reduced;
-  const effectiveView: "2d" | "3d" =
-    !canToggle3D ? "2d" : storedView;
+  void reduced; // kept available for future features
 
   if (state.status === "loading") {
     return (
@@ -157,19 +148,12 @@ export default function HeroNavigator() {
     return (
       <div className="hero-container relative w-full">
         <MobileStrip data={data} />
-        <Tooltip
-          projects={data.embeddings.projects.map((p) => ({
-            slug: p.slug,
-            title: p.title,
-            year: p.year,
-          }))}
-        />
       </div>
     );
   }
 
-  // Tablet/small-desktop: stage with bottom-band controls (no overlays
-  // occluding sprites). 3D is forced off here so we render SemanticPlane only.
+  // Tablet/small-desktop: scatter + bottom-band controls (no overlays
+  // occluding sprites).
   if (isCompact) {
     return (
       <div className="hero-container relative w-full">
@@ -184,7 +168,7 @@ export default function HeroNavigator() {
           <div className="mx-auto flex max-w-[1280px] flex-col gap-3 px-4 py-3">
             <ModePanel
               presets={data.layouts.thesis_axes_cache}
-              canToggle3D={canToggle3D}
+              canToggle3D={false}
               variant="compact"
             />
             <AxisInputs
@@ -193,63 +177,33 @@ export default function HeroNavigator() {
             />
           </div>
         </div>
-        <Tooltip
-          projects={data.embeddings.projects.map((p) => ({
-            slug: p.slug,
-            title: p.title,
-            year: p.year,
-          }))}
-        />
       </div>
     );
   }
 
-  // Desktop path: full overlay treatment.
+  // Desktop path: scatter + right-side stacked panels (axes on top, layouts
+  // below). No more bottom-overlay AxisInputs (was overlapping with the page
+  // content below). No 3D toggle. No cursor-following Tooltip.
   return (
     <div className="hero-container relative w-full">
-      {effectiveView === "2d" ? (
-        <SemanticPlane
-          data={data}
-          reserveRightForPanel
-          reserveBottomForInputs
-        />
-      ) : (
-        <Suspense
-          fallback={
-            <div
-              className="relative h-[78vh] min-h-[640px] w-full"
-              style={{
-                background: "#0b0d0f",
-                borderTop: "1px solid rgba(94, 99, 107, 0.40)",
-                borderBottom: "1px solid rgba(94, 99, 107, 0.40)",
-              }}
-            >
-              <div className="flex h-full items-center justify-center font-mono text-[12px] text-graphite-400">
-                loading 3d…
-              </div>
-            </div>
-          }
-        >
-          <Canvas3D data={data} reducedMotion={reduced} />
-        </Suspense>
-      )}
-
-      {/* Shared overlays — z-index contract:
-            sprite layer (in SemanticPlane): z=10
-            ModePanel, AxisInputs:           z=30
-            Tooltip:                         z=30000
-          Each sets its own z via its component props. */}
+      <SemanticPlane
+        data={data}
+        reserveRightForPanel
+        reserveBottomForInputs={false}
+      />
+      {/* Right-side stacked panels.
+          - AxisInputs (top) — foregrounded; this is the most important
+            interaction. Anchored top-right.
+          - ModePanel (below) — layout picker (Thesis / UMAP / PCA / Metadata)
+            with descriptions of what each layout means.
+          z-index 30 over sprite layer (z=10). */}
+      <AxisInputs
+        presets={data.layouts.thesis_axes_cache}
+        variant="overlay"
+      />
       <ModePanel
         presets={data.layouts.thesis_axes_cache}
-        canToggle3D={canToggle3D}
-      />
-      <AxisInputs presets={data.layouts.thesis_axes_cache} />
-      <Tooltip
-        projects={data.embeddings.projects.map((p) => ({
-          slug: p.slug,
-          title: p.title,
-          year: p.year,
-        }))}
+        canToggle3D={false}
       />
     </div>
   );

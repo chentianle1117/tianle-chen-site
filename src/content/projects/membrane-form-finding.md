@@ -20,6 +20,10 @@ role: individual
 semester: 2021-2024
 slug: membrane-form-finding
 status: ready
+summary: A dynamic-relaxation form-finding workflow for tensile membrane structures,
+  exploring equilibrium geometries achievable from simple anchor and edge-cable constraints.
+  Grasshopper + Kangaroo Physics; output curated as a families taxonomy of membrane
+  typologies.
 tags:
 - parametric-design
 - membrane-structures

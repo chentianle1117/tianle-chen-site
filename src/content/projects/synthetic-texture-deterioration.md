@@ -29,6 +29,10 @@ role: individual
 semester: Fall 2024
 slug: synthetic-texture-deterioration
 status: ready
+summary: A synthetic dataset and visualization tool for material deterioration patterns.
+  Procedurally generates paired before/after textures with physics-informed decay
+  (oxidation, biofilm, weathering) and a UI for inspecting how each parameter shapes
+  the deterioration. Toolkit for design educators teaching material-as-time.
 tags:
 - generative-ai
 - material-aging

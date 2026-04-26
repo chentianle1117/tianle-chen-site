@@ -38,6 +38,10 @@ role: team-member
 semester: Fall 2024
 slug: skill-bridge-datavis
 status: ready
+summary: An interactive dashboard that visualizes cross-disciplinary tech and design
+  job-market data — skill demands, salary trends, geographic distributions. Built
+  with Svelte + D3, scraping live job postings. Empowers career-changers to see where
+  their existing skills meet real demand.
 tags:
 - d3
 - svelte

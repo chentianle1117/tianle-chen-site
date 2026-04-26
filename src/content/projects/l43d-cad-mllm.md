@@ -45,6 +45,10 @@ role: team-member
 semester: Fall 2025
 slug: l43d-cad-mllm
 status: ready
+summary: 'Multimodality-conditioned CAD generation: a fine-tuned multimodal LLM with
+  LoRA adaptation that produces editable parametric CAD sequences from text, point
+  clouds, or images. Includes a synthetic data amplification pipeline on the DeepCAD
+  subset and an autocompletion variant. Team project, CMU 16-825.'
 tags:
 - multimodal-llm
 - cad-generation

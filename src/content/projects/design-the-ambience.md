@@ -28,6 +28,10 @@ role: team-member
 semester: Fall 2024
 slug: design-the-ambience
 status: ready
+summary: A real-time generative environment that translates user behavior in physical
+  space into projected imagery via StreamDiffusion + MediaPipe + TouchDesigner. Hand
+  poses and movement modulate diffusion prompts on the fly, blurring the boundary
+  between performer and projection.
 tags:
 - stream-diffusion
 - projection-mapping

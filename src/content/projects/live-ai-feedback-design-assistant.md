@@ -30,6 +30,10 @@ stack:
 - Vite
 - Google Gemini API
 status: draft
+summary: A real-time design feedback assistant that watches a designer's working canvas
+  and surfaces relevant suggestions inline, using an open-vocabulary visual model
+  and an LLM observer. Researches how AI critique can sit alongside the designer rather
+  than interrupting them.
 tags:
 - electron
 - react

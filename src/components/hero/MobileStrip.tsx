@@ -96,11 +96,12 @@ export default function MobileStrip({ data }: MobileStripProps) {
         }}
       >
         {featured.map((p) => {
+          // Round-8b: GL bottom-left UV → CSS top-left bg-position flip.
           const [u, v, w, h] = p.thumbnail_uv;
           const bgSizeX = `${(1 / Math.max(w, 0.0001)) * 100}%`;
           const bgSizeY = `${(1 / Math.max(h, 0.0001)) * 100}%`;
           const bgPosX = `${(u / Math.max(1 - w, 0.0001)) * 100}%`;
-          const bgPosY = `${(v / Math.max(1 - h, 0.0001)) * 100}%`;
+          const bgPosY = `${((1 - v - h) / Math.max(1 - h, 0.0001)) * 100}%`;
           return (
             <button
               key={p.slug}

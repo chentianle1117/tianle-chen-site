@@ -24,6 +24,10 @@ publish: true
 semester: Rice undergraduate (2021-2024)
 slug: generative-urbanism
 status: ready
+summary: A territorial-scale generative-urbanism investigation along the U.S.-Mexico
+  border, mapping informal settlements and water-infrastructure scarcity. Combines
+  GIS data with rule-based growth simulations to project alternative urban futures
+  across decades.
 tags:
 - parametric-design
 - grasshopper

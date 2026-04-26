@@ -69,6 +69,11 @@ stack_frontend:
 - D3.js 7
 - Zustand
 status: ready
+summary: An AI-augmented design canvas where designers navigate latent space along
+  their own typed semantic axes. Project image embeddings get dot-projected against
+  ensemble axis vectors built from natural-language label expansions — no learned
+  mapping, no dimensionality reduction, no retraining. Adding a new axis is free.
+  CMU MSCD thesis.
 tags:
 - thesis
 - clip
