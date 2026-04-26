@@ -43,9 +43,9 @@
 
     /* RGB triples for theme-reactive Tailwind tokens (NEW — Phase 2 contract) */
     --surface-bg: 11 13 15;          /* graphite-900 */
-    --surface-1-rgb: 18 20 23;       /* graphite-800 */
-    --surface-2-rgb: 26 28 32;       /* graphite-700 */
-    --surface-border: 50 54 60;      /* graphite-500 mid */
+    --surface-1-rgb: 22 25 29;       /* graphite-800 — bumped per Round-4 Direction 2 */
+    --surface-2-rgb: 32 36 41;       /* graphite-700 — bumped to give zone-raised more visible lift */
+    --surface-border: 60 64 72;      /* graphite-500 — slight bump for zone seam visibility */
     --text-primary: 244 245 246;     /* graphite-50 */
     --text-secondary: 200 198 192;
     --text-mono: 161 158 148;
@@ -228,6 +228,49 @@
     padding-block: 1rem;
   }
 
+  /* Round-5 Fix 8: page-level rails for non-detail index pages
+     (/work, /about, /dashboard). Lighter than `.layout-with-rails` —
+     the body retains its existing container; the rails sit absolutely
+     positioned in the side gutters at >=1440. */
+  .page-with-rails {
+    position: relative;
+  }
+  .page-with-rails > .page-rail {
+    display: none;
+    font-family: theme(fontFamily.mono);
+    font-size: var(--step--1);
+    color: rgb(var(--text-mono));
+    letter-spacing: 0.10em;
+    text-transform: uppercase;
+  }
+  @media (min-width: 1440px) {
+    .page-with-rails > .page-rail {
+      display: block;
+      position: absolute;
+      top: 6.5rem;
+      width: 9rem;
+      line-height: 1.6;
+    }
+    .page-with-rails > .page-rail.page-rail-left {
+      left: 1.25rem;
+    }
+    .page-with-rails > .page-rail.page-rail-right {
+      right: 1.25rem;
+      text-align: right;
+    }
+    .page-with-rails > .page-rail .rail-row {
+      display: block;
+      margin-bottom: 0.5rem;
+      color: rgb(var(--text-mono));
+    }
+    .page-with-rails > .page-rail .rail-row.faint {
+      color: rgb(var(--text-mono) / 0.55);
+    }
+    .page-with-rails > .page-rail a.rail-row:hover {
+      color: rgb(var(--accent-rgb));
+    }
+  }
+
   /* Filter bar background utility — CONTENT-owned FilterBar can apply this
      to swap to brand-aligned surface-1 + blur. */
   .filter-bar-bg {
@@ -285,9 +328,45 @@
     font-size: var(--step--1);
     color: rgb(var(--text-mono));
     white-space: nowrap;
+    display: inline-flex;
+    align-items: baseline;
+    gap: 0.5em;
+  }
+  /* Round-4 Direction 1 — numbered section markers */
+  .section-break-mono > .label > .num {
+    font-family: theme(fontFamily.mono);
+    font-weight: 600;
+    color: rgb(var(--accent-rgb));
+    letter-spacing: 0.04em;
+    font-variant-numeric: tabular-nums;
+  }
+  .section-break-mono > .label > .title {
+    font-family: theme(fontFamily.mono);
+    color: rgb(var(--text-mono));
+    letter-spacing: 0.12em;
   }
   @media (max-width: 767px) {
     .section-break-mono { margin-block: 4rem; gap: 1rem; }
+  }
+
+  /* ────────────────────────────────────────────────────────────────────
+     Round-4 Direction 2 — alternating section zones
+     Subtle two-tone bands: zone-base sits on page bg, zone-raised steps
+     up to surface-2 with a soft top/bottom seam. The pair gives the eye
+     a "new section" cue without rule lines or palette shift.
+     ──────────────────────────────────────────────────────────────── */
+  .zone-base {
+    position: relative;
+    background: rgb(var(--surface-bg));
+  }
+  .zone-raised {
+    position: relative;
+    background: rgb(var(--surface-2-rgb));
+    border-block: 1px solid rgb(var(--surface-border) / 0.5);
+  }
+  /* When two zone-raised sections are siblings, collapse the doubled seam */
+  .zone-raised + .zone-raised {
+    border-top: 0;
   }
 
   /* Hero block — wrapper for hero sections. Adds a 32px gradient fade at the
@@ -316,27 +395,32 @@
     position: absolute;
     inset: 0;
     pointer-events: none;
+    /* Round-5 Fix 7: stronger top + middle coverage so white title text never
+       collides with bright imagery (cream maps, sand-toned 3D models, light
+       UI screenshots). Adds another 5–10% darkness across top and middle. */
     background:
       linear-gradient(to top,
-        rgba(0, 0, 0, 0.85) 0%,
-        rgba(0, 0, 0, 0.65) 25%,
-        rgba(0, 0, 0, 0.30) 50%,
-        rgba(0, 0, 0, 0.10) 80%,
+        rgba(0, 0, 0, 0.88) 0%,
+        rgba(0, 0, 0, 0.70) 25%,
+        rgba(0, 0, 0, 0.42) 55%,
+        rgba(0, 0, 0, 0.22) 75%,
+        rgba(0, 0, 0, 0.10) 90%,
         transparent 100%
       ),
-      radial-gradient(ellipse at bottom left, rgba(0, 0, 0, 0.40) 0%, transparent 60%);
+      radial-gradient(ellipse at bottom left, rgba(0, 0, 0, 0.50) 0%, transparent 60%);
   }
   :root.light .hero-scrim,
   :root[data-theme="light"] .hero-scrim {
     background:
       linear-gradient(to top,
-        rgba(0, 0, 0, 0.78) 0%,
-        rgba(0, 0, 0, 0.55) 25%,
-        rgba(0, 0, 0, 0.22) 50%,
-        rgba(0, 0, 0, 0.06) 80%,
+        rgba(0, 0, 0, 0.82) 0%,
+        rgba(0, 0, 0, 0.60) 25%,
+        rgba(0, 0, 0, 0.32) 55%,
+        rgba(0, 0, 0, 0.14) 75%,
+        rgba(0, 0, 0, 0.04) 90%,
         transparent 100%
       ),
-      radial-gradient(ellipse at bottom left, rgba(0, 0, 0, 0.30) 0%, transparent 60%);
+      radial-gradient(ellipse at bottom left, rgba(0, 0, 0, 0.36) 0%, transparent 60%);
   }
 
   /* Mono label — confirmed to spec.

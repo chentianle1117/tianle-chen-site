@@ -95,8 +95,6 @@ year: 2025
 
 > **The thesis tool.** An interactive D3-based canvas for exploring and generating shoe designs in semantic latent space. Jina CLIP v2 embeddings let you define custom semantic axes ("casual ↔ formal", "dark ↔ bright") and watch your designs reposition themselves by meaning. fal.ai generates new designs from text or reference images. Gemini is a passive observer that reads your design brief and offers insights. Multi-user study mode with per-participant isolation logs every interaction — the whole thing runs in production on Railway.
 
-![hero](/assets/semantic-canvas/analysis_thumbs_0.png)
-
 ## Hook
 Design exploration is fundamentally about moving through a *space of possibilities* — but that space has historically been implicit, stored in the designer's head. What if it were real: 2D, navigable, with custom axes you define in your own words? Semantic Canvas is a thesis-scale answer. Drop an image in and it finds its place along any axis you can describe. Generate variations via fal.ai. Branch with genealogy. Study participants use it for real design tasks; every event is logged for analysis.
 

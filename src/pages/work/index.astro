@@ -4,37 +4,29 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import ProjectCard from "../../components/ProjectCard.astro";
 import FilterBar from "../../components/FilterBar.astro";
-import { getCollection } from "astro:content";
 import {
   FILTER_CATEGORIES,
   projectCategoryBuckets,
 } from "../../lib/categories";
+import { getProjectCounts } from "../../lib/projectCounts";
 
-const all = await getCollection("projects", ({ data }) => data.publish === true);
+// Round-5 Fix 4: route every page's count strings through projectCounts.ts so
+// /work, /architecture, /dashboard, and /home agree.
+const { work: workCollection, counts, years: yearRanges } = await getProjectCounts();
 
-const isArchitectureTier = (p: typeof all[0]) =>
-  p.data.institution === "Rice University" ||
-  (p.data.categories &&
-    p.data.categories.includes("Architecture") &&
-    p.data.year &&
-    p.data.year <= 2024);
-
-const work = all
-  .filter((p) => !isArchitectureTier(p))
+const work = workCollection
   .sort((a, b) => {
     if (a.data.priority === "flagship" && b.data.priority !== "flagship") return -1;
     if (b.data.priority === "flagship" && a.data.priority !== "flagship") return 1;
     return (b.data.year ?? 0) - (a.data.year ?? 0);
   });
 
-// Years and categories for filter bar
+// Years for filter bar
 const years = Array.from(
   new Set(work.map((p) => p.data.year).filter((y): y is number => typeof y === "number"))
 );
-const minYear = Math.min(...years);
-const maxYear = Math.max(...years);
-const total = work.length;
-const yearRange = `${minYear}—${maxYear}`;
+const total = counts.work;
+const yearRange = `${yearRanges.work.min}—${yearRanges.work.max}`;
 const kicker = `${total} PROJECTS · ${FILTER_CATEGORIES.length} CATEGORIES · ${yearRange}`;
 
 // Pre-compute the bucket attribute per project so the client filter can
@@ -51,54 +43,69 @@ const cardsWithBuckets = work.map((p) => ({
 >
   <FilterBar categories={[...FILTER_CATEGORIES]} years={years} total={total} />
 
-  <section class="container-wide pt-12 md:pt-16 pb-10">
-    <p class="mono-label mb-4">{kicker}</p>
-    <h1
-      class="max-w-4xl"
-      style="font-family: theme(fontFamily.display); font-size: var(--step-5); font-weight: 380; line-height: 1.05; letter-spacing: -0.01em; color: rgb(var(--text-primary));"
-    >
-      Selected Work
-    </h1>
-  </section>
+  <div class="page-with-rails">
+    {/* Round-5 Fix 8: marginalia rails at >=1440 */}
+    <aside class="page-rail page-rail-left" aria-hidden="true">
+      <span class="rail-row">INDEX</span>
+      <span class="rail-row faint">{String(total).padStart(2, "0")} / {String(FILTER_CATEGORIES.length).padStart(2, "0")} / {yearRange}</span>
+    </aside>
+    <aside class="page-rail page-rail-right">
+      <a class="rail-row" href="#top" aria-label="Back to top">↑ TOP</a>
+    </aside>
 
-  <section class="container-wide py-8 md:py-12 pb-24 md:pb-32">
-    <div id="work-grid" class="grid grid-cols-12 gap-x-6 gap-y-12">
-      {cardsWithBuckets.map(({ project, buckets }, i) => {
-        const isFlagship = project.data.priority === "flagship";
-        const isFirst = i === 0;
-        const span = isFirst
-          ? "col-span-12 md:col-span-8"
-          : isFlagship
-          ? "col-span-12 md:col-span-6"
-          : "col-span-12 md:col-span-6 lg:col-span-4";
-        return (
-          <div
-            class:list={[span]}
-            data-card-slug={(project as any).slug ?? project.data.slug}
-            data-card-buckets={buckets.join("|")}
-            data-card-year={project.data.year ?? ""}
-            data-card-priority={project.data.priority ?? "standard"}
-            data-card-title={project.data.title}
-          >
-            <ProjectCard
-              project={project}
-              size={isFirst ? "large" : "default"}
-              eager={isFirst}
-            />
-          </div>
-        );
-      })}
-    </div>
-
-    <div id="work-empty" class="hidden text-center py-24">
-      <p class="mb-6" style="color: rgb(var(--text-secondary));">No projects match. Reset filters.</p>
-      <button
-        type="button"
-        id="filter-reset"
-        class="btn"
-      >Reset</button>
+  <section class="zone-base">
+    <div class="container-wide pt-12 md:pt-16 pb-10">
+      <p class="mono-label mb-4">{kicker}</p>
+      <h1
+        class="max-w-4xl"
+        style="font-family: theme(fontFamily.display); font-size: var(--step-5); font-weight: 380; line-height: 1.05; letter-spacing: -0.01em; color: rgb(var(--text-primary));"
+      >
+        Selected Work
+      </h1>
     </div>
   </section>
+
+  <section class="zone-raised">
+    <div class="container-wide py-8 md:py-12 pb-24 md:pb-32">
+      <div id="work-grid" class="grid grid-cols-12 gap-x-6 gap-y-12">
+        {cardsWithBuckets.map(({ project, buckets }, i) => {
+          const isFlagship = project.data.priority === "flagship";
+          const isFirst = i === 0;
+          const span = isFirst
+            ? "col-span-12 md:col-span-8"
+            : isFlagship
+            ? "col-span-12 md:col-span-6"
+            : "col-span-12 md:col-span-6 lg:col-span-4";
+          return (
+            <div
+              class:list={[span]}
+              data-card-slug={(project as any).slug ?? project.data.slug}
+              data-card-buckets={buckets.join("|")}
+              data-card-year={project.data.year ?? ""}
+              data-card-priority={project.data.priority ?? "standard"}
+              data-card-title={project.data.title}
+            >
+              <ProjectCard
+                project={project}
+                size={isFirst ? "large" : "default"}
+                eager={isFirst}
+              />
+            </div>
+          );
+        })}
+      </div>
+
+      <div id="work-empty" class="hidden text-center py-24">
+        <p class="mb-6" style="color: rgb(var(--text-secondary));">No projects match. Reset filters.</p>
+        <button
+          type="button"
+          id="filter-reset"
+          class="btn"
+        >Reset</button>
+      </div>
+    </div>
+  </section>
+  </div>
 </BaseLayout>
 
 <style>

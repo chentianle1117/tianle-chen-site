@@ -85,7 +85,7 @@ const stageImages = stageCandidates.filter(publicFileExists);
 >
   {/* ============ HERO — curated dark composite, full-bleed (Round-3 Item 4) ============ */}
   <section
-    class="relative w-full overflow-hidden"
+    class="relative w-full overflow-hidden zone-base"
     style="height: 80vh; min-height: 600px; border-bottom: 1px solid rgb(var(--surface-border));"
   >
     {heroStill ? (
@@ -124,7 +124,8 @@ const stageImages = stageCandidates.filter(publicFileExists);
   </section>
 
   {/* ============ TL;DR strip ============ */}
-  <section class="container-display py-12 md:py-16">
+  <section class="zone-raised">
+    <div class="container-display py-12 md:py-16">
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
       <div>
         <p class="mono-label mb-3">PROBLEM</p>
@@ -145,12 +146,14 @@ const stageImages = stageCandidates.filter(publicFileExists);
         </p>
       </div>
     </div>
+    </div>
   </section>
 
-  {/* ============ THE TOOL ============ */}
-  <SectionBreak label="THE TOOL" />
+  {/* ============ THE TOOL — zone-base ============ */}
+  <section class="zone-base">
+    <SectionBreak number="01" label="THE TOOL" />
 
-  <section class="container-display pb-12 md:pb-16">
+    <div class="container-display pb-12 md:pb-16">
     <div class="container-reading mx-0 px-0 mb-8" style="max-width: 72ch;">
       <h2
         style="font-family: theme(fontFamily.display); font-size: var(--step-3); font-weight: 380; line-height: 1.15; letter-spacing: -0.01em; color: rgb(var(--text-primary));"
@@ -175,12 +178,14 @@ const stageImages = stageCandidates.filter(publicFileExists);
         ))}
       </div>
     )}
+    </div>
   </section>
 
-  {/* ============ THE METHOD ============ */}
-  <SectionBreak label="THE METHOD" />
+  {/* ============ THE METHOD — zone-raised ============ */}
+  <section class="zone-raised">
+    <SectionBreak number="02" label="THE METHOD" />
 
-  <section class="container-reading prose-custom py-12 md:py-16">
+    <div class="container-reading prose-custom py-12 md:py-16">
     <h2>Latent space, made navigable</h2>
     <p>
       Design exploration is fundamentally about moving through a <em>space of possibilities</em>. Until recently that space lived only in the designer's head — implicit, ineffable, impossible to share. Generative models now make it externally addressable, but every interface so far hides the space behind a chat box. Footwear design is a useful test bed: categories are stable (silhouette, material, use-case), the visual vocabulary is shared, and a single designer iterates across hundreds of variants per project.
@@ -213,13 +218,14 @@ const stageImages = stageCandidates.filter(publicFileExists);
     <p>
       Gemini 2.5 Flash Lite runs as a passive observer — it reads the designer's typed brief, highlights primary goals (blue) and secondary considerations (amber), and surfaces sticky insights when canvas state suggests them. Crucially, it never interrupts. Insight timers stop the moment an insight is displayed, so unread insights cost zero further tokens. The agent is a colleague, not a chatbot.
     </p>
+    </div>
   </section>
 
-  {/* ============ OUTPUTS ============ */}
+  {/* ============ OUTPUTS — zone-base ============ */}
   {outputImages.length > 0 && (
-    <>
-      <SectionBreak label="OUTPUTS" />
-      <section class="container-display pb-12 md:pb-16">
+    <section class="zone-base">
+      <SectionBreak number="03" label="OUTPUTS" />
+      <div class="container-display pb-12 md:pb-16">
         <div class="container-reading mx-0 px-0 mb-8" style="max-width: 72ch;">
           <h2
             style="font-family: theme(fontFamily.display); font-size: var(--step-3); font-weight: 380; line-height: 1.15; letter-spacing: -0.01em; color: rgb(var(--text-primary));"
@@ -241,14 +247,15 @@ const stageImages = stageCandidates.filter(publicFileExists);
             </figure>
           ))}
         </div>
-      </section>
-    </>
+      </div>
+    </section>
   )}
 
-  {/* ============ STUDY / PROCESS ============ */}
-  <SectionBreak label="THE STUDY" />
+  {/* ============ STUDY / PROCESS — zone-raised ============ */}
+  <section class="zone-raised">
+    <SectionBreak number="04" label="THE STUDY" />
 
-  <section class="container-reading prose-custom py-12 md:py-16">
+    <div class="container-reading prose-custom py-12 md:py-16">
     <p>
       The thesis hypothesis — <em>that legible latent space improves designer creativity over a flat generative tool</em> — is being tested with a multi-participant study running through Spring 2026. Each participant accesses a personal URL of the form <code>/?participant=Name</code>. The backend's <code>X-Participant-Id</code> header routes each request to an isolated <code>AppState</code> via FastAPI's <code>ContextVar</code> middleware.
     </p>
@@ -258,10 +265,10 @@ const stageImages = stageCandidates.filter(publicFileExists);
     <p>
       Quantitative measures: time-to-first-keep, branch depth, axis-edit frequency, generation-to-selection ratio. Qualitative material: feedback notepad entries plus post-session interviews. Together they're the spine of the thesis writeup.
     </p>
-  </section>
+    </div>
 
-  {stageImages.length > 0 && (
-    <section class="container-display pb-12 md:pb-16">
+    {stageImages.length > 0 && (
+    <div class="container-display pb-12 md:pb-16">
       <div class="container-reading mx-0 px-0 mb-8" style="max-width: 72ch;">
         <h3
           style="font-family: theme(fontFamily.display); font-size: var(--step-2); font-weight: 380; line-height: 1.2; letter-spacing: -0.01em; color: rgb(var(--text-primary));"
@@ -283,14 +290,15 @@ const stageImages = stageCandidates.filter(publicFileExists);
           </figure>
         ))}
       </div>
-    </section>
-  )}
+    </div>
+    )}
+  </section>
 
-  {/* ============ LIVE DEMO — embedded Semantic Canvas tool, secondary placement ============ */}
+  {/* ============ LIVE DEMO — embedded Semantic Canvas tool, zone-base ============ */}
   {liveUrl && (
-    <>
-      <SectionBreak label="LIVE DEMO" />
-      <section class="container-display pb-12 md:pb-16">
+    <section class="zone-base">
+      <SectionBreak number="05" label="LIVE DEMO" />
+      <div class="container-display pb-12 md:pb-16">
         <div class="container-reading mx-0 px-0 mb-6" style="max-width: 72ch;">
           <p style="color: rgb(var(--text-secondary)); line-height: 1.65;">
             The live tool runs below. The top status bar of the embedded app is clipped so the
@@ -322,14 +330,15 @@ const stageImages = stageCandidates.filter(publicFileExists);
             Open live tool in new tab →
           </a>
         </div>
-      </section>
-    </>
+      </div>
+    </section>
   )}
 
-  {/* ============ META — this site is a live demo ============ */}
-  <SectionBreak label="META" />
+  {/* ============ META — zone-raised ============ */}
+  <section class="zone-raised">
+    <SectionBreak number="06" label="META" />
 
-  <section class="container-reading py-12 md:py-16">
+    <div class="container-reading py-12 md:py-16">
     <h2
       style="font-family: theme(fontFamily.display); font-size: var(--step-3); font-weight: 380; line-height: 1.15; letter-spacing: -0.01em; color: rgb(var(--text-primary));"
       class="mb-6"
@@ -343,12 +352,14 @@ const stageImages = stageCandidates.filter(publicFileExists);
       Switch on thesis mode at the top of the homepage hero, type your own axes, and watch every project reposition itself by meaning. It is the smallest possible version of Semantic Canvas — and it works on any image collection.
     </p>
     <a href="/" class="btn">See the live method on the homepage</a>
+    </div>
   </section>
 
-  {/* ============ MORE ============ */}
-  <SectionBreak label="MORE" />
+  {/* ============ MORE — zone-base ============ */}
+  <section class="zone-base">
+    <SectionBreak number="07" label="MORE" />
 
-  <section class="container-display pb-16 md:pb-24">
+    <div class="container-display pb-16 md:pb-24">
     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
       {githubUrl && (
         <a
@@ -402,13 +413,14 @@ const stageImages = stageCandidates.filter(publicFileExists);
         </div>
       )}
     </div>
+    </div>
   </section>
 
-  {/* ============ PROPOSAL PRESENTATION (Dec 2025) ============ */}
+  {/* ============ PROPOSAL PRESENTATION (Dec 2025) — zone-raised ============ */}
   {proposalVideo && (
-    <>
-      <SectionBreak label="PROPOSAL PRESENTATION (DEC 2025)" />
-      <section class="container-display pb-12 md:pb-16">
+    <section class="zone-raised">
+      <SectionBreak number="08" label="PROPOSAL PRESENTATION (DEC 2025)" />
+      <div class="container-display pb-12 md:pb-16">
         <div class="container-reading mx-0 px-0 mb-6" style="max-width: 72ch;">
           <p style="color: rgb(var(--text-secondary)); line-height: 1.65;">
             Final pre-thesis proposal presentation, delivered 2025-12-03 — frames the research question,
@@ -422,8 +434,8 @@ const stageImages = stageCandidates.filter(publicFileExists);
           class="w-full block"
           style="border: 1px solid rgb(var(--surface-border)); border-radius: 6px;"
         ></video>
-      </section>
-    </>
+      </div>
+    </section>
   )}
 
   <RelatedRail

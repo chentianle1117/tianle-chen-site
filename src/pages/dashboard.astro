@@ -3,12 +3,12 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import DashboardPanel from "../components/DashboardPanel.astro";
 import Sparkline from "../components/Sparkline.astro";
 import Donut from "../components/Donut.astro";
-import { getCollection } from "astro:content";
 import { execSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
 import pkg from "../../package.json";
 import { FILTER_CATEGORIES, projectCategoryBuckets } from "../lib/categories";
+import { getProjectCounts } from "../lib/projectCounts";
 
 // ── Build info ───────────────────────────────────────────────────────────
 const today = new Date().toISOString().slice(0, 10);
@@ -46,9 +46,11 @@ try {
 }
 
 // ── Content stats ────────────────────────────────────────────────────────
-const all: any[] = await getCollection("projects", ({ data }: { data: any }) => data.publish === true);
+// Round-5 Fix 4: route through projectCounts.ts (single source of truth).
+const { all: allCollection, counts: projectCounts } = await getProjectCounts();
+const all: any[] = allCollection;
 
-const projectCount = all.length;
+const projectCount = projectCounts.all;
 
 const totalChars = all.reduce(
   (sum: number, p: any) => sum + ((p.body as string | undefined)?.length ?? 0),
@@ -144,6 +146,16 @@ const stack = [
   title="Dashboard"
   description="Site dashboard — content stats, project distribution, build stack, and recent commits."
 >
+  <div class="page-with-rails">
+    {/* Round-5 Fix 8: marginalia rails at >=1440 */}
+    <aside class="page-rail page-rail-left" aria-hidden="true">
+      <span class="rail-row">INTERNALS</span>
+      <span class="rail-row faint">{today}</span>
+    </aside>
+    <aside class="page-rail page-rail-right">
+      <a class="rail-row" href="#top" aria-label="Back to top">↑ TOP</a>
+    </aside>
+
   <section class="container-page pt-24 md:pt-32 pb-12">
     <p class="mono-label mb-4">Dashboard · {today}</p>
     <h1 class="mb-4">Dashboard</h1>
@@ -284,4 +296,5 @@ const stack = [
       </DashboardPanel>
     </div>
   </section>
+  </div>
 </BaseLayout>

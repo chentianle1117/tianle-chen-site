@@ -24,10 +24,10 @@ huggingface_dataset: omnicad-lab-L3d/omnicad-multimodal-subset-fast
 huggingface_org: omnicad-lab-L3d
 huggingface_personal: chentianle1117/autocomplete-stage3-8000
 images:
-- /assets/l43d-cad-mllm/operations-comparison.png
 - /assets/l43d-cad-mllm/data-amplification.png
-- /assets/l43d-cad-mllm/truncation-distribution.png
+- /assets/l43d-cad-mllm/operations-comparison.png
 - /assets/l43d-cad-mllm/versions-per-model.png
+- /assets/l43d-cad-mllm/truncation-distribution.png
 local_path: W:\CMU_Academics\2025 Fall\Learning for 3D Vision\CMU16825_Final_project
 priority: flagship
 proposal_doc: https://docs.google.com/document/d/1boTa8wrT7wAHUPmNzRsZQfl0koGM_CAKl-26r41-25c/edit

@@ -28,7 +28,6 @@ images:
 - /assets/skill-bridge-datavis/Presentation 3.png
 - /assets/skill-bridge-datavis/Project Thumbnail.png
 - /assets/skill-bridge-datavis/Presentation 1.png
-- /assets/skill-bridge-datavis/background.png
 - /assets/skill-bridge-datavis/Presentation 2.png
 live_url: https://chentianle1117.github.io/Skill-Bridge-DataVis/
 local_path: W:\CMU_Academics\Fall 2024 CMU\Data Visualization\Skill-Bridge-DataVis

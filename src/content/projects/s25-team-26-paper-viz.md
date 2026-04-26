@@ -10,12 +10,12 @@ categories:
 course: 17-637 Web Application Development — Team Project
 course_code: 17-637
 data_source: Google Scholar
+gif_hero: null
 github: null
 github_note: GitHub repo lost per David (was chentianle1117/s25_team_26 per inventory,
   but not accessible / deleted). Local files are the source of truth.
-hero_image: /assets/s25-team-26-paper-viz/img-1.webp
-images:
-- /assets/s25-team-26-paper-viz/img-1.webp
+hero_image: null
+images: []
 local_path: W:\CMU_Academics\2025 Spring\17637 Web App Dev\s25_team_26
 priority: standard
 publish: true
@@ -56,8 +56,6 @@ year: 2025
 ---
 
 > Browse academic research as a 3D landscape rather than a flat list. Papers positioned by metadata (year, citations, length); filter by topic; visualize citation networks; save + collect papers per user. Team project for Web App Dev, Spring 2025 — David as Product Owner.
-
-![hero](/assets/s25-team-26-paper-viz/hero.png)
 
 ## Hook
 Academic search UIs are flat: a list of titles + abstracts, ordered by relevance. What if research discovery were *spatial* — papers as 3D objects you fly through, with citation edges connecting them, and year/citation-count/length driving position + size? Team 26's Web App Dev final project builds exactly that.

@@ -3,9 +3,9 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import SectionBreak from "../../components/SectionBreak.astro";
 import PlaceholderHero from "../../components/PlaceholderHero.astro";
-import { getCollection } from "astro:content";
 import { existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
+import { getProjectCounts, ARCHITECTURE_SLUGS } from "../../lib/projectCounts";
 
 function publicFileExists(webPath) {
   if (!webPath || !webPath.startsWith("/")) return false;
@@ -13,23 +13,19 @@ function publicFileExists(webPath) {
   return existsSync(fileURLToPath(url));
 }
 
-const architectureSlugs = [
-  "fiber-based-pavilion",
-  "membrane-form-finding",
-  "generative-urbanism",
-  "wire-bending",
-];
-
-const all = await getCollection("projects", ({ data }) => data.publish === true);
+// Round-5 Fix 4: route counts through projectCounts.ts (single source of truth)
+const { arch: archProjects, counts, years: yearRanges } = await getProjectCounts();
+const architectureSlugs = Array.from(ARCHITECTURE_SLUGS);
 
 const architecture = architectureSlugs
-  .map((slug) => all.find((p) => p.data.slug === slug || (p as any).slug === slug))
+  .map((slug) => archProjects.find((p) => p.data.slug === slug || (p as any).slug === slug))
   .filter(Boolean)
   .map((p: any) => {
     const d: any = p.data;
     const heroSrc = d.gif_hero || d.hero_image || (d.images && d.images[0]) || null;
+    const slug = d.slug ?? p.slug ?? p.id?.replace(/\.md$/, "");
     return {
-      slug: d.slug,
+      slug,
       title: d.title,
       hero: heroSrc,
       heroOk: heroSrc && publicFileExists(heroSrc),
@@ -37,19 +33,14 @@ const architecture = architectureSlugs
       institution: d.institution ?? "",
       role: d.role ?? "",
       categories: d.categories ?? [],
-      isIASS: d.slug === "fiber-based-pavilion",
+      isIASS: slug === "fiber-based-pavilion",
     };
   });
 
-// Round-3 Item 7: dynamic count + year range from the architecture tier itself
-const archCount = architecture.length;
-const archYears = architecture
-  .map((c: any) => c.year)
-  .filter((y: unknown): y is number => typeof y === "number");
-const archYearRange = archYears.length
-  ? `${Math.min(...archYears)}—${Math.max(...archYears)}`
-  : "2021—2024";
-const archKicker = `RICE UNIVERSITY · ${archYearRange} · ${archCount} PROJECTS`;
+// Round-5 Fix 4: pull count + year range from projectCounts.ts (single source of truth)
+const archCount = counts.arch;
+const archYearRange = `${yearRanges.arch.min}—${yearRanges.arch.max}`;
+const archKicker = `${archCount} PROJECTS · ${archYearRange} · RICE UNIVERSITY`;
 ---
 
 <BaseLayout
@@ -57,24 +48,27 @@ const archKicker = `RICE UNIVERSITY · ${archYearRange} · ${archCount} PROJECTS
   description="Selected architecture work from Rice University, 2021–2024 — including IASS 2024 published research with Prof. Castellon."
 >
   {/* Header */}
-  <section class="container-wide pt-16 md:pt-24 pb-8">
-    <p class="mono-label mb-4">{archKicker}</p>
-    <h1
-      class="mb-6 max-w-3xl"
-      style="font-family: theme(fontFamily.display); font-size: var(--step-5); font-weight: 380; line-height: 1.05; letter-spacing: -0.01em; color: rgb(var(--text-primary));"
-    >
-      Architecture
-    </h1>
-    <p class="max-w-[68ch]" style="color: rgb(var(--text-secondary)); font-size: var(--step-1); line-height: 1.55;">
-      Studio and research work from the BArch — parametric form-finding, ceramic-hollow column fabrication, generative urbanism, and robotic wire bending. One project, the fiber-based parametric pavilion, was published at IASS 2024 with Prof. Juan Jose Castellon.
-    </p>
+  <section class="zone-base">
+    <div class="container-wide pt-16 md:pt-24 pb-8">
+      <p class="mono-label mb-4">{archKicker}</p>
+      <h1
+        class="mb-6 max-w-3xl"
+        style="font-family: theme(fontFamily.display); font-size: var(--step-5); font-weight: 380; line-height: 1.05; letter-spacing: -0.01em; color: rgb(var(--text-primary));"
+      >
+        Architecture
+      </h1>
+      <p class="max-w-[68ch]" style="color: rgb(var(--text-secondary)); font-size: var(--step-1); line-height: 1.55;">
+        Studio and research work from the BArch — parametric form-finding, ceramic-hollow column fabrication, generative urbanism, and robotic wire bending. One project, the fiber-based parametric pavilion, was published at IASS 2024 with Prof. Juan Jose Castellon.
+      </p>
+    </div>
   </section>
 
-  <SectionBreak />
+  <section class="zone-raised">
+    <SectionBreak label="PROJECTS" />
 
-  {/* 2-col grid */}
-  <section class="container-wide pb-24 md:pb-32">
-    {architecture.length === 0 ? (
+    {/* 2-col grid */}
+    <div class="container-wide pb-24 md:pb-32">
+      {architecture.length === 0 ? (
       <p class="font-mono text-sm" style="color: rgb(var(--text-mono));">
         Architecture projects sync from the vault. Run <code>npm run sync</code>.
       </p>
@@ -131,5 +125,6 @@ const archKicker = `RICE UNIVERSITY · ${archYearRange} · ${archCount} PROJECTS
         ))}
       </div>
     )}
+    </div>
   </section>
 </BaseLayout>

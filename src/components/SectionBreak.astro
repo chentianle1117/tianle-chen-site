@@ -1,15 +1,41 @@
 ---
 interface Props {
   label?: string;
+  number?: string;
+  /**
+   * Optional zone tone applied to a wrapping element so the SectionBreak
+   * itself can sit between two zones without leaving an unstyled band.
+   * Accepts "base" | "raised" — when set, the break renders inside a
+   * matching `zone-*` wrapper. Most pages will manage zones directly on
+   * their <section> elements and leave this unset.
+   */
+  tone?: "base" | "raised";
 }
 
-const { label } = Astro.props;
+const { label, number, tone } = Astro.props;
+const wrapperClass = tone === "base" ? "zone-base" : tone === "raised" ? "zone-raised" : null;
+
+const ariaLabel = number && label ? `${number} ${label}` : label;
 ---
 
 {label ? (
-  <div class="section-break-mono" role="separator" aria-orientation="horizontal" aria-label={label}>
-    <span class="label">{label}</span>
-  </div>
+  wrapperClass ? (
+    <div class={wrapperClass}>
+      <div class="section-break-mono" role="separator" aria-orientation="horizontal" aria-label={ariaLabel}>
+        <span class="label">
+          {number && <span class="num">{number}</span>}
+          <span class="title">{label}</span>
+        </span>
+      </div>
+    </div>
+  ) : (
+    <div class="section-break-mono" role="separator" aria-orientation="horizontal" aria-label={ariaLabel}>
+      <span class="label">
+        {number && <span class="num">{number}</span>}
+        <span class="title">{label}</span>
+      </span>
+    </div>
+  )
 ) : (
   <hr class="section-break" role="separator" aria-orientation="horizontal" />
 )}

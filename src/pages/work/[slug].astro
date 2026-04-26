@@ -44,9 +44,16 @@ const { data } = project;
 const dataAny = data as any;
 const { Content } = await render(project);
 
-// Media resolution: gif_hero > video (local) > video (embed) > hero_image > placeholder
+// Media resolution: gif_hero > video (local) > video (embed) > hero_image > placeholder.
+// Round-5 Fix 1+2: when frontmatter explicitly sets `hero_image: null`, honor
+// the null and let the designed PlaceholderHero render. Do NOT fall through
+// to images[0] — projects without a canonical photo-quality hero deserve a
+// designed editorial moment, not a sprite or chart cropped at 60vh.
 const gifHero: string | undefined = dataAny.gif_hero;
-const heroImg = data.hero_image || (data.images && data.images[0]) || null;
+const heroExplicitlyNull = data.hero_image === null;
+const heroImg = heroExplicitlyNull
+  ? null
+  : (data.hero_image || (data.images && data.images[0]) || null);
 const heroIsImage = heroImg && !/\.(pdf|mp4|mov|webm)$/i.test(heroImg);
 const heroExists = heroIsImage && publicFileExists(heroImg);
 
@@ -102,9 +109,9 @@ const primaryCategory = (data.categories && data.categories[0]) || undefined;
 >
   <Breadcrumb category={primaryCategory} title={data.title} />
 
-  {/* ============ HERO BLOCK — with scrim fix ============ */}
+  {/* ============ HERO BLOCK — with scrim fix, zone-base ============ */}
   <section
-    class="relative w-full overflow-hidden"
+    class="relative w-full overflow-hidden zone-base"
     style="height: 60vh; min-height: 480px; border-bottom: 1px solid rgb(var(--surface-border));"
   >
     {gifHero && publicFileExists(gifHero) ? (
@@ -185,30 +192,37 @@ const primaryCategory = (data.categories && data.categories[0]) || undefined;
 
   {/* Title block when iframe consumed the hero overlay */}
   {heroEmbedSrc && (
-    <section class="container-display py-10" style="border-bottom: 1px solid rgb(var(--surface-border));">
-      <h1 style="font-family: theme(fontFamily.display); font-size: var(--step-5); font-weight: 380; line-height: 1.05; color: rgb(var(--text-primary));">
-        {data.title}
-      </h1>
-      {heroMono && <p class="mono-label mt-3">{heroMono}</p>}
+    <section class="zone-base" style="border-bottom: 1px solid rgb(var(--surface-border));">
+      <div class="container-display py-10">
+        <h1 style="font-family: theme(fontFamily.display); font-size: var(--step-5); font-weight: 380; line-height: 1.05; color: rgb(var(--text-primary));">
+          {data.title}
+        </h1>
+        {heroMono && <p class="mono-label mt-3">{heroMono}</p>}
+      </div>
     </section>
   )}
 
-  {/* ============ LEAD BLOCK ============ */}
+  {/* ============ LEAD BLOCK — zone-raised ============ */}
   {lead && (
-    <section class="container-reading py-12 md:py-16">
-      {kicker && (
-        <p class="mono-label mb-5">{kicker}</p>
-      )}
-      <p
-        style="color: rgb(var(--text-secondary)); font-size: var(--step-1); font-weight: 350; line-height: 1.55;"
-      >
-        {lead}
-      </p>
+    <section class="zone-raised">
+      <SectionBreak number="01" label="OVERVIEW" />
+      <div class="container-reading pb-12 md:pb-16">
+        {kicker && (
+          <p class="mono-label mb-5">{kicker}</p>
+        )}
+        <p
+          style="color: rgb(var(--text-secondary)); font-size: var(--step-1); font-weight: 350; line-height: 1.55;"
+        >
+          {lead}
+        </p>
+      </div>
     </section>
   )}
 
-  {/* ============ BODY MDX — marginalia rails at >=1024 (Round-3 Item 5) ============ */}
-  <section class="layout-with-rails py-12 md:py-16">
+  {/* ============ BODY MDX — zone-base, marginalia rails at >=1024 (Round-3 Item 5) ============ */}
+  <section class="zone-base">
+    <SectionBreak number="02" label="WRITEUP" />
+    <div class="layout-with-rails py-12 md:py-16">
     <aside class="rail-left hidden lg:block">
       <div class="sticky" style="top: 6rem;">
         {data.year && <div class="mono-label mb-2">{data.year}</div>}
@@ -256,13 +270,14 @@ const primaryCategory = (data.categories && data.categories[0]) || undefined;
         )}
       </div>
     </aside>
+    </div>
   </section>
 
-  {/* ============ IMAGE GALLERY ============ */}
+  {/* ============ IMAGE GALLERY — zone-raised ============ */}
   {galleryImages.length > 0 && (
-    <>
-      <SectionBreak label="GALLERY" />
-      <section class="container-display pb-12 md:pb-16">
+    <section class="zone-raised">
+      <SectionBreak number="03" label="GALLERY" />
+      <div class="container-display pb-12 md:pb-16">
         <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
           {galleryImages.map((img: string, i: number) => {
             const cap = captionFor(img);
@@ -293,18 +308,20 @@ const primaryCategory = (data.categories && data.categories[0]) || undefined;
             );
           })}
         </div>
-      </section>
-    </>
+      </div>
+    </section>
   )}
 
-  {/* ============ HORIZONTAL META STRIP — moved to end-of-page reference ============ */}
-  <ProjectMeta data={data} />
+  {/* ============ HORIZONTAL META STRIP — zone-base ============ */}
+  <section class="zone-base">
+    <ProjectMeta data={data} />
+  </section>
 
-  {/* ============ PROPOSAL VIDEO BLOCK (if video_proposal set) ============ */}
+  {/* ============ PROPOSAL VIDEO BLOCK (if video_proposal set) — zone-raised ============ */}
   {videoProposal && publicFileExists(videoProposal) && (
-    <>
-      <SectionBreak label="PROPOSAL PRESENTATION" />
-      <section class="container-display pb-12 md:pb-16">
+    <section class="zone-raised">
+      <SectionBreak number="04" label="PROPOSAL PRESENTATION" />
+      <div class="container-display pb-12 md:pb-16">
         <video
           src={videoProposal}
           controls
@@ -312,8 +329,8 @@ const primaryCategory = (data.categories && data.categories[0]) || undefined;
           class="w-full block"
           style="border: 1px solid rgb(var(--surface-border)); border-radius: 6px;"
         ></video>
-      </section>
-    </>
+      </div>
+    </section>
   )}
 
   <RelatedRail

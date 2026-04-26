@@ -7,9 +7,10 @@ import SectionBreak from "../components/SectionBreak.astro";
 // @ts-ignore - intentional: HeroNavigator is being built by Agent D in parallel.
 import HeroNavigator from "../components/hero/HeroNavigator";
 import PlaceholderHero from "../components/PlaceholderHero.astro";
-import { getCollection, getEntry } from "astro:content";
+import { getEntry } from "astro:content";
 import { existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
+import { getProjectCounts, ARCHITECTURE_SLUGS } from "../lib/projectCounts";
 
 function publicFileExists(webPath) {
   if (!webPath || !webPath.startsWith("/")) return false;
@@ -17,24 +18,12 @@ function publicFileExists(webPath) {
   return existsSync(fileURLToPath(url));
 }
 
-// Architecture-tier slugs are surfaced on /architecture, NOT on /work index OR the homepage featured grid
-const architectureSlugs = new Set([
-  "fiber-based-pavilion",
-  "membrane-form-finding",
-  "generative-urbanism",
-  "wire-bending",
-]);
-
-const allProjects = await getCollection(
-  "projects",
-  ({ data }) => data.publish === true
-);
-
-const isArchTier = (p) => architectureSlugs.has(((p as any).slug ?? p.data.slug));
+// Round-5 Fix 4: route counts through projectCounts.ts (single source of truth).
+const { all: allProjects, work: workCollection, counts: pc, years: pcYears } = await getProjectCounts();
+const architectureSlugs = ARCHITECTURE_SLUGS;
 
 // Sort: flagships first, then by year desc
-const work = allProjects
-  .filter((p) => !isArchTier(p))
+const work = workCollection
   .sort((a, b) => {
     if (a.data.priority === "flagship" && b.data.priority !== "flagship") return -1;
     if (b.data.priority === "flagship" && a.data.priority !== "flagship") return 1;
@@ -42,7 +31,8 @@ const work = allProjects
   });
 
 const featured = work.slice(0, 6);
-const totalCount = work.length;
+const totalCount = pc.work;
+const workYearRange = `${pcYears.work.min}—${pcYears.work.max}`;
 
 // Thesis teaser data
 const thesis: any = await getEntry("projects", "semantic-canvas");
@@ -77,15 +67,75 @@ const archProjects = ["fiber-based-pavilion", "membrane-form-finding", "generati
   title="David Chen"
   description="Gen-AI engineer & computational designer. CMU MSCD thesis tools, generative 3D, design-AI integration."
 >
-  {/* ============ HERO — full-bleed latent-space navigator ============ */}
-  <section class="relative" style="border-bottom: 1px solid rgb(var(--surface-border));">
+  {/* ============ HERO — intro prologue + latent-space navigator ============ */}
+  <section class="relative zone-base" style="border-bottom: 1px solid rgb(var(--surface-border));">
+    {/* Variant C — Title-First, Hero-Second: prologue intro above the scatter.
+        Round-5 Fix 6: at >=1280, render an editorial right-hand counterweight
+        (mono index of axis options + scroll affordance) so the wide-viewport
+        budget is used. The intro stays anchored left; the right column is
+        secondary teaching/affordance that signals "scroll to explore". */}
+    <div class="container-display pt-12 md:pt-20 pb-8 md:pb-12 home-intro-grid">
+      <div class="home-intro-copy">
+        <p class="mono-label" style="color: rgb(var(--text-mono));">
+          TIANLE CHEN · GEN-AI ENGINEER · PITTSBURGH ↔ SHANGHAI
+        </p>
+        <h1
+          class="mt-4"
+          style="font-family: theme(fontFamily.display); font-size: var(--step-5); font-weight: 380; line-height: 1.05; letter-spacing: -0.01em; color: rgb(var(--text-primary)); max-width: 22ch;"
+        >
+          Designing instruments for designing.
+        </h1>
+        <p
+          style="font-family: theme(fontFamily.sans); font-size: var(--step-1); font-weight: 350; line-height: 1.5; color: rgb(var(--text-secondary)); max-width: 60ch; margin-top: 1rem;"
+        >
+          These are my projects, plotted by topic. Drag the <em>X / Y</em> axes to remap. Click a tile to read.
+        </p>
+      </div>
+
+      {/* Right counterweight — only shown >=1280. Reads as an editorial
+          legend / table-of-contents for the scatter below. */}
+      <aside class="home-intro-aside" aria-hidden="true">
+        <p class="mono-label" style="color: rgb(var(--text-mono)); margin-bottom: 0.75rem;">↓ EXPLORE</p>
+        <ul style="list-style: none; padding: 0; margin: 0; font-family: theme(fontFamily.mono); font-size: var(--step--1); line-height: 1.85; color: rgb(var(--text-secondary)); letter-spacing: 0.06em;">
+          <li><span style="color: rgb(var(--text-mono));">01 ·</span> THESIS · UMAP · PCA · METADATA</li>
+          <li><span style="color: rgb(var(--text-mono));">02 ·</span> X / Y AXIS · TYPE TO REMAP</li>
+          <li><span style="color: rgb(var(--text-mono));">03 ·</span> CLICK TILE · OPEN PROJECT</li>
+          <li><span style="color: rgb(var(--text-mono));">04 ·</span> {String(pc.work).padStart(2, "0")} WORK · {String(pc.arch).padStart(2, "0")} ARCH · {workYearRange}</li>
+        </ul>
+        <p style="font-family: theme(fontFamily.mono); font-size: var(--step--1); margin-top: 1.25rem; color: rgb(var(--text-mono)); letter-spacing: 0.10em;">
+          <span aria-hidden="true">↓</span> SCROLL TO THE SCATTER
+        </p>
+      </aside>
+    </div>
+    <div class="mb-6 md:mb-8"></div>
     <HeroNavigator client:visible />
+    <style>
+      .home-intro-grid {
+        display: block;
+      }
+      .home-intro-aside { display: none; }
+      @media (min-width: 1280px) {
+        .home-intro-grid {
+          display: grid;
+          grid-template-columns: minmax(0, 1fr) minmax(280px, 24rem);
+          gap: 4rem;
+          align-items: start;
+        }
+        .home-intro-aside {
+          display: block;
+          padding-top: 0.5rem;
+          border-left: 1px solid rgb(var(--surface-border));
+          padding-left: 2rem;
+        }
+      }
+    </style>
   </section>
 
   {/* ============ SELECTED WORK ============ */}
-  <SectionBreak label="SELECTED WORK" />
+  <section class="zone-raised">
+    <SectionBreak number="01" label="SELECTED WORK" />
 
-  <section class="container-display py-12" aria-labelledby="selected-work">
+    <div class="container-display py-12" aria-labelledby="selected-work">
     <div class="flex items-baseline justify-between flex-wrap gap-4 mb-8">
       <h2
         id="selected-work"
@@ -94,7 +144,7 @@ const archProjects = ["fiber-based-pavilion", "membrane-form-finding", "generati
         Selected work
       </h2>
       <p class="mono-label">
-        {String(featured.length).padStart(2, "0")} of {String(totalCount).padStart(2, "0")} · 2022—2026
+        {String(featured.length).padStart(2, "0")} of {String(totalCount).padStart(2, "0")} · {workYearRange}
       </p>
     </div>
 
@@ -131,12 +181,14 @@ const archProjects = ["fiber-based-pavilion", "membrane-form-finding", "generati
         <span aria-hidden="true">→</span>
       </a>
     </div>
+    </div>
   </section>
 
   {/* ============ THESIS ============ */}
-  <SectionBreak label="THESIS" />
+  <section class="zone-base">
+    <SectionBreak number="02" label="THESIS" />
 
-  <section class="container-display pb-4" aria-labelledby="thesis-teaser">
+    <div class="container-display pb-4" aria-labelledby="thesis-teaser">
     <div class="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12 items-start">
       {/* Poster */}
       <div class="md:col-span-7" data-reveal>
@@ -192,12 +244,14 @@ const archProjects = ["fiber-based-pavilion", "membrane-form-finding", "generati
         </div>
       </div>
     </div>
+    </div>
   </section>
 
   {/* ============ ARCHITECTURE ============ */}
-  <SectionBreak label="ARCHITECTURE" />
+  <section class="zone-raised">
+    <SectionBreak number="03" label="ARCHITECTURE" />
 
-  <section class="container-display pb-4" aria-labelledby="architecture-rail">
+    <div class="container-display pb-4" aria-labelledby="architecture-rail">
     <div class="flex items-baseline justify-between flex-wrap gap-4 mb-8 md:mb-10">
       <h2
         id="architecture-rail"
@@ -262,12 +316,14 @@ const archProjects = ["fiber-based-pavilion", "membrane-form-finding", "generati
         <span aria-hidden="true">→</span>
       </a>
     </div>
+    </div>
   </section>
 
   {/* ============ ABOUT TEASER ============ */}
-  <SectionBreak label="ABOUT" />
+  <section class="zone-base">
+    <SectionBreak number="04" label="ABOUT" />
 
-  <section class="container-reading pb-24 md:pb-32" aria-labelledby="about-teaser">
+    <div class="container-reading pb-24 md:pb-32" aria-labelledby="about-teaser">
     <p class="mono-label mb-5">PITTSBURGH · 2026</p>
     <h2
       id="about-teaser"
@@ -286,5 +342,6 @@ const archProjects = ["fiber-based-pavilion", "membrane-form-finding", "generati
       Read more
       <span aria-hidden="true">→</span>
     </a>
+    </div>
   </section>
 </BaseLayout>

@@ -1,6 +1,7 @@
 ---
 import type { CollectionEntry } from "astro:content";
 import PlaceholderHero from "./PlaceholderHero.astro";
+import { getTagsForProject } from "../lib/categories";
 import { existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 
@@ -33,7 +34,14 @@ const rawVideo: string | undefined = dataAny.video;
 const localVideo: string | undefined =
   rawVideo && /\.(mp4|webm|mov)$/i.test(rawVideo) ? rawVideo : undefined;
 
-const heroImg = data.hero_image || (data.images && data.images[0]) || null;
+// Round-5 Fix 1: when frontmatter explicitly sets `hero_image: null`, honor
+// the null and let the designed PlaceholderHero render. Do NOT fall through
+// to images[0] — projects without a canonical photo-quality hero deserve a
+// designed editorial card, not a sprite or chart cropped at card aspect.
+const heroExplicitlyNull = data.hero_image === null;
+const heroImg = heroExplicitlyNull
+  ? null
+  : (data.hero_image || (data.images && data.images[0]) || null);
 const heroIsImage = heroImg && !/\.(pdf|mp4|mov|webm)$/i.test(heroImg);
 const heroExists = heroIsImage && publicFileExists(heroImg);
 const gifExists = gifHero && publicFileExists(gifHero);
@@ -46,7 +54,9 @@ const courseOrCat =
   (data.categories && data.categories[0]) ||
   "";
 const monoBits = [yearLabel, courseOrCat].filter(Boolean);
-const tags: string[] = (data.categories ?? []).slice(0, 3);
+// Round-4 Direction 4 — fixed taxonomy of tag-pills above the title.
+// Replaces the prior comma-separated lowercase category list under the title.
+const tagPills: string[] = getTagsForProject(data);
 ---
 
 <a
@@ -115,19 +125,18 @@ const tags: string[] = (data.categories ?? []).slice(0, 3);
         ))}
       </div>
     )}
+    {tagPills.length > 0 && (
+      <div class="flex flex-wrap" style="gap: 6px; margin-bottom: -4px;">
+        {tagPills.map((tag) => (
+          <span class="tag">{tag}</span>
+        ))}
+      </div>
+    )}
     <h3
       class="transition-colors duration-280 ease-out-soft group-hover:text-[rgb(var(--accent-rgb))]"
       style="font-family: theme(fontFamily.display); font-size: var(--step-2); font-weight: 380; line-height: 1.2; letter-spacing: -0.01em; color: rgb(var(--text-primary));"
     >
       {data.title}
     </h3>
-    {tags.length > 0 && (
-      <p
-        class="font-mono"
-        style="font-size: 11px; letter-spacing: 0.04em; color: rgb(var(--text-mono));"
-      >
-        {tags.map((c) => c.toLowerCase()).join(" · ")}
-      </p>
-    )}
   </div>
 </a>

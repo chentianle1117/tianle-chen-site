@@ -54,89 +54,76 @@ const recognition: { date: string; line: string }[] = [
   title="About"
   description="David Chen — bio, trajectory, contact. CMU MSCD computational design thesis student; HILOS Studio ML/AI engineer; Rice architecture."
 >
-  <article class="container-reading pt-16 md:pt-24 pb-16">
-    {/* Header */}
-    <header class="mb-12 md:mb-16" data-reveal>
-      <p class="mono-label mb-4">ABOUT · 2026</p>
-      <h1
-        class="text-balance"
-        style="font-family: theme(fontFamily.display); font-size: var(--step-5); font-weight: 380; line-height: 1.05; letter-spacing: -0.01em; color: rgb(var(--text-primary));"
-      >
-        About
-      </h1>
-    </header>
+  <div class="page-with-rails">
+    {/* Round-5 Fix 8: marginalia rails at >=1440 */}
+    <aside class="page-rail page-rail-left" aria-hidden="true">
+      <span class="rail-row">ABOUT</span>
+      <span class="rail-row faint">DAVID CHEN · CMU MSCD</span>
+    </aside>
+    <aside class="page-rail page-rail-right">
+      <a class="rail-row" href="#top" aria-label="Back to top">↑ TOP</a>
+    </aside>
 
-    {/* Bio + Headshot — float-right at md+ */}
-    <section class="mb-12 md:mb-16" data-reveal>
-      {portraitExists && (
-        <img
-          src="/portrait.jpg"
-          alt="David Chen portrait"
-          width="280"
-          height="280"
-          loading="lazy"
-          class="md:float-right md:ml-8 md:mb-6 mb-6 w-[200px] h-[200px] md:w-[280px] md:h-[280px] object-cover grayscale hover:grayscale-0"
-          style="border-radius: 6px; border: 1px solid rgb(var(--surface-border)); transition: filter 420ms cubic-bezier(0.22, 1, 0.36, 1);"
-        />
-      )}
-      <p style="color: rgb(var(--text-secondary)); font-size: var(--step-1); line-height: 1.65;">
-        David Chen <span style="font-size: 0.92em; opacity: 0.75;">(陳天樂)</span> is a computational designer and ML engineer working at the seam of generative AI and design tooling. He is finishing an MSCD thesis at CMU — <em>Semantic Canvas</em>, an interactive latent-space interface for AI-augmented footwear design. He joins HILOS Studio full-time as an ML/AI engineer in June 2026. Earlier he trained as an architect at Rice University and worked at NBBJ (Los Angeles), with research collaborations on fiber-based pavilions and ceramic hollow columns published at IASS 2024.
-      </p>
-      <div class="md:clear-right"></div>
-    </section>
+  {/* ============ HEADER + BIO — zone-base ============ */}
+  <section class="zone-base">
+    <article class="container-reading pt-16 md:pt-24 pb-12 md:pb-16">
+      {/* Header */}
+      <header class="mb-12 md:mb-16" data-reveal>
+        <p class="mono-label mb-4">ABOUT · 2026</p>
+        <h1
+          class="text-balance"
+          style="font-family: theme(fontFamily.display); font-size: var(--step-5); font-weight: 380; line-height: 1.05; letter-spacing: -0.01em; color: rgb(var(--text-primary));"
+        >
+          About
+        </h1>
+      </header>
 
-    {/* Now */}
-    <SectionBreak />
-    <section class="mb-12 md:mb-16" data-reveal>
-      <p class="mono-label mb-4">NOW · 2026-04</p>
-      {nowBody ? (
-        <div class="prose-custom" set:html={nowBody}></div>
-      ) : (
-        <p style="color: rgb(var(--text-secondary)); line-height: 1.65;">
-          Closing out the Semantic Canvas thesis at CMU and shipping ML/AI work at HILOS Studio. Talking to teams building generative tools for designers and looking for full-time roles where computer vision, latent spaces, and design tooling meet.
+      {/* Bio + Headshot — float-right at md+ */}
+      <section data-reveal>
+        {portraitExists && (
+          <img
+            src="/portrait.jpg"
+            alt="David Chen portrait"
+            width="280"
+            height="280"
+            loading="lazy"
+            class="md:float-right md:ml-8 md:mb-6 mb-6 w-[200px] h-[200px] md:w-[280px] md:h-[280px] object-cover grayscale hover:grayscale-0"
+            style="border-radius: 6px; border: 1px solid rgb(var(--surface-border)); transition: filter 420ms cubic-bezier(0.22, 1, 0.36, 1);"
+          />
+        )}
+        <p style="color: rgb(var(--text-secondary)); font-size: var(--step-1); line-height: 1.65;">
+          David Chen <span style="font-size: 0.92em; opacity: 0.75;">(陳天樂)</span> is a computational designer and ML engineer working at the seam of generative AI and design tooling. He is finishing an MSCD thesis at CMU — <em>Semantic Canvas</em>, an interactive latent-space interface for AI-augmented footwear design. He joins HILOS Studio full-time as an ML/AI engineer in June 2026. Earlier he trained as an architect at Rice University and worked at NBBJ (Los Angeles), with research collaborations on fiber-based pavilions and ceramic hollow columns published at IASS 2024.
         </p>
-      )}
-    </section>
+        <div class="md:clear-right"></div>
+      </section>
+    </article>
+  </section>
 
-    {/* Selected experience */}
-    <SectionBreak />
-    <section class="mb-12 md:mb-16" data-reveal>
-      <p class="mono-label mb-5">SELECTED EXPERIENCE</p>
-      <ul class="font-mono text-sm leading-relaxed">
-        {experience.map((row) => (
-          <li
-            class="grid grid-cols-1 md:grid-cols-[14rem_1fr] gap-x-4 gap-y-1 py-2.5"
-            style="border-bottom: 1px solid rgb(var(--surface-border));"
-          >
-            <span class="uppercase" style="color: rgb(var(--text-mono)); letter-spacing: 0.06em;">{row.date}</span>
-            <span style="color: rgb(var(--text-primary));">{row.line}</span>
-          </li>
-        ))}
-      </ul>
-    </section>
+  {/* ============ NOW — zone-raised ============ */}
+  <section class="zone-raised">
+    <SectionBreak number="01" label="NOW" />
+    <article class="container-reading pb-12 md:pb-16">
+      <section data-reveal>
+        <p class="mono-label mb-4">NOW · 2026-04</p>
+        {nowBody ? (
+          <div class="prose-custom" set:html={nowBody}></div>
+        ) : (
+          <p style="color: rgb(var(--text-secondary)); line-height: 1.65;">
+            Closing out the Semantic Canvas thesis at CMU and shipping ML/AI work at HILOS Studio. Talking to teams building generative tools for designers and looking for full-time roles where computer vision, latent spaces, and design tooling meet.
+          </p>
+        )}
+      </section>
+    </article>
+  </section>
 
-    {/* Education */}
-    <section class="mb-12 md:mb-16" data-reveal>
-      <p class="mono-label mb-5">EDUCATION</p>
-      <ul class="font-mono text-sm leading-relaxed">
-        {education.map((row) => (
-          <li
-            class="grid grid-cols-1 md:grid-cols-[14rem_1fr] gap-x-4 gap-y-1 py-2.5"
-            style="border-bottom: 1px solid rgb(var(--surface-border));"
-          >
-            <span class="uppercase" style="color: rgb(var(--text-mono)); letter-spacing: 0.06em;">{row.date}</span>
-            <span style="color: rgb(var(--text-primary));">{row.line}</span>
-          </li>
-        ))}
-      </ul>
-    </section>
-
-    {/* Recognition */}
-    {recognition.length > 0 && (
-      <section class="mb-12 md:mb-16" data-reveal>
-        <p class="mono-label mb-5">RECOGNITION</p>
+  {/* ============ SELECTED EXPERIENCE — zone-base ============ */}
+  <section class="zone-base">
+    <SectionBreak number="02" label="EXPERIENCE" />
+    <article class="container-reading pb-12 md:pb-16">
+      <section data-reveal>
+        <p class="mono-label mb-5">SELECTED EXPERIENCE</p>
         <ul class="font-mono text-sm leading-relaxed">
-          {recognition.map((row) => (
+          {experience.map((row) => (
             <li
               class="grid grid-cols-1 md:grid-cols-[14rem_1fr] gap-x-4 gap-y-1 py-2.5"
               style="border-bottom: 1px solid rgb(var(--surface-border));"
@@ -147,64 +134,107 @@ const recognition: { date: string; line: string }[] = [
           ))}
         </ul>
       </section>
-    )}
+    </article>
+  </section>
 
-    {/* Contact */}
-    <SectionBreak />
-    <section class="mb-12 md:mb-16" data-reveal>
-      <p class="mono-label mb-5">CONTACT</p>
-      <ul class="font-mono text-sm space-y-3">
-        <li class="grid grid-cols-[6.5rem_1fr] gap-4">
-          <span class="uppercase" style="color: rgb(var(--text-mono)); letter-spacing: 0.06em;">LinkedIn</span>
-          <a
-            href="https://www.linkedin.com/in/tianle-chen"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="w-fit"
-            style="color: rgb(var(--accent-rgb)); text-decoration: underline; text-underline-offset: 4px; text-decoration-color: rgb(var(--accent-rgb) / 0.3);"
-          >
-            linkedin.com/in/tianle-chen
-          </a>
-        </li>
-        <li class="grid grid-cols-[6.5rem_1fr] gap-4">
-          <span class="uppercase" style="color: rgb(var(--text-mono)); letter-spacing: 0.06em;">Email</span>
-          <button
-            type="button"
-            data-copy-email
-            data-email="davidch2@andrew.cmu.edu"
-            class="inline-flex items-center gap-2 w-fit"
-            style="color: rgb(var(--text-primary)); background: transparent; border: 0; padding: 0; cursor: pointer; transition: color 200ms ease;"
-          >
-            <span>davidch2@andrew.cmu.edu</span>
-            <i class="ph ph-copy" aria-hidden="true" data-copy-icon style="color: rgb(var(--text-mono));"></i>
-            <span class="sr-only" data-copy-status>Click to copy</span>
-          </button>
-        </li>
-        <li class="grid grid-cols-[6.5rem_1fr] gap-4">
-          <span class="uppercase" style="color: rgb(var(--text-mono)); letter-spacing: 0.06em;">GitHub</span>
-          <a
-            href="https://github.com/chentianle1117"
-            target="_blank"
-            rel="noopener noreferrer"
-            class="w-fit"
-            style="color: rgb(var(--text-primary)); text-decoration: underline; text-underline-offset: 4px; text-decoration-color: rgb(var(--text-mono) / 0.5);"
-          >
-            github.com/chentianle1117
-          </a>
-        </li>
-      </ul>
-    </section>
+  {/* ============ EDUCATION — zone-raised ============ */}
+  <section class="zone-raised">
+    <SectionBreak number="03" label="EDUCATION" />
+    <article class="container-reading pb-12 md:pb-16">
+      <section data-reveal>
+        <p class="mono-label mb-5">EDUCATION</p>
+        <ul class="font-mono text-sm leading-relaxed">
+          {education.map((row) => (
+            <li
+              class="grid grid-cols-1 md:grid-cols-[14rem_1fr] gap-x-4 gap-y-1 py-2.5"
+              style="border-bottom: 1px solid rgb(var(--surface-border));"
+            >
+              <span class="uppercase" style="color: rgb(var(--text-mono)); letter-spacing: 0.06em;">{row.date}</span>
+              <span style="color: rgb(var(--text-primary));">{row.line}</span>
+            </li>
+          ))}
+        </ul>
+      </section>
+    </article>
+  </section>
 
-    {/* CV */}
-    <section data-reveal>
-      <p class="mono-label mb-5">CURRICULUM VITAE</p>
-      <a href="/davidchen-cv.pdf" target="_blank" rel="noopener" class="btn btn-primary">
-        <i class="ph ph-arrow-down" aria-hidden="true"></i>
-        <span>Download CV (PDF)</span>
-      </a>
-      <p class="mono-label mt-3">LAST UPDATED 2026-04</p>
-    </section>
-  </article>
+  {/* ============ RECOGNITION + CONTACT + CV — zone-base ============ */}
+  <section class="zone-base">
+    <SectionBreak number="04" label="RECOGNITION & CONTACT" />
+    <article class="container-reading pb-16">
+      {recognition.length > 0 && (
+        <section class="mb-12 md:mb-16" data-reveal>
+          <p class="mono-label mb-5">RECOGNITION</p>
+          <ul class="font-mono text-sm leading-relaxed">
+            {recognition.map((row) => (
+              <li
+                class="grid grid-cols-1 md:grid-cols-[14rem_1fr] gap-x-4 gap-y-1 py-2.5"
+                style="border-bottom: 1px solid rgb(var(--surface-border));"
+              >
+                <span class="uppercase" style="color: rgb(var(--text-mono)); letter-spacing: 0.06em;">{row.date}</span>
+                <span style="color: rgb(var(--text-primary));">{row.line}</span>
+              </li>
+            ))}
+          </ul>
+        </section>
+      )}
+
+      {/* Contact */}
+      <section class="mb-12 md:mb-16" data-reveal>
+        <p class="mono-label mb-5">CONTACT</p>
+        <ul class="font-mono text-sm space-y-3">
+          <li class="grid grid-cols-[6.5rem_1fr] gap-4">
+            <span class="uppercase" style="color: rgb(var(--text-mono)); letter-spacing: 0.06em;">LinkedIn</span>
+            <a
+              href="https://www.linkedin.com/in/tianle-chen"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="w-fit"
+              style="color: rgb(var(--accent-rgb)); text-decoration: underline; text-underline-offset: 4px; text-decoration-color: rgb(var(--accent-rgb) / 0.3);"
+            >
+              linkedin.com/in/tianle-chen
+            </a>
+          </li>
+          <li class="grid grid-cols-[6.5rem_1fr] gap-4">
+            <span class="uppercase" style="color: rgb(var(--text-mono)); letter-spacing: 0.06em;">Email</span>
+            <button
+              type="button"
+              data-copy-email
+              data-email="davidch2@andrew.cmu.edu"
+              class="inline-flex items-center gap-2 w-fit"
+              style="color: rgb(var(--text-primary)); background: transparent; border: 0; padding: 0; cursor: pointer; transition: color 200ms ease;"
+            >
+              <span>davidch2@andrew.cmu.edu</span>
+              <i class="ph ph-copy" aria-hidden="true" data-copy-icon style="color: rgb(var(--text-mono));"></i>
+              <span class="sr-only" data-copy-status>Click to copy</span>
+            </button>
+          </li>
+          <li class="grid grid-cols-[6.5rem_1fr] gap-4">
+            <span class="uppercase" style="color: rgb(var(--text-mono)); letter-spacing: 0.06em;">GitHub</span>
+            <a
+              href="https://github.com/chentianle1117"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="w-fit"
+              style="color: rgb(var(--text-primary)); text-decoration: underline; text-underline-offset: 4px; text-decoration-color: rgb(var(--text-mono) / 0.5);"
+            >
+              github.com/chentianle1117
+            </a>
+          </li>
+        </ul>
+      </section>
+
+      {/* CV */}
+      <section data-reveal>
+        <p class="mono-label mb-5">CURRICULUM VITAE</p>
+        <a href="/davidchen-cv.pdf" target="_blank" rel="noopener" class="btn btn-primary">
+          <i class="ph ph-arrow-down" aria-hidden="true"></i>
+          <span>Download CV (PDF)</span>
+        </a>
+        <p class="mono-label mt-3">LAST UPDATED 2026-04</p>
+      </section>
+    </article>
+  </section>
 
   <script is:inline>
     (function () {
@@ -241,4 +271,5 @@ const recognition: { date: string; line: string }[] = [
       document.addEventListener("astro:page-load", init);
     })();
   </script>
+  </div>
 </BaseLayout>

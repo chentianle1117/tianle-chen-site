@@ -25,8 +25,6 @@ images:
 - /assets/fiber-based-pavilion/form-finding-detail-2.jpg
 - /assets/fiber-based-pavilion/column-catalogue-1.png
 - /assets/fiber-based-pavilion/robot-fabrication.png
-- /assets/fiber-based-pavilion/wood-facade-texture-wood-texture-wood-texture-pavilion-facade-milan-expo-100319045.jpg
-- /assets/fiber-based-pavilion/wood-facade-texture-wood-texture-wood-texture-pavilion-facade-milan-expo-100319121.jpg
 - /assets/fiber-based-pavilion/design-catalogue-2.png
 - /assets/fiber-based-pavilion/design-catalogue-3.png
 - /assets/fiber-based-pavilion/design-catalogue-1.png

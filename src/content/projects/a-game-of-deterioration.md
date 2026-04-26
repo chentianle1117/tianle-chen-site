@@ -10,27 +10,27 @@ categories:
 - Game
 course: 15-112 Fundamentals of Programming and Computer Science — Final
 course_code: 15-112
-gif_hero: /assets/a-game-of-deterioration/demo-09.gif
+gif_hero: null
 github: chentianle1117/A-Game-of-Deterioration---Time-Reversal
 github_url: https://github.com/chentianle1117/A-Game-of-Deterioration---Time-Reversal
-hero_image: /assets/a-game-of-deterioration/demo-09.gif
+hero_image: null
 images:
-- /assets/a-game-of-deterioration/demo-06.gif
-- /assets/a-game-of-deterioration/demo-01.gif
-- /assets/a-game-of-deterioration/demo-07.gif
-- /assets/a-game-of-deterioration/img2img1.gif
-- /assets/a-game-of-deterioration/img2img2.gif
-- /assets/a-game-of-deterioration/demo-08.gif
-- /assets/a-game-of-deterioration/demo-02.gif
-- /assets/a-game-of-deterioration/demo-10.gif
-- /assets/a-game-of-deterioration/demo-04.gif
-- /assets/a-game-of-deterioration/demo-05.gif
-- /assets/a-game-of-deterioration/demo-03.gif
-- /assets/a-game-of-deterioration/cfg-conparision.png
-- /assets/a-game-of-deterioration/img2img-example.png
-- /assets/a-game-of-deterioration/input.png
-- /assets/a-game-of-deterioration/papercube-test.png
-- /assets/a-game-of-deterioration/white.jpg
+- /assets/a-game-of-deterioration/char1-back.png
+- /assets/a-game-of-deterioration/char1-front.png
+- /assets/a-game-of-deterioration/char1-left.png
+- /assets/a-game-of-deterioration/char1-right.png
+- /assets/a-game-of-deterioration/speed-icon.png
+- /assets/a-game-of-deterioration/radius-icon.png
+- /assets/a-game-of-deterioration/burst-icon.png
+- /assets/a-game-of-deterioration/power-icon.png
+- /assets/a-game-of-deterioration/texture-bigleaves-original.png
+- /assets/a-game-of-deterioration/texture-bigleaves-deteriorated.png
+- /assets/a-game-of-deterioration/texture-bricks-original.png
+- /assets/a-game-of-deterioration/texture-bricks-deteriorated.png
+- /assets/a-game-of-deterioration/texture-dirt-original.png
+- /assets/a-game-of-deterioration/texture-dirt-deteriorated.png
+- /assets/a-game-of-deterioration/texture-pathrocks-original.png
+- /assets/a-game-of-deterioration/texture-pathrocks-deteriorated.png
 local_path: W:\CMU_Academics\Fall 2024 CMU\112 Term Project - Final - Submission
 notion_url: https://www.notion.so/chentianle1117/A-Game-of-Deterioration-Time-Reversal-16a33d12d95a80779ab7f488cbc13f1f
 priority: flagship

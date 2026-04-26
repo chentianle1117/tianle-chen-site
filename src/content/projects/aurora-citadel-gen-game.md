@@ -15,11 +15,14 @@ course: 62-706 Generative System Design (Gen Sys Des)
 course_code: 62-706
 github: null
 github_note: UE5 project — not on GitHub (repo size + binary assets prohibitive)
-hero_image: /assets/aurora-citadel-gen-game/chatgpt-image-apr-12-2025-08-36-27-pm.png
+hero_image: null
 images:
-- /assets/aurora-citadel-gen-game/chatgpt-image-apr-12-2025-08-36-27-pm.png
-- /assets/aurora-citadel-gen-game/image-0.png
-- /assets/aurora-citadel-gen-game/chatgpt-image-apr-12-2025-08-54-13-pm.png
+- /assets/aurora-citadel-gen-game/Module Layout.jpg
+- /assets/aurora-citadel-gen-game/Module Layout plan.jpg
+- /assets/aurora-citadel-gen-game/a-floating-ultra-r-0219223947-texture.png
+- /assets/aurora-citadel-gen-game/a-hypermodern-brutal-0219223632-texture.png
+- /assets/aurora-citadel-gen-game/futuristic-cube-drone-0219222254-texture.png
+- /assets/aurora-citadel-gen-game/interstellar-cargo-cr-0219223150-texture.png
 local_path: W:\CMU_Academics\2025 Spring\62706 Gen Game\Aurora Citadel
 local_path_submission: W:\CMU_Academics\2025 Spring\62706 Gen Game\Final_Submission_Citadel
 priority: standard

@@ -19,18 +19,10 @@ categories:
 course: 48-715 Pre-Thesis I + 48-716 Pre-Thesis II + 48-769 M.S. Thesis/Project
 course_code: 48-769
 github: null
-hero_image: /assets/semantic-canvas/p3-stage2-session2-composite.png
+hero_image: /assets/thesis-flagship/pre-thesis-II-A1_Worldmaking_Diagram_DavidChen.png
 images:
-- /assets/thesis-flagship/lineage-view-ui.png
-- /assets/thesis-flagship/fashion-interface.png
-- /assets/thesis-flagship/form-forge.png
-- /assets/thesis-flagship/deeprise-interface.png
 - /assets/thesis-flagship/territory-map.png
-- /assets/thesis-flagship/stage1-vs-stage2-comparison.png
-- /assets/thesis-flagship/concept-config-space.png
-- /assets/thesis-flagship/ch4-system-timeline.png
-- /assets/thesis-flagship/ch4-generation-pipeline.png
-- /assets/thesis-flagship/ch4-axis-projection-pipeline.png
+- /assets/thesis-flagship/pre-thesis-II-A1_Worldmaking_Diagram_DavidChen.png
 institution: Carnegie Mellon School of Design
 latest_draft: thesis_body.tex (265 KB, last edit 2026-04-23)
 local_path: W:\CMU_Academics\2025 Fall\Thesis
