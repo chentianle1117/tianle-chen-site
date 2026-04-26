@@ -3,35 +3,115 @@ const currentPath = Astro.url.pathname;
 
 const links = [
   { href: "/work", label: "Work" },
+  { href: "/thesis", label: "Thesis" },
   { href: "/architecture", label: "Architecture" },
   { href: "/about", label: "About" },
+  { href: "/dashboard", label: "Dashboard" },
 ];
 
 const isActive = (href: string) =>
   href === "/" ? currentPath === "/" : currentPath.startsWith(href);
 ---
 
-<header class="sticky top-0 z-40 backdrop-blur-md bg-ink-950/75 border-b border-ink-800/50">
-  <div class="container-full flex items-center justify-between py-5">
+<header
+  id="site-header"
+  class="sticky top-0 z-40 backdrop-blur-sm bg-graphite-900/70 border-b border-graphite-800/0 transition-all duration-280 ease-out-soft"
+>
+  <div class="container-page flex items-center justify-between py-5">
     <a
       href="/"
-      class="font-display text-xl font-medium tracking-tight hover:text-accent transition-colors"
-      aria-label="Tianle Chen — home"
+      class="font-display tracking-tight text-graphite-50 hover:text-oxide-400 transition-colors duration-280 ease-out-soft"
+      style="font-size: var(--step-1); font-weight: 380;"
+      aria-label="David Chen — home"
     >
-      Tianle Chen
+      David Chen
     </a>
-    <nav class="flex items-center gap-8 font-mono text-xs uppercase tracking-widest">
+
+    {/* Desktop nav */}
+    <nav class="hidden md:flex items-center gap-8">
       {links.map((link) => (
         <a
           href={link.href}
           class:list={[
-            "transition-colors hover:text-accent",
-            isActive(link.href) ? "text-accent" : "text-ink-300",
+            "font-mono uppercase tracking-[0.08em] text-graphite-300 hover:text-oxide-400 transition-all duration-280 ease-out-soft pb-1",
+            isActive(link.href)
+              ? "text-graphite-50 border-b border-oxide-500 [text-underline-offset:6px]"
+              : "border-b border-transparent",
           ]}
+          style="font-size: var(--step--1)"
         >
           {link.label}
         </a>
       ))}
     </nav>
+
+    {/* Mobile drawer (zero-JS via <details>) */}
+    <details class="md:hidden relative" id="mobile-nav">
+      <summary
+        class="list-none cursor-pointer p-2 -mr-2 text-graphite-200 hover:text-oxide-400 transition-colors"
+        aria-label="Toggle menu"
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          width="22"
+          height="22"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          stroke-width="1.5"
+          stroke-linecap="round"
+        >
+          <line x1="4" y1="8" x2="20" y2="8" />
+          <line x1="4" y1="16" x2="20" y2="16" />
+        </svg>
+      </summary>
+      <div
+        class="absolute right-0 top-full mt-3 w-56 rounded-md border border-graphite-700/60 bg-graphite-900/95 backdrop-blur-xl shadow-xl py-2"
+      >
+        <ul class="flex flex-col">
+          {links.map((link) => (
+            <li>
+              <a
+                href={link.href}
+                class:list={[
+                  "block px-5 py-3 font-mono uppercase tracking-[0.08em] hover:text-oxide-400 hover:bg-graphite-800/60 transition-all duration-280 ease-out-soft",
+                  isActive(link.href) ? "text-graphite-50" : "text-graphite-300",
+                ]}
+                style="font-size: var(--step--1)"
+              >
+                {link.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </details>
   </div>
 </header>
+
+<script>
+  const initHeaderScroll = () => {
+    const header = document.getElementById("site-header");
+    if (!header) return;
+    const onScroll = () => {
+      const y = window.scrollY || window.pageYOffset;
+      if (y > 80) {
+        header.classList.add("is-scrolled");
+      } else {
+        header.classList.remove("is-scrolled");
+      }
+    };
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+  };
+  initHeaderScroll();
+  document.addEventListener("astro:page-load", initHeaderScroll);
+</script>
+
+<style>
+  #site-header.is-scrolled {
+    backdrop-filter: blur(18px);
+    background-color: rgba(11, 13, 15, 0.9);
+    border-bottom-color: rgba(38, 41, 46, 0.6);
+  }
+</style>

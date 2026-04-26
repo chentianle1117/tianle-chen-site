@@ -1,0 +1,38 @@
+---
+import { getCollection } from "astro:content";
+import ProjectCard from "./ProjectCard.astro";
+import { findRelated, resolveBySlugs } from "../lib/relatedProjects";
+
+interface Props {
+  currentSlug: string;
+  relatedSlugs?: string[];
+  categories?: string[];
+}
+
+const { currentSlug, relatedSlugs } = Astro.props;
+
+const all = await getCollection("projects", ({ data }) => data.publish === true);
+
+let related: typeof all = [];
+if (relatedSlugs && relatedSlugs.length > 0) {
+  related = resolveBySlugs(relatedSlugs, all).slice(0, 3);
+}
+if (related.length < 3) {
+  const need = 3 - related.length;
+  const have = new Set(related.map((p) => ((p as any).slug ?? p.data.slug)));
+  have.add(currentSlug);
+  const auto = findRelated(currentSlug, all.filter((p) => !have.has(((p as any).slug ?? p.data.slug))), need);
+  related = [...related, ...auto];
+}
+---
+
+{related.length > 0 && (
+  <section class="container-page py-16 md:py-24 border-t border-graphite-700/60">
+    <h2 class="mb-10" style="font-size: var(--step-3); font-weight: 380;">Related work</h2>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+      {related.map((p) => (
+        <ProjectCard project={p} />
+      ))}
+    </div>
+  </section>
+)}

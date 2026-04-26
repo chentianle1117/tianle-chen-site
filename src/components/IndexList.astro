@@ -1,0 +1,79 @@
+---
+import type { CollectionEntry } from "astro:content";
+
+interface Props {
+  projects: CollectionEntry<"projects">[];
+}
+
+const { projects } = Astro.props;
+
+const sorted = [...projects].sort(
+  (a, b) => (b.data.year ?? 0) - (a.data.year ?? 0)
+);
+
+const rows = sorted.map((p) => {
+  const d = p.data;
+  const year = d.year ? String(d.year) : "—";
+  const category = (d.categories && d.categories[0]) || "—";
+  const courseLabel =
+    (d.course_code && String(d.course_code)) ||
+    (d.course && String(d.course)) ||
+    "—";
+  return {
+    slug: d.slug,
+    title: d.title,
+    year,
+    category,
+    courseLabel,
+  };
+});
+---
+
+<div data-stagger class="w-full">
+  {/* Header */}
+  <div
+    class="hidden md:grid grid-cols-[80px_minmax(0,1fr)_180px_140px] gap-6 pb-4 border-b border-graphite-700/60 font-mono uppercase tracking-[0.08em] text-graphite-400"
+    style="font-size: var(--step--1)"
+  >
+    <span>Year</span>
+    <span>Title</span>
+    <span>Category</span>
+    <span>Course</span>
+  </div>
+
+  <ul class="divide-y divide-graphite-800/60">
+    {rows.map((r) => (
+      <li data-reveal class="group">
+        <a
+          href={`/work/${r.slug}`}
+          class="grid grid-cols-[64px_minmax(0,1fr)] md:grid-cols-[80px_minmax(0,1fr)_180px_140px] gap-3 md:gap-6 items-center min-h-[60px] px-2 md:px-3 -mx-2 md:-mx-3 rounded-sm transition-colors duration-280 ease-out-soft hover:bg-graphite-800/40"
+        >
+          <span
+            class="font-mono text-graphite-400 group-hover:text-oxide-400 transition-colors"
+            style="font-size: var(--step--1); letter-spacing: 0.06em;"
+          >
+            {r.year}
+          </span>
+          <span
+            class="font-display text-graphite-100 group-hover:text-oxide-400 transition-colors leading-tight"
+            style="font-size: var(--step-1); font-weight: 380;"
+          >
+            {r.title}
+          </span>
+          <span
+            class="hidden md:inline font-mono text-graphite-300 uppercase tracking-[0.06em] truncate"
+            style="font-size: var(--step--1)"
+          >
+            {r.category}
+          </span>
+          <span
+            class="hidden md:inline font-mono text-graphite-400 uppercase tracking-[0.06em] truncate"
+            style="font-size: var(--step--1)"
+          >
+            {r.courseLabel}
+          </span>
+        </a>
+      </li>
+    ))}
+  </ul>
+</div>

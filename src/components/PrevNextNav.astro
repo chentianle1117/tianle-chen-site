@@ -1,0 +1,62 @@
+---
+import { getCollection } from "astro:content";
+
+interface Props {
+  currentSlug: string;
+}
+const { currentSlug } = Astro.props;
+
+const all = await getCollection("projects", ({ data }) => data.publish === true);
+
+function isArchitectureTier(p: typeof all[0]) {
+  return (
+    p.data.institution === "Rice University" ||
+    (p.data.categories &&
+      p.data.categories.includes("Architecture") &&
+      p.data.year &&
+      p.data.year <= 2024)
+  );
+}
+
+const sorted = all
+  .filter((p) => !isArchitectureTier(p))
+  .sort((a, b) => (b.data.year ?? 0) - (a.data.year ?? 0));
+
+const idx = sorted.findIndex((p) => ((p as any).slug ?? p.data.slug) === currentSlug);
+const prev = idx > 0 ? sorted[idx - 1] : null;
+const next = idx >= 0 && idx < sorted.length - 1 ? sorted[idx + 1] : null;
+---
+
+{(prev || next) && (
+  <nav class="grid grid-cols-1 md:grid-cols-2 border-t border-graphite-700/60 mt-16">
+    <a
+      href={prev ? `/work/${((prev as any).slug ?? prev.data.slug)}` : "#"}
+      class:list={[
+        "group block px-6 md:px-12 py-10 md:py-14 border-graphite-700/60 transition-colors duration-280 ease-out-soft",
+        "md:border-r",
+        prev ? "" : "pointer-events-none opacity-30",
+      ]}
+    >
+      <span class="mono-label block mb-3 transition-transform duration-280 ease-out-soft group-hover:-translate-x-1 group-hover:text-oxide-400">
+        ← Previous
+      </span>
+      <span class="font-display text-graphite-50 group-hover:text-oxide-400 transition-colors duration-280" style="font-size: var(--step-3); font-weight:380;">
+        {prev ? prev.data.title : "—"}
+      </span>
+    </a>
+    <a
+      href={next ? `/work/${((next as any).slug ?? next.data.slug)}` : "#"}
+      class:list={[
+        "group block px-6 md:px-12 py-10 md:py-14 border-t md:border-t-0 border-graphite-700/60 transition-colors duration-280 ease-out-soft md:text-right",
+        next ? "" : "pointer-events-none opacity-30",
+      ]}
+    >
+      <span class="mono-label block mb-3 transition-transform duration-280 ease-out-soft group-hover:translate-x-1 group-hover:text-oxide-400">
+        Next →
+      </span>
+      <span class="font-display text-graphite-50 group-hover:text-oxide-400 transition-colors duration-280" style="font-size: var(--step-3); font-weight:380;">
+        {next ? next.data.title : "—"}
+      </span>
+    </a>
+  </nav>
+)}

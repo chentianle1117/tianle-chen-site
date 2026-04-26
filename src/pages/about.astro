@@ -1,70 +1,232 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import { getEntry } from "astro:content";
+import fs from "node:fs";
+import path from "node:path";
+
+// Try to read /now content from the site collection. Fall back to placeholder.
+let nowBody: string | null = null;
+try {
+  // @ts-ignore — collection may not have entry; getEntry returns undefined.
+  const entry = await getEntry("site", "now");
+  if (entry && (entry as any).body) {
+    nowBody = String((entry as any).body).trim();
+  }
+} catch {
+  nowBody = null;
+}
+
+// Headshot fallback — render only if file exists in /public
+const portraitPath = path.resolve(process.cwd(), "public", "portrait.jpg");
+let portraitExists = false;
+try {
+  portraitExists = fs.existsSync(portraitPath);
+} catch {
+  portraitExists = false;
+}
+
+const experience: { date: string; line: string }[] = [
+  { date: "2024—Present", line: "CMU MSCD (Computational Design) · Thesis: Semantic Canvas" },
+  { date: "2024—2026", line: "HILOS Studio · ML/AI engineer (under NDA — discussed in interviews)" },
+  { date: "2024 Summer", line: "HILOS Studio · AI fellow" },
+  { date: "2023 Summer", line: "NBBJ · Architectural designer (Los Angeles)" },
+  { date: "2022", line: "EID Architects · Architectural designer" },
+  { date: "2021", line: "Pure Architect · Architectural designer (Beijing)" },
+  { date: "2020", line: "ECADI · Architectural designer (Shanghai)" },
+];
+
+const education: { date: string; line: string }[] = [
+  { date: "2024—2026", line: "Carnegie Mellon University · M.S. Computational Design" },
+  { date: "2018—2024", line: "Rice University · Bachelor of Architecture" },
+];
+
+const recognition: { date: string; line: string }[] = [
+  { date: "2024", line: "IASS · Fiber-based parametric pavilion (with Prof. Castellon)" },
+];
 ---
 
 <BaseLayout
   title="About"
-  description="Tianle (David) Chen — computational designer and creative ML engineer. Bio, trajectory, and how to get in touch."
+  description="David Chen — bio, trajectory, contact. CMU MSCD computational design thesis student; HILOS Studio ML/AI engineer; Rice architecture."
 >
-  <section class="container-full pt-20 md:pt-28 pb-12">
-    <p class="font-mono text-xs uppercase tracking-[0.25em] text-accent mb-4">About</p>
-    <h1 class="max-w-4xl mb-10">
-      Design-trained, ML-native, research-oriented.
-    </h1>
-  </section>
+  <article class="container-reading pt-24 md:pt-32 pb-24">
+    <header class="mb-16" data-reveal>
+      <p class="mono-label mb-4">About · 2026</p>
+      <h1 class="text-balance">About</h1>
+    </header>
 
-  <section class="container-narrow py-6 md:py-10">
-    <div class="prose-custom">
-      <h2>Trajectory</h2>
-      <p>
-        I'm <strong>Tianle Chen</strong> (陈天乐), also known as <strong>David</strong>. I'm a Master
-        of Science in Computational Design student at Carnegie Mellon University,
-        finishing a thesis on AI-augmented footwear design. The research artifact is
-        <a href="/work/semantic-canvas">Semantic Canvas</a>, an interactive
-        latent-space tool deployed for multi-user design studies.
+    {/* Bio */}
+    <section class="mb-16" data-reveal>
+      <p class="mono-label mb-3">Bio</p>
+      <p class="text-graphite-200 leading-relaxed">
+        David Chen (陳天樂) is a computational designer and ML engineer working at the
+        seam of generative AI and design tooling. He is finishing an MSCD thesis at
+        Carnegie Mellon — <em>Semantic Canvas</em>, an interactive latent-space
+        interface for AI-augmented footwear design. He is concurrently an ML/AI
+        engineer at HILOS Studio. Earlier he trained as an architect at Rice University
+        and worked at NBBJ (Los Angeles), EID Architects, Pure Architect (Beijing), and
+        ECADI (Shanghai), with research collaborations on fiber-based pavilions and
+        ceramic hollow columns published at IASS 2024.
       </p>
-      <p>
-        Before CMU, I studied architecture at Rice University (Bachelor of Architecture,
-        Class of 2024), where I worked with <strong>Prof. Juan Jose Castellon</strong> as
-        a computational research assistant. Our research on segmental ceramic hollow
-        columns was published at the
-        <a href="https://www.researchgate.net/publication/384055100_Segmental_Ceramic_Hollow_Structures_Prefabricated_posttensioned_columns_for_ecological_urban_infrastructures" target="_blank" rel="noopener noreferrer">IASS 2024 Symposium</a>.
-      </p>
-      <p>
-        I've held architecture roles at <strong>EID Architect</strong>, <strong>Pure Architect</strong>,
-        <strong>ECADI</strong> (Shanghai), and <strong>NBBJ</strong> (Los Angeles). Originally from
-        Shanghai; currently in Pittsburgh with my wife and two cats.
-      </p>
+    </section>
 
-      <h2>What I work on</h2>
-      <ul>
-        <li>
-          <strong>Design tools + ML.</strong> Interactive systems where generative AI reshapes expert workflows — latent-space exploration, sketch-to-3D, real-time ambient projection.
+    {/* Now */}
+    <section class="mb-16" data-reveal>
+      <p class="mono-label mb-3">Now · 2026-04</p>
+      {nowBody ? (
+        <div class="prose-custom" set:html={nowBody}></div>
+      ) : (
+        <p class="text-graphite-200 leading-relaxed">
+          Closing out the Semantic Canvas thesis at CMU, shipping ML/AI work at HILOS
+          Studio, and talking to teams building generative tools for designers.
+        </p>
+      )}
+    </section>
+
+    {/* Selected experience */}
+    <section class="mb-16" data-reveal>
+      <p class="mono-label mb-4">Selected experience</p>
+      <ul class="font-mono text-sm leading-relaxed">
+        {experience.map((row) => (
+          <li class="grid grid-cols-[12rem_1fr] gap-4 py-1.5 border-b border-graphite-700/40">
+            <span class="text-graphite-400 uppercase tracking-[0.06em]">{row.date}</span>
+            <span class="text-graphite-200">{row.line}</span>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    {/* Education */}
+    <section class="mb-16" data-reveal>
+      <p class="mono-label mb-4">Education</p>
+      <ul class="font-mono text-sm leading-relaxed">
+        {education.map((row) => (
+          <li class="grid grid-cols-[12rem_1fr] gap-4 py-1.5 border-b border-graphite-700/40">
+            <span class="text-graphite-400 uppercase tracking-[0.06em]">{row.date}</span>
+            <span class="text-graphite-200">{row.line}</span>
+          </li>
+        ))}
+      </ul>
+    </section>
+
+    {/* Recognition */}
+    {recognition.length > 0 && (
+      <section class="mb-16" data-reveal>
+        <p class="mono-label mb-4">Recognition</p>
+        <ul class="font-mono text-sm leading-relaxed">
+          {recognition.map((row) => (
+            <li class="grid grid-cols-[12rem_1fr] gap-4 py-1.5 border-b border-graphite-700/40">
+              <span class="text-graphite-400 uppercase tracking-[0.06em]">{row.date}</span>
+              <span class="text-graphite-200">{row.line}</span>
+            </li>
+          ))}
+        </ul>
+      </section>
+    )}
+
+    {/* Headshot — only if file exists */}
+    {portraitExists && (
+      <section class="mb-16" data-reveal>
+        <p class="mono-label mb-4">Portrait</p>
+        <img
+          src="/portrait.jpg"
+          alt="David Chen portrait"
+          width="280"
+          height="280"
+          loading="lazy"
+          class="w-[280px] h-[280px] object-cover rounded-md grayscale hover:grayscale-0 transition-[filter] duration-420 ease-out-soft border border-graphite-700/60"
+        />
+      </section>
+    )}
+
+    {/* Contact strip */}
+    <section class="mb-16" data-reveal>
+      <p class="mono-label mb-4">Contact</p>
+      <ul class="font-mono text-sm space-y-3">
+        <li class="grid grid-cols-[6.5rem_1fr] gap-4">
+          <span class="text-graphite-400 uppercase tracking-[0.06em]">LinkedIn</span>
+          <a
+            href="https://www.linkedin.com/in/tianle-chen"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-oxide-400 hover:text-oxide-300 underline decoration-oxide-500/30 hover:decoration-oxide-400 underline-offset-4 transition-colors w-fit"
+          >
+            linkedin.com/in/tianle-chen
+          </a>
         </li>
-        <li>
-          <strong>Generative 3D.</strong> Vision Transformer encoders, triplane representations, multimodal CAD generation, custom dataset pipelines.
+        <li class="grid grid-cols-[6.5rem_1fr] gap-4">
+          <span class="text-graphite-400 uppercase tracking-[0.06em]">Email</span>
+          <button
+            type="button"
+            data-copy-email
+            data-email="tianlechen0324@gmail.com"
+            class="inline-flex items-center gap-2 text-graphite-200 hover:text-oxide-400 transition-colors w-fit"
+          >
+            <span>tianlechen0324@gmail.com</span>
+            <i class="ph ph-copy text-graphite-400" aria-hidden="true" data-copy-icon></i>
+            <span class="sr-only" data-copy-status>Click to copy</span>
+          </button>
         </li>
-        <li>
-          <strong>Computational design.</strong> Parametric form-finding, robotic fabrication, topology optimization — inherited from my architecture training, now applied to ML research problems.
+        <li class="grid grid-cols-[6.5rem_1fr] gap-4">
+          <span class="text-graphite-400 uppercase tracking-[0.06em]">GitHub</span>
+          <a
+            href="https://github.com/chentianle1117"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="text-graphite-200 hover:text-oxide-400 underline decoration-graphite-600 hover:decoration-oxide-400 underline-offset-4 transition-colors w-fit"
+          >
+            github.com/chentianle1117
+          </a>
         </li>
       </ul>
+    </section>
 
-      <h2>Interests</h2>
-      <p>
-        The central question: when a designer uses a generative AI tool, what shape
-        should that collaboration take so design judgment stays intact and compounds
-        over time? I'm drawn to work where the answer matters — design-tool companies,
-        AI studios doing HCI/generative-UI research, architecture or design firms
-        doing R&amp;D. Open to remote and to relocating.
+    {/* CV */}
+    <section data-reveal>
+      <p class="mono-label mb-4">Curriculum vitae</p>
+      <a href="/davidchen-cv.pdf" class="btn">
+        <i class="ph ph-arrow-down" aria-hidden="true"></i>
+        <span>Download CV (PDF)</span>
+      </a>
+      <p class="font-mono text-xs uppercase tracking-[0.08em] text-graphite-400 mt-3">
+        Last updated 2026-04
       </p>
+    </section>
+  </article>
 
-      <h2>Contact</h2>
-      <ul>
-        <li><strong>Email</strong> — <a href="mailto:davidchen1117@gmail.com">davidchen1117@gmail.com</a></li>
-        <li><strong>GitHub</strong> — <a href="https://github.com/chentianle1117" target="_blank" rel="noopener noreferrer">chentianle1117</a></li>
-        <li><strong>LinkedIn</strong> — <a href="https://www.linkedin.com/in/tianle-chen" target="_blank" rel="noopener noreferrer">tianle-chen</a></li>
-        <li><strong>Résumé</strong> — <a href="/resume.pdf" target="_blank" rel="noopener noreferrer">PDF</a> (update pending)</li>
-      </ul>
-    </div>
-  </section>
+  <script is:inline>
+    (function () {
+      const init = () => {
+        const buttons = document.querySelectorAll("[data-copy-email]");
+        buttons.forEach((btn) => {
+          if ((btn).dataset.bound === "1") return;
+          (btn).dataset.bound = "1";
+          btn.addEventListener("click", async () => {
+            const email = btn.getAttribute("data-email") || "";
+            const icon = btn.querySelector("[data-copy-icon]");
+            const status = btn.querySelector("[data-copy-status]");
+            try {
+              await navigator.clipboard.writeText(email);
+              if (icon) {
+                icon.classList.remove("ph-copy");
+                icon.classList.add("ph-check");
+              }
+              if (status) status.textContent = "Copied";
+              setTimeout(() => {
+                if (icon) {
+                  icon.classList.remove("ph-check");
+                  icon.classList.add("ph-copy");
+                }
+                if (status) status.textContent = "Click to copy";
+              }, 1800);
+            } catch (e) {
+              if (status) status.textContent = "Copy failed";
+            }
+          });
+        });
+      };
+      init();
+      document.addEventListener("astro:page-load", init);
+    })();
+  </script>
 </BaseLayout>

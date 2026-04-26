@@ -1,0 +1,95 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+---
+
+<BaseLayout
+  title="404 — Not found"
+  description="That route doesn't exist on tianle-chen.com."
+>
+  <section class="container-reading pt-32 md:pt-40 pb-24 relative overflow-hidden">
+    <div class="relative z-10">
+      <p class="mono-label mb-4">404</p>
+      <h1 class="mb-6 text-balance">Not found.</h1>
+      <p class="text-graphite-300 text-lg leading-relaxed mb-10 max-w-prose">
+        This route doesn't exist. The latent space might.
+      </p>
+      <a
+        href="/"
+        class="font-mono text-sm uppercase tracking-[0.12em] text-oxide-400 hover:text-oxide-300 transition-colors"
+      >
+        → Home
+      </a>
+    </div>
+
+    {/* Easter egg — three floating Phosphor circle-half-tilt icons */}
+    <div class="pointer-events-none absolute inset-0 z-0" aria-hidden="true">
+      <svg class="egg egg-1" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="6"><circle cx="128" cy="128" r="100"/><path d="M128 28 a100 100 0 0 1 0 200 z" fill="currentColor"/></svg>
+      <svg class="egg egg-2" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="6"><circle cx="128" cy="128" r="100"/><path d="M128 28 a100 100 0 0 1 0 200 z" fill="currentColor"/></svg>
+      <svg class="egg egg-3" viewBox="0 0 256 256" fill="none" stroke="currentColor" stroke-width="6"><circle cx="128" cy="128" r="100"/><path d="M128 28 a100 100 0 0 1 0 200 z" fill="currentColor"/></svg>
+    </div>
+  </section>
+
+  <style>
+    .egg {
+      position: absolute;
+      color: theme(colors.graphite.700);
+      width: 11rem;
+      height: 11rem;
+      will-change: transform;
+    }
+    .egg-1 {
+      top: 8%;
+      right: 6%;
+      animation: drift1 60s linear infinite;
+    }
+    .egg-2 {
+      bottom: 12%;
+      right: 22%;
+      width: 7rem;
+      height: 7rem;
+      animation: drift2 80s linear infinite;
+    }
+    .egg-3 {
+      top: 38%;
+      right: -2%;
+      width: 5rem;
+      height: 5rem;
+      animation: drift3 70s linear infinite;
+    }
+    @keyframes drift1 {
+      0% {
+        transform: rotate(0deg) translateX(0) translateY(0);
+      }
+      50% {
+        transform: rotate(180deg) translateX(-12px) translateY(8px);
+      }
+      100% {
+        transform: rotate(360deg) translateX(0) translateY(0);
+      }
+    }
+    @keyframes drift2 {
+      0% {
+        transform: rotate(0deg) translateX(0);
+      }
+      100% {
+        transform: rotate(-360deg) translateX(0);
+      }
+    }
+    @keyframes drift3 {
+      0% {
+        transform: rotate(0deg) translateY(0);
+      }
+      50% {
+        transform: rotate(180deg) translateY(-10px);
+      }
+      100% {
+        transform: rotate(360deg) translateY(0);
+      }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .egg {
+        animation: none !important;
+      }
+    }
+  </style>
+</BaseLayout>

@@ -1,0 +1,86 @@
+---
+import { toBibTeX } from "../lib/bibtex";
+
+interface Props {
+  data: any;
+}
+const { data } = Astro.props;
+const bibtex = toBibTeX(data);
+const dialogId = `cite-${data.slug ?? Math.random().toString(36).slice(2, 8)}`;
+---
+
+<button
+  type="button"
+  class="mono-label inline-flex items-center gap-2 px-3 py-1.5 border border-graphite-700/60 rounded-sm hover:border-oxide-500/40 hover:text-oxide-400 transition-colors duration-180"
+  data-cite-open={dialogId}
+>
+  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+    <path d="M7 7h4v4H7zM13 7h4v4h-4zM9 11v2a2 2 0 0 1-2 2M15 11v2a2 2 0 0 1-2 2" />
+  </svg>
+  <span>Cite</span>
+</button>
+
+<dialog
+  id={dialogId}
+  class="bg-graphite-900 text-graphite-50 border border-graphite-700/60 rounded-md p-0 max-w-2xl w-[92vw] backdrop:bg-graphite-950/70 backdrop:backdrop-blur-sm"
+>
+  <div class="flex items-center justify-between px-5 py-3 border-b border-graphite-700/60">
+    <span class="mono-label">BibTeX</span>
+    <div class="flex items-center gap-2">
+      <button
+        type="button"
+        class="mono-label px-2 py-1 border border-graphite-700/60 rounded-sm hover:border-oxide-500/40 hover:text-oxide-400 transition-colors duration-180"
+        data-cite-copy={dialogId}
+      >Copy</button>
+      <button
+        type="button"
+        class="mono-label px-2 py-1 border border-graphite-700/60 rounded-sm hover:border-oxide-500/40 hover:text-oxide-400 transition-colors duration-180"
+        data-cite-close={dialogId}
+      >Close</button>
+    </div>
+  </div>
+  <pre
+    id={`${dialogId}-pre`}
+    class="font-code text-graphite-200 text-sm leading-relaxed p-5 overflow-auto whitespace-pre"
+  >{bibtex}</pre>
+</dialog>
+
+<script>
+  function bind() {
+    document.querySelectorAll<HTMLButtonElement>("[data-cite-open]").forEach((btn) => {
+      if (btn.dataset.bound) return;
+      btn.dataset.bound = "1";
+      btn.addEventListener("click", () => {
+        const id = btn.getAttribute("data-cite-open")!;
+        const dlg = document.getElementById(id) as HTMLDialogElement | null;
+        dlg?.showModal();
+      });
+    });
+    document.querySelectorAll<HTMLButtonElement>("[data-cite-close]").forEach((btn) => {
+      if (btn.dataset.bound) return;
+      btn.dataset.bound = "1";
+      btn.addEventListener("click", () => {
+        const id = btn.getAttribute("data-cite-close")!;
+        const dlg = document.getElementById(id) as HTMLDialogElement | null;
+        dlg?.close();
+      });
+    });
+    document.querySelectorAll<HTMLButtonElement>("[data-cite-copy]").forEach((btn) => {
+      if (btn.dataset.bound) return;
+      btn.dataset.bound = "1";
+      btn.addEventListener("click", async () => {
+        const id = btn.getAttribute("data-cite-copy")!;
+        const pre = document.getElementById(`${id}-pre`);
+        if (!pre) return;
+        try {
+          await navigator.clipboard.writeText(pre.textContent || "");
+          const old = btn.textContent;
+          btn.textContent = "Copied";
+          setTimeout(() => { btn.textContent = old || "Copy"; }, 1200);
+        } catch {}
+      });
+    });
+  }
+  bind();
+  document.addEventListener("astro:page-load", bind);
+</script>

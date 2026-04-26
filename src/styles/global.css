@@ -1,14 +1,52 @@
+/* Fontsource imports — self-hosted, no external font requests */
+@import "@fontsource/newsreader/400.css";
+@import "@fontsource/newsreader/500.css";
+@import "@fontsource-variable/inter-tight";
+@import "@fontsource/ibm-plex-mono/400.css";
+@import "@fontsource/jetbrains-mono/400.css";
+
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+/* ──────────────────────────────────────────────────────────────────────
+   Design tokens — Graphite + Oxide
+   ──────────────────────────────────────────────────────────────────── */
 @layer base {
   :root {
     color-scheme: dark;
+
+    /* Surfaces */
+    --bg: theme(colors.graphite.900);
+    --surface-1: theme(colors.graphite.800);
+    --surface-2: theme(colors.graphite.700);
+
+    /* Borders */
+    --border: rgb(26 28 32 / 0.6);
+    --border-hi: theme(colors.graphite.600);
+
+    /* Text */
+    --text-1: theme(colors.graphite.50);
+    --text-2: theme(colors.graphite.300);
+    --text-3: theme(colors.graphite.400);
+
+    /* Accent */
+    --accent: theme(colors.oxide.500);
+    --accent-hi: theme(colors.oxide.400);
+
+    /* Fluid type scale */
+    --step--1: clamp(0.78rem, 0.76rem + 0.10vw, 0.84rem);
+    --step-0: clamp(0.95rem, 0.92rem + 0.15vw, 1.05rem);
+    --step-1: clamp(1.10rem, 1.05rem + 0.25vw, 1.25rem);
+    --step-2: clamp(1.35rem, 1.25rem + 0.50vw, 1.65rem);
+    --step-3: clamp(1.65rem, 1.45rem + 1.00vw, 2.20rem);
+    --step-4: clamp(2.10rem, 1.70rem + 2.00vw, 3.20rem);
+    --step-5: clamp(2.80rem, 2.10rem + 3.50vw, 4.80rem);
   }
 
   html {
-    @apply bg-ink-950 text-ink-100 font-sans antialiased;
+    @apply bg-graphite-900 text-graphite-50 font-sans antialiased;
     scroll-behavior: smooth;
     font-feature-settings: "ss01", "cv11";
   }
@@ -18,72 +56,152 @@
   }
 
   ::selection {
-    @apply bg-accent text-ink-950;
+    background-color: theme(colors.oxide.500);
+    color: theme(colors.graphite.950);
   }
 
   a {
-    @apply transition-colors duration-200;
+    @apply transition-colors duration-180 ease-out-soft;
   }
 
-  h1, h2, h3, h4 {
+  h1, h2, h3, h4, h5 {
     @apply font-display tracking-tight text-balance;
+    font-weight: 380;
   }
 
-  h1 { @apply text-5xl md:text-7xl leading-[1.02]; }
-  h2 { @apply text-3xl md:text-5xl leading-[1.05]; }
-  h3 { @apply text-2xl md:text-3xl leading-tight; }
-  h4 { @apply text-xl md:text-2xl leading-snug; }
+  h1 { font-size: var(--step-5); line-height: 1.05; }
+  h2 { font-size: var(--step-4); line-height: 1.08; }
+  h3 { font-size: var(--step-3); line-height: 1.15; }
+  h4 { font-size: var(--step-2); line-height: 1.25; }
+  h5 { font-size: var(--step-1); line-height: 1.35; }
+
+  body {
+    font-size: var(--step-0);
+    line-height: 1.6;
+  }
 
   img, video {
     @apply max-w-full h-auto;
   }
 
-  /* Monospace UI elements */
-  code, pre, .mono {
-    @apply font-mono;
+  code, pre {
+    font-family: theme(fontFamily.code);
   }
 }
 
+/* ──────────────────────────────────────────────────────────────────────
+   Components
+   ──────────────────────────────────────────────────────────────────── */
 @layer components {
-  .container-narrow {
-    @apply mx-auto w-full max-w-3xl px-6 md:px-8;
+  .container-reading {
+    @apply mx-auto w-full max-w-reading px-6 md:px-8;
+  }
+  .container-page {
+    @apply mx-auto w-full max-w-page px-6 md:px-12;
   }
   .container-wide {
-    @apply mx-auto w-full max-w-6xl px-6 md:px-8;
+    @apply mx-auto w-full max-w-wide px-6 md:px-12;
   }
-  .container-full {
-    @apply mx-auto w-full max-w-[1400px] px-6 md:px-12;
-  }
+  /* Migration aliases */
+  .container-narrow { @apply container-reading; }
+  .container-full { @apply container-page; }
 
-  .prose-custom {
-    @apply prose prose-invert max-w-none;
-    @apply prose-headings:font-display prose-headings:tracking-tight prose-headings:text-balance;
-    @apply prose-a:text-accent-300 hover:prose-a:text-accent-200 prose-a:no-underline hover:prose-a:underline;
-    @apply prose-img:rounded-lg prose-img:shadow-2xl;
-    @apply prose-strong:text-ink-50 prose-code:text-accent-200 prose-code:before:content-none prose-code:after:content-none;
-    @apply prose-hr:border-ink-700;
+  .mono-label {
+    @apply font-mono text-graphite-400 uppercase;
+    font-size: var(--step--1);
+    letter-spacing: 0.08em;
   }
 
   .tag {
-    @apply inline-block px-2 py-0.5 text-xs uppercase tracking-widest font-mono text-ink-300 border border-ink-700 rounded-full;
+    @apply inline-block px-2 py-0.5 font-mono text-graphite-300 border border-graphite-700 rounded-sm;
+    font-size: 0.72rem;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
   }
 
   .btn {
-    @apply inline-flex items-center gap-2 px-5 py-2.5 border border-ink-600 rounded-full text-sm font-medium transition-all duration-200;
-    @apply hover:border-accent hover:text-accent;
+    @apply inline-flex items-center gap-2 px-5 py-2.5 border border-graphite-600 rounded-md text-sm font-medium;
+    @apply transition-all duration-280 ease-out-soft;
+    @apply hover:border-oxide-500 hover:text-oxide-400;
   }
 
   .btn-primary {
-    @apply btn bg-accent text-ink-950 border-accent hover:bg-accent-400 hover:text-ink-950;
+    @apply btn bg-oxide-500 text-graphite-950 border-oxide-500;
+    @apply hover:bg-oxide-400 hover:text-graphite-950;
+  }
+
+  .prose-custom {
+    @apply prose prose-invert max-w-reading;
+    @apply prose-headings:font-display prose-headings:tracking-tight prose-headings:text-balance;
+    @apply prose-headings:font-normal;
+    @apply prose-a:text-oxide-400 hover:prose-a:text-oxide-300 prose-a:no-underline hover:prose-a:underline;
+    @apply prose-a:underline-offset-4 prose-a:decoration-oxide-500/40;
+    @apply prose-img:rounded-lg prose-img:border prose-img:border-graphite-700/60;
+    @apply prose-strong:text-graphite-50 prose-code:text-oxide-300 prose-code:before:content-none prose-code:after:content-none;
+    @apply prose-hr:border-graphite-700;
+    @apply prose-blockquote:border-l-2 prose-blockquote:border-oxide-500 prose-blockquote:not-italic prose-blockquote:font-display prose-blockquote:font-normal;
+  }
+
+  .card-surface {
+    @apply rounded-md border border-graphite-700/60 bg-graphite-800 overflow-hidden;
+    @apply transition-all duration-280 ease-out-soft;
+  }
+  .card-surface:hover {
+    @apply border-oxide-500/40 -translate-y-0.5;
+  }
+
+  .glass-panel {
+    backdrop-filter: blur(12px);
+    background: rgba(11, 13, 15, 0.72);
+    border: 1px solid rgba(26, 28, 32, 0.40);
+    @apply rounded-md;
   }
 }
 
-/* GIF priority: auto-play, no hover pause */
-img[src$=".gif"] {
-  @apply bg-ink-900;
+/* ──────────────────────────────────────────────────────────────────────
+   Reveal-on-scroll (paired with src/scripts/reveal.ts)
+   ──────────────────────────────────────────────────────────────────── */
+[data-reveal] {
+  opacity: 0;
+  transform: translateY(8px);
+  transition:
+    opacity 420ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 420ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+[data-reveal].is-visible {
+  opacity: 1;
+  transform: translateY(0);
 }
 
-/* Skip link for a11y */
-.skip-link {
-  @apply absolute left-4 top-4 -translate-y-20 focus:translate-y-0 bg-accent text-ink-950 px-4 py-2 rounded z-50 transition-transform;
+/* ──────────────────────────────────────────────────────────────────────
+   Reduced motion
+   ──────────────────────────────────────────────────────────────────── */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+  [data-reveal] {
+    opacity: 1;
+    transform: none;
+  }
 }
+
+/* ──────────────────────────────────────────────────────────────────────
+   Misc
+   ──────────────────────────────────────────────────────────────────── */
+img[src$=".gif"] {
+  @apply bg-graphite-900;
+}
+
+.skip-link {
+  @apply absolute left-4 top-4 -translate-y-20 focus:translate-y-0 z-50;
+  @apply bg-oxide-500 text-graphite-950 px-4 py-2 rounded;
+  @apply transition-transform duration-280 ease-out-soft;
+}
+
+/* GLSL imports for vite-plugin-glsl */
+:where(.shader-source) { display: none; }

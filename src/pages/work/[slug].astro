@@ -1,142 +1,182 @@
 ---
+// @ts-nocheck
+// Permissive vault schema (passthrough) — TS inference collapses on data.X access. v1: bypass.
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import ProjectCard from "../../components/ProjectCard.astro";
+import ProjectMeta from "../../components/ProjectMeta.astro";
+import RelatedRail from "../../components/RelatedRail.astro";
+import PrevNextNav from "../../components/PrevNextNav.astro";
+import PlaceholderHero from "../../components/PlaceholderHero.astro";
 import { getCollection, render } from "astro:content";
+import { existsSync } from "node:fs";
+import { fileURLToPath } from "node:url";
+
+function publicFileExists(webPath: string | null | undefined): boolean {
+  if (!webPath || !webPath.startsWith("/")) return false;
+  const url = new URL(`../../../public${webPath}`, import.meta.url);
+  return existsSync(fileURLToPath(url));
+}
 
 export async function getStaticPaths() {
   const projects = await getCollection("projects", ({ data }) => data.publish === true);
   return projects.map((project) => ({
-    params: { slug: project.data.slug },
+    params: { slug: ((project as any).slug ?? project.data.slug ?? project.id?.replace(/\.md$/, "")) },
     props: { project },
   }));
 }
 
 const { project } = Astro.props;
 const { data } = project;
+const dataAny = data as any;
 const { Content } = await render(project);
 
-// Related: other projects in same categories
-const all = await getCollection("projects", ({ data }) => data.publish === true);
-const related = all
-  .filter((p) => p.data.slug !== data.slug)
-  .filter((p) => {
-    const myCats = new Set(data.categories ?? []);
-    return (p.data.categories ?? []).some((c: string) => myCats.has(c));
-  })
-  .slice(0, 3);
+const hero = data.hero_image || (data.images && data.images[0]) || null;
+const heroIsImage = hero && !/\.(pdf|mp4|mov|webm)$/i.test(hero);
+const heroExists = heroIsImage && publicFileExists(hero);
+const video: string | undefined = dataAny.video && /\.(mp4|webm|mov)$/i.test(dataAny.video) ? dataAny.video : undefined;
 
-const hero = data.hero_image || (data.images && data.images[0]);
+// Lead paragraph: prefer summary if present, otherwise null (body will carry it).
+const lead: string | undefined = dataAny.summary || dataAny.lead || undefined;
+
+// Mono kicker: categories joined
+const kicker = (data.categories ?? []).join(" · ");
+
+const courseOrCat =
+  (data.course_code && String(data.course_code)) ||
+  (data.categories && data.categories[0]) ||
+  "";
+const heroMono = [data.year, data.role, courseOrCat].filter(Boolean).join(" · ");
+
+const relatedSlugs: string[] = (dataAny.related_cards ?? []).map((s: string) => String(s));
 ---
 
-<BaseLayout title={data.title} description={data.title + (data.course ? ` — ${data.course}` : "")} image={hero}>
-  {/* Project hero */}
-  <section class="container-full pt-16 md:pt-24 pb-8">
-    <div class="max-w-4xl mb-10 md:mb-12">
-      <div class="flex flex-wrap items-center gap-3 mb-6 font-mono text-xs uppercase tracking-[0.2em] text-ink-400">
-        {data.year && <span>{data.year}</span>}
-        {data.semester && <><span class="text-ink-600">·</span><span>{data.semester}</span></>}
-        {data.course && <><span class="text-ink-600">·</span><span>{data.course}</span></>}
-        {data.priority === "flagship" && <span class="text-accent">· flagship</span>}
+<BaseLayout
+  title={data.title}
+  description={data.title + (data.course ? ` — ${data.course}` : "")}
+  image={hero}
+>
+  {/* Full-bleed hero block */}
+  <section
+    class="relative w-full overflow-hidden border-b border-graphite-700/60"
+    style="height: 60vh; min-height: 480px;"
+  >
+    {video ? (
+      <video
+        autoplay
+        muted
+        loop
+        playsinline
+        class="absolute inset-0 w-full h-full object-cover"
+        transition:name={`hero-${((project as any).slug ?? data.slug ?? project.id?.replace(/\.md$/, ""))}`}
+        src={video}
+      />
+    ) : heroExists ? (
+      <img
+        src={hero}
+        alt={data.title}
+        loading="eager"
+        decoding="async"
+        class="absolute inset-0 w-full h-full object-cover"
+        transition:name={`hero-${((project as any).slug ?? data.slug ?? project.id?.replace(/\.md$/, ""))}`}
+      />
+    ) : (
+      <div transition:name={`hero-${((project as any).slug ?? data.slug ?? project.id?.replace(/\.md$/, ""))}`} class="absolute inset-0">
+        <PlaceholderHero
+          slug={((project as any).slug ?? data.slug ?? project.id?.replace(/\.md$/, ""))}
+          title={data.title}
+          categories={data.categories ?? []}
+          size="hero"
+        />
       </div>
-      <h1 class="mb-6">{data.title}</h1>
-      {data.role && (
-        <p class="text-ink-300 text-lg">
-          Role: <span class="text-ink-100">{data.role}</span>
-          {data.team_size && typeof data.team_size === "number" && data.team_size > 1 && (
-            <> · Team of {data.team_size}{data.team_hierarchy ? ` (${data.team_hierarchy})` : ""}</>
-          )}
-        </p>
-      )}
-      {data.team && data.team.length > 0 && (
-        <p class="text-ink-400 text-sm mt-2">
-          With {data.team.filter((n: string) => n !== "David Chen" && n !== "Tianle Chen").join(", ")}
-        </p>
-      )}
+    )}
+
+    {/* Bottom gradient overlay */}
+    <div
+      class="absolute inset-0 pointer-events-none"
+      style="background: linear-gradient(to top, theme(colors.graphite.950) 0%, transparent 60%);"
+    ></div>
+
+    {/* Title overlay (bottom-left) */}
+    <div class="absolute bottom-0 left-0 right-0" style="padding: 2rem 3rem;">
+      <div class="container-page p-0">
+        <h1 class="text-graphite-50 max-w-4xl mb-3" style="font-size: var(--step-5); font-weight: 380; line-height: 1.05; text-shadow: 0 2px 16px rgba(0,0,0,0.5);">
+          {data.title}
+        </h1>
+        {heroMono && (
+          <p class="mono-label" style="text-shadow: 0 1px 8px rgba(0,0,0,0.5);">{heroMono}</p>
+        )}
+      </div>
     </div>
   </section>
 
-  {/* Hero image */}
-  {hero && (
-    <section class="container-full pb-10 md:pb-16">
-      <div class="rounded-xl overflow-hidden bg-ink-900 shadow-2xl">
-        <img
-          src={hero}
-          alt={data.title}
-          class="w-full h-auto"
-          loading="eager"
-          decoding="async"
-        />
-      </div>
-    </section>
-  )}
-
-  {/* Action bar */}
-  <section class="container-full py-6 border-y border-ink-800/50">
-    <div class="flex flex-wrap gap-3 items-center">
-      {data.github_url && (
-        <a href={data.github_url} target="_blank" rel="noopener noreferrer" class="btn">
-          <span>GitHub</span>
-          <span aria-hidden="true">↗</span>
-        </a>
+  {/* Title block / lead */}
+  <section class="container-reading py-12 md:py-16">
+    {kicker && (
+      <p class="mono-label mb-5">{kicker}</p>
+    )}
+    {lead && (
+      <p class="text-graphite-200 max-w-prose" style="font-size: var(--step-1); font-weight: 350; line-height: 1.55;">
+        {lead}
+      </p>
+    )}
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-10 pt-8 border-t border-graphite-700/60">
+      {data.role && (
+        <div>
+          <p class="mono-label mb-1">Role</p>
+          <p class="text-graphite-100">{data.role}</p>
+        </div>
       )}
-      {data.live_url && (
-        <a href={data.live_url} target="_blank" rel="noopener noreferrer" class="btn-primary">
-          <span>Live demo</span>
-          <span aria-hidden="true">↗</span>
-        </a>
-      )}
-      {data.video && (
-        <a href={data.video} target="_blank" rel="noopener noreferrer" class="btn">
-          <span>Video</span>
-          <span aria-hidden="true">↗</span>
-        </a>
-      )}
-      {data.publication_url && (
-        <a href={data.publication_url} target="_blank" rel="noopener noreferrer" class="btn">
-          <span>Paper</span>
-          <span aria-hidden="true">↗</span>
-        </a>
-      )}
+      {(data.team && data.team.length > 0) || data.team_size ? (
+        <div>
+          <p class="mono-label mb-1">Team</p>
+          <p class="text-graphite-100">
+            {data.team && data.team.length > 0
+              ? data.team
+                  .filter((n: string) => n !== "David Chen" && n !== "Tianle Chen")
+                  .join(", ") || "Solo"
+              : `Team of ${data.team_size}`}
+          </p>
+        </div>
+      ) : null}
       {data.tags && data.tags.length > 0 && (
-        <div class="flex flex-wrap gap-2 ml-auto">
-          {data.tags.slice(0, 6).map((tag: string) => (
-            <span class="tag">{tag}</span>
-          ))}
+        <div>
+          <p class="mono-label mb-1">Stack</p>
+          <p class="text-graphite-100">{data.tags.slice(0, 6).join(", ")}</p>
         </div>
       )}
     </div>
   </section>
 
+  {/* Horizontal meta strip */}
+  <ProjectMeta data={data} />
+
   {/* Body */}
-  <section class="container-narrow py-12 md:py-16">
-    <article class="prose-custom">
+  <section class="py-12 md:py-16">
+    <article class="container-reading prose-custom">
       <Content />
     </article>
   </section>
 
   {/* Image gallery (remaining images beyond hero) */}
-  {data.images && data.images.length > 1 && (
-    <section class="container-full py-12 md:py-16 border-t border-ink-800/50">
-      <h2 class="mb-10">Gallery</h2>
+  {data.images && data.images.filter((img: string) => img !== hero && !/\.(pdf|mp4|mov|webm)$/i.test(img) && publicFileExists(img)).length > 0 && (
+    <section class="container-page py-12 md:py-16 border-t border-graphite-700/60">
+      <h2 class="mb-10" style="font-size: var(--step-3); font-weight:380;">Gallery</h2>
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {data.images.filter((img: string) => img !== hero).map((img: string) => (
-          <div class="rounded-lg overflow-hidden bg-ink-900 shadow-xl">
-            <img src={img} alt="" loading="lazy" decoding="async" class="w-full h-auto" />
-          </div>
-        ))}
+        {data.images
+          .filter((img: string) => img !== hero && !/\.(pdf|mp4|mov|webm)$/i.test(img) && publicFileExists(img))
+          .map((img: string) => (
+            <div class="rounded-md overflow-hidden bg-graphite-900 border border-graphite-700/60">
+              <img src={img} alt="" loading="lazy" decoding="async" class="w-full h-auto" />
+            </div>
+          ))}
       </div>
     </section>
   )}
 
-  {/* Related */}
-  {related.length > 0 && (
-    <section class="container-full py-16 md:py-24 border-t border-ink-800/50">
-      <h2 class="mb-10">Related work</h2>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
-        {related.map((p) => (
-          <ProjectCard project={p} />
-        ))}
-      </div>
-    </section>
-  )}
+  <RelatedRail
+    currentSlug={((project as any).slug ?? data.slug ?? project.id?.replace(/\.md$/, ""))}
+    relatedSlugs={relatedSlugs}
+    categories={data.categories ?? []}
+  />
+
+  <PrevNextNav currentSlug={((project as any).slug ?? data.slug ?? project.id?.replace(/\.md$/, ""))} />
 </BaseLayout>

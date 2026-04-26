@@ -1,19 +1,23 @@
 ---
 import type { CollectionEntry } from "astro:content";
+import PlaceholderHero from "./PlaceholderHero.astro";
+import { existsSync } from "node:fs";
+import { fileURLToPath } from "node:url";
 
 interface Props {
   project: CollectionEntry<"projects">;
   size?: "default" | "large" | "small";
+  eager?: boolean;
 }
 
-const { project, size = "default" } = Astro.props;
-const { data } = project;
+function publicFileExists(webPath: string | null | undefined): boolean {
+  if (!webPath || !webPath.startsWith("/")) return false;
+  const url = new URL(`../../public${webPath}`, import.meta.url);
+  return existsSync(fileURLToPath(url));
+}
 
-const sizeClass = {
-  large: "md:col-span-2 md:row-span-2",
-  default: "",
-  small: "",
-}[size];
+const { project, size = "default", eager = false } = Astro.props;
+const { data } = project;
 
 const aspect = {
   large: "aspect-[16/10]",
@@ -22,43 +26,69 @@ const aspect = {
 }[size];
 
 const hero = data.hero_image || (data.images && data.images[0]) || null;
-const hrefSlug = data.slug;
+const heroIsImage = hero && !/\.(pdf|mp4|mov|webm)$/i.test(hero);
+const heroExists = heroIsImage && publicFileExists(hero);
+const slug = (project as any).slug ?? data.slug ?? project.id?.replace(/\.md$/, "");
+const dataAny = data as any;
+const yearLabel = data.year ? String(data.year) : "";
+const courseOrCat =
+  (data.course_code && String(data.course_code)) ||
+  (data.categories && data.categories[0]) ||
+  "";
+const monoBits = [yearLabel, courseOrCat].filter(Boolean);
+const tags: string[] = (data.categories ?? []).slice(0, 3);
 ---
 
 <a
-  href={`/work/${hrefSlug}`}
-  class:list={["group block relative overflow-hidden rounded-xl bg-ink-900/50 border border-ink-800/50 transition-all duration-300 hover:border-accent/30 hover:shadow-2xl hover:shadow-accent/10", sizeClass]}
+  href={`/work/${slug}`}
+  data-card-slug={slug}
+  data-card-categories={(data.categories ?? []).join("|")}
+  data-card-year={data.year ?? ""}
+  data-card-priority={data.priority ?? "standard"}
+  data-card-title={data.title}
+  class="card-surface group block"
 >
-  {hero ? (
-    <div class:list={["relative overflow-hidden bg-ink-900", aspect]}>
+  <div class:list={["relative overflow-hidden bg-graphite-900 border-b border-graphite-700/60", aspect]}>
+    {heroExists ? (
       <img
         src={hero}
         alt={data.title}
-        loading="lazy"
+        loading={eager ? "eager" : "lazy"}
         decoding="async"
-        class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+        transition:name={`hero-${slug}`}
+        class="absolute inset-0 w-full h-full object-cover transition-all duration-420 ease-out-soft group-hover:scale-[1.02] group-hover:brightness-[1.05]"
       />
-      <div class="absolute inset-0 bg-gradient-to-t from-ink-950/80 via-ink-950/0 to-ink-950/0 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-    </div>
-  ) : (
-    <div class:list={["bg-ink-900 flex items-center justify-center", aspect]}>
-      <span class="text-ink-500 font-mono text-xs">{data.slug}</span>
-    </div>
-  )}
+    ) : (
+      <div transition:name={`hero-${slug}`} class="absolute inset-0">
+        <PlaceholderHero slug={slug} title={data.title} categories={data.categories ?? []} size="card" />
+      </div>
+    )}
+
+    {data.priority === "flagship" && (
+      <span
+        class="absolute top-3 right-3 block w-1.5 h-1.5 rounded-full bg-oxide-500"
+        aria-label="flagship project"
+      />
+    )}
+  </div>
 
   <div class="p-5 md:p-6 flex flex-col gap-3">
-    <div class="flex items-center gap-3 text-xs font-mono uppercase tracking-widest text-ink-400">
-      {data.year && <span>{data.year}</span>}
-      {data.course_code && <span class="text-ink-600">·</span>}
-      {data.course_code && <span>{String(data.course_code)}</span>}
-      {data.priority === "flagship" && <span class="text-accent">· flagship</span>}
-    </div>
-    <h3 class="font-display text-xl md:text-2xl leading-tight text-ink-50 group-hover:text-accent transition-colors">
+    {monoBits.length > 0 && (
+      <div class="mono-label flex items-center gap-2">
+        {monoBits.map((bit, i) => (
+          <>
+            {i > 0 && <span class="text-graphite-600">·</span>}
+            <span>{bit}</span>
+          </>
+        ))}
+      </div>
+    )}
+    <h3 class="font-display text-graphite-50 leading-tight transition-colors duration-280 ease-out-soft group-hover:text-oxide-400" style="font-size: var(--step-2); font-weight: 380;">
       {data.title}
     </h3>
-    {data.categories && data.categories.length > 0 && (
-      <div class="flex flex-wrap gap-2 mt-1">
-        {data.categories.slice(0, 3).map((cat: string) => (
+    {tags.length > 0 && (
+      <div class="flex flex-wrap gap-2">
+        {tags.map((cat: string) => (
           <span class="tag">{cat}</span>
         ))}
       </div>

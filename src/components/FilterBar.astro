@@ -1,0 +1,217 @@
+---
+interface Props {
+  categories: string[]; // surfaced filter buckets
+  years: number[];
+  total: number;
+}
+const { categories, years, total } = Astro.props;
+const yearsSorted = [...years].sort((a, b) => b - a);
+---
+<div
+  id="filter-bar"
+  class="sticky top-0 z-30 w-full border-b border-graphite-700/60 bg-graphite-900/85 backdrop-blur-md"
+  style="height: 56px;"
+>
+  <div class="container-page h-full flex items-center gap-6 overflow-x-auto">
+    {/* Categories */}
+    <div class="flex items-center gap-2" role="group" aria-label="Filter by category">
+      <span class="mono-label hidden md:inline">Cat</span>
+      {categories.map((cat) => (
+        <button
+          type="button"
+          class="filter-cat mono-label px-2 py-1 border border-graphite-700/60 rounded-sm transition-colors duration-180 ease-out-soft hover:border-oxide-500/40 hover:text-oxide-400 aria-pressed:bg-oxide-500/15 aria-pressed:text-oxide-400 aria-pressed:border-oxide-500/40"
+          data-cat={cat}
+          aria-pressed="false"
+        >{cat}</button>
+      ))}
+    </div>
+
+    <span class="text-graphite-700 select-none">|</span>
+
+    {/* Years */}
+    <div class="flex items-center gap-2" role="group" aria-label="Filter by year">
+      <span class="mono-label hidden md:inline">Year</span>
+      {yearsSorted.map((y) => (
+        <button
+          type="button"
+          class="filter-year mono-label px-2 py-1 border border-graphite-700/60 rounded-sm transition-colors duration-180 ease-out-soft hover:border-oxide-500/40 hover:text-oxide-400 aria-pressed:bg-oxide-500/15 aria-pressed:text-oxide-400 aria-pressed:border-oxide-500/40"
+          data-year={y}
+          aria-pressed="false"
+        >{y}</button>
+      ))}
+    </div>
+
+    <span class="text-graphite-700 select-none">|</span>
+
+    {/* Sort */}
+    <div class="flex items-center gap-2 ml-auto" role="group" aria-label="Sort">
+      <span class="mono-label hidden md:inline">Sort</span>
+      <button type="button" class="filter-sort mono-label px-2 py-1 border border-graphite-700/60 rounded-sm transition-colors duration-180 hover:border-oxide-500/40 hover:text-oxide-400 aria-pressed:bg-oxide-500/15 aria-pressed:text-oxide-400 aria-pressed:border-oxide-500/40" data-sort="recent" aria-pressed="true">Recent</button>
+      <button type="button" class="filter-sort mono-label px-2 py-1 border border-graphite-700/60 rounded-sm transition-colors duration-180 hover:border-oxide-500/40 hover:text-oxide-400 aria-pressed:bg-oxide-500/15 aria-pressed:text-oxide-400 aria-pressed:border-oxide-500/40" data-sort="az" aria-pressed="false">A–Z</button>
+
+      <span class="mono-label text-graphite-500 ml-3 hidden sm:inline" data-count>{total}</span>
+    </div>
+  </div>
+</div>
+
+<script>
+  // URL-synced filters. Reads ?cat=foo,bar&year=2025&sort=recent and
+  // applies show/hide + reorders the work grid. Categories OR; years OR.
+  function init() {
+    const grid = document.querySelector<HTMLElement>("#work-grid");
+    const empty = document.querySelector<HTMLElement>("#work-empty");
+    const bar = document.querySelector<HTMLElement>("#filter-bar");
+    const counter = document.querySelector<HTMLElement>("[data-count]");
+    if (!grid || !bar) return;
+
+    const params = new URLSearchParams(window.location.search);
+    const state = {
+      cats: new Set((params.get("cat") || "").split(",").filter(Boolean)),
+      years: new Set((params.get("year") || "").split(",").filter(Boolean)),
+      sort: params.get("sort") || "recent",
+    };
+
+    const cards = Array.from(grid.querySelectorAll<HTMLElement>("[data-card-slug]"));
+
+    function cardCats(card: HTMLElement): string[] {
+      // Project categories are matched by FilterBar buckets via attribute lookup
+      const buckets = card.getAttribute("data-card-buckets");
+      return buckets ? buckets.split("|").filter(Boolean) : [];
+    }
+
+    function applySort() {
+      const sorted = cards.slice();
+      if (state.sort === "az") {
+        sorted.sort((a, b) =>
+          (a.dataset.cardTitle || "").localeCompare(b.dataset.cardTitle || "")
+        );
+      } else {
+        sorted.sort((a, b) => {
+          const ay = parseInt(a.dataset.cardYear || "0", 10);
+          const by = parseInt(b.dataset.cardYear || "0", 10);
+          if (by !== ay) return by - ay;
+          // flagship before standard
+          if (a.dataset.cardPriority === "flagship" && b.dataset.cardPriority !== "flagship") return -1;
+          if (b.dataset.cardPriority === "flagship" && a.dataset.cardPriority !== "flagship") return 1;
+          return 0;
+        });
+      }
+      sorted.forEach((c) => grid.appendChild(c));
+    }
+
+    function applySpan() {
+      // In recent (default) mode, give the first visible card the large span.
+      // In A–Z mode, force uniform col-span-4 on every card.
+      const visible = cards.filter((c) => c.style.display !== "none");
+      cards.forEach((c) => {
+        c.classList.remove("col-span-12", "col-span-8", "col-span-6", "col-span-4");
+        c.classList.remove("aspect-[16/10]", "aspect-[4/3]");
+      });
+      if (state.sort === "az") {
+        cards.forEach((c) => c.classList.add("col-span-12", "md:col-span-6", "lg:col-span-4"));
+      } else {
+        const noFilters = state.cats.size === 0 && state.years.size === 0;
+        visible.forEach((c, i) => {
+          if (noFilters && i === 0) {
+            c.classList.add("col-span-12", "md:col-span-8");
+          } else if (c.dataset.cardPriority === "flagship") {
+            c.classList.add("col-span-12", "md:col-span-6");
+          } else {
+            c.classList.add("col-span-12", "md:col-span-6", "lg:col-span-4");
+          }
+        });
+      }
+    }
+
+    function applyFilters() {
+      let visible = 0;
+      cards.forEach((c) => {
+        const cats = cardCats(c);
+        const year = c.dataset.cardYear || "";
+        const catOk =
+          state.cats.size === 0 || cats.some((x) => state.cats.has(x));
+        const yearOk = state.years.size === 0 || state.years.has(year);
+        if (catOk && yearOk) {
+          c.style.display = "";
+          visible++;
+        } else {
+          c.style.display = "none";
+        }
+      });
+      if (counter) counter.textContent = String(visible);
+      if (empty) empty.style.display = visible === 0 ? "" : "none";
+      grid.style.display = visible === 0 ? "none" : "";
+      applySpan();
+    }
+
+    function syncURL() {
+      const next = new URLSearchParams();
+      if (state.cats.size) next.set("cat", Array.from(state.cats).join(","));
+      if (state.years.size) next.set("year", Array.from(state.years).join(","));
+      if (state.sort && state.sort !== "recent") next.set("sort", state.sort);
+      const qs = next.toString();
+      const url = qs ? `?${qs}` : window.location.pathname;
+      window.history.replaceState({}, "", url);
+    }
+
+    function paintButtons() {
+      bar!.querySelectorAll<HTMLButtonElement>(".filter-cat").forEach((b) => {
+        b.setAttribute("aria-pressed", state.cats.has(b.dataset.cat || "") ? "true" : "false");
+      });
+      bar!.querySelectorAll<HTMLButtonElement>(".filter-year").forEach((b) => {
+        b.setAttribute("aria-pressed", state.years.has(b.dataset.year || "") ? "true" : "false");
+      });
+      bar!.querySelectorAll<HTMLButtonElement>(".filter-sort").forEach((b) => {
+        b.setAttribute("aria-pressed", state.sort === b.dataset.sort ? "true" : "false");
+      });
+    }
+
+    bar.querySelectorAll<HTMLButtonElement>(".filter-cat").forEach((b) => {
+      b.addEventListener("click", () => {
+        const v = b.dataset.cat || "";
+        if (state.cats.has(v)) state.cats.delete(v);
+        else state.cats.add(v);
+        paintButtons();
+        applyFilters();
+        syncURL();
+      });
+    });
+    bar.querySelectorAll<HTMLButtonElement>(".filter-year").forEach((b) => {
+      b.addEventListener("click", () => {
+        const v = b.dataset.year || "";
+        if (state.years.has(v)) state.years.delete(v);
+        else state.years.add(v);
+        paintButtons();
+        applyFilters();
+        syncURL();
+      });
+    });
+    bar.querySelectorAll<HTMLButtonElement>(".filter-sort").forEach((b) => {
+      b.addEventListener("click", () => {
+        state.sort = b.dataset.sort || "recent";
+        paintButtons();
+        applySort();
+        applyFilters();
+        syncURL();
+      });
+    });
+
+    const reset = document.querySelector<HTMLButtonElement>("#filter-reset");
+    reset?.addEventListener("click", () => {
+      state.cats.clear();
+      state.years.clear();
+      state.sort = "recent";
+      paintButtons();
+      applySort();
+      applyFilters();
+      syncURL();
+    });
+
+    paintButtons();
+    applySort();
+    applyFilters();
+  }
+
+  init();
+  document.addEventListener("astro:page-load", init);
+</script>

@@ -1,0 +1,108 @@
+---
+interface Slice {
+  label: string;
+  value: number;
+  color?: string;
+}
+
+interface Props {
+  data: Slice[];
+  size?: number;
+}
+
+const { data, size = 200 } = Astro.props;
+
+const defaultColors = ["#b8623f", "#969ba2", "#5e636b", "#1a1c20"];
+const total = Math.max(1, data.reduce((s, d) => s + d.value, 0));
+
+const radius = size / 2;
+const inner = radius * 0.62;
+const cx = size / 2;
+const cy = size / 2;
+
+let acc = 0;
+const slices = data.map((d, i) => {
+  const startAngle = (acc / total) * Math.PI * 2 - Math.PI / 2;
+  acc += d.value;
+  const endAngle = (acc / total) * Math.PI * 2 - Math.PI / 2;
+
+  const largeArc = endAngle - startAngle > Math.PI ? 1 : 0;
+
+  const x1 = cx + radius * Math.cos(startAngle);
+  const y1 = cy + radius * Math.sin(startAngle);
+  const x2 = cx + radius * Math.cos(endAngle);
+  const y2 = cy + radius * Math.sin(endAngle);
+
+  const xi1 = cx + inner * Math.cos(endAngle);
+  const yi1 = cy + inner * Math.sin(endAngle);
+  const xi2 = cx + inner * Math.cos(startAngle);
+  const yi2 = cy + inner * Math.sin(startAngle);
+
+  const path = [
+    `M ${x1} ${y1}`,
+    `A ${radius} ${radius} 0 ${largeArc} 1 ${x2} ${y2}`,
+    `L ${xi1} ${yi1}`,
+    `A ${inner} ${inner} 0 ${largeArc} 0 ${xi2} ${yi2}`,
+    "Z",
+  ].join(" ");
+
+  return {
+    ...d,
+    path,
+    color: d.color ?? defaultColors[i % defaultColors.length],
+    pct: ((d.value / total) * 100).toFixed(0),
+  };
+});
+---
+
+<div class="flex flex-col items-start gap-5">
+  <svg
+    viewBox={`0 0 ${size} ${size}`}
+    width={size}
+    height={size}
+    role="img"
+    aria-label="Category distribution donut"
+  >
+    {slices.map((s, i) => (
+      <path
+        d={s.path}
+        fill={s.color}
+        class="donut-slice"
+        style={`animation-delay:${i * 80}ms; transform-origin:${cx}px ${cy}px`}
+      />
+    ))}
+  </svg>
+  <ul class="grid grid-cols-2 gap-x-6 gap-y-2 w-full">
+    {slices.map((s) => (
+      <li class="flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.08em] text-graphite-300">
+        <span
+          class="inline-block w-3 h-3 rounded-sm border border-graphite-700/60"
+          style={`background:${s.color}`}
+        ></span>
+        <span class="truncate">{s.label}</span>
+        <span class="text-graphite-500 ml-auto">{s.pct}%</span>
+      </li>
+    ))}
+  </ul>
+</div>
+
+<style>
+  .donut-slice {
+    opacity: 0;
+    transform: scale(0.94);
+    animation: sliceIn 520ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+  }
+  @keyframes sliceIn {
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .donut-slice {
+      opacity: 1;
+      transform: none;
+      animation: none;
+    }
+  }
+</style>

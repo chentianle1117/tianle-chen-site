@@ -1,40 +1,73 @@
 import { defineCollection, z } from "astro:content";
 
+// Permissive but type-preserving schema. Vault frontmatter is rich (86+ keys)
+// with mixed types (nullable strings, non-strict URLs, mixed-shape arrays).
+// We keep validation loose so sync passes, but lean heavily on .passthrough()
+// for unknown keys. Consumers cast `data as any` where needed for fields we
+// don't enumerate here.
+
 const projects = defineCollection({
   type: "content",
   schema: z
     .object({
-      type: z.literal("portfolio-project").optional(),
       title: z.string(),
-      slug: z.string(),
-      course: z.string().optional(),
-      course_code: z.union([z.string(), z.number()]).optional().nullable(),
-      semester: z.string().optional(),
-      year: z.number().optional(),
-      role: z.string().optional(),
-      team_size: z.union([z.string(), z.number()]).optional(),
-      team: z.array(z.string()).optional(),
-      team_hierarchy: z.string().optional(),
-      repo_owner: z.string().optional(),
-      institution: z.string().optional(),
-      tags: z.array(z.string()).default([]),
-      categories: z.array(z.string()).default([]),
-      github: z.string().nullable().optional(),
-      github_url: z.string().url().optional(),
-      live_url: z.string().url().optional(),
-      video: z.string().url().optional(),
-      notion_url: z.string().url().optional(),
-      local_path: z.string().optional(),
-      hero_image: z.string().optional(),
-      images: z.array(z.string()).default([]),
-      artifacts: z.array(z.string()).default([]),
-      priority: z.enum(["flagship", "standard", "experimental"]).default("standard"),
-      status: z.enum(["draft", "ready", "published"]).default("draft"),
-      publish: z.boolean().default(false),
-      publication: z.string().optional(),
-      publication_url: z.string().url().optional(),
+      // `slug` is reserved in Astro 5 (auto-derived from filename). Frontmatter
+      // `slug:` flows through via .passthrough() — code can still access data.slug.
+
+      type: z.string().nullish(),
+      course: z.string().nullish(),
+      course_code: z.union([z.string(), z.number()]).nullish(),
+      semester: z.string().nullish(),
+      year: z.number().nullish(),
+      institution: z.string().nullish(),
+      program: z.string().nullish(),
+      company: z.string().nullish(),
+
+      role: z.string().nullish(),
+      role_evolution: z.string().nullish(),
+      team_size: z.union([z.string(), z.number()]).nullish(),
+      team: z.array(z.string()).nullish(),
+      team_hierarchy: z.string().nullish(),
+      collaborators: z.array(z.string()).nullish(),
+      repo_owner: z.string().nullish(),
+      advisor: z.string().nullish(),
+
+      tags: z.array(z.string()).nullish(),
+      categories: z.array(z.string()).nullish(),
+
+      github: z.string().nullish(),
+      github_url: z.string().nullish(),
+      live_url: z.string().nullish(),
+
+      hero_image: z.string().nullish(),
+      images: z.array(z.string()).nullish(),
+      video: z.string().nullish(),
+      // artifacts can be strings OR objects in vault — accept either
+      artifacts: z.array(z.unknown()).nullish(),
+
+      publication: z.string().nullish(),
+      publication_url: z.string().nullish(),
+
+      stack: z.union([z.array(z.string()), z.string()]).nullish(),
+      dataset: z.string().nullish(),
+
+      priority: z.enum(["flagship", "standard", "experimental"]).nullish(),
+      status: z.enum(["draft", "ready", "published"]).nullish(),
+      publish: z.boolean().nullish(),
+      publish_reason: z.string().nullish(),
     })
     .passthrough(),
 });
 
-export const collections = { projects };
+const site = defineCollection({
+  type: "content",
+  schema: z
+    .object({
+      title: z.string(),
+      date: z.string().nullish(),
+      body: z.string().nullish(),
+    })
+    .passthrough(),
+});
+
+export const collections = { projects, site };

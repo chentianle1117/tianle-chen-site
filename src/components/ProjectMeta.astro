@@ -1,0 +1,89 @@
+---
+import CiteButton from "./CiteButton.astro";
+
+interface Props {
+  data: any;
+}
+const { data } = Astro.props;
+
+const live = data.live_url;
+const code = data.github_url || (data.github && typeof data.github === "string" ? data.github : null);
+const stack: string[] = (data.tags ?? []).slice(0, 8);
+const dataset = data.dataset || data.data;
+const courseFull = [data.course, data.course_code ? `(${data.course_code})` : null]
+  .filter(Boolean)
+  .join(" ");
+const team: string[] = (data.team ?? []).filter(
+  (n: string) => n !== "David Chen" && n !== "Tianle Chen"
+);
+const yearLine = [data.year, data.semester].filter(Boolean).join(" · ");
+---
+
+<aside class="border-y border-graphite-700/60 py-6 md:py-8">
+  <div class="container-page">
+    <dl class="flex flex-wrap gap-x-10 gap-y-5 items-start">
+      {live && (
+        <div class="flex flex-col gap-1">
+          <dt class="mono-label">Live</dt>
+          <dd>
+            <a href={live} target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-oxide-400 hover:text-oxide-300 underline-offset-4 hover:underline">
+              <span>{(() => { try { return new URL(live).hostname.replace(/^www\./, ""); } catch { return "open"; } })()}</span>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+                <path d="M7 17L17 7M9 7h8v8" />
+              </svg>
+            </a>
+          </dd>
+        </div>
+      )}
+      {code && (
+        <div class="flex flex-col gap-1">
+          <dt class="mono-label">Code</dt>
+          <dd>
+            <a href={code} target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-oxide-400 hover:text-oxide-300 underline-offset-4 hover:underline">
+              <span>github</span>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+                <path d="M7 17L17 7M9 7h8v8" />
+              </svg>
+            </a>
+          </dd>
+        </div>
+      )}
+      {stack.length > 0 && (
+        <div class="flex flex-col gap-1 max-w-md">
+          <dt class="mono-label">Stack</dt>
+          <dd class="text-graphite-200 text-sm leading-relaxed">{stack.join(", ")}</dd>
+        </div>
+      )}
+      {dataset && (
+        <div class="flex flex-col gap-1">
+          <dt class="mono-label">Dataset</dt>
+          <dd class="text-graphite-200 text-sm">{dataset}</dd>
+        </div>
+      )}
+      {courseFull && (
+        <div class="flex flex-col gap-1 max-w-md">
+          <dt class="mono-label">Course</dt>
+          <dd class="text-graphite-200 text-sm">{courseFull}</dd>
+        </div>
+      )}
+      {team.length > 0 && (
+        <div class="flex flex-col gap-1 max-w-md">
+          <dt class="mono-label">Team</dt>
+          <dd class="text-graphite-200 text-sm">{team.join(", ")}</dd>
+        </div>
+      )}
+      {yearLine && (
+        <div class="flex flex-col gap-1">
+          <dt class="mono-label">Year</dt>
+          <dd class="text-graphite-200 text-sm uppercase tracking-wider">{yearLine}</dd>
+        </div>
+      )}
+      <div class="flex flex-col gap-1 ml-auto">
+        <dt class="mono-label sr-only">Cite</dt>
+        <dd>
+          <CiteButton data={data} />
+        </dd>
+      </div>
+    </dl>
+  </div>
+</aside>

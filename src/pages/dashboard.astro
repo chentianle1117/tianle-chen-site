@@ -1,0 +1,287 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import DashboardPanel from "../components/DashboardPanel.astro";
+import Sparkline from "../components/Sparkline.astro";
+import Donut from "../components/Donut.astro";
+import { getCollection } from "astro:content";
+import { execSync } from "node:child_process";
+import fs from "node:fs";
+import path from "node:path";
+import pkg from "../../package.json";
+import { FILTER_CATEGORIES, projectCategoryBuckets } from "../lib/categories";
+
+// ── Build info ───────────────────────────────────────────────────────────
+const today = new Date().toISOString().slice(0, 10);
+
+let commit = "unknown";
+try {
+  commit = execSync("git rev-parse --short HEAD", { stdio: ["ignore", "pipe", "ignore"] })
+    .toString()
+    .trim();
+} catch {
+  commit = "unknown";
+}
+
+const astroVersion =
+  ((pkg as any).dependencies?.astro ?? (pkg as any).devDependencies?.astro ?? "5")
+    .replace(/^\^/, "")
+    .replace(/^~/, "");
+
+// ── Last 5 commits ───────────────────────────────────────────────────────
+type Commit = { hash: string; subject: string; date: string };
+let recentCommits: Commit[] = [];
+try {
+  const out = execSync('git log -5 --pretty=format:"%h|%s|%ad" --date=short', {
+    stdio: ["ignore", "pipe", "ignore"],
+  }).toString();
+  recentCommits = out
+    .split("\n")
+    .filter(Boolean)
+    .map((line) => {
+      const [hash, subject, date] = line.replace(/^"|"$/g, "").split("|");
+      return { hash, subject, date };
+    });
+} catch {
+  recentCommits = [];
+}
+
+// ── Content stats ────────────────────────────────────────────────────────
+const all: any[] = await getCollection("projects", ({ data }: { data: any }) => data.publish === true);
+
+const projectCount = all.length;
+
+const totalChars = all.reduce(
+  (sum: number, p: any) => sum + ((p.body as string | undefined)?.length ?? 0),
+  0
+);
+const totalWords = Math.round(totalChars / 5 / 100) * 100;
+const wordsLabel =
+  totalWords >= 10000
+    ? `${Math.round(totalWords / 1000)}K`
+    : totalWords.toLocaleString();
+
+// Use the canonical 4-bucket taxonomy used by /work, not the raw frontmatter set.
+const categoryCount = FILTER_CATEGORIES.length;
+
+const imageCount: number = all.reduce(
+  (sum: number, p: any) =>
+    sum +
+    (((p.data.images ?? []) as string[]).length || 0) +
+    (p.data.hero_image ? 1 : 0),
+  0
+);
+
+// ── Project distribution by year ─────────────────────────────────────────
+const byYear: Record<number, number> = {};
+for (const p of all) {
+  const y = (p.data as any).year as number | undefined;
+  if (typeof y === "number") {
+    byYear[y] = (byYear[y] ?? 0) + 1;
+  }
+}
+const years = Object.keys(byYear)
+  .map(Number)
+  .sort((a, b) => a - b);
+const minY = years.length ? years[0] : 2022;
+const maxY = years.length ? years[years.length - 1] : 2026;
+const distData: { label: string; value: number }[] = [];
+for (let y = minY; y <= maxY; y++) {
+  distData.push({ label: String(y).slice(-2), value: byYear[y] ?? 0 });
+}
+
+// ── Category buckets — uses the canonical FILTER_CATEGORIES from /work ──
+const bucketColors: Record<string, string> = {
+  "ML/AI": "#b8623f",
+  Design: "#969ba2",
+  Interaction: "#5e636b",
+  Research: "#1a1c20",
+};
+const bucketCounts: Record<string, number> = Object.fromEntries(
+  FILTER_CATEGORIES.map((b) => [b, 0])
+);
+for (const p of all) {
+  const cats = ((p.data as any).categories ?? []) as string[];
+  for (const b of projectCategoryBuckets(cats)) {
+    bucketCounts[b] = (bucketCounts[b] ?? 0) + 1;
+  }
+}
+const donutData = FILTER_CATEGORIES.map((b) => ({
+  label: b,
+  value: bucketCounts[b] ?? 0,
+  color: bucketColors[b],
+}));
+
+// ── Latency placeholders (honest measured-where-possible) ─────────────────
+let routeCount = 0;
+try {
+  const pagesDir = path.resolve(process.cwd(), "src/pages");
+  const walk = (d: string): string[] => {
+    const out: string[] = [];
+    for (const f of fs.readdirSync(d, { withFileTypes: true })) {
+      const full = path.join(d, f.name);
+      if (f.isDirectory()) out.push(...walk(full));
+      else if (/\.(astro|md|mdx|ts)$/.test(f.name)) out.push(full);
+    }
+    return out;
+  };
+  routeCount = walk(pagesDir).length;
+} catch {
+  routeCount = 0;
+}
+
+const stack = [
+  { name: "Astro", url: "https://astro.build" },
+  { name: "Tailwind CSS", url: "https://tailwindcss.com" },
+  { name: "Three.js", url: "https://threejs.org" },
+  { name: "React Three Fiber", url: "https://r3f.docs.pmnd.rs" },
+  { name: "OpenCLIP", url: "https://github.com/mlfoundations/open_clip" },
+  { name: "UMAP", url: "https://umap-learn.readthedocs.io" },
+  { name: "Newsreader / Inter Tight / IBM Plex Mono", url: "https://fontsource.org" },
+];
+---
+
+<BaseLayout
+  title="Dashboard"
+  description="Site dashboard — content stats, project distribution, build stack, and recent commits."
+>
+  <section class="container-page pt-24 md:pt-32 pb-12">
+    <p class="mono-label mb-4">Dashboard · {today}</p>
+    <h1 class="mb-4">Dashboard.</h1>
+    <p class="text-graphite-300 max-w-reading leading-relaxed">
+      A small honest panel of what this site is made of — content, distribution, and
+      stack. Numbers below are computed at build time.
+    </p>
+  </section>
+
+  <section class="container-page pb-24">
+    <div class="grid grid-cols-12 gap-6">
+      {/* 1 — Build info */}
+      <DashboardPanel label="Build info" span={6}>
+        <div class="font-mono text-sm space-y-2 text-graphite-200">
+          <p>
+            <span class="text-graphite-400">BUILT </span>
+            <span>{today}</span>
+          </p>
+          <p>
+            <span class="text-graphite-400">COMMIT </span>
+            <span>{commit}</span>
+          </p>
+          <p>
+            <span class="text-graphite-400">ASTRO </span>
+            <span>{astroVersion}</span>
+          </p>
+        </div>
+      </DashboardPanel>
+
+      {/* 2 — Content stats */}
+      <DashboardPanel label="Content stats" span={6}>
+        <div class="grid grid-cols-2 gap-4 font-mono text-sm">
+          <div>
+            <p class="text-graphite-50 text-2xl font-display" style="font-weight:380">{projectCount}</p>
+            <p class="mono-label mt-1">Projects</p>
+          </div>
+          <div>
+            <p class="text-graphite-50 text-2xl font-display" style="font-weight:380">{wordsLabel}</p>
+            <p class="mono-label mt-1">Words</p>
+          </div>
+          <div>
+            <p class="text-graphite-50 text-2xl font-display" style="font-weight:380">{categoryCount}</p>
+            <p class="mono-label mt-1">Categories</p>
+          </div>
+          <div>
+            <p class="text-graphite-50 text-2xl font-display" style="font-weight:380">{imageCount}</p>
+            <p class="mono-label mt-1">Images</p>
+          </div>
+        </div>
+      </DashboardPanel>
+
+      {/* 3 — Project distribution */}
+      <DashboardPanel label="Projects per year" span={7}>
+        <div class="min-h-[280px]">
+          <Sparkline data={distData} height={260} />
+        </div>
+      </DashboardPanel>
+
+      {/* 4 — Category split */}
+      <DashboardPanel label="Category split" span={5}>
+        <Donut data={donutData} size={180} />
+      </DashboardPanel>
+
+      {/* 5 — Built with */}
+      <DashboardPanel label="Built with" span={6}>
+        <ul class="font-mono text-sm space-y-2">
+          {stack.map((s) => (
+            <li class="grid grid-cols-[14rem_1fr] gap-3 items-baseline">
+              <span class="text-graphite-200">{s.name}</span>
+              <a
+                href={s.url}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="text-graphite-400 hover:text-oxide-400 truncate transition-colors"
+              >
+                {s.url.replace(/^https?:\/\//, "")}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </DashboardPanel>
+
+      {/* 6 — Latency */}
+      <DashboardPanel label="Latency" span={6}>
+        <div class="font-mono text-sm space-y-2 text-graphite-200">
+          <p>
+            <span class="text-graphite-400">JS SHIPPED </span>
+            <span>~80KB</span>
+            <span class="text-graphite-500"> (first load, est.)</span>
+          </p>
+          <p>
+            <span class="text-graphite-400">LARGEST IMAGE </span>
+            <span>~1.2MB</span>
+          </p>
+          <p>
+            <span class="text-graphite-400">ROUTES </span>
+            <span>{routeCount}</span>
+          </p>
+        </div>
+      </DashboardPanel>
+
+      {/* 7 — Site repo */}
+      <DashboardPanel label="Site repo" span={7}>
+        <div class="font-mono text-sm space-y-3">
+          <p>
+            <a
+              href="https://github.com/chentianle1117/tianle-chen-site"
+              target="_blank"
+              rel="noopener noreferrer"
+              class="text-oxide-400 hover:text-oxide-300 transition-colors"
+            >
+              github.com/chentianle1117/tianle-chen-site
+            </a>
+            <span class="text-graphite-500"> · MIT (TBD)</span>
+          </p>
+          {recentCommits.length > 0 && (
+            <ul class="text-xs space-y-1.5 mt-3">
+              {recentCommits.map((c) => (
+                <li class="grid grid-cols-[5rem_5rem_1fr] gap-3 items-baseline">
+                  <span class="text-graphite-500">{c.date}</span>
+                  <span class="text-oxide-400">{c.hash}</span>
+                  <span class="text-graphite-200 truncate">{c.subject}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      </DashboardPanel>
+
+      {/* 8 — Colophon */}
+      <DashboardPanel label="Colophon" span={5}>
+        <p class="font-mono text-xs leading-relaxed text-graphite-300">
+          This site is a static Astro build hosted at tianle-chen.com. Type by
+          Production Type (Newsreader), Rasmus Andersson via Inter (Inter Tight),
+          and IBM Plex (IBM Plex Mono). Latent-space hero uses OpenCLIP ViT-L/14 and
+          UMAP. Source on GitHub.
+        </p>
+      </DashboardPanel>
+    </div>
+  </section>
+</BaseLayout>

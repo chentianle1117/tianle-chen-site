@@ -1,0 +1,28 @@
+---
+interface Props {
+  as?: string;
+  tone?: "primary" | "secondary" | "tertiary";
+  class?: string;
+}
+
+const { as: Tag = "span", tone = "tertiary", class: className = "" } = Astro.props;
+
+const toneMap: Record<string, string> = {
+  primary: "text-graphite-50",
+  secondary: "text-graphite-300",
+  tertiary: "text-graphite-400",
+};
+
+const toneClass = toneMap[tone] ?? toneMap.tertiary;
+---
+
+<Tag
+  class:list={[
+    "font-mono uppercase tracking-[0.08em]",
+    toneClass,
+    className,
+  ]}
+  style="font-size: var(--step--1)"
+>
+  <slot />
+</Tag>

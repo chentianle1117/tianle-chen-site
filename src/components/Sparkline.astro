@@ -1,0 +1,111 @@
+---
+interface DataPoint {
+  label: string;
+  value: number;
+}
+
+interface Props {
+  data: DataPoint[];
+  height?: number;
+}
+
+const { data, height = 240 } = Astro.props;
+
+const max = Math.max(1, ...data.map((d) => d.value));
+const padX = 24;
+const padTop = 16;
+const padBottom = 32;
+const width = 600;
+
+const innerW = width - padX * 2;
+const innerH = height - padTop - padBottom;
+
+const barCount = data.length;
+const barGap = 12;
+const barW = barCount > 0 ? (innerW - barGap * (barCount - 1)) / barCount : 0;
+
+const bars = data.map((d, i) => {
+  const h = (d.value / max) * innerH;
+  const x = padX + i * (barW + barGap);
+  const y = padTop + (innerH - h);
+  return { ...d, x, y, w: barW, h };
+});
+---
+
+<div class="w-full overflow-hidden">
+  <svg
+    viewBox={`0 0 ${width} ${height}`}
+    preserveAspectRatio="xMidYMid meet"
+    class="w-full"
+    role="img"
+    aria-label="Project distribution sparkline"
+  >
+    {/* axis baseline */}
+    <line
+      x1={padX}
+      x2={width - padX}
+      y1={padTop + innerH}
+      y2={padTop + innerH}
+      stroke="rgb(94 99 107)"
+      stroke-width="1"
+    />
+
+    {bars.map((b, i) => (
+      <g class="spark-bar" style={`animation-delay:${i * 60}ms`}>
+        <rect
+          x={b.x}
+          y={b.y}
+          width={b.w}
+          height={Math.max(0, b.h)}
+          fill="#b8623f"
+          rx="1"
+        />
+        <text
+          x={b.x + b.w / 2}
+          y={padTop + innerH + 18}
+          text-anchor="middle"
+          fill="rgb(94 99 107)"
+          font-family="IBM Plex Mono, ui-monospace, monospace"
+          font-size="10"
+          letter-spacing="0.08em"
+        >
+          {b.label}
+        </text>
+        {b.value > 0 && (
+          <text
+            x={b.x + b.w / 2}
+            y={b.y - 6}
+            text-anchor="middle"
+            fill="rgb(150 155 162)"
+            font-family="IBM Plex Mono, ui-monospace, monospace"
+            font-size="10"
+          >
+            {b.value}
+          </text>
+        )}
+      </g>
+    ))}
+  </svg>
+</div>
+
+<style>
+  .spark-bar {
+    opacity: 0;
+    transform: translateY(8px);
+    animation: sparkIn 480ms cubic-bezier(0.22, 1, 0.36, 1) forwards;
+    transform-origin: bottom;
+  }
+  @keyframes sparkIn {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .spark-bar {
+      opacity: 1;
+      transform: none;
+      animation: none;
+    }
+  }
+</style>

@@ -1,41 +1,102 @@
 ---
+// @ts-nocheck
+// Permissive vault schema (passthrough) — TS inference collapses on data.X access. v1: bypass.
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import ProjectCard from "../../components/ProjectCard.astro";
+import FilterBar from "../../components/FilterBar.astro";
 import { getCollection } from "astro:content";
+import {
+  FILTER_CATEGORIES,
+  projectCategoryBuckets,
+} from "../../lib/categories";
 
 const all = await getCollection("projects", ({ data }) => data.publish === true);
 
-// Exclude Rice architecture (they live at /architecture)
 const isArchitectureTier = (p: typeof all[0]) =>
   p.data.institution === "Rice University" ||
-  (p.data.categories && p.data.categories.includes("Architecture") && p.data.year && p.data.year <= 2024);
+  (p.data.categories &&
+    p.data.categories.includes("Architecture") &&
+    p.data.year &&
+    p.data.year <= 2024);
 
 const work = all
   .filter((p) => !isArchitectureTier(p))
   .sort((a, b) => {
-    // flagship first
     if (a.data.priority === "flagship" && b.data.priority !== "flagship") return -1;
     if (b.data.priority === "flagship" && a.data.priority !== "flagship") return 1;
-    // then by year desc
     return (b.data.year ?? 0) - (a.data.year ?? 0);
   });
+
+// Years and categories for filter bar
+const years = Array.from(
+  new Set(work.map((p) => p.data.year).filter((y): y is number => typeof y === "number"))
+);
+const minYear = Math.min(...years);
+const maxYear = Math.max(...years);
+const total = work.length;
+const yearRange = `${minYear}—${maxYear}`;
+const kicker = `${total} PROJECTS · ${FILTER_CATEGORIES.length} CATEGORIES · ${yearRange}`;
+
+// Pre-compute the bucket attribute per project so the client filter can
+// match without re-running the matchers in the browser.
+const cardsWithBuckets = work.map((p) => ({
+  project: p,
+  buckets: projectCategoryBuckets(p.data.categories ?? []),
+}));
 ---
 
-<BaseLayout title="Work" description="Tianle Chen's body of work — generative ML, interactive tools, design research.">
-  <section class="container-full pt-20 md:pt-28 pb-12">
-    <p class="font-mono text-xs uppercase tracking-[0.25em] text-accent mb-4">Work</p>
-    <h1 class="max-w-4xl mb-8">Projects, tools, and research.</h1>
-    <p class="text-xl text-ink-300 max-w-2xl leading-relaxed font-light">
-      Generative 3D, interactive ML tools, design-AI integration, and data-driven
-      visualization. <a href="/architecture" class="text-accent-300 hover:text-accent-200 underline decoration-accent/40 underline-offset-4">Architecture work</a> from Rice is kept separately.
-    </p>
+<BaseLayout
+  title="Work"
+  description="David Chen's body of work — generative ML, interactive tools, design research."
+>
+  <FilterBar categories={[...FILTER_CATEGORIES]} years={years} total={total} />
+
+  <section class="container-page pt-12 md:pt-16 pb-10">
+    <p class="mono-label mb-4">{kicker}</p>
+    <h1 class="max-w-4xl" style="font-size: var(--step-5); font-weight: 380;">Work</h1>
   </section>
 
-  <section class="container-full py-8 md:py-12">
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-      {work.map((project) => (
-        <ProjectCard project={project} size="default" />
-      ))}
+  <section class="container-page py-8 md:py-12">
+    <div id="work-grid" class="grid grid-cols-12 gap-x-6 gap-y-12">
+      {cardsWithBuckets.map(({ project, buckets }, i) => {
+        const isFlagship = project.data.priority === "flagship";
+        const isFirst = i === 0;
+        const span = isFirst
+          ? "col-span-12 md:col-span-8"
+          : isFlagship
+          ? "col-span-12 md:col-span-6"
+          : "col-span-12 md:col-span-6 lg:col-span-4";
+        return (
+          <div
+            class:list={[span]}
+            data-card-slug={(project as any).slug ?? project.data.slug}
+            data-card-buckets={buckets.join("|")}
+            data-card-year={project.data.year ?? ""}
+            data-card-priority={project.data.priority ?? "standard"}
+            data-card-title={project.data.title}
+          >
+            <ProjectCard
+              project={project}
+              size={isFirst ? "large" : "default"}
+              eager={isFirst}
+            />
+          </div>
+        );
+      })}
+    </div>
+
+    <div id="work-empty" class="hidden text-center py-24">
+      <p class="text-graphite-300 mb-6">No projects match. Reset filters.</p>
+      <button
+        type="button"
+        id="filter-reset"
+        class="mono-label px-4 py-2 border border-graphite-700/60 rounded-sm hover:border-oxide-500/40 hover:text-oxide-400 transition-colors duration-180"
+      >Reset</button>
     </div>
   </section>
 </BaseLayout>
+
+<style>
+  /* Empty state visibility is toggled via inline style attribute by FilterBar script */
+  #work-empty[style*="display: none"] { display: none !important; }
+</style>

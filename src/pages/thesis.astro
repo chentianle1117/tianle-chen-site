@@ -1,0 +1,99 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import ProjectCard from "../components/ProjectCard.astro";
+import { getEntry, getCollection } from "astro:content";
+
+const thesis: any = await getEntry("projects", "semantic-canvas");
+
+if (!thesis) {
+  throw new Error("Thesis project (semantic-canvas) not found in projects collection");
+}
+
+const data: any = thesis.data;
+const advisor = data.advisor ?? "TBD";
+const video = data.video as string | undefined;
+const githubUrl = data.github_url as string | undefined;
+const liveUrl = data.live_url as string | undefined;
+
+const { Content } = await thesis.render();
+
+// Related projects
+const relatedSlugs = ["l43d-cad-mllm", "3t3d-vit-2d-to-3d", "design-the-ambience"];
+const all: any[] = await getCollection("projects", ({ data }: { data: any }) => data.publish === true);
+const related: any[] = relatedSlugs
+  .map((slug) => all.find((p) => p.data.slug === slug || p.slug === slug))
+  .filter(Boolean);
+---
+
+<BaseLayout
+  title="Thesis — Semantic Canvas"
+  description="MSCD thesis at Carnegie Mellon: Semantic Canvas, an AI-augmented latent-space design tool for footwear designers."
+  image={data.hero_image ?? "/og-default.png"}
+>
+  <article class="container-reading pt-24 md:pt-32 pb-24">
+    <header class="mb-12" data-reveal>
+      <p class="mono-label mb-4">
+        MSCD Thesis · 2025–2026 · Advised by {advisor}
+      </p>
+      <h1 class="text-balance">Semantic Canvas — AI-Augmented Footwear Design</h1>
+    </header>
+
+    <p class="text-graphite-200 leading-relaxed mb-12 text-lg" data-reveal>
+      An interactive D3-based canvas where shoe designs reposition themselves along
+      designer-defined semantic axes, with fal.ai generation and a Gemini observer
+      embedded in the workflow — a thesis instrument and a thesis artifact at once.
+    </p>
+
+    {/* Demo video or placeholder */}
+    <figure class="mb-16" data-reveal>
+      {video ? (
+        <video
+          src={video}
+          autoplay
+          muted
+          loop
+          playsinline
+          class="w-full rounded-md border border-graphite-700/60 bg-graphite-800"
+        ></video>
+      ) : (
+        <div class="aspect-video rounded-md border border-graphite-700/60 bg-graphite-800 flex items-center justify-center">
+          <p class="mono-label">demo video forthcoming</p>
+        </div>
+      )}
+      <figcaption class="mono-label mt-3">
+        Recorded demo · Semantic Canvas
+      </figcaption>
+    </figure>
+
+    {/* Body MDX */}
+    <div class="prose-custom mb-16" data-reveal>
+      <Content />
+    </div>
+
+    {/* CTA */}
+    <section class="mb-20 flex flex-wrap gap-4" data-reveal>
+      {githubUrl && (
+        <a href={githubUrl} target="_blank" rel="noopener noreferrer" class="btn">
+          View on GitHub
+        </a>
+      )}
+      {liveUrl && (
+        <a href={liveUrl} target="_blank" rel="noopener noreferrer" class="btn-primary">
+          Try the live tool
+        </a>
+      )}
+    </section>
+  </article>
+
+  {/* Related */}
+  {related.length > 0 && (
+    <section class="container-page py-16 border-t border-graphite-700/40">
+      <p class="mono-label mb-8">Related work</p>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
+        {related.map((p) => (
+          <ProjectCard project={p} size="default" />
+        ))}
+      </div>
+    </section>
+  )}
+</BaseLayout>

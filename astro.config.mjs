@@ -2,6 +2,8 @@ import { defineConfig } from "astro/config";
 import tailwind from "@astrojs/tailwind";
 import mdx from "@astrojs/mdx";
 import sitemap from "@astrojs/sitemap";
+import react from "@astrojs/react";
+import glsl from "vite-plugin-glsl";
 
 export default defineConfig({
   site: "https://tianle-chen.com",
@@ -9,6 +11,7 @@ export default defineConfig({
     tailwind({ applyBaseStyles: false }),
     mdx(),
     sitemap(),
+    react(),
   ],
   markdown: {
     remarkPlugins: [],
@@ -20,5 +23,13 @@ export default defineConfig({
   },
   build: {
     assets: "_astro",
+  },
+  vite: {
+    plugins: [
+      glsl({
+        include: ["**/*.glsl", "**/*.vert", "**/*.frag"],
+        compress: false,
+      }),
+    ],
   },
 });

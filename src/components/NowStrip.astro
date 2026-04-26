@@ -1,0 +1,28 @@
+---
+import { getEntry } from "astro:content";
+import MonoLabel from "./MonoLabel.astro";
+
+let kicker = "Now · 2026-04";
+let body =
+  "Building Semantic Canvas, my MSCD thesis. Looking for Gen-AI / ML engineering roles starting Aug 2026.";
+
+try {
+  const entry = await getEntry("site", "now");
+  if (entry) {
+    if (entry.data.date) kicker = `Now · ${entry.data.date}`;
+    if (entry.data.body) body = entry.data.body;
+  }
+} catch (_e) {
+  // fall back to defaults above
+}
+---
+
+<div data-reveal class="grid md:grid-cols-[auto_1fr] gap-6 md:gap-12 items-baseline">
+  <MonoLabel tone="secondary">{kicker}</MonoLabel>
+  <p
+    class="font-display text-graphite-100 max-w-reading"
+    style="font-size: var(--step-1); font-weight: 380; line-height: 1.45;"
+  >
+    {body}
+  </p>
+</div>

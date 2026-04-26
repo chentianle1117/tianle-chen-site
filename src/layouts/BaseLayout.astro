@@ -1,5 +1,6 @@
 ---
 import "../styles/global.css";
+import { ViewTransitions } from "astro:transitions";
 import Nav from "../components/Nav.astro";
 import Footer from "../components/Footer.astro";
 
@@ -11,11 +12,11 @@ interface Props {
 
 const {
   title,
-  description = "Tianle Chen — computational designer and creative ML engineer. Thesis tools, generative 3D, design-AI integration.",
+  description = "David Chen — Gen-AI engineer & computational designer. Tools at the seam of generative AI and design. CMU MSCD.",
   image = "/og-default.png",
 } = Astro.props;
 
-const siteName = "Tianle Chen";
+const siteName = "David Chen";
 const fullTitle = title === siteName ? title : `${title} — ${siteName}`;
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 ---
@@ -29,15 +30,6 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <meta name="description" content={description} />
     <link rel="canonical" href={canonicalURL} />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-
-    <!-- Self-hosted display + body fonts via Fontsource (add via npm install later) -->
-    <!-- For now, fall back to system stack; Fontsource will be wired in Phase 2 -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500;9..144,700&family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap"
-      rel="stylesheet"
-    />
 
     <!-- Open Graph -->
     <meta property="og:type" content="website" />
@@ -54,6 +46,7 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <meta name="twitter:image" content={new URL(image, Astro.site)} />
 
     <meta name="generator" content={Astro.generator} />
+    <ViewTransitions />
   </head>
   <body>
     <a href="#main" class="skip-link">Skip to content</a>
@@ -62,5 +55,40 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
       <slot />
     </main>
     <Footer />
+
+    <script>
+      // Reveal-on-scroll IntersectionObserver, staggered between siblings under [data-stagger]
+      const initReveal = () => {
+        const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+        const targets = document.querySelectorAll<HTMLElement>("[data-reveal]");
+        if (reduced) {
+          targets.forEach((el) => el.classList.add("is-visible"));
+          return;
+        }
+        const observer = new IntersectionObserver(
+          (entries) => {
+            entries.forEach((entry) => {
+              if (entry.isIntersecting) {
+                const el = entry.target as HTMLElement;
+                const parent = el.closest<HTMLElement>("[data-stagger]");
+                if (parent) {
+                  const siblings = Array.from(
+                    parent.querySelectorAll<HTMLElement>("[data-reveal]")
+                  );
+                  const idx = siblings.indexOf(el);
+                  el.style.transitionDelay = `${Math.max(0, idx) * 60}ms`;
+                }
+                el.classList.add("is-visible");
+                observer.unobserve(el);
+              }
+            });
+          },
+          { threshold: 0.15 }
+        );
+        targets.forEach((el) => observer.observe(el));
+      };
+      initReveal();
+      document.addEventListener("astro:page-load", initReveal);
+    </script>
   </body>
 </html>

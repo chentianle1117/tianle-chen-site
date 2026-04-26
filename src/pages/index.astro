@@ -1,101 +1,140 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import ProjectCard from "../components/ProjectCard.astro";
+import IndexList from "../components/IndexList.astro";
+import NowStrip from "../components/NowStrip.astro";
+import MonoLabel from "../components/MonoLabel.astro";
+import Reveal from "../components/Reveal.astro";
+// Agent D's component — may not yet exist at the time of authoring; resolves at build time.
+// @ts-ignore - intentional: HeroNavigator is being built by Agent D in parallel.
+import HeroNavigator from "../components/hero/HeroNavigator";
 import { getCollection } from "astro:content";
 
-const allProjects = await getCollection("projects", ({ data }) => data.publish === true);
-const flagships = allProjects
-  .filter((p) => p.data.priority === "flagship")
-  .sort((a, b) => (b.data.year ?? 0) - (a.data.year ?? 0));
-
-// Featured = up to 5 most recent flagships
-const featured = flagships.slice(0, 5);
+const allProjects = await getCollection(
+  "projects",
+  ({ data }) => data.publish === true
+);
+const sortedAll = [...allProjects].sort(
+  (a, b) => (b.data.year ?? 0) - (a.data.year ?? 0)
+);
+const flagships = sortedAll.filter((p) => p.data.priority === "flagship");
+const featured = flagships.slice(0, 5); // 6th tile reserved for the "view all" CTA
+const totalCount = sortedAll.length;
+const totalLabel = String(totalCount).padStart(2, "0");
 ---
 
-<BaseLayout title="Tianle Chen" description="Computational designer and creative ML engineer. Thesis tools, generative 3D, design-AI integration. CMU MSCD.">
-  {/* Hero */}
-  <section class="container-full pt-20 md:pt-32 pb-16 md:pb-24">
-    <div class="max-w-4xl">
-      <p class="font-mono text-xs uppercase tracking-[0.25em] text-accent mb-6 animate-fade-in">
-        陈天乐 · Tianle (David) Chen · MSCD @ Carnegie Mellon
-      </p>
-      <h1 class="mb-8 animate-slide-up">
-        Tools at the seam of
-        <span class="text-accent italic">computational design</span>
-        and
-        <span class="text-accent italic">machine learning</span>.
-      </h1>
-      <p class="text-xl md:text-2xl text-ink-300 max-w-2xl leading-relaxed font-light">
-        I build interactive systems where generative AI reshapes
-        design workflows — from shoe latent spaces to architectural form-finding to
-        real-time ambient projection. Trained as an architect, working as a
-        creative ML engineer.
-      </p>
+<BaseLayout
+  title="David Chen"
+  description="Gen-AI engineer & computational designer. CMU MSCD thesis tools, generative 3D, design-AI integration."
+>
+  {/* 1. Identity strip */}
+  <section class="container-page pt-16">
+    <div data-stagger class="flex flex-col items-center text-center">
+      <Reveal>
+        <MonoLabel tone="secondary">
+          David Chen · Gen-AI engineer & computational designer · Pittsburgh, PA
+        </MonoLabel>
+      </Reveal>
+      <Reveal>
+        <div class="w-[240px] h-px bg-graphite-700 my-6" aria-hidden="true"></div>
+      </Reveal>
     </div>
   </section>
 
-  {/* Featured work */}
-  <section class="container-full py-16 md:py-24" aria-labelledby="featured-heading">
-    <div class="flex items-baseline justify-between mb-10 md:mb-14">
-      <h2 id="featured-heading" class="font-display">Featured work</h2>
-      <a href="/work" class="font-mono text-xs uppercase tracking-widest text-ink-300 hover:text-accent transition-colors">
-        View all →
-      </a>
-    </div>
-
-    {featured.length === 0 ? (
-      <p class="text-ink-400">Projects are being synced. Run <code>npm run sync</code>.</p>
-    ) : (
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
-        {featured.map((project, i) => (
-          <ProjectCard project={project} size={i === 0 ? "large" : "default"} />
-        ))}
+  {/* 2. Latent navigator hero */}
+  <section class="container-wide" data-stagger>
+    <Reveal>
+      <div
+        class="relative aspect-[16/10] md:h-[78vh] md:min-h-[640px] md:aspect-auto rounded-md overflow-hidden border border-graphite-700/60"
+      >
+        <HeroNavigator client:visible />
       </div>
-    )}
+    </Reveal>
+    <Reveal>
+      <div class="mt-4 flex justify-center">
+        <MonoLabel tone="tertiary">
+          Interactive: drag to orbit · click a project · toggle layouts ↗
+        </MonoLabel>
+      </div>
+    </Reveal>
   </section>
 
-  {/* About snippet */}
-  <section class="container-full py-16 md:py-24 border-t border-ink-800/50" aria-labelledby="about-heading">
-    <div class="grid md:grid-cols-3 gap-12 items-start">
-      <div class="md:col-span-2">
-        <p class="font-mono text-xs uppercase tracking-[0.25em] text-ink-400 mb-4">About</p>
-        <h2 id="about-heading" class="mb-6">
-          Design-trained, ML-native, research-oriented.
-        </h2>
-        <div class="space-y-4 text-lg text-ink-300 leading-relaxed max-w-2xl">
-          <p>
-            I'm a Master of Science in Computational Design student at Carnegie Mellon,
-            finishing a thesis on AI-augmented footwear design — the research artifact
-            is <a href="/work/semantic-canvas" class="text-accent-300 hover:text-accent-200 underline decoration-accent/40 underline-offset-4">Semantic Canvas</a>,
-            an interactive latent-space tool for expert designers.
-          </p>
-          <p>
-            Before CMU I studied architecture at Rice University and worked at
-            EID Architects, Pure Architect, ECADI (Shanghai), and NBBJ (Los Angeles).
-            I collaborated with Prof. Juan Jose Castellon on ceramic-hollow column research
-            published at IASS 2024.
-          </p>
-          <p>
-            Right now I'm most interested in roles where design judgment and ML
-            engineering aren't two different people.
-          </p>
-        </div>
-      </div>
-      <aside class="flex flex-col gap-3">
-        <p class="font-mono text-xs uppercase tracking-[0.25em] text-ink-400 mb-2">Elsewhere</p>
-        <a href="https://github.com/chentianle1117" target="_blank" rel="noopener noreferrer" class="font-mono text-sm text-ink-200 hover:text-accent transition-colors border-b border-ink-700 hover:border-accent pb-1 w-fit">
-          github.com/chentianle1117
+  {/* 3. Selected work */}
+  <section class="container-page py-22 md:py-30" data-stagger aria-labelledby="selected-work">
+    <Reveal>
+      <MonoLabel tone="secondary" class="block mb-4">
+        2022—2026 · 06 OF {totalLabel}
+      </MonoLabel>
+    </Reveal>
+    <Reveal>
+      <h2 id="selected-work" class="font-display mb-10 md:mb-14">Selected work</h2>
+    </Reveal>
+
+    <div
+      class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 snap-x snap-mandatory md:snap-none overflow-x-auto md:overflow-visible -mx-6 px-6 md:mx-0 md:px-0"
+    >
+      {featured.map((project) => (
+        <Reveal class="snap-center md:snap-align-none min-w-[80%] md:min-w-0">
+          <ProjectCard project={project} size="default" />
+        </Reveal>
+      ))}
+
+      {/* 6th tile: View-all CTA, matches card-surface dimensions */}
+      <Reveal class="snap-center md:snap-align-none min-w-[80%] md:min-w-0">
+        <a
+          href="/work"
+          class="card-surface group flex flex-col h-full"
+          aria-label="View all projects"
+        >
+          <div
+            class="relative aspect-[4/3] flex flex-col items-center justify-center gap-3 bg-graphite-900 border-b border-graphite-700/60 transition-all duration-280 ease-out-soft group-hover:bg-graphite-800/80"
+          >
+            <span
+              class="font-mono uppercase tracking-[0.08em] text-graphite-400 group-hover:text-oxide-400 transition-colors"
+              style="font-size: var(--step--1)"
+            >
+              View all
+            </span>
+            <span
+              class="font-display text-graphite-100 group-hover:text-oxide-400 transition-colors"
+              style="font-size: var(--step-2); font-weight: 380;"
+            >
+              {totalCount} projects →
+            </span>
+          </div>
+          <div class="p-5 md:p-6 flex flex-col gap-3">
+            <div class="mono-label">Index</div>
+            <h3
+              class="font-display text-graphite-50 leading-tight"
+              style="font-size: var(--step-2); font-weight: 380;"
+            >
+              All work
+            </h3>
+          </div>
         </a>
-        <a href="https://www.linkedin.com/in/tianle-chen" target="_blank" rel="noopener noreferrer" class="font-mono text-sm text-ink-200 hover:text-accent transition-colors border-b border-ink-700 hover:border-accent pb-1 w-fit">
-          linkedin.com/in/tianle-chen
-        </a>
-        <a href="mailto:davidchen1117@gmail.com" class="font-mono text-sm text-ink-200 hover:text-accent transition-colors border-b border-ink-700 hover:border-accent pb-1 w-fit">
-          davidchen1117@gmail.com
-        </a>
-        <a href="/about" class="font-mono text-sm text-accent hover:text-accent-300 transition-colors border-b border-accent/40 hover:border-accent pb-1 w-fit mt-4">
-          Full bio →
-        </a>
-      </aside>
+      </Reveal>
     </div>
+  </section>
+
+  {/* 4. Now strip */}
+  <section class="container-page py-18 md:py-22 border-t border-graphite-800/50" data-stagger>
+    <NowStrip />
+  </section>
+
+  {/* 5. Index list */}
+  <section
+    class="container-page py-22 md:py-30 border-t border-graphite-800/50"
+    data-stagger
+    aria-labelledby="all-work"
+  >
+    <Reveal>
+      <MonoLabel tone="secondary" class="block mb-4">
+        Index · {totalLabel} entries
+      </MonoLabel>
+    </Reveal>
+    <Reveal>
+      <h2 id="all-work" class="font-display mb-10 md:mb-14">All work</h2>
+    </Reveal>
+    <IndexList projects={sortedAll} />
   </section>
 </BaseLayout>

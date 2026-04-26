@@ -1,42 +1,105 @@
 ---
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import ProjectCard from "../../components/ProjectCard.astro";
 import { getCollection } from "astro:content";
 
-const all = await getCollection("projects", ({ data }) => data.publish === true);
+const architectureSlugs = [
+  "fiber-based-pavilion",
+  "membrane-form-finding",
+  "generative-urbanism",
+  "wire-bending",
+];
 
-const architecture = all
-  .filter(
-    (p) =>
-      p.data.institution === "Rice University" ||
-      (p.data.categories && p.data.categories.includes("Architecture") && (p.data.year ?? 0) <= 2024)
-  )
-  .sort((a, b) => (b.data.year ?? 0) - (a.data.year ?? 0));
+const all: any[] = await getCollection("projects", ({ data }: { data: any }) => data.publish === true);
+
+type Card = {
+  slug: string;
+  title: string;
+  hero: string | null;
+  year: number | string;
+  institution: string;
+  role: string;
+  isIASS: boolean;
+};
+
+const architecture: Card[] = architectureSlugs
+  .map((slug) => all.find((p) => p.data.slug === slug || p.slug === slug))
+  .filter(Boolean)
+  .map((p: any) => {
+    const d: any = p.data;
+    return {
+      slug: d.slug,
+      title: d.title,
+      hero: d.hero_image || (d.images && d.images[0]) || null,
+      year: d.year ?? "",
+      institution: d.institution ?? "",
+      role: d.role ?? "",
+      isIASS: d.slug === "fiber-based-pavilion",
+    };
+  });
 ---
 
 <BaseLayout
   title="Architecture"
-  description="Tianle Chen's architecture work — Rice University research and studio projects 2021-2024."
+  description="Selected architecture work from Rice University, 2021–2024 — including IASS 2024 published research with Prof. Castellon."
 >
-  <section class="container-full pt-20 md:pt-28 pb-12">
-    <p class="font-mono text-xs uppercase tracking-[0.25em] text-accent mb-4">Before CMU</p>
-    <h1 class="max-w-4xl mb-8">Architecture.</h1>
-    <p class="text-xl text-ink-300 max-w-2xl leading-relaxed font-light">
-      Research and studio work from Rice University (2021-2024), including collaboration
-      with Prof. Juan Jose Castellon on ceramic-hollow column fabrication published at
-      IASS 2024.
+  <section class="container-page pt-24 md:pt-32 pb-12">
+    <p class="mono-label mb-4">Rice University · 2021–2024 · Selected projects</p>
+    <h1 class="max-w-3xl mb-6">Architecture.</h1>
+    <p class="max-w-reading text-graphite-300 leading-relaxed">
+      Studio and research work from the BArch — parametric form-finding,
+      ceramic-hollow column fabrication, generative urbanism, and robotic wire bending.
+      One project, the fiber-based parametric pavilion, was published at IASS 2024 with
+      Prof. Juan Jose Castellon.
     </p>
   </section>
 
-  <section class="container-full py-8 md:py-12">
+  <section class="container-page pt-12 pb-24">
     {architecture.length === 0 ? (
-      <p class="text-ink-400 font-mono text-sm">
+      <p class="font-mono text-sm text-graphite-400">
         Architecture projects sync from the vault. Run <code>npm run sync</code>.
       </p>
     ) : (
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 md:gap-8">
-        {architecture.map((project) => (
-          <ProjectCard project={project} size="default" />
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-16" data-stagger>
+        {architecture.map((card) => (
+          <a
+            href={`/work/${card.slug}`}
+            class="group block"
+            data-reveal
+          >
+            <div class="relative aspect-[3/4] overflow-hidden rounded-md border border-graphite-700/60 bg-graphite-800">
+              {card.hero ? (
+                <img
+                  src={card.hero}
+                  alt={card.title}
+                  loading="lazy"
+                  decoding="async"
+                  class="w-full h-full object-cover transition-all duration-640 ease-out-soft group-hover:scale-[1.02] group-hover:brightness-105"
+                />
+              ) : (
+                <div class="w-full h-full flex items-center justify-center">
+                  <span class="mono-label">{card.slug}</span>
+                </div>
+              )}
+              {card.isIASS && (
+                <span class="absolute top-4 left-4 font-mono text-[10px] uppercase tracking-[0.1em] text-oxide-400 bg-graphite-900/80 border border-oxide-500/40 rounded-sm px-2 py-1">
+                  IASS 2024 · Published
+                </span>
+              )}
+            </div>
+
+            <div class="mt-4 flex items-center justify-between gap-4">
+              <p class="mono-label">
+                {card.year}{card.institution ? ` · ${card.institution}` : ""}
+              </p>
+              {card.role && (
+                <p class="mono-label">{card.role.replace(/-/g, " ")}</p>
+              )}
+            </div>
+
+            <h3 class="mt-2 font-display tracking-tight text-graphite-50 group-hover:text-oxide-400 transition-colors" style="font-size: var(--step-3); font-weight:380; line-height:1.15;">
+              {card.title}
+            </h3>
+          </a>
         ))}
       </div>
     )}
