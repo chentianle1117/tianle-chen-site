@@ -33,7 +33,7 @@ reference_repos:
   - dunbar12138/pix2pix3D
   - openai/CLIP
 local_path: "W:\\CMU_Academics\\2025 Spring\\11685 Intro to DL\\Final Projects Models"
-hero_image: /assets/3t3d/arch_diagram.jpg
+hero_image: /assets/3t3d-vit-2d-to-3d/hero.jpg
 images:
   - /assets/3t3d/arch_diagram.jpg
   - /assets/3t3d/fusion_diagram.jpg

@@ -15,7 +15,7 @@ github_note: "UE5 project — not on GitHub (repo size + binary assets prohibiti
 local_path: "W:\\CMU_Academics\\2025 Spring\\62706 Gen Game\\Aurora Citadel"
 local_path_submission: "W:\\CMU_Academics\\2025 Spring\\62706 Gen Game\\Final_Submission_Citadel"
 stack: [Unreal Engine 5, "Wave Function Collapse (WFCPlugin-main 5.4)", PolyHaven, Megascans]
-hero_image: /assets/aurora-citadel/Module Layout.jpg
+hero_image: /assets/aurora-citadel-gen-game/hero.jpg
 images:
   - /assets/aurora-citadel/Module Layout.jpg
   - /assets/aurora-citadel/Module Layout plan.jpg

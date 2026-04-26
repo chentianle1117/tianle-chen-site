@@ -21,7 +21,7 @@ local_path_writeup: "W:\\CMU_Academics\\2025 Fall\\Thesis\\Thesis_Writeup\\overl
 local_path_demo: "W:\\CMU_Academics\\2025 Fall\\Thesis Demo"
 latest_draft: "thesis_body.tex (265 KB, last edit 2026-04-23)"
 proposal_video: "Proposal Final Presentation 1204.mp4 (103 MB, 2025-12-03, local only)"
-hero_image: /assets/thesis/pre-thesis-II-A1_Worldmaking_Diagram_DavidChen.png
+hero_image: /assets/thesis-flagship/hero.png
 images:
   - /assets/thesis/pre-thesis-II-A1_Worldmaking_Diagram_DavidChen.png
 artifacts:
