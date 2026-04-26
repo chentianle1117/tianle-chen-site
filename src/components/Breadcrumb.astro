@@ -1,0 +1,43 @@
+---
+interface Props {
+  category?: string;
+  title: string;
+}
+const { category, title } = Astro.props;
+---
+
+<nav
+  aria-label="Breadcrumb"
+  class="sticky z-30 border-b border-graphite-700/40 backdrop-blur-sm"
+  style="top: 65px; background-color: color-mix(in srgb, var(--bg) 80%, transparent);"
+>
+  <div class="container-page py-2">
+    <ol class="flex items-center gap-2 font-mono uppercase tracking-[0.08em]" style="font-size: var(--step--1);">
+      <li>
+        <a
+          href="/work"
+          class="text-secondary hover:text-accent-hi transition-colors duration-200"
+        >
+          Work
+        </a>
+      </li>
+      {category && (
+        <>
+          <li class="text-graphite-600" aria-hidden="true">/</li>
+          <li>
+            <a
+              href={`/work?category=${encodeURIComponent(category)}`}
+              class="text-secondary hover:text-accent-hi transition-colors duration-200"
+            >
+              {category}
+            </a>
+          </li>
+        </>
+      )}
+      <li class="text-graphite-600" aria-hidden="true">/</li>
+      <li class="text-primary truncate max-w-xs md:max-w-md" title={title}>
+        {title}
+      </li>
+    </ol>
+  </div>
+</nav>

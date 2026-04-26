@@ -1,99 +1,434 @@
 ---
+// @ts-nocheck
 import BaseLayout from "../layouts/BaseLayout.astro";
-import ProjectCard from "../components/ProjectCard.astro";
-import { getEntry, getCollection } from "astro:content";
+import SectionBreak from "../components/SectionBreak.astro";
+import RelatedRail from "../components/RelatedRail.astro";
+import MethodDiagram from "../components/MethodDiagram.astro";
+import { getEntry } from "astro:content";
+import { existsSync } from "node:fs";
+import { fileURLToPath } from "node:url";
+
+function publicFileExists(webPath: string | null | undefined): boolean {
+  if (!webPath || !webPath.startsWith("/")) return false;
+  const url = new URL(`../../public${webPath}`, import.meta.url);
+  return existsSync(fileURLToPath(url));
+}
 
 const thesis: any = await getEntry("projects", "semantic-canvas");
-
 if (!thesis) {
   throw new Error("Thesis project (semantic-canvas) not found in projects collection");
 }
 
 const data: any = thesis.data;
-const advisor = data.advisor ?? "TBD";
-const video = data.video as string | undefined;
+const advisor = data.advisor && data.advisor !== "TBD (thesis advisor)" ? data.advisor : "Prof. Daniel Cardoso Llach";
 const githubUrl = data.github_url as string | undefined;
 const liveUrl = data.live_url as string | undefined;
 
-const { Content } = await thesis.render();
+// Round-3 fix (Item 4): the proposal video shows light-cream tool panels that
+// contradict the dark stage of the rest of the site. Move the video out of the
+// hero and into a "PROPOSAL PRESENTATION" SectionBreak block lower on the
+// page. The hero now uses a curated dark composite still that IS thesis work.
+const heroStillCandidates = [
+  "/assets/semantic-canvas/p3-stage2-session2-composite.png",
+  "/assets/semantic-canvas/p3-stage2-session1-composite.png",
+  "/assets/semantic-canvas/output-nano-generated-shoe.png",
+  data.hero_image as string | undefined,
+].filter(Boolean) as string[];
+const heroStill = heroStillCandidates.find((p) => publicFileExists(p));
 
-// Related projects
-const relatedSlugs = ["l43d-cad-mllm", "3t3d-vit-2d-to-3d", "design-the-ambience"];
-const all: any[] = await getCollection("projects", ({ data }: { data: any }) => data.publish === true);
-const related: any[] = relatedSlugs
-  .map((slug) => all.find((p) => p.data.slug === slug || p.slug === slug))
-  .filter(Boolean);
+const proposalVideoCandidates = [
+  "/assets/thesis-flagship/proposal-presentation.mp4",
+  data.video_proposal as string | undefined,
+].filter(Boolean) as string[];
+const proposalVideo = proposalVideoCandidates.find((p) => publicFileExists(p));
+
+const heroImg = heroStill ?? (data.hero_image as string | undefined);
+
+// UI screenshots gallery — pull only files that exist
+const uiCandidates = [
+  "/assets/semantic-canvas/semantic-canvas-ui.png",
+  "/assets/semantic-canvas/axis-tuning-ui.png",
+  "/assets/semantic-canvas/analyse-reference-ai-ui.png",
+  "/assets/semantic-canvas/ghost-node-agent-ui.png",
+  "/assets/semantic-canvas/lineage-view-ui.png",
+  "/assets/semantic-canvas/axis-suggestion-agent-ui.png",
+  "/assets/semantic-canvas/generate-from-text-ui.png",
+  "/assets/semantic-canvas/generate-from-references-ui.png",
+];
+const uiImages = uiCandidates.filter(publicFileExists);
+
+// Output gallery — generated footwear
+const outputCandidates = [
+  "/assets/semantic-canvas/output-nano-generated-shoe.png",
+  "/assets/semantic-canvas/output-fashion-interface.png",
+  "/assets/semantic-canvas/output-form-forge.png",
+  "/assets/semantic-canvas/output-deeprise-interface.png",
+];
+const outputImages = outputCandidates.filter(publicFileExists);
+
+// Stage / longitudinal study composites
+const stageCandidates = [
+  "/assets/semantic-canvas/p1-longitudinal-semantic-canvas.png",
+  "/assets/semantic-canvas/p2-longitudinal-semantic-canvas.png",
+  "/assets/semantic-canvas/p3-stage2-session1-composite.png",
+  "/assets/semantic-canvas/p3-stage2-session2-composite.png",
+  "/assets/semantic-canvas/p4-longitudinal-semantic-canvas.png",
+  "/assets/semantic-canvas/stage1-vs-stage2-comparison.png",
+];
+const stageImages = stageCandidates.filter(publicFileExists);
 ---
 
 <BaseLayout
-  title="Thesis — Semantic Canvas"
+  title="Semantic Canvas — Thesis"
   description="MSCD thesis at Carnegie Mellon: Semantic Canvas, an AI-augmented latent-space design tool for footwear designers."
-  image={data.hero_image ?? "/og-default.png"}
+  image={heroImg ?? "/og-default.png"}
 >
-  <article class="container-reading pt-24 md:pt-32 pb-24">
-    <header class="mb-12" data-reveal>
-      <p class="mono-label mb-4">
-        MSCD Thesis · 2025–2026 · Advised by {advisor}
-      </p>
-      <h1 class="text-balance">Semantic Canvas — AI-Augmented Footwear Design</h1>
-    </header>
+  {/* ============ HERO — curated dark composite, full-bleed (Round-3 Item 4) ============ */}
+  <section
+    class="relative w-full overflow-hidden"
+    style="height: 80vh; min-height: 600px; border-bottom: 1px solid rgb(var(--surface-border));"
+  >
+    {heroStill ? (
+      <img
+        src={heroStill}
+        alt="Semantic Canvas — participant session composite (canvas + lineage view)"
+        class="absolute inset-0 w-full h-full object-cover"
+        loading="eager"
+        decoding="async"
+      />
+    ) : (
+      <div class="absolute inset-0" style="background: rgb(var(--surface-bg));"></div>
+    )}
 
-    <p class="text-graphite-200 leading-relaxed mb-12 text-lg" data-reveal>
-      An interactive D3-based canvas where shoe designs reposition themselves along
-      designer-defined semantic axes, with fal.ai generation and a Gemini observer
-      embedded in the workflow — a thesis instrument and a thesis artifact at once.
-    </p>
+    <div class="hero-scrim" aria-hidden="true"></div>
 
-    {/* Demo video or placeholder */}
-    <figure class="mb-16" data-reveal>
-      {video ? (
-        <video
-          src={video}
-          autoplay
-          muted
-          loop
-          playsinline
-          class="w-full rounded-md border border-graphite-700/60 bg-graphite-800"
-        ></video>
-      ) : (
-        <div class="aspect-video rounded-md border border-graphite-700/60 bg-graphite-800 flex items-center justify-center">
-          <p class="mono-label">demo video forthcoming</p>
+    <div class="absolute bottom-0 left-0 right-0 pointer-events-none" style="padding-block: 2rem 3rem;">
+      <div class="container-display">
+        <div class="mono-label mb-4" style="color: rgba(255,255,255,0.72);">
+          CMU MSCD THESIS · 2025—2026 · ADVISED BY {advisor.toUpperCase()}
         </div>
-      )}
-      <figcaption class="mono-label mt-3">
-        Recorded demo · Semantic Canvas
-      </figcaption>
-    </figure>
+        <h1
+          class="font-display h1-fluid text-white max-w-[20ch]"
+          style="letter-spacing: -0.01em;"
+        >
+          Semantic Canvas
+        </h1>
+        <p
+          class="text-white/85 max-w-[55ch] mt-4"
+          style="font-size: var(--step-1); line-height: 1.5;"
+        >
+          An AI-augmented design canvas where designers navigate semantic latent spaces to generate, refine, and reason about footwear concepts in their own words.
+        </p>
+      </div>
+    </div>
+  </section>
 
-    {/* Body MDX */}
-    <div class="prose-custom mb-16" data-reveal>
-      <Content />
+  {/* ============ TL;DR strip ============ */}
+  <section class="container-display py-12 md:py-16">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
+      <div>
+        <p class="mono-label mb-3">PROBLEM</p>
+        <p style="color: rgb(var(--text-secondary)); line-height: 1.65;">
+          Generative models make design exploration externally addressable for the first time, but every interface so far hides the space behind a chat box: prompt in, image out, no map of where you are or what's nearby.
+        </p>
+      </div>
+      <div>
+        <p class="mono-label mb-3">APPROACH</p>
+        <p style="color: rgb(var(--text-secondary)); line-height: 1.65;">
+          Project image embeddings onto a small number of designer-typed semantic axes via a single dot-product against ensemble label vectors. No learned mapping, no dimensionality reduction. Adding a new axis is free.
+        </p>
+      </div>
+      <div>
+        <p class="mono-label mb-3">CONTRIBUTION</p>
+        <p style="color: rgb(var(--text-secondary)); line-height: 1.65;">
+          A latent-space instrument that externalizes the designer's mental categories so they can be inspected, argued with, and shared. Validated through a multi-participant study running through Spring 2026.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  {/* ============ THE TOOL ============ */}
+  <SectionBreak label="THE TOOL" />
+
+  <section class="container-display pb-12 md:pb-16">
+    <div class="container-reading mx-0 px-0 mb-8" style="max-width: 72ch;">
+      <h2
+        style="font-family: theme(fontFamily.display); font-size: var(--step-3); font-weight: 380; line-height: 1.15; letter-spacing: -0.01em; color: rgb(var(--text-primary));"
+        class="mb-6"
+      >
+        The canvas interface
+      </h2>
+      <p style="color: rgb(var(--text-secondary)); line-height: 1.65;">
+        The frontend is React 18 + TypeScript + D3.js 7, with Zustand for global state. The canvas occupies the centre; a four-flyout left toolbar holds Generate, Files, AI Actions, and Axes panels; a right inspector accordion stacks Selection, Genealogy, and Actions. A bottom drawer keeps the current generation batch live as chips. Built for a designer at a 27" display, not a phone.
+      </p>
     </div>
 
-    {/* CTA */}
-    <section class="mb-20 flex flex-wrap gap-4" data-reveal>
-      {githubUrl && (
-        <a href={githubUrl} target="_blank" rel="noopener noreferrer" class="btn">
-          View on GitHub
-        </a>
-      )}
-      {liveUrl && (
-        <a href={liveUrl} target="_blank" rel="noopener noreferrer" class="btn-primary">
-          Try the live tool
-        </a>
-      )}
-    </section>
-  </article>
+    {uiImages.length > 0 && (
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
+        {uiImages.map((src) => (
+          <figure
+            class="m-0 overflow-hidden"
+            style="border: 1px solid rgb(var(--surface-border)); border-radius: 6px; background: rgb(var(--surface-1-rgb));"
+          >
+            <img src={src} alt="Semantic Canvas interface" loading="lazy" decoding="async" class="w-full h-auto block" />
+          </figure>
+        ))}
+      </div>
+    )}
+  </section>
 
-  {/* Related */}
-  {related.length > 0 && (
-    <section class="container-page py-16 border-t border-graphite-700/40">
-      <p class="mono-label mb-8">Related work</p>
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
-        {related.map((p) => (
-          <ProjectCard project={p} size="default" />
+  {/* ============ THE METHOD ============ */}
+  <SectionBreak label="THE METHOD" />
+
+  <section class="container-reading prose-custom py-12 md:py-16">
+    <h2>Latent space, made navigable</h2>
+    <p>
+      Design exploration is fundamentally about moving through a <em>space of possibilities</em>. Until recently that space lived only in the designer's head — implicit, ineffable, impossible to share. Generative models now make it externally addressable, but every interface so far hides the space behind a chat box. Footwear design is a useful test bed: categories are stable (silhouette, material, use-case), the visual vocabulary is shared, and a single designer iterates across hundreds of variants per project.
+    </p>
+    <p>
+      Semantic Canvas projects every project image onto a small number of designer-typed semantic axes (2 for the canvas, 3 for the optional 3D view). The projection is a single dot product against an <em>ensemble axis vector</em> built from natural-language label expansions. There is no learned mapping, no dimensionality reduction algorithm, no training step at runtime. Adding a new axis is free.
+    </p>
+
+    <MethodDiagram />
+
+    <h3>The projection formula</h3>
+    <p>
+      For each axis the user defines a positive label and a negative label (e.g. <code>casual</code> and <code>formal</code>). Gemini expands each side into 4 concrete visual descriptions — sneakers, athleisure, skate; oxford, derby, monk strap. We embed all 8 phrases with Jina CLIP v2, mean-pool each side, and L2-normalize the difference. Because axis vector and image vector live in the same 1024-dimensional space, the dot product is a meaningful similarity score.
+    </p>
+
+    <h3>Why dot-product, not UMAP or t-SNE</h3>
+    <p>
+      The standard answer for "show me a 2D map of high-dimensional data" is dimensionality reduction. They produce beautiful clusters, but each axis is a mathematical artifact: principal direction of variance, manifold neighborhood preservation, crowding-penalty optimum. A designer cannot say <em>what an axis means</em> — only that points near each other look similar.
+    </p>
+    <p>
+      For a design tool that fails. The whole point is to externalize the designer's mental categories so they can be inspected, argued with, and shared with collaborators. If the tool can't tell you what <em>up</em> means on its own canvas, it isn't a tool — it's a decoration.
+    </p>
+
+    <h3>Tuning by image anchors</h3>
+    <p>
+      Pure text axes are a strong starting point, but designers often want to say <em>"more like this shoe, less like that one"</em> — exemplar reasoning. Tune mode lets the user drag image anchors to either pole of an axis. The axis direction is replaced with a weighted blend: the original text direction plus the L2-normalized difference of mean-pooled anchor image embeddings, with a user-controllable mix. The result is still a single 1024-D unit vector; everything downstream is unchanged.
+    </p>
+
+    <h3>The Gemini observer</h3>
+    <p>
+      Gemini 2.5 Flash Lite runs as a passive observer — it reads the designer's typed brief, highlights primary goals (blue) and secondary considerations (amber), and surfaces sticky insights when canvas state suggests them. Crucially, it never interrupts. Insight timers stop the moment an insight is displayed, so unread insights cost zero further tokens. The agent is a colleague, not a chatbot.
+    </p>
+  </section>
+
+  {/* ============ OUTPUTS ============ */}
+  {outputImages.length > 0 && (
+    <>
+      <SectionBreak label="OUTPUTS" />
+      <section class="container-display pb-12 md:pb-16">
+        <div class="container-reading mx-0 px-0 mb-8" style="max-width: 72ch;">
+          <h2
+            style="font-family: theme(fontFamily.display); font-size: var(--step-3); font-weight: 380; line-height: 1.15; letter-spacing: -0.01em; color: rgb(var(--text-primary));"
+            class="mb-4"
+          >
+            Generated footwear
+          </h2>
+          <p style="color: rgb(var(--text-secondary)); line-height: 1.65;">
+            Generation is dual-mode through fal.ai — <code>nano-banana</code> for text-to-image and reference-based iteration, <code>nano-banana-2</code> for multi-view sheets (5-view, 3/4-view, satellite views: 3/4-front, 3/4-back, top, outsole, medial, front, back). New images land back on the canvas with parent–child Bezier lineage lines connecting them to their references.
+          </p>
+        </div>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 md:gap-4">
+          {outputImages.map((src) => (
+            <figure
+              class="m-0 overflow-hidden"
+              style="border: 1px solid rgb(var(--surface-border)); border-radius: 6px; background: rgb(var(--surface-1-rgb));"
+            >
+              <img src={src} alt="Generated footwear concept" loading="lazy" decoding="async" class="w-full h-auto block" />
+            </figure>
+          ))}
+        </div>
+      </section>
+    </>
+  )}
+
+  {/* ============ STUDY / PROCESS ============ */}
+  <SectionBreak label="THE STUDY" />
+
+  <section class="container-reading prose-custom py-12 md:py-16">
+    <p>
+      The thesis hypothesis — <em>that legible latent space improves designer creativity over a flat generative tool</em> — is being tested with a multi-participant study running through Spring 2026. Each participant accesses a personal URL of the form <code>/?participant=Name</code>. The backend's <code>X-Participant-Id</code> header routes each request to an isolated <code>AppState</code> via FastAPI's <code>ContextVar</code> middleware.
+    </p>
+    <p>
+      Every interaction is recorded as a JSONL line per participant — sessions, generations, selections, axis edits, feedback notepad entries. JSONL because it's append-only, line-by-line analyzable, and survives crashes. The notepad floats as a quick-note FAB so designers can leave qualitative breadcrumbs without breaking flow.
+    </p>
+    <p>
+      Quantitative measures: time-to-first-keep, branch depth, axis-edit frequency, generation-to-selection ratio. Qualitative material: feedback notepad entries plus post-session interviews. Together they're the spine of the thesis writeup.
+    </p>
+  </section>
+
+  {stageImages.length > 0 && (
+    <section class="container-display pb-12 md:pb-16">
+      <div class="container-reading mx-0 px-0 mb-8" style="max-width: 72ch;">
+        <h3
+          style="font-family: theme(fontFamily.display); font-size: var(--step-2); font-weight: 380; line-height: 1.2; letter-spacing: -0.01em; color: rgb(var(--text-primary));"
+          class="mb-4"
+        >
+          Longitudinal evolution
+        </h3>
+        <p style="color: rgb(var(--text-secondary)); line-height: 1.65;">
+          Per-participant composites across thesis stages, each capturing the canvas, lineage, and generation history of a single design session.
+        </p>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+        {stageImages.map((src) => (
+          <figure
+            class="m-0 overflow-hidden"
+            style="border: 1px solid rgb(var(--surface-border)); border-radius: 6px; background: rgb(var(--surface-1-rgb));"
+          >
+            <img src={src} alt="Stage composite" loading="lazy" decoding="async" class="w-full h-auto block" />
+          </figure>
         ))}
       </div>
     </section>
   )}
+
+  {/* ============ LIVE DEMO — embedded Semantic Canvas tool, secondary placement ============ */}
+  {liveUrl && (
+    <>
+      <SectionBreak label="LIVE DEMO" />
+      <section class="container-display pb-12 md:pb-16">
+        <div class="container-reading mx-0 px-0 mb-6" style="max-width: 72ch;">
+          <p style="color: rgb(var(--text-secondary)); line-height: 1.65;">
+            The live tool runs below. The top status bar of the embedded app is clipped so the
+            portfolio chrome doesn't bleed in — open the standalone deployment in a new tab for the
+            full experience.
+          </p>
+        </div>
+        <div
+          class="iframe-mask relative w-full"
+          style="overflow: hidden; height: 720px; border: 1px solid rgb(var(--surface-border)); border-radius: 6px; background: rgb(var(--surface-1-rgb));"
+        >
+          <iframe
+            src={liveUrl}
+            title="Semantic Canvas live demo"
+            loading="lazy"
+            allow="clipboard-write; encrypted-media"
+            class="absolute inset-x-0 w-full"
+            style="top: -48px; height: 768px; border: 0;"
+          ></iframe>
+        </div>
+        <div class="mt-4">
+          <a
+            href={liveUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="mono-label"
+            style="color: rgb(var(--accent-rgb));"
+          >
+            Open live tool in new tab →
+          </a>
+        </div>
+      </section>
+    </>
+  )}
+
+  {/* ============ META — this site is a live demo ============ */}
+  <SectionBreak label="META" />
+
+  <section class="container-reading py-12 md:py-16">
+    <h2
+      style="font-family: theme(fontFamily.display); font-size: var(--step-3); font-weight: 380; line-height: 1.15; letter-spacing: -0.01em; color: rgb(var(--text-primary));"
+      class="mb-6"
+    >
+      This website is a live demo of the method.
+    </h2>
+    <p class="mb-4" style="color: rgb(var(--text-secondary)); line-height: 1.65;">
+      The hero on the homepage is the same projection pipeline described above, applied to a different dataset: my own portfolio. Each project sits in semantic space along designer-typed axes. Drag the axes, retype the labels, and the projects rearrange. The method is the medium.
+    </p>
+    <p class="mb-8" style="color: rgb(var(--text-secondary)); line-height: 1.65;">
+      Switch on thesis mode at the top of the homepage hero, type your own axes, and watch every project reposition itself by meaning. It is the smallest possible version of Semantic Canvas — and it works on any image collection.
+    </p>
+    <a href="/" class="btn">See the live method on the homepage</a>
+  </section>
+
+  {/* ============ MORE ============ */}
+  <SectionBreak label="MORE" />
+
+  <section class="container-display pb-16 md:pb-24">
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-6">
+      {githubUrl && (
+        <a
+          href={githubUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="card-surface p-6 md:p-8 block"
+        >
+          <p class="mono-label mb-2">CODE</p>
+          <p
+            class="mb-1"
+            style="font-family: theme(fontFamily.display); font-size: var(--step-2); font-weight: 380; color: rgb(var(--text-primary));"
+          >
+            View on GitHub
+          </p>
+          <p style="color: rgb(var(--text-mono)); font-size: 0.875rem;">
+            Full implementation, models, and evaluation
+          </p>
+        </a>
+      )}
+      {liveUrl ? (
+        <a
+          href={liveUrl}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="card-surface p-6 md:p-8 block"
+        >
+          <p class="mono-label mb-2">LIVE TOOL</p>
+          <p
+            class="mb-1"
+            style="font-family: theme(fontFamily.display); font-size: var(--step-2); font-weight: 380; color: rgb(var(--text-primary));"
+          >
+            Try Semantic Canvas
+          </p>
+          <p style="color: rgb(var(--text-mono)); font-size: 0.875rem;">
+            Interact with the design canvas
+          </p>
+        </a>
+      ) : (
+        <div class="card-surface p-6 md:p-8" style="opacity: 0.6;">
+          <p class="mono-label mb-2">LIVE TOOL</p>
+          <p
+            class="mb-1"
+            style="font-family: theme(fontFamily.display); font-size: var(--step-2); font-weight: 380; color: rgb(var(--text-primary));"
+          >
+            Coming Spring 2026
+          </p>
+          <p style="color: rgb(var(--text-mono)); font-size: 0.875rem;">
+            Public deployment on Railway after study completes
+          </p>
+        </div>
+      )}
+    </div>
+  </section>
+
+  {/* ============ PROPOSAL PRESENTATION (Dec 2025) ============ */}
+  {proposalVideo && (
+    <>
+      <SectionBreak label="PROPOSAL PRESENTATION (DEC 2025)" />
+      <section class="container-display pb-12 md:pb-16">
+        <div class="container-reading mx-0 px-0 mb-6" style="max-width: 72ch;">
+          <p style="color: rgb(var(--text-secondary)); line-height: 1.65;">
+            Final pre-thesis proposal presentation, delivered 2025-12-03 — frames the research question,
+            the tool, and the study protocol that ran through Spring 2026.
+          </p>
+        </div>
+        <video
+          src={proposalVideo}
+          controls
+          preload="metadata"
+          class="w-full block"
+          style="border: 1px solid rgb(var(--surface-border)); border-radius: 6px;"
+        ></video>
+      </section>
+    </>
+  )}
+
+  <RelatedRail
+    currentSlug="semantic-canvas"
+    relatedSlugs={["l43d-cad-mllm", "3t3d-vit-2d-to-3d", "design-the-ambience"]}
+    categories={data.categories ?? []}
+  />
 </BaseLayout>

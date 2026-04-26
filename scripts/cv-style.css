@@ -1,0 +1,110 @@
+
+@page {
+  size: A4;
+  margin: 0.6in 0.5in 0.6in 0.5in;
+}
+
+* { box-sizing: border-box; }
+
+html, body {
+  margin: 0;
+  padding: 0;
+  color: #0e0e10;
+  background: #ffffff;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI',
+               Roboto, 'Helvetica Neue', Arial, sans-serif;
+  font-size: 10.5pt;
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+}
+
+body { padding: 0; }
+
+h1 {
+  font-size: 22pt;
+  font-weight: 600;
+  letter-spacing: -0.01em;
+  margin: 0 0 2pt 0;
+}
+
+h2 {
+  font-size: 12pt;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: #2a2a2e;
+  margin: 18pt 0 6pt 0;
+  padding-bottom: 3pt;
+  border-bottom: 0.5pt solid #c8c8cc;
+  page-break-after: avoid;
+}
+
+h3 {
+  font-size: 11pt;
+  font-weight: 600;
+  margin: 10pt 0 2pt 0;
+  page-break-after: avoid;
+}
+
+h4 {
+  font-size: 10.5pt;
+  font-weight: 600;
+  margin: 8pt 0 2pt 0;
+}
+
+p { margin: 4pt 0; }
+
+ul, ol {
+  margin: 4pt 0 6pt 0;
+  padding-left: 16pt;
+}
+li { margin: 1.5pt 0; }
+
+a {
+  color: #1d4ed8;
+  text-decoration: none;
+}
+
+strong, b { font-weight: 600; }
+
+em, i { font-style: italic; }
+
+code, kbd, samp, pre {
+  font-family: 'IBM Plex Mono', 'JetBrains Mono', Menlo, Consolas, monospace;
+  font-size: 9.5pt;
+  background: #f4f4f6;
+  padding: 1pt 3pt;
+  border-radius: 2pt;
+}
+
+hr {
+  border: none;
+  border-top: 0.5pt solid #c8c8cc;
+  margin: 14pt 0;
+}
+
+blockquote {
+  border-left: 2pt solid #c8c8cc;
+  margin: 6pt 0;
+  padding: 2pt 0 2pt 10pt;
+  color: #4a4a4e;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 6pt 0;
+}
+th, td {
+  text-align: left;
+  padding: 3pt 5pt;
+  border-bottom: 0.5pt solid #e0e0e3;
+  vertical-align: top;
+}
+th { font-weight: 600; }
+
+/* Tighten the very-first heading — name on top with no top margin gap. */
+body > h1:first-child { margin-top: 0; }
+
+/* Avoid orphans/widows around section breaks */
+section, article { page-break-inside: avoid; }

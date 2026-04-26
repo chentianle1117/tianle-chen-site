@@ -2,7 +2,10 @@ import type { Config } from "tailwindcss";
 
 export default {
   content: ["./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}"],
-  darkMode: "class",
+  // Support BOTH attribute-based and class-based theme switching.
+  // `data-theme="dark"|"light"` is the new contract; `.dark`/`.light` retained
+  // for backwards compatibility with components that already use it.
+  darkMode: ["class", "[data-theme='dark']"],
   theme: {
     extend: {
       fontFamily: {
@@ -42,20 +45,33 @@ export default {
           ok: "#6a8f6e",
           warn: "#c89a4a",
         },
-        // Migration aliases (existing components still reference ink/accent)
-        ink: {
-          50: "#f4f5f6",
-          100: "#e6e8ea",
-          200: "#c8ccd0",
-          300: "#969ba2",
-          400: "#5e636b",
-          500: "#3d4148",
-          600: "#292c31",
-          700: "#1a1c20",
-          800: "#121417",
-          900: "#0b0d0f",
-          950: "#07080a",
+        // Warm-neutral scale for light theme surfaces (NEW)
+        stone: {
+          50: "#fafaf7",
+          100: "#f4f3ef",
+          200: "#e7e5dd",
+          300: "#d3d0c4",
+          400: "#a39e8c",
+          500: "#736f63",
+          600: "#544f47",
+          700: "#3a3631",
+          800: "#23211d",
+          900: "#100e0c",
+          950: "#070605",
         },
+        // CSS-variable-driven semantic tokens (NEW — Phase 2 contract)
+        surface: {
+          bg: "rgb(var(--surface-bg) / <alpha-value>)",
+          1: "rgb(var(--surface-1-rgb) / <alpha-value>)",
+          2: "rgb(var(--surface-2-rgb) / <alpha-value>)",
+        },
+        ink: {
+          primary: "rgb(var(--text-primary) / <alpha-value>)",
+          secondary: "rgb(var(--text-secondary) / <alpha-value>)",
+          mono: "rgb(var(--text-mono) / <alpha-value>)",
+          muted: "rgb(var(--text-muted) / <alpha-value>)",
+        },
+        // Migration aliases (existing components still reference accent.*)
         accent: {
           50: "#fbf3ef",
           100: "#f5dfd2",

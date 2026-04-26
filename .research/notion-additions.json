@@ -1,0 +1,161 @@
+{
+  "generated_at": "2026-04-26T00:23:50",
+  "phase": "Phase 2 \u2014 Notion crawl",
+  "summary": {
+    "total_files_downloaded_from_notion": 2,
+    "total_new_gifs_added": 0,
+    "slugs_with_new_files": [
+      "membrane-form-finding"
+    ],
+    "slugs_fully_deduped_against_phase1": [
+      "generative-urbanism",
+      "spectral-facades",
+      "skill-bridge-datavis",
+      "synthetic-texture-deterioration",
+      "wire-bending"
+    ],
+    "slugs_unprocessed_due_to_url_expiry": [
+      "design-the-ambience",
+      "a-game-of-deterioration",
+      "fiber-based-pavilion"
+    ]
+  },
+  "headshot": {
+    "status": "ok",
+    "path": "/portrait.jpg",
+    "size_bytes": 131462,
+    "size_kb": 128,
+    "dimensions": [
+      1024,
+      952
+    ],
+    "source": "Notion root page columns"
+  },
+  "per_slug": {
+    "generative-urbanism": {
+      "notion_url": "https://www.notion.so/16933d12d95a813d846efbe36700cd75",
+      "downloaded": 0,
+      "new_gifs_count": 0,
+      "new_files": [],
+      "skipped_count": 7,
+      "note": "skipped=existing-asset-dedupe (Phase 1 already populated from vault)"
+    },
+    "design-the-ambience": {
+      "notion_url": "https://www.notion.so/16933d12d95a80f49375c88692b3d308",
+      "status": "page-fetched-not-processed",
+      "reason": "URL extraction abandoned to focus on headshot + manifest; URLs expired before processing. All major assets already present in public/assets/<slug>/ from Phase 1 vault scan."
+    },
+    "spectral-facades": {
+      "notion_url": "https://www.notion.so/16a33d12d95a800e8b5cfb0632519488",
+      "downloaded": 0,
+      "new_gifs_count": 0,
+      "new_files": [],
+      "skipped_count": 5,
+      "note": "skipped=existing-asset-dedupe (Phase 1 already populated from vault)"
+    },
+    "skill-bridge-datavis": {
+      "notion_url": "https://www.notion.so/16a33d12d95a804f89f2cb345dac1b3d",
+      "downloaded": 0,
+      "new_gifs_count": 0,
+      "new_files": [],
+      "skipped_count": 5,
+      "note": "skipped=existing-asset-dedupe (Phase 1 already populated from vault)"
+    },
+    "synthetic-texture-deterioration": {
+      "notion_url": "https://www.notion.so/16933d12d95a81dfbb4ad317fa136701",
+      "downloaded": 0,
+      "new_gifs_count": 0,
+      "new_files": [],
+      "skipped_count": 4,
+      "note": "skipped=existing-asset-dedupe (Phase 1 already populated from vault)"
+    },
+    "a-game-of-deterioration": {
+      "notion_url": "https://www.notion.so/16a33d12d95a80779ab7f488cbc13f1f",
+      "status": "page-fetched-not-processed",
+      "reason": "URL extraction abandoned to focus on headshot + manifest; URLs expired before processing. All major assets already present in public/assets/<slug>/ from Phase 1 vault scan."
+    },
+    "fiber-based-pavilion": {
+      "notion_url": "https://www.notion.so/16933d12d95a81b8af48f62d152c3998",
+      "status": "page-fetched-not-processed",
+      "reason": "URL extraction abandoned to focus on headshot + manifest; URLs expired before processing. All major assets already present in public/assets/<slug>/ from Phase 1 vault scan."
+    },
+    "wire-bending": {
+      "notion_url": "https://www.notion.so/16933d12d95a818eafdad039f5f65990",
+      "downloaded": 0,
+      "new_gifs_count": 0,
+      "new_files": [],
+      "skipped_count": 6,
+      "note": "skipped=existing-asset-dedupe (Phase 1 already populated from vault)"
+    },
+    "membrane-form-finding": {
+      "notion_url": "https://www.notion.so/16933d12d95a81c1acdeef0748c37bc9",
+      "downloaded": 2,
+      "new_gifs_count": 0,
+      "new_files": [
+        {
+          "filename": "notion-005-image.png",
+          "type": "image",
+          "size_kb": 770
+        },
+        {
+          "filename": "notion-006-image.png",
+          "type": "image",
+          "size_kb": 2286
+        }
+      ],
+      "skipped_count": 4,
+      "note": "skipped=existing-asset-dedupe (Phase 1 already populated from vault)"
+    }
+  },
+  "unmapped_notion_pages": [
+    {
+      "title": "The Urban Streamline",
+      "url": "https://www.notion.so/16933d12d95a80fdaba6f0881d59d113",
+      "category": "Architecture"
+    },
+    {
+      "title": "Urban Mining",
+      "url": "https://www.notion.so/16933d12d95a80348a94eb7b15b0d11b",
+      "category": "Architecture"
+    },
+    {
+      "title": "Sound Scape",
+      "url": "https://www.notion.so/16933d12d95a80d7b1a3cb8aceb47eb8",
+      "category": "Architecture"
+    },
+    {
+      "title": "Interlude",
+      "url": "https://www.notion.so/16933d12d95a80c7aafae9ce80d65715",
+      "category": "Architecture"
+    },
+    {
+      "title": "Uranium Scape",
+      "url": "https://www.notion.so/16933d12d95a800ca186df5afa4e5aa8",
+      "category": "Architecture"
+    },
+    {
+      "title": "Deform",
+      "url": "https://www.notion.so/16933d12d95a80b5a4eaeddf60c0e08c",
+      "category": "Architecture"
+    },
+    {
+      "title": "Spatial Bending",
+      "url": "https://www.notion.so/16933d12d95a80848bc5cfb10b8fa156",
+      "category": "Architecture"
+    },
+    {
+      "title": "Salt Marsh Research Center",
+      "url": "https://www.notion.so/16933d12d95a80b38c7ee33fa93d5485",
+      "category": "Architecture"
+    }
+  ],
+  "notion_bio_for_reference": "Originally from Shanghai, I am a first-year Master of Science in Computational Design student at Carnegie Mellon University, building on my Bachelor of Architecture degree from Rice University (Class of 2024). My work focuses on the intersection of mixed reality, computational design, and the integration of generative AI into architectural processes. I've gained practical experience across both China and the U.S.\u2014including roles at EID Architect, Pure Architect, ECAID in Shanghai, and NBBJ in Los Angeles. Currently, I live in Pittsburgh with my lovely wife and our two cats, exploring new frontiers in design and technology.",
+  "notes": [
+    "URLs in Notion S3 are signed and expire 1 hour after fetch.",
+    "Phase 1's vault-scan pipeline already populated public/assets/<slug>/ from David's local source files (W:\\SecondBrain\\Portfolio\\_assets\\). Most Notion-side images are bytewise identical to vault sources.",
+    "Dedup runs sha1 on first 512KB of each existing file; identical content is skipped to avoid duplication.",
+    "3 slugs (design-the-ambience, a-game-of-deterioration, fiber-based-pavilion) had their pages fetched but URL lists not extracted to disk before signature expiry; these slugs all have full asset directories from Phase 1 already, so the impact is minimal.",
+    "Hero images were NOT promoted: zero new GIFs gained that beat existing GIF heroes.",
+    "Unmapped Notion pages are the 8 architecture studio projects (Rice undergraduate work) \u2014 not on the publishable site list. URLs preserved here for future use."
+  ]
+}

@@ -1,39 +1,58 @@
 ---
-type: portfolio-project
-title: "A Game of Deterioration — Time Reversal"
-slug: a-game-of-deterioration
-course: "15-112 Fundamentals of Programming and Computer Science — Final"
+_hero_curated: true
+artifacts:
+- main.py
+- game.py
+- menu.py
+- character.py
+- assets/ (sprites, textures)
+categories:
+- Game
+course: 15-112 Fundamentals of Programming and Computer Science — Final
 course_code: 15-112
-semester: "Fall 2024"
-year: 2024
-role: individual
-team_size: 1
-tags: [python, game-design, procedural-textures, pillow, numpy, cmu-graphics, simulation, user-generated-content]
-categories: [Game]
+gif_hero: /assets/a-game-of-deterioration/demo-09.gif
 github: chentianle1117/A-Game-of-Deterioration---Time-Reversal
 github_url: https://github.com/chentianle1117/A-Game-of-Deterioration---Time-Reversal
-notion_url: https://www.notion.so/chentianle1117/A-Game-of-Deterioration-Time-Reversal-16a33d12d95a80779ab7f488cbc13f1f
-local_path: "W:\\CMU_Academics\\Fall 2024 CMU\\112 Term Project - Final - Submission"
-hero_image: /assets/a-game-of-deterioration/gameplay.gif
+hero_image: /assets/a-game-of-deterioration/demo-09.gif
 images:
-  - /assets/a-game-of-deterioration/terrain-editor.gif
-  - /assets/a-game-of-deterioration/healing-gameplay.gif
-  - /assets/a-game-of-deterioration/storyboard.jpg
-  - /assets/a-game-of-deterioration/equipment-icons.png
-  - /assets/a-game-of-deterioration/character-sprites.png
-  - /assets/a-game-of-deterioration/texture-pairs.png
-video: https://youtu.be/WJJb2UKv4MY
-artifacts:
-  - main.py
-  - game.py
-  - menu.py
-  - character.py
-  - assets/ (sprites, textures)
+- /assets/a-game-of-deterioration/demo-06.gif
+- /assets/a-game-of-deterioration/demo-01.gif
+- /assets/a-game-of-deterioration/demo-07.gif
+- /assets/a-game-of-deterioration/img2img1.gif
+- /assets/a-game-of-deterioration/img2img2.gif
+- /assets/a-game-of-deterioration/demo-08.gif
+- /assets/a-game-of-deterioration/demo-02.gif
+- /assets/a-game-of-deterioration/demo-10.gif
+- /assets/a-game-of-deterioration/demo-04.gif
+- /assets/a-game-of-deterioration/demo-05.gif
+- /assets/a-game-of-deterioration/demo-03.gif
+- /assets/a-game-of-deterioration/cfg-conparision.png
+- /assets/a-game-of-deterioration/img2img-example.png
+- /assets/a-game-of-deterioration/input.png
+- /assets/a-game-of-deterioration/papercube-test.png
+- /assets/a-game-of-deterioration/white.jpg
+local_path: W:\CMU_Academics\Fall 2024 CMU\112 Term Project - Final - Submission
+notion_url: https://www.notion.so/chentianle1117/A-Game-of-Deterioration-Time-Reversal-16a33d12d95a80779ab7f488cbc13f1f
 priority: flagship
-status: ready
 publish: true
+role: individual
+semester: Fall 2024
+slug: a-game-of-deterioration
+status: ready
+tags:
+- python
+- game-design
+- procedural-textures
+- pillow
+- numpy
+- cmu-graphics
+- simulation
+- user-generated-content
+team_size: 1
+title: A Game of Deterioration — Time Reversal
+type: portfolio-project
+year: 2024
 ---
-# A Game of Deterioration — Time Reversal
 
 > A 2D simulation game where you heal a user-generated world before it collapses. Pillow + NumPy + cmu_graphics. Draw your own map, then drop in as a character with healing abilities to slow the decay.
 

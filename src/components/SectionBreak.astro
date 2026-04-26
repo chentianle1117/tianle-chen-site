@@ -1,0 +1,15 @@
+---
+interface Props {
+  label?: string;
+}
+
+const { label } = Astro.props;
+---
+
+{label ? (
+  <div class="section-break-mono" role="separator" aria-orientation="horizontal" aria-label={label}>
+    <span class="label">{label}</span>
+  </div>
+) : (
+  <hr class="section-break" role="separator" aria-orientation="horizontal" />
+)}

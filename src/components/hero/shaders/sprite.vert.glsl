@@ -24,7 +24,7 @@ void main() {
   float tLocal = clamp(uMix + iStagger, 0.0, 1.0);
   vec3 center = mix(iPositionA, iPositionB, smoothMix(tLocal));
   vec4 mv = modelViewMatrix * vec4(center, 1.0);
-  mv.xy += position.xy * 0.12 * iScale;
+  mv.xy += position.xy * 0.18 * iScale;
   gl_Position = projectionMatrix * mv;
   vAtlasUv = iUvOffset + (uv * iUvScale);
   vQuadUv = uv;

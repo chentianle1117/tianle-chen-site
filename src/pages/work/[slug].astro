@@ -2,10 +2,12 @@
 // @ts-nocheck
 // Permissive vault schema (passthrough) — TS inference collapses on data.X access. v1: bypass.
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import Breadcrumb from "../../components/Breadcrumb.astro";
 import ProjectMeta from "../../components/ProjectMeta.astro";
 import RelatedRail from "../../components/RelatedRail.astro";
 import PrevNextNav from "../../components/PrevNextNav.astro";
 import PlaceholderHero from "../../components/PlaceholderHero.astro";
+import SectionBreak from "../../components/SectionBreak.astro";
 import { getCollection, render } from "astro:content";
 import { existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
@@ -14,6 +16,19 @@ function publicFileExists(webPath: string | null | undefined): boolean {
   if (!webPath || !webPath.startsWith("/")) return false;
   const url = new URL(`../../../public${webPath}`, import.meta.url);
   return existsSync(fileURLToPath(url));
+}
+
+function isEmbedUrl(u: string | null | undefined): boolean {
+  if (!u) return false;
+  return /youtube\.com|youtu\.be|vimeo\.com/i.test(u);
+}
+
+function toEmbedSrc(u: string): string | null {
+  let m = u.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/|youtube\.com\/embed\/)([A-Za-z0-9_-]{6,})/);
+  if (m) return `https://www.youtube.com/embed/${m[1]}`;
+  m = u.match(/vimeo\.com\/(?:video\/)?(\d+)/);
+  if (m) return `https://player.vimeo.com/video/${m[1]}`;
+  return null;
 }
 
 export async function getStaticPaths() {
@@ -29,12 +44,20 @@ const { data } = project;
 const dataAny = data as any;
 const { Content } = await render(project);
 
-const hero = data.hero_image || (data.images && data.images[0]) || null;
-const heroIsImage = hero && !/\.(pdf|mp4|mov|webm)$/i.test(hero);
-const heroExists = heroIsImage && publicFileExists(hero);
-const video: string | undefined = dataAny.video && /\.(mp4|webm|mov)$/i.test(dataAny.video) ? dataAny.video : undefined;
+// Media resolution: gif_hero > video (local) > video (embed) > hero_image > placeholder
+const gifHero: string | undefined = dataAny.gif_hero;
+const heroImg = data.hero_image || (data.images && data.images[0]) || null;
+const heroIsImage = heroImg && !/\.(pdf|mp4|mov|webm)$/i.test(heroImg);
+const heroExists = heroIsImage && publicFileExists(heroImg);
 
-// Lead paragraph: prefer summary if present, otherwise null (body will carry it).
+const rawVideo: string | undefined = dataAny.video;
+const localVideo: string | undefined = rawVideo && /\.(mp4|webm|mov)$/i.test(rawVideo) ? rawVideo : undefined;
+const heroEmbedUrl: string | undefined = rawVideo && isEmbedUrl(rawVideo) ? rawVideo : undefined;
+const heroEmbedSrc: string | null = heroEmbedUrl ? toEmbedSrc(heroEmbedUrl) : null;
+
+const videoProposal: string | undefined = dataAny.video_proposal;
+
+// Lead paragraph: prefer summary if present.
 const lead: string | undefined = dataAny.summary || dataAny.lead || undefined;
 
 // Mono kicker: categories joined
@@ -43,45 +66,91 @@ const kicker = (data.categories ?? []).join(" · ");
 const courseOrCat =
   (data.course_code && String(data.course_code)) ||
   (data.categories && data.categories[0]) ||
+  data.institution ||
   "";
-const heroMono = [data.year, data.role, courseOrCat].filter(Boolean).join(" · ");
+const heroMonoBits = [data.year, data.role, courseOrCat].filter(Boolean);
+const heroMono = heroMonoBits.join(" · ");
 
 const relatedSlugs: string[] = (dataAny.related_cards ?? []).map((s: string) => String(s));
+
+// Gallery image filtering — render every image whose file exists in public/.
+// Skip: the hero, the gif_hero, and any non-image artifacts.
+const galleryImages: string[] = (data.images ?? []).filter(
+  (img: string) =>
+    img !== heroImg &&
+    img !== gifHero &&
+    !/\.(pdf|mp4|mov|webm)$/i.test(img) &&
+    publicFileExists(img)
+);
+const imageCaptions: string[] = Array.isArray(dataAny.image_captions) ? dataAny.image_captions : [];
+
+function captionFor(img: string): string | undefined {
+  const allImgs: string[] = data.images ?? [];
+  const idx = allImgs.indexOf(img);
+  if (idx >= 0 && imageCaptions[idx]) return imageCaptions[idx];
+  return undefined;
+}
+
+const slugVal = (project as any).slug ?? data.slug ?? project.id?.replace(/\.md$/, "");
+const primaryCategory = (data.categories && data.categories[0]) || undefined;
 ---
 
 <BaseLayout
   title={data.title}
   description={data.title + (data.course ? ` — ${data.course}` : "")}
-  image={hero}
+  image={heroImg}
 >
-  {/* Full-bleed hero block */}
+  <Breadcrumb category={primaryCategory} title={data.title} />
+
+  {/* ============ HERO BLOCK — with scrim fix ============ */}
   <section
-    class="relative w-full overflow-hidden border-b border-graphite-700/60"
-    style="height: 60vh; min-height: 480px;"
+    class="relative w-full overflow-hidden"
+    style="height: 60vh; min-height: 480px; border-bottom: 1px solid rgb(var(--surface-border));"
   >
-    {video ? (
+    {gifHero && publicFileExists(gifHero) ? (
+      <img
+        src={gifHero}
+        alt={data.title}
+        loading="eager"
+        decoding="async"
+        class="absolute inset-0 w-full h-full object-cover"
+        transition:name={`hero-${slugVal}`}
+      />
+    ) : localVideo ? (
       <video
         autoplay
         muted
         loop
         playsinline
         class="absolute inset-0 w-full h-full object-cover"
-        transition:name={`hero-${((project as any).slug ?? data.slug ?? project.id?.replace(/\.md$/, ""))}`}
-        src={video}
+        transition:name={`hero-${slugVal}`}
+        src={localVideo}
       />
+    ) : heroEmbedSrc ? (
+      <div class="absolute inset-0 w-full h-full" style="background: rgb(var(--surface-bg));" transition:name={`hero-${slugVal}`}>
+        <iframe
+          src={heroEmbedSrc}
+          title={data.title}
+          loading="lazy"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+          allowfullscreen
+          class="absolute inset-0 w-full h-full"
+          style="border: 0;"
+        ></iframe>
+      </div>
     ) : heroExists ? (
       <img
-        src={hero}
+        src={heroImg}
         alt={data.title}
         loading="eager"
         decoding="async"
         class="absolute inset-0 w-full h-full object-cover"
-        transition:name={`hero-${((project as any).slug ?? data.slug ?? project.id?.replace(/\.md$/, ""))}`}
+        transition:name={`hero-${slugVal}`}
       />
     ) : (
-      <div transition:name={`hero-${((project as any).slug ?? data.slug ?? project.id?.replace(/\.md$/, ""))}`} class="absolute inset-0">
+      <div transition:name={`hero-${slugVal}`} class="absolute inset-0">
         <PlaceholderHero
-          slug={((project as any).slug ?? data.slug ?? project.id?.replace(/\.md$/, ""))}
+          slug={slugVal}
           title={data.title}
           categories={data.categories ?? []}
           size="hero"
@@ -89,94 +158,169 @@ const relatedSlugs: string[] = (dataAny.related_cards ?? []).map((s: string) => 
       </div>
     )}
 
-    {/* Bottom gradient overlay */}
-    <div
-      class="absolute inset-0 pointer-events-none"
-      style="background: linear-gradient(to top, theme(colors.graphite.950) 0%, transparent 60%);"
-    ></div>
-
-    {/* Title overlay (bottom-left) */}
-    <div class="absolute bottom-0 left-0 right-0" style="padding: 2rem 3rem;">
-      <div class="container-page p-0">
-        <h1 class="text-graphite-50 max-w-4xl mb-3" style="font-size: var(--step-5); font-weight: 380; line-height: 1.05; text-shadow: 0 2px 16px rgba(0,0,0,0.5);">
-          {data.title}
-        </h1>
-        {heroMono && (
-          <p class="mono-label" style="text-shadow: 0 1px 8px rgba(0,0,0,0.5);">{heroMono}</p>
-        )}
-      </div>
-    </div>
-  </section>
-
-  {/* Title block / lead */}
-  <section class="container-reading py-12 md:py-16">
-    {kicker && (
-      <p class="mono-label mb-5">{kicker}</p>
+    {/* Scrim — fix for white-on-white text-on-image collision (skip on iframe) */}
+    {!heroEmbedSrc && (
+      <div class="hero-scrim" aria-hidden="true"></div>
     )}
-    {lead && (
-      <p class="text-graphite-200 max-w-prose" style="font-size: var(--step-1); font-weight: 350; line-height: 1.55;">
-        {lead}
-      </p>
-    )}
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mt-10 pt-8 border-t border-graphite-700/60">
-      {data.role && (
-        <div>
-          <p class="mono-label mb-1">Role</p>
-          <p class="text-graphite-100">{data.role}</p>
-        </div>
-      )}
-      {(data.team && data.team.length > 0) || data.team_size ? (
-        <div>
-          <p class="mono-label mb-1">Team</p>
-          <p class="text-graphite-100">
-            {data.team && data.team.length > 0
-              ? data.team
-                  .filter((n: string) => n !== "David Chen" && n !== "Tianle Chen")
-                  .join(", ") || "Solo"
-              : `Team of ${data.team_size}`}
-          </p>
-        </div>
-      ) : null}
-      {data.tags && data.tags.length > 0 && (
-        <div>
-          <p class="mono-label mb-1">Stack</p>
-          <p class="text-graphite-100">{data.tags.slice(0, 6).join(", ")}</p>
-        </div>
-      )}
-    </div>
-  </section>
 
-  {/* Horizontal meta strip */}
-  <ProjectMeta data={data} />
-
-  {/* Body */}
-  <section class="py-12 md:py-16">
-    <article class="container-reading prose-custom">
-      <Content />
-    </article>
-  </section>
-
-  {/* Image gallery (remaining images beyond hero) */}
-  {data.images && data.images.filter((img: string) => img !== hero && !/\.(pdf|mp4|mov|webm)$/i.test(img) && publicFileExists(img)).length > 0 && (
-    <section class="container-page py-12 md:py-16 border-t border-graphite-700/60">
-      <h2 class="mb-10" style="font-size: var(--step-3); font-weight:380;">Gallery</h2>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {data.images
-          .filter((img: string) => img !== hero && !/\.(pdf|mp4|mov|webm)$/i.test(img) && publicFileExists(img))
-          .map((img: string) => (
-            <div class="rounded-md overflow-hidden bg-graphite-900 border border-graphite-700/60">
-              <img src={img} alt="" loading="lazy" decoding="async" class="w-full h-auto" />
+    {/* Title overlay (skip on iframe so video controls remain clickable) */}
+    {!heroEmbedSrc && (
+      <div class="absolute bottom-0 left-0 right-0 pointer-events-none" style="padding-block: 2rem 2.5rem;">
+        <div class="container-display">
+          {heroMono && (
+            <div class="mono-label mb-3" style="color: rgba(255,255,255,0.72);">
+              {heroMono}
             </div>
-          ))}
+          )}
+          <h1
+            class="font-display h1-fluid text-white max-w-4xl"
+            style="letter-spacing: -0.01em;"
+          >
+            {data.title}
+          </h1>
+        </div>
       </div>
+    )}
+  </section>
+
+  {/* Title block when iframe consumed the hero overlay */}
+  {heroEmbedSrc && (
+    <section class="container-display py-10" style="border-bottom: 1px solid rgb(var(--surface-border));">
+      <h1 style="font-family: theme(fontFamily.display); font-size: var(--step-5); font-weight: 380; line-height: 1.05; color: rgb(var(--text-primary));">
+        {data.title}
+      </h1>
+      {heroMono && <p class="mono-label mt-3">{heroMono}</p>}
     </section>
   )}
 
+  {/* ============ LEAD BLOCK ============ */}
+  {lead && (
+    <section class="container-reading py-12 md:py-16">
+      {kicker && (
+        <p class="mono-label mb-5">{kicker}</p>
+      )}
+      <p
+        style="color: rgb(var(--text-secondary)); font-size: var(--step-1); font-weight: 350; line-height: 1.55;"
+      >
+        {lead}
+      </p>
+    </section>
+  )}
+
+  {/* ============ BODY MDX — marginalia rails at >=1024 (Round-3 Item 5) ============ */}
+  <section class="layout-with-rails py-12 md:py-16">
+    <aside class="rail-left hidden lg:block">
+      <div class="sticky" style="top: 6rem;">
+        {data.year && <div class="mono-label mb-2">{data.year}</div>}
+        {data.role && <div class="mono-label mb-2">{String(data.role).replace(/-/g, " ")}</div>}
+        {data.course_code && <div class="mono-label mb-2">{data.course_code}</div>}
+        {data.team && (
+          <div class="mono-label">
+            TEAM · {Array.isArray(data.team) ? data.team.length : 1}
+          </div>
+        )}
+      </div>
+    </aside>
+    <article class="prose-custom">
+      <Content />
+    </article>
+    <aside class="rail-right hidden lg:block">
+      <div class="sticky" style="top: 6rem;">
+        {data.live_url && (
+          <a
+            href={data.live_url}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="block mono-label hover:text-[rgb(var(--accent-rgb))] transition-colors"
+          >
+            LIVE ↗
+          </a>
+        )}
+        {data.github_url && (
+          <a
+            href={data.github_url}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="block mono-label hover:text-[rgb(var(--accent-rgb))] transition-colors mt-2"
+          >
+            CODE ↗
+          </a>
+        )}
+        {data.year && (
+          <a
+            href="#cite"
+            class="block mono-label hover:text-[rgb(var(--accent-rgb))] transition-colors mt-2"
+          >
+            CITE
+          </a>
+        )}
+      </div>
+    </aside>
+  </section>
+
+  {/* ============ IMAGE GALLERY ============ */}
+  {galleryImages.length > 0 && (
+    <>
+      <SectionBreak label="GALLERY" />
+      <section class="container-display pb-12 md:pb-16">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
+          {galleryImages.map((img: string, i: number) => {
+            const cap = captionFor(img);
+            // Round-3 Item 9: fallback alt uses the project title + index so
+            // screen readers don't get empty alt on every project artifact.
+            const altText = cap ?? `${data.title} — image ${i + 1}`;
+            return (
+              <figure class="m-0">
+                <a
+                  href={img}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="block overflow-hidden"
+                  style="border: 1px solid rgb(var(--surface-border)); border-radius: 6px; background: rgb(var(--surface-1-rgb));"
+                >
+                  <img
+                    src={img}
+                    alt={altText}
+                    loading="lazy"
+                    decoding="async"
+                    class="w-full h-auto block"
+                  />
+                </a>
+                {cap && (
+                  <figcaption class="mt-2 mono-label">{cap}</figcaption>
+                )}
+              </figure>
+            );
+          })}
+        </div>
+      </section>
+    </>
+  )}
+
+  {/* ============ HORIZONTAL META STRIP — moved to end-of-page reference ============ */}
+  <ProjectMeta data={data} />
+
+  {/* ============ PROPOSAL VIDEO BLOCK (if video_proposal set) ============ */}
+  {videoProposal && publicFileExists(videoProposal) && (
+    <>
+      <SectionBreak label="PROPOSAL PRESENTATION" />
+      <section class="container-display pb-12 md:pb-16">
+        <video
+          src={videoProposal}
+          controls
+          preload="metadata"
+          class="w-full block"
+          style="border: 1px solid rgb(var(--surface-border)); border-radius: 6px;"
+        ></video>
+      </section>
+    </>
+  )}
+
   <RelatedRail
-    currentSlug={((project as any).slug ?? data.slug ?? project.id?.replace(/\.md$/, ""))}
+    currentSlug={slugVal}
     relatedSlugs={relatedSlugs}
     categories={data.categories ?? []}
   />
 
-  <PrevNextNav currentSlug={((project as any).slug ?? data.slug ?? project.id?.replace(/\.md$/, ""))} />
+  <PrevNextNav currentSlug={slugVal} />
 </BaseLayout>

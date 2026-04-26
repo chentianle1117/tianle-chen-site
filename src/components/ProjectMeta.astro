@@ -6,10 +6,14 @@ interface Props {
 }
 const { data } = Astro.props;
 
+// Helper: render either a (label, text) row, or (label, text+url) link row
+type Row = { label: string; value: string; href?: string | null };
+
 const live = data.live_url;
 const code = data.github_url || (data.github && typeof data.github === "string" ? data.github : null);
 const stack: string[] = (data.tags ?? []).slice(0, 8);
 const dataset = data.dataset || data.data;
+const datasetUrl = data.dataset_url;
 const courseFull = [data.course, data.course_code ? `(${data.course_code})` : null]
   .filter(Boolean)
   .join(" ");
@@ -17,17 +21,37 @@ const team: string[] = (data.team ?? []).filter(
   (n: string) => n !== "David Chen" && n !== "Tianle Chen"
 );
 const yearLine = [data.year, data.semester].filter(Boolean).join(" · ");
+const publication = data.publication;
+const publicationUrl = data.publication_url;
+const wandbProject = data.wandb_project;
+const runpodEndpointId = data.runpod_endpoint_id;
+const proposalVideo = data.proposal_video;
+const latestDraft = data.latest_draft;
+const architecturePattern = data.architecture_pattern;
+const externalApis: string[] = Array.isArray(data.external_apis)
+  ? data.external_apis
+  : (typeof data.external_apis === "string" && data.external_apis
+      ? data.external_apis.split(",").map((s: string) => s.trim()).filter(Boolean)
+      : []);
+
+function hostname(u: string): string {
+  try {
+    return new URL(u).hostname.replace(/^www\./, "");
+  } catch {
+    return "open";
+  }
+}
 ---
 
-<aside class="border-y border-graphite-700/60 py-6 md:py-8">
-  <div class="container-page">
+<aside class="py-6 md:py-8" style="border-top: 1px solid rgb(var(--surface-border)); border-bottom: 1px solid rgb(var(--surface-border));">
+  <div class="container-meta">
     <dl class="flex flex-wrap gap-x-10 gap-y-5 items-start">
       {live && (
         <div class="flex flex-col gap-1">
           <dt class="mono-label">Live</dt>
           <dd>
             <a href={live} target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-oxide-400 hover:text-oxide-300 underline-offset-4 hover:underline">
-              <span>{(() => { try { return new URL(live).hostname.replace(/^www\./, ""); } catch { return "open"; } })()}</span>
+              <span>{hostname(live)}</span>
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
                 <path d="M7 17L17 7M9 7h8v8" />
               </svg>
@@ -48,6 +72,20 @@ const yearLine = [data.year, data.semester].filter(Boolean).join(" · ");
           </dd>
         </div>
       )}
+      {publication && (
+        <div class="flex flex-col gap-1 max-w-xl">
+          <dt class="mono-label">Publication</dt>
+          <dd class="text-graphite-200 text-sm leading-relaxed">
+            {publicationUrl ? (
+              <a href={publicationUrl} target="_blank" rel="noopener noreferrer" class="text-oxide-400 hover:text-oxide-300 underline-offset-4 hover:underline">
+                {publication}
+              </a>
+            ) : (
+              publication
+            )}
+          </dd>
+        </div>
+      )}
       {stack.length > 0 && (
         <div class="flex flex-col gap-1 max-w-md">
           <dt class="mono-label">Stack</dt>
@@ -55,9 +93,66 @@ const yearLine = [data.year, data.semester].filter(Boolean).join(" · ");
         </div>
       )}
       {dataset && (
+        <div class="flex flex-col gap-1 max-w-md">
+          <dt class="mono-label">Dataset</dt>
+          <dd class="text-graphite-200 text-sm">
+            {datasetUrl ? (
+              <a href={datasetUrl} target="_blank" rel="noopener noreferrer" class="text-oxide-400 hover:text-oxide-300 underline-offset-4 hover:underline">
+                {dataset}
+              </a>
+            ) : (
+              dataset
+            )}
+          </dd>
+        </div>
+      )}
+      {!dataset && datasetUrl && (
         <div class="flex flex-col gap-1">
           <dt class="mono-label">Dataset</dt>
-          <dd class="text-graphite-200 text-sm">{dataset}</dd>
+          <dd>
+            <a href={datasetUrl} target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-1 text-oxide-400 hover:text-oxide-300 underline-offset-4 hover:underline text-sm">
+              <span>{hostname(datasetUrl)}</span>
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true">
+                <path d="M7 17L17 7M9 7h8v8" />
+              </svg>
+            </a>
+          </dd>
+        </div>
+      )}
+      {wandbProject && (
+        <div class="flex flex-col gap-1">
+          <dt class="mono-label">W&amp;B</dt>
+          <dd class="text-graphite-200 text-sm font-mono">{wandbProject}</dd>
+        </div>
+      )}
+      {runpodEndpointId && (
+        <div class="flex flex-col gap-1">
+          <dt class="mono-label">RunPod</dt>
+          <dd class="text-graphite-200 text-sm font-mono">{runpodEndpointId}</dd>
+        </div>
+      )}
+      {architecturePattern && (
+        <div class="flex flex-col gap-1 max-w-md">
+          <dt class="mono-label">Architecture</dt>
+          <dd class="text-graphite-200 text-sm">{architecturePattern}</dd>
+        </div>
+      )}
+      {externalApis.length > 0 && (
+        <div class="flex flex-col gap-1 max-w-md">
+          <dt class="mono-label">External APIs</dt>
+          <dd class="text-graphite-200 text-sm">{externalApis.join(", ")}</dd>
+        </div>
+      )}
+      {proposalVideo && (
+        <div class="flex flex-col gap-1 max-w-md">
+          <dt class="mono-label">Proposal video</dt>
+          <dd class="text-graphite-200 text-sm">{proposalVideo}</dd>
+        </div>
+      )}
+      {latestDraft && (
+        <div class="flex flex-col gap-1 max-w-md">
+          <dt class="mono-label">Latest draft</dt>
+          <dd class="text-graphite-200 text-sm">{latestDraft}</dd>
         </div>
       )}
       {courseFull && (

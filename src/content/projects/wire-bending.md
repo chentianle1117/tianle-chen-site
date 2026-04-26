@@ -1,44 +1,55 @@
 ---
-type: portfolio-project
-title: "Wire-bending Parametric Workflow with Mixed Reality"
-slug: wire-bending
-course: "48-736 Master Independent Study (research with Prof. Vernelle Noel / Fologram)"
-course_code: 48-736
-semester: "Fall 2024"
-year: 2024
-role: research-assistant
-team_size: 2
-collaborators: [Prof. Vernelle Noel]
-tags: [mixed-reality, hololens, grasshopper, fologram, digital-fabrication, parametric-design, craft, interactive-fabrication]
-categories: [Mixed Reality, Digital Fabrication]
-github: null
-notion_url: https://www.notion.so/chentianle1117/Wire-bending-Parametric-Workflow-with-Mixed-Reality-16933d12d95a818eafdad039f5f65990
-local_path: "W:\\CMU_Academics\\Fall 2024 CMU\\Fologram Research"
-hero_image: /assets/wire-bending/hero.png
-images:
-  - /assets/wire-bending/hero.png
-  - /assets/wire-bending/hololens-workflow-1.png
-  - /assets/wire-bending/hololens-workflow-2.png
-  - /assets/wire-bending/bending-process.gif
-  - /assets/wire-bending/detail.png
-  - /assets/wire-bending/full-installation.png
+_hero_curated: true
 artifacts:
-  - /assets/wire-bending/MasterQR.pdf
-  - /assets/wire-bending/recut piece 1106 [Converted].pdf
-  - /assets/wire-bending/recut piece 1106 [Converted] f.pdf
-  - "20241003_180350_HoloLens.mp4 (91MB, local only)"
-  - "20241107_185059_HoloLens.mp4 (495MB, local only)"
-  - "20241118_111306_HoloLens.mp4 (3.6GB, local only)"
-  - "wirebending button update 1017.mp4 (545MB, local only)"
-  - "Real Construction Details 1102 Rhino videos (3 variants, 2.5-2.8GB each, local only)"
-  - "9_23_2024.obj (92MB mesh export, local only)"
-  - 20+ Grasshopper .gh files (iteration: 0929, 1017, 1028, 1030, 1102)
-  - Rhino 3DM files (~17-22MB each)
+- /assets/wire-bending/MasterQR.pdf
+- /assets/wire-bending/recut piece 1106 [Converted].pdf
+- /assets/wire-bending/recut piece 1106 [Converted] f.pdf
+- 20241003_180350_HoloLens.mp4 (91MB, local only)
+- 20241107_185059_HoloLens.mp4 (495MB, local only)
+- 20241118_111306_HoloLens.mp4 (3.6GB, local only)
+- wirebending button update 1017.mp4 (545MB, local only)
+- Real Construction Details 1102 Rhino videos (3 variants, 2.5-2.8GB each, local only)
+- 9_23_2024.obj (92MB mesh export, local only)
+- 20+ Grasshopper .gh files (iteration: 0929, 1017, 1028, 1030, 1102)
+- Rhino 3DM files (~17-22MB each)
+categories:
+- Mixed Reality
+- Digital Fabrication
+collaborators:
+- Prof. Vernelle Noel
+course: 48-736 Master Independent Study (research with Prof. Vernelle Noel / Fologram)
+course_code: 48-736
+gif_hero: /assets/wire-bending/bending-process.gif
+github: null
+hero_image: /assets/wire-bending/bending-process.gif
+images:
+- /assets/wire-bending/hololens-workflow-2.png
+- /assets/wire-bending/full-installation.png
+- /assets/wire-bending/hero.png
+- /assets/wire-bending/hololens-workflow-1.png
+- /assets/wire-bending/detail.png
+local_path: W:\CMU_Academics\Fall 2024 CMU\Fologram Research
+notion_url: https://www.notion.so/chentianle1117/Wire-bending-Parametric-Workflow-with-Mixed-Reality-16933d12d95a818eafdad039f5f65990
 priority: flagship
-status: ready
 publish: true
+role: research-assistant
+semester: Fall 2024
+slug: wire-bending
+status: ready
+tags:
+- mixed-reality
+- hololens
+- grasshopper
+- fologram
+- digital-fabrication
+- parametric-design
+- craft
+- interactive-fabrication
+team_size: 2
+title: Wire-bending Parametric Workflow with Mixed Reality
+type: portfolio-project
+year: 2024
 ---
-# Wire-bending Parametric Workflow with Mixed Reality
 
 > Parametric design tools integrated with mixed-reality guidance for precise, efficient wire-bending. Grasshopper + Microsoft HoloLens project digital models onto the physical workspace as real-time visual cues — designer-as-fabricator, guided by digital overlays.
 

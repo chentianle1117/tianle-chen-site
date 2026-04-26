@@ -1,41 +1,63 @@
 ---
-type: portfolio-project
-title: "Dynamic 3D Research Paper Visualization Platform"
-slug: s25-team-26-paper-viz
-course: "17-637 Web Application Development — Team Project"
-course_code: 17-637
-semester: "Spring 2025"
-year: 2025
-role: team-member
-team_size: 3
-team: [David Chen, Graham, Sheen]
-team_hierarchy: flat (no group leader — Agile sprint roles were distributed, not hierarchical)
-sprint_roles:
-  - "David Chen — Product Owner role on First Sprint (sprint-level responsibility, not team lead)"
-  - "Graham — Data Scraping & Database"
-  - "Sheen — UI/UX Prototyping"
-tags: [django, threejs, python, postgresql, data-visualization, research-discovery, citation-networks, academic-search]
-categories: [Web App, 3D Visualization, Data Engineering]
-github: null
-github_note: "GitHub repo lost per David (was chentianle1117/s25_team_26 per inventory, but not accessible / deleted). Local files are the source of truth."
-local_path: "W:\\CMU_Academics\\2025 Spring\\17637 Web App Dev\\s25_team_26"
-stack_backend: [Django, SQL/PostgreSQL, Python]
-stack_frontend: [Three.js, JavaScript]
-data_source: "Google Scholar"
-priority: standard
-status: draft
-publish: true
-hero_image: /assets/s25-team-26/hero.png
-images: []
+_hero_curated: true
 artifacts:
-  - First-Sprint-Log.txt
-  - Product-Backlog.txt
+- First-Sprint-Log.txt
+- Product-Backlog.txt
+categories:
+- Web App
+- 3D Visualization
+- Data Engineering
+course: 17-637 Web Application Development — Team Project
+course_code: 17-637
+data_source: Google Scholar
+github: null
+github_note: GitHub repo lost per David (was chentianle1117/s25_team_26 per inventory,
+  but not accessible / deleted). Local files are the source of truth.
+hero_image: /assets/s25-team-26-paper-viz/img-1.webp
+images:
+- /assets/s25-team-26-paper-viz/img-1.webp
+local_path: W:\CMU_Academics\2025 Spring\17637 Web App Dev\s25_team_26
+priority: standard
+publish: true
+role: team-member
+semester: Spring 2025
+slug: s25-team-26-paper-viz
+sprint_roles:
+- David Chen — Product Owner role on First Sprint (sprint-level responsibility, not
+  team lead)
+- Graham — Data Scraping & Database
+- Sheen — UI/UX Prototyping
+stack_backend:
+- Django
+- SQL/PostgreSQL
+- Python
+stack_frontend:
+- Three.js
+- JavaScript
+status: draft
+tags:
+- django
+- threejs
+- python
+- postgresql
+- data-visualization
+- research-discovery
+- citation-networks
+- academic-search
+team:
+- David Chen
+- Graham
+- Sheen
+team_hierarchy: flat (no group leader — Agile sprint roles were distributed, not hierarchical)
+team_size: 3
+title: Dynamic 3D Research Paper Visualization Platform
+type: portfolio-project
+year: 2025
 ---
-# Dynamic 3D Research Paper Visualization Platform
 
 > Browse academic research as a 3D landscape rather than a flat list. Papers positioned by metadata (year, citations, length); filter by topic; visualize citation networks; save + collect papers per user. Team project for Web App Dev, Spring 2025 — David as Product Owner.
 
-![hero](/assets/s25-team-26/hero.png)
+![hero](/assets/s25-team-26-paper-viz/hero.png)
 
 ## Hook
 Academic search UIs are flat: a list of titles + abstracts, ordered by relevance. What if research discovery were *spatial* — papers as 3D objects you fly through, with citation edges connecting them, and year/citation-count/length driving position + size? Team 26's Web App Dev final project builds exactly that.

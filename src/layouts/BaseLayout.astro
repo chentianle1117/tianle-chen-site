@@ -22,10 +22,34 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en" data-theme="dark" class="dark">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    {/* Pre-paint theme hydration — runs before body to avoid flash of wrong theme.
+        Sets BOTH `data-theme` attribute (Phase 2 contract) AND `.dark`/`.light`
+        class (legacy components). */}
+    <script is:inline>
+      (function () {
+        try {
+          // DARK is the canonical default. We intentionally do NOT consult
+          // prefers-color-scheme — the design is dark-first and respecting OS
+          // light caused jarring dark-hero / cream-body seams across the site.
+          // Users can toggle to light via ThemeToggle; that choice persists.
+          var stored = localStorage.getItem("theme");
+          var theme = stored || "dark";
+          var root = document.documentElement;
+          root.setAttribute("data-theme", theme);
+          root.classList.remove("dark", "light");
+          root.classList.add(theme);
+        } catch (e) {
+          document.documentElement.setAttribute("data-theme", "dark");
+          document.documentElement.classList.add("dark");
+        }
+      })();
+    </script>
+
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonicalURL} />

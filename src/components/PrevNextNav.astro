@@ -1,21 +1,24 @@
 ---
 import { getCollection } from "astro:content";
+import { existsSync } from "node:fs";
+import { fileURLToPath } from "node:url";
 
 interface Props {
   currentSlug: string;
 }
 const { currentSlug } = Astro.props;
 
+function publicFileExists(webPath: string | null | undefined): boolean {
+  if (!webPath || !webPath.startsWith("/")) return false;
+  const url = new URL(`../../public${webPath}`, import.meta.url);
+  return existsSync(fileURLToPath(url));
+}
+
 const all = await getCollection("projects", ({ data }) => data.publish === true);
 
 function isArchitectureTier(p: typeof all[0]) {
-  return (
-    p.data.institution === "Rice University" ||
-    (p.data.categories &&
-      p.data.categories.includes("Architecture") &&
-      p.data.year &&
-      p.data.year <= 2024)
-  );
+  const slug = (p as any).slug ?? p.data.slug;
+  return ["fiber-based-pavilion", "membrane-form-finding", "generative-urbanism", "wire-bending"].includes(slug);
 }
 
 const sorted = all
@@ -25,38 +28,112 @@ const sorted = all
 const idx = sorted.findIndex((p) => ((p as any).slug ?? p.data.slug) === currentSlug);
 const prev = idx > 0 ? sorted[idx - 1] : null;
 const next = idx >= 0 && idx < sorted.length - 1 ? sorted[idx + 1] : null;
+
+function thumbFor(p: any): string | null {
+  if (!p) return null;
+  const d: any = p.data;
+  const candidate = d.gif_hero || d.hero_image || (d.images && d.images[0]) || null;
+  if (!candidate || /\.(pdf|mp4|mov|webm)$/i.test(candidate)) return null;
+  return publicFileExists(candidate) ? candidate : null;
+}
+
+const prevThumb = thumbFor(prev);
+const nextThumb = thumbFor(next);
 ---
 
+<section style="border-top: 1px solid rgb(var(--surface-border));" class="mt-12 md:mt-16">
+  <a
+    href="/"
+    class="group block text-center transition-colors duration-280 ease-out-soft"
+    style="padding: 3rem 1.5rem 3.5rem;"
+  >
+    <span class="mono-label block mb-3 group-hover:text-[rgb(var(--accent-rgb))] transition-colors duration-280">
+      KEEP EXPLORING
+    </span>
+    <span
+      class="inline-flex items-center gap-3 group-hover:text-[rgb(var(--accent-rgb))] transition-colors duration-280"
+      style="font-family: theme(fontFamily.display); font-size: var(--step-3); font-weight: 380; color: rgb(var(--text-primary));"
+    >
+      <span>Explore the latent space</span>
+      <span class="transition-transform duration-280 ease-out-soft group-hover:translate-x-1">→</span>
+    </span>
+  </a>
+</section>
+
 {(prev || next) && (
-  <nav class="grid grid-cols-1 md:grid-cols-2 border-t border-graphite-700/60 mt-16">
+  <nav
+    class="grid grid-cols-1 md:grid-cols-2"
+    style="border-top: 1px solid rgb(var(--surface-border));"
+  >
     <a
       href={prev ? `/work/${((prev as any).slug ?? prev.data.slug)}` : "#"}
       class:list={[
-        "group block px-6 md:px-12 py-10 md:py-14 border-graphite-700/60 transition-colors duration-280 ease-out-soft",
-        "md:border-r",
+        "group flex items-center gap-4 transition-colors duration-280 ease-out-soft",
         prev ? "" : "pointer-events-none opacity-30",
       ]}
+      style="padding: 2.5rem 1.5rem 2.5rem; border-right: 1px solid rgb(var(--surface-border));"
     >
-      <span class="mono-label block mb-3 transition-transform duration-280 ease-out-soft group-hover:-translate-x-1 group-hover:text-oxide-400">
-        ← Previous
-      </span>
-      <span class="font-display text-graphite-50 group-hover:text-oxide-400 transition-colors duration-280" style="font-size: var(--step-3); font-weight:380;">
-        {prev ? prev.data.title : "—"}
-      </span>
+      {prevThumb ? (
+        <img
+          src={prevThumb}
+          alt=""
+          loading="lazy"
+          decoding="async"
+          class="flex-shrink-0 object-cover"
+          style="width: 80px; height: 60px; border-radius: 4px; border: 1px solid rgb(var(--surface-border));"
+        />
+      ) : (
+        <div
+          class="flex-shrink-0"
+          style="width: 80px; height: 60px; border-radius: 4px; border: 1px solid rgb(var(--surface-border)); background: rgb(var(--surface-1-rgb));"
+        ></div>
+      )}
+      <div class="min-w-0">
+        <span class="mono-label block mb-1 transition-transform duration-280 ease-out-soft group-hover:-translate-x-1 group-hover:text-[rgb(var(--accent-rgb))]">
+          ← previous
+        </span>
+        <span
+          class="block group-hover:text-[rgb(var(--accent-rgb))] transition-colors duration-280"
+          style="font-family: theme(fontFamily.display); font-size: var(--step-2); font-weight: 380; line-height: 1.15; color: rgb(var(--text-primary));"
+        >
+          {prev ? prev.data.title : "—"}
+        </span>
+      </div>
     </a>
     <a
       href={next ? `/work/${((next as any).slug ?? next.data.slug)}` : "#"}
       class:list={[
-        "group block px-6 md:px-12 py-10 md:py-14 border-t md:border-t-0 border-graphite-700/60 transition-colors duration-280 ease-out-soft md:text-right",
+        "group flex items-center gap-4 transition-colors duration-280 ease-out-soft md:flex-row-reverse md:text-right",
         next ? "" : "pointer-events-none opacity-30",
       ]}
+      style="padding: 2.5rem 1.5rem 2.5rem;"
     >
-      <span class="mono-label block mb-3 transition-transform duration-280 ease-out-soft group-hover:translate-x-1 group-hover:text-oxide-400">
-        Next →
-      </span>
-      <span class="font-display text-graphite-50 group-hover:text-oxide-400 transition-colors duration-280" style="font-size: var(--step-3); font-weight:380;">
-        {next ? next.data.title : "—"}
-      </span>
+      {nextThumb ? (
+        <img
+          src={nextThumb}
+          alt=""
+          loading="lazy"
+          decoding="async"
+          class="flex-shrink-0 object-cover"
+          style="width: 80px; height: 60px; border-radius: 4px; border: 1px solid rgb(var(--surface-border));"
+        />
+      ) : (
+        <div
+          class="flex-shrink-0"
+          style="width: 80px; height: 60px; border-radius: 4px; border: 1px solid rgb(var(--surface-border)); background: rgb(var(--surface-1-rgb));"
+        ></div>
+      )}
+      <div class="min-w-0">
+        <span class="mono-label block mb-1 transition-transform duration-280 ease-out-soft group-hover:translate-x-1 group-hover:text-[rgb(var(--accent-rgb))]">
+          next →
+        </span>
+        <span
+          class="block group-hover:text-[rgb(var(--accent-rgb))] transition-colors duration-280"
+          style="font-family: theme(fontFamily.display); font-size: var(--step-2); font-weight: 380; line-height: 1.15; color: rgb(var(--text-primary));"
+        >
+          {next ? next.data.title : "—"}
+        </span>
+      </div>
     </a>
   </nav>
 )}

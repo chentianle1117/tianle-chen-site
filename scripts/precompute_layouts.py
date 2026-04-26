@@ -17,6 +17,10 @@ from pathlib import Path
 from typing import Dict, List
 
 import numpy as np
+from PIL import Image
+
+# Defensive PIL caps — set BEFORE any image opens.
+Image.MAX_IMAGE_PIXELS = 300_000_000
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from _embed_common import (  # noqa: E402

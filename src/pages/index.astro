@@ -1,140 +1,290 @@
 ---
+// @ts-nocheck
 import BaseLayout from "../layouts/BaseLayout.astro";
 import ProjectCard from "../components/ProjectCard.astro";
-import IndexList from "../components/IndexList.astro";
-import NowStrip from "../components/NowStrip.astro";
-import MonoLabel from "../components/MonoLabel.astro";
-import Reveal from "../components/Reveal.astro";
-// Agent D's component — may not yet exist at the time of authoring; resolves at build time.
+import SectionBreak from "../components/SectionBreak.astro";
+// Agent D's component — resolves at build time.
 // @ts-ignore - intentional: HeroNavigator is being built by Agent D in parallel.
 import HeroNavigator from "../components/hero/HeroNavigator";
-import { getCollection } from "astro:content";
+import PlaceholderHero from "../components/PlaceholderHero.astro";
+import { getCollection, getEntry } from "astro:content";
+import { existsSync } from "node:fs";
+import { fileURLToPath } from "node:url";
+
+function publicFileExists(webPath) {
+  if (!webPath || !webPath.startsWith("/")) return false;
+  const url = new URL(`../../public${webPath}`, import.meta.url);
+  return existsSync(fileURLToPath(url));
+}
+
+// Architecture-tier slugs are surfaced on /architecture, NOT on /work index OR the homepage featured grid
+const architectureSlugs = new Set([
+  "fiber-based-pavilion",
+  "membrane-form-finding",
+  "generative-urbanism",
+  "wire-bending",
+]);
 
 const allProjects = await getCollection(
   "projects",
   ({ data }) => data.publish === true
 );
-const sortedAll = [...allProjects].sort(
-  (a, b) => (b.data.year ?? 0) - (a.data.year ?? 0)
-);
-const flagships = sortedAll.filter((p) => p.data.priority === "flagship");
-const featured = flagships.slice(0, 5); // 6th tile reserved for the "view all" CTA
-const totalCount = sortedAll.length;
-const totalLabel = String(totalCount).padStart(2, "0");
+
+const isArchTier = (p) => architectureSlugs.has(((p as any).slug ?? p.data.slug));
+
+// Sort: flagships first, then by year desc
+const work = allProjects
+  .filter((p) => !isArchTier(p))
+  .sort((a, b) => {
+    if (a.data.priority === "flagship" && b.data.priority !== "flagship") return -1;
+    if (b.data.priority === "flagship" && a.data.priority !== "flagship") return 1;
+    return (b.data.year ?? 0) - (a.data.year ?? 0);
+  });
+
+const featured = work.slice(0, 6);
+const totalCount = work.length;
+
+// Thesis teaser data
+const thesis: any = await getEntry("projects", "semantic-canvas");
+const thesisData = thesis?.data ?? {};
+const thesisLive = thesisData.live_url;
+// Use a clean output image as the thesis poster (avoid UI screenshot for the homepage poster)
+const thesisPoster =
+  publicFileExists("/assets/semantic-canvas/output-nano-generated-shoe.png")
+    ? "/assets/semantic-canvas/output-nano-generated-shoe.png"
+    : thesisData.hero_image;
+// Pull first ~350 chars from the thesis body content for a clean intro
+const thesisBody: string = (thesis?.body ?? "") as string;
+const thesisIntroRaw = thesisBody
+  .replace(/^---[\s\S]*?---/, "")
+  .replace(/^#.*$/gm, "")
+  .replace(/!\[[^\]]*\]\([^)]*\)/g, "")
+  .replace(/\[\[([^\]|]+)(\|[^\]]+)?\]\]/g, "")
+  .replace(/`[^`]+`/g, "")
+  .replace(/\*\*([^*]+)\*\*/g, "$1")
+  .replace(/\*([^*]+)\*/g, "$1")
+  .replace(/\s+/g, " ")
+  .trim();
+const thesisIntro = thesisIntroRaw.slice(0, 380);
+
+// Architecture rail
+const archProjects = ["fiber-based-pavilion", "membrane-form-finding", "generative-urbanism", "wire-bending"]
+  .map((s) => allProjects.find((p) => ((p as any).slug ?? p.data.slug) === s))
+  .filter(Boolean);
 ---
 
 <BaseLayout
   title="David Chen"
   description="Gen-AI engineer & computational designer. CMU MSCD thesis tools, generative 3D, design-AI integration."
 >
-  {/* 1. Identity strip */}
-  <section class="container-page pt-16">
-    <div data-stagger class="flex flex-col items-center text-center">
-      <Reveal>
-        <MonoLabel tone="secondary">
-          David Chen · Gen-AI engineer & computational designer · Pittsburgh, PA
-        </MonoLabel>
-      </Reveal>
-      <Reveal>
-        <div class="w-[240px] h-px bg-graphite-700 my-6" aria-hidden="true"></div>
-      </Reveal>
+  {/* ============ HERO — full-bleed latent-space navigator ============ */}
+  <section class="relative" style="border-bottom: 1px solid rgb(var(--surface-border));">
+    <HeroNavigator client:visible />
+  </section>
+
+  {/* ============ SELECTED WORK ============ */}
+  <SectionBreak label="SELECTED WORK" />
+
+  <section class="container-display py-12" aria-labelledby="selected-work">
+    <div class="flex items-baseline justify-between flex-wrap gap-4 mb-8">
+      <h2
+        id="selected-work"
+        style="font-family: theme(fontFamily.display); font-size: var(--step-4); font-weight: 380; line-height: 1.05; letter-spacing: -0.01em; color: rgb(var(--text-primary));"
+      >
+        Selected work
+      </h2>
+      <p class="mono-label">
+        {String(featured.length).padStart(2, "0")} of {String(totalCount).padStart(2, "0")} · 2022—2026
+      </p>
+    </div>
+
+    {/* Asymmetric 12-col grid:
+        Card 1: col-span-8 large
+        Cards 2-3: col-span-4 stacked right
+        Cards 4-6: col-span-4 each (full row of three)
+    */}
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-6 md:gap-8" data-stagger>
+      {featured.map((project, i) => {
+        let span = "md:col-span-4";
+        let size: "default" | "large" | "small" = "default";
+        if (i === 0) {
+          span = "md:col-span-8";
+          size = "large";
+        } else if (i === 1 || i === 2) {
+          span = "md:col-span-4";
+          size = "default";
+        } else {
+          span = "md:col-span-4";
+          size = "default";
+        }
+        return (
+          <div class:list={[span]} data-reveal>
+            <ProjectCard project={project} size={size} eager={i === 0} />
+          </div>
+        );
+      })}
+    </div>
+
+    <div class="mt-10 md:mt-14 flex justify-end">
+      <a href="/work" class="btn-ghost mono-label" style="display: inline-flex; align-items: center; gap: 0.5rem;">
+        View all {totalCount} projects
+        <span aria-hidden="true">→</span>
+      </a>
     </div>
   </section>
 
-  {/* 2. Latent navigator hero */}
-  <section class="container-wide" data-stagger>
-    <Reveal>
-      <div
-        class="relative aspect-[16/10] md:h-[78vh] md:min-h-[640px] md:aspect-auto rounded-md overflow-hidden border border-graphite-700/60"
-      >
-        <HeroNavigator client:visible />
-      </div>
-    </Reveal>
-    <Reveal>
-      <div class="mt-4 flex justify-center">
-        <MonoLabel tone="tertiary">
-          Interactive: drag to orbit · click a project · toggle layouts ↗
-        </MonoLabel>
-      </div>
-    </Reveal>
-  </section>
+  {/* ============ THESIS ============ */}
+  <SectionBreak label="THESIS" />
 
-  {/* 3. Selected work */}
-  <section class="container-page py-22 md:py-30" data-stagger aria-labelledby="selected-work">
-    <Reveal>
-      <MonoLabel tone="secondary" class="block mb-4">
-        2022—2026 · 06 OF {totalLabel}
-      </MonoLabel>
-    </Reveal>
-    <Reveal>
-      <h2 id="selected-work" class="font-display mb-10 md:mb-14">Selected work</h2>
-    </Reveal>
-
-    <div
-      class="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8 snap-x snap-mandatory md:snap-none overflow-x-auto md:overflow-visible -mx-6 px-6 md:mx-0 md:px-0"
-    >
-      {featured.map((project) => (
-        <Reveal class="snap-center md:snap-align-none min-w-[80%] md:min-w-0">
-          <ProjectCard project={project} size="default" />
-        </Reveal>
-      ))}
-
-      {/* 6th tile: View-all CTA, matches card-surface dimensions */}
-      <Reveal class="snap-center md:snap-align-none min-w-[80%] md:min-w-0">
+  <section class="container-display pb-4" aria-labelledby="thesis-teaser">
+    <div class="grid grid-cols-1 md:grid-cols-12 gap-8 md:gap-12 items-start">
+      {/* Poster */}
+      <div class="md:col-span-7" data-reveal>
         <a
-          href="/work"
-          class="card-surface group flex flex-col h-full"
-          aria-label="View all projects"
+          href="/thesis"
+          class="block overflow-hidden group"
+          style="border: 1px solid rgb(var(--surface-border)); border-radius: 6px; background: rgb(var(--surface-1-rgb));"
         >
-          <div
-            class="relative aspect-[4/3] flex flex-col items-center justify-center gap-3 bg-graphite-900 border-b border-graphite-700/60 transition-all duration-280 ease-out-soft group-hover:bg-graphite-800/80"
-          >
-            <span
-              class="font-mono uppercase tracking-[0.08em] text-graphite-400 group-hover:text-oxide-400 transition-colors"
-              style="font-size: var(--step--1)"
-            >
-              View all
-            </span>
-            <span
-              class="font-display text-graphite-100 group-hover:text-oxide-400 transition-colors"
-              style="font-size: var(--step-2); font-weight: 380;"
-            >
-              {totalCount} projects →
-            </span>
-          </div>
-          <div class="p-5 md:p-6 flex flex-col gap-3">
-            <div class="mono-label">Index</div>
-            <h3
-              class="font-display text-graphite-50 leading-tight"
-              style="font-size: var(--step-2); font-weight: 380;"
-            >
-              All work
-            </h3>
+          <div class="relative aspect-[4/5] overflow-hidden">
+            {thesisPoster && publicFileExists(thesisPoster) ? (
+              <img
+                src={thesisPoster}
+                alt="Semantic Canvas — thesis poster"
+                loading="lazy"
+                decoding="async"
+                class="absolute inset-0 w-full h-full object-cover transition-all duration-420 ease-out-soft group-hover:scale-[1.02] group-hover:brightness-[1.05]"
+              />
+            ) : (
+              <PlaceholderHero
+                slug="semantic-canvas"
+                title="Semantic Canvas"
+                categories={thesisData.categories ?? ["Thesis"]}
+                size="hero"
+              />
+            )}
           </div>
         </a>
-      </Reveal>
+      </div>
+
+      {/* Copy */}
+      <div class="md:col-span-5 md:pt-4" data-reveal>
+        <p class="mono-label mb-3">CMU MSCD · 2025—2026</p>
+        <h2
+          id="thesis-teaser"
+          class="mb-5"
+          style="font-family: theme(fontFamily.display); font-size: var(--step-3); font-weight: 380; line-height: 1.1; letter-spacing: -0.01em; color: rgb(var(--text-primary));"
+        >
+          Semantic Canvas
+        </h2>
+        <p class="mb-4" style="color: rgb(var(--text-secondary)); line-height: 1.6;">
+          A latent-space design instrument: type two words — <em>casual</em>, <em>formal</em> — and a shoe library rearranges itself by meaning. Drop in an image and it finds its place. Generate variants in-place. A passive Gemini observer reads the brief and offers insights without interrupting.
+        </p>
+        <p class="mb-8" style="color: rgb(var(--text-secondary)); line-height: 1.6;">
+          The thesis claim: a designer's <em>own words</em> are a better basis for navigating generative possibility space than the mathematical artifacts of t-SNE or UMAP. The site you are reading is itself a smaller version of the method.
+        </p>
+        <div class="flex flex-wrap gap-3">
+          <a href="/thesis" class="btn">Read full writeup</a>
+          {thesisLive && (
+            <a href={thesisLive} target="_blank" rel="noopener noreferrer" class="btn btn-primary">
+              Try the live tool
+            </a>
+          )}
+        </div>
+      </div>
     </div>
   </section>
 
-  {/* 4. Now strip */}
-  <section class="container-page py-18 md:py-22 border-t border-graphite-800/50" data-stagger>
-    <NowStrip />
+  {/* ============ ARCHITECTURE ============ */}
+  <SectionBreak label="ARCHITECTURE" />
+
+  <section class="container-display pb-4" aria-labelledby="architecture-rail">
+    <div class="flex items-baseline justify-between flex-wrap gap-4 mb-8 md:mb-10">
+      <h2
+        id="architecture-rail"
+        style="font-family: theme(fontFamily.display); font-size: var(--step-4); font-weight: 380; line-height: 1.05; letter-spacing: -0.01em; color: rgb(var(--text-primary));"
+      >
+        Architecture
+      </h2>
+      <p class="mono-label">RICE UNIVERSITY · 2021—2024</p>
+    </div>
+
+    {/* Horizontal rail of 4 architecture cards */}
+    <div
+      class="flex gap-4 md:gap-6 overflow-x-auto pb-4 -mx-6 px-6 md:-mx-12 md:px-12 snap-x snap-mandatory"
+      data-stagger
+      style="scrollbar-width: thin;"
+    >
+      {archProjects.map((p) => {
+        const d: any = p.data;
+        const heroSrc = d.gif_hero || d.hero_image || (d.images && d.images[0]) || null;
+        const heroOk = heroSrc && publicFileExists(heroSrc);
+        const slug = (p as any).slug ?? d.slug;
+        return (
+          <a
+            href={`/work/${slug}`}
+            class="group flex-shrink-0 snap-start block"
+            style="width: 320px;"
+            data-reveal
+          >
+            <div
+              class="relative aspect-[3/4] overflow-hidden"
+              style="border: 1px solid rgb(var(--surface-border)); border-radius: 6px; background: rgb(var(--surface-1-rgb));"
+            >
+              {heroOk ? (
+                <img
+                  src={heroSrc}
+                  alt={d.title}
+                  loading="lazy"
+                  decoding="async"
+                  class="absolute inset-0 w-full h-full object-cover transition-all duration-420 ease-out-soft group-hover:scale-[1.02] group-hover:brightness-[1.05]"
+                />
+              ) : (
+                <PlaceholderHero slug={slug} title={d.title} categories={d.categories ?? []} size="hero" />
+              )}
+            </div>
+            <div class="mt-3">
+              <p class="mono-label mb-1">{d.year} · {d.role || (d.categories && d.categories[0]) || ""}</p>
+              <h3
+                style="font-family: theme(fontFamily.display); font-size: var(--step-2); font-weight: 380; line-height: 1.2; letter-spacing: -0.01em; color: rgb(var(--text-primary));"
+                class="group-hover:text-[rgb(var(--accent-rgb))] transition-colors duration-280"
+              >
+                {d.title}
+              </h3>
+            </div>
+          </a>
+        );
+      })}
+    </div>
+
+    <div class="mt-8 md:mt-12 flex justify-end">
+      <a href="/architecture" class="btn-ghost mono-label" style="display: inline-flex; align-items: center; gap: 0.5rem;">
+        View all architecture
+        <span aria-hidden="true">→</span>
+      </a>
+    </div>
   </section>
 
-  {/* 5. Index list */}
-  <section
-    class="container-page py-22 md:py-30 border-t border-graphite-800/50"
-    data-stagger
-    aria-labelledby="all-work"
-  >
-    <Reveal>
-      <MonoLabel tone="secondary" class="block mb-4">
-        Index · {totalLabel} entries
-      </MonoLabel>
-    </Reveal>
-    <Reveal>
-      <h2 id="all-work" class="font-display mb-10 md:mb-14">All work</h2>
-    </Reveal>
-    <IndexList projects={sortedAll} />
+  {/* ============ ABOUT TEASER ============ */}
+  <SectionBreak label="ABOUT" />
+
+  <section class="container-reading pb-24 md:pb-32" aria-labelledby="about-teaser">
+    <p class="mono-label mb-5">PITTSBURGH · 2026</p>
+    <h2
+      id="about-teaser"
+      class="mb-6"
+      style="font-family: theme(fontFamily.display); font-size: var(--step-3); font-weight: 380; line-height: 1.1; letter-spacing: -0.01em; color: rgb(var(--text-primary));"
+    >
+      Designer turned engineer.
+    </h2>
+    <p class="mb-5" style="color: rgb(var(--text-secondary)); line-height: 1.65;">
+      I am finishing an MSCD thesis at Carnegie Mellon — Semantic Canvas, an interactive latent-space tool for AI-augmented footwear design. Concurrently I work as an ML/AI engineer at HILOS Studio, shipping production tools that translate computer vision and generative models into the daily workflow of footwear designers.
+    </p>
+    <p class="mb-8" style="color: rgb(var(--text-secondary)); line-height: 1.65;">
+      Before CMU, I trained as an architect at Rice — parametric form-finding, ceramic hollow columns published at IASS 2024, and four years of studio work across NBBJ Los Angeles, EID, Pure Architect, and ECADI. Architecture taught me to design for systems, not screens; ML lets me build them.
+    </p>
+    <a href="/about" class="btn-ghost mono-label" style="display: inline-flex; align-items: center; gap: 0.5rem;">
+      Read more
+      <span aria-hidden="true">→</span>
+    </a>
   </section>
 </BaseLayout>

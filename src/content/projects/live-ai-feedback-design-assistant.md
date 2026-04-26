@@ -1,40 +1,58 @@
 ---
-type: portfolio-project
-title: "Live AI Feedback — Real-Time Design Critique Assistant"
-slug: live-ai-feedback-design-assistant
-course: "51-799 Graduate Design Independent Study"
+_hero_curated: true
+artifacts: []
+categories:
+- Interactive Tool
+- AI/ML
+- Desktop App
+collaboration_type: Design-Copilot team + Gati's MDes thesis support
+course: 51-799 Graduate Design Independent Study
 course_code: 51-799
-semester: "Spring 2025"
-year: 2025
-role: contributor
-team_size: 2
-team: [Gati Aher (lead, upstream), David Chen]
-collaboration_type: "Design-Copilot team + Gati's MDes thesis support"
-tags: [electron, react, typescript, gemini-api, design-feedback, tool-calling, screen-sharing, ai-critique]
-categories: [Interactive Tool, AI/ML, Desktop App]
+david_personal_fork: chentianle1117/AI_Feedback_demo
+david_personal_fork_url: https://github.com/chentianle1117/AI_Feedback_demo
 github_primary: Design-Copilot/live_ai_feedack_react_electron
 github_primary_url: https://github.com/Design-Copilot/live_ai_feedack_react_electron
 github_upstream: GatiAher/live_ai_feedack_react_electron
 github_upstream_url: https://github.com/GatiAher/live_ai_feedack_react_electron
-david_personal_fork: chentianle1117/AI_Feedback_demo
-david_personal_fork_url: https://github.com/chentianle1117/AI_Feedback_demo
-local_path: "W:\\CMU_Academics\\2025 Spring\\Independent Study gen Model\\Live_AI_Feedback_Latest"
-stack: [Electron, React, TypeScript, Vite, Google Gemini API]
-tags_active_branch: feature/transcription
-hero_image: /assets/live-ai-feedback/hero.png
 images: []
-artifacts: []
-related_cards:
-  - "[[2025-Fall--semantic-canvas-thesis-tool]]"
+local_path: W:\CMU_Academics\2025 Spring\Independent Study gen Model\Live_AI_Feedback_Latest
 priority: standard
+publish: false
+related_cards:
+- '[[2025-Fall--semantic-canvas-thesis-tool]]'
+role: contributor
+semester: Spring 2025
+slug: live-ai-feedback-design-assistant
+stack:
+- Electron
+- React
+- TypeScript
+- Vite
+- Google Gemini API
 status: draft
-publish: true
+tags:
+- electron
+- react
+- typescript
+- gemini-api
+- design-feedback
+- tool-calling
+- screen-sharing
+- ai-critique
+tags_active_branch: feature/transcription
+team:
+- Gati Aher (lead
+- upstream)
+- David Chen
+team_size: 2
+title: Live AI Feedback — Real-Time Design Critique Assistant
+type: portfolio-project
+year: 2025
 ---
-# Live AI Feedback — Real-Time Design Critique Assistant
 
 > Electron desktop app that observes a designer's screen in real-time and delivers AI-powered critique via Google Gemini. A tool-calling architecture drives a structured feedback workflow: the AI asks setup questions, narrows focus, delivers critique, then summarizes — never free-associating. Built with Gati Aher for her MDes thesis work, continuing into David's independent study.
 
-![hero](/assets/live-ai-feedback/hero.png)
+![hero](/assets/live-ai-feedback-design-assistant/hero.png)
 
 ## Hook
 Most AI critics dump an unstructured blob of feedback. Live AI Feedback uses a **phased tool-calling workflow** — the AI calls specific tools (`ask_initial_questions`, `provide_feedback`, `request_summary`, `list_design_critiques`) at the right moments in a critique session. It watches your screen via the desktop capture API and delivers feedback grounded in what you're actually working on right now.

@@ -18,6 +18,7 @@ function publicFileExists(webPath: string | null | undefined): boolean {
 
 const { project, size = "default", eager = false } = Astro.props;
 const { data } = project;
+const dataAny = data as any;
 
 const aspect = {
   large: "aspect-[16/10]",
@@ -25,11 +26,20 @@ const aspect = {
   small: "aspect-square",
 }[size];
 
-const hero = data.hero_image || (data.images && data.images[0]) || null;
-const heroIsImage = hero && !/\.(pdf|mp4|mov|webm)$/i.test(hero);
-const heroExists = heroIsImage && publicFileExists(hero);
+// Media resolution: gif_hero > video (local mp4) > hero_image > placeholder
+// gif_hero renders as <img> (browsers loop GIFs natively)
+const gifHero: string | undefined = dataAny.gif_hero;
+const rawVideo: string | undefined = dataAny.video;
+const localVideo: string | undefined =
+  rawVideo && /\.(mp4|webm|mov)$/i.test(rawVideo) ? rawVideo : undefined;
+
+const heroImg = data.hero_image || (data.images && data.images[0]) || null;
+const heroIsImage = heroImg && !/\.(pdf|mp4|mov|webm)$/i.test(heroImg);
+const heroExists = heroIsImage && publicFileExists(heroImg);
+const gifExists = gifHero && publicFileExists(gifHero);
+const videoExists = localVideo && publicFileExists(localVideo);
+
 const slug = (project as any).slug ?? data.slug ?? project.id?.replace(/\.md$/, "");
-const dataAny = data as any;
 const yearLabel = data.year ? String(data.year) : "";
 const courseOrCat =
   (data.course_code && String(data.course_code)) ||
@@ -48,10 +58,31 @@ const tags: string[] = (data.categories ?? []).slice(0, 3);
   data-card-title={data.title}
   class="card-surface group block"
 >
-  <div class:list={["relative overflow-hidden bg-graphite-900 border-b border-graphite-700/60", aspect]}>
-    {heroExists ? (
+  <div class:list={["relative overflow-hidden", aspect]} style="background: rgb(var(--surface-bg)); border-bottom: 1px solid rgb(var(--surface-border));">
+    {gifExists ? (
       <img
-        src={hero}
+        src={gifHero}
+        alt={data.title}
+        loading={eager ? "eager" : "lazy"}
+        decoding="async"
+        transition:name={`hero-${slug}`}
+        class="absolute inset-0 w-full h-full object-cover transition-all duration-420 ease-out-soft group-hover:scale-[1.02] group-hover:brightness-[1.05]"
+      />
+    ) : videoExists ? (
+      <video
+        src={localVideo}
+        autoplay
+        muted
+        loop
+        playsinline
+        preload="metadata"
+        poster={heroExists ? heroImg : undefined}
+        transition:name={`hero-${slug}`}
+        class="absolute inset-0 w-full h-full object-cover transition-all duration-420 ease-out-soft group-hover:scale-[1.02] group-hover:brightness-[1.05]"
+      />
+    ) : heroExists ? (
+      <img
+        src={heroImg}
         alt={data.title}
         loading={eager ? "eager" : "lazy"}
         decoding="async"
@@ -66,7 +97,8 @@ const tags: string[] = (data.categories ?? []).slice(0, 3);
 
     {data.priority === "flagship" && (
       <span
-        class="absolute top-3 right-3 block w-1.5 h-1.5 rounded-full bg-oxide-500"
+        class="absolute top-3 right-3 block w-1.5 h-1.5 rounded-full"
+        style="background: rgb(var(--accent-rgb));"
         aria-label="flagship project"
       />
     )}
@@ -77,21 +109,25 @@ const tags: string[] = (data.categories ?? []).slice(0, 3);
       <div class="mono-label flex items-center gap-2">
         {monoBits.map((bit, i) => (
           <>
-            {i > 0 && <span class="text-graphite-600">·</span>}
+            {i > 0 && <span aria-hidden="true" style="color: rgb(var(--text-muted));">·</span>}
             <span>{bit}</span>
           </>
         ))}
       </div>
     )}
-    <h3 class="font-display text-graphite-50 leading-tight transition-colors duration-280 ease-out-soft group-hover:text-oxide-400" style="font-size: var(--step-2); font-weight: 380;">
+    <h3
+      class="transition-colors duration-280 ease-out-soft group-hover:text-[rgb(var(--accent-rgb))]"
+      style="font-family: theme(fontFamily.display); font-size: var(--step-2); font-weight: 380; line-height: 1.2; letter-spacing: -0.01em; color: rgb(var(--text-primary));"
+    >
       {data.title}
     </h3>
     {tags.length > 0 && (
-      <div class="flex flex-wrap gap-2">
-        {tags.map((cat: string) => (
-          <span class="tag">{cat}</span>
-        ))}
-      </div>
+      <p
+        class="font-mono"
+        style="font-size: 11px; letter-spacing: 0.04em; color: rgb(var(--text-mono));"
+      >
+        {tags.map((c) => c.toLowerCase()).join(" · ")}
+      </p>
     )}
   </div>
 </a>

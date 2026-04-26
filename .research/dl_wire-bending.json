@@ -1,0 +1,33 @@
+{
+  "slug": "wire-bending",
+  "downloaded": 0,
+  "new_gifs": 0,
+  "files": [],
+  "gif_names": [],
+  "skipped": [
+    {
+      "url": "https://cdn.myportfolio.com/35001a7d-d3e4-48c3-8562-36ff5d9b5746/14f95530-9fcf-4169-b65d-e40f41a966e",
+      "reason": "dup"
+    },
+    {
+      "url": "https://cdn.myportfolio.com/35001a7d-d3e4-48c3-8562-36ff5d9b5746/40176437-5a65-49c7-a0f4-ba655bbecd5",
+      "reason": "dup"
+    },
+    {
+      "url": "https://cdn.myportfolio.com/35001a7d-d3e4-48c3-8562-36ff5d9b5746/e4fc2152-4e49-42d8-8e82-a2641553820",
+      "reason": "dup"
+    },
+    {
+      "url": "https://cdn.myportfolio.com/35001a7d-d3e4-48c3-8562-36ff5d9b5746/ed57eb95-b50d-4900-9ad4-d745bfc8d11",
+      "reason": "dup"
+    },
+    {
+      "url": "https://cdn.myportfolio.com/35001a7d-d3e4-48c3-8562-36ff5d9b5746/46168c3f-a5e5-46ea-9c27-53f07e390cd",
+      "reason": "dup"
+    },
+    {
+      "url": "https://cdn.myportfolio.com/35001a7d-d3e4-48c3-8562-36ff5d9b5746/a08ea2eb-f760-49f3-93d2-9ce41d0be68",
+      "reason": "dup"
+    }
+  ]
+}

@@ -1,5 +1,6 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
+import SectionBreak from "../components/SectionBreak.astro";
 import { getEntry } from "astro:content";
 import fs from "node:fs";
 import path from "node:path";
@@ -25,23 +26,27 @@ try {
   portraitExists = false;
 }
 
+// Canonical from W:\SecondBrain\Career\Resumes\Tianle_Chen_Resume_2026-04.md (April 2026 snapshot).
+// Note resume reads HILOS Fellowship 2025-May → 2025-Dec, transitioning to FT 2026-06-08.
 const experience: { date: string; line: string }[] = [
-  { date: "2024—Present", line: "CMU MSCD (Computational Design) · Thesis: Semantic Canvas" },
-  { date: "2024—2026", line: "HILOS Studio · ML/AI engineer (under NDA — discussed in interviews)" },
-  { date: "2024 Summer", line: "HILOS Studio · AI fellow" },
-  { date: "2023 Summer", line: "NBBJ · Architectural designer (Los Angeles)" },
-  { date: "2022", line: "EID Architects · Architectural designer" },
-  { date: "2021", line: "Pure Architect · Architectural designer (Beijing)" },
-  { date: "2020", line: "ECADI · Architectural designer (Shanghai)" },
+  { date: "2026-Jun—", line: "HILOS Studio · ML/AI Engineer (full-time, incoming)" },
+  { date: "2025-May → 2025-Dec", line: "HILOS Studio · Machine Learning Graduate Fellow · Portland, OR" },
+  { date: "2024-Aug → 2025-May", line: "CMU CodeLab · Mixed Reality Researcher (Immersive Tech in Digital Fabrication)" },
+  { date: "2022-Jul → 2023-May", line: "NBBJ Architects · Junior Designer · Los Angeles, CA" },
+  { date: "2021-May → 2024-May", line: "Rice CNT-Fiber Research Lab · Computational Research Assistant" },
 ];
 
 const education: { date: string; line: string }[] = [
-  { date: "2024—2026", line: "Carnegie Mellon University · M.S. Computational Design" },
-  { date: "2018—2024", line: "Rice University · Bachelor of Architecture" },
+  { date: "2024-Aug → 2026-May", line: "Carnegie Mellon University · M.S. Computational Design (MSCD) · Pittsburgh, PA" },
+  { date: "2018-Aug → 2024-May", line: "Rice University · B.Arch Architecture · Houston, TX · GPA 4.0 · Cum Laude" },
 ];
 
 const recognition: { date: string; line: string }[] = [
-  { date: "2024", line: "IASS · Fiber-based parametric pavilion (with Prof. Castellon)" },
+  { date: "2024", line: "IASS 2024 Symposium · Segmental Ceramic Hollow Structures (Castellon)" },
+  { date: "2024", line: "Margaret Everson-Fossi Traveling Fellowship · Rice Architecture" },
+  { date: "2024", line: "STOA International Architects Inc. Award · Rice Architecture" },
+  { date: "2024", line: "President Honor Roll (4 semesters) · Rice University" },
+  { date: "2024", line: "Architecture Merit Scholarship · CMU" },
 ];
 ---
 
@@ -49,61 +54,78 @@ const recognition: { date: string; line: string }[] = [
   title="About"
   description="David Chen — bio, trajectory, contact. CMU MSCD computational design thesis student; HILOS Studio ML/AI engineer; Rice architecture."
 >
-  <article class="container-reading pt-24 md:pt-32 pb-24">
-    <header class="mb-16" data-reveal>
-      <p class="mono-label mb-4">About · 2026</p>
-      <h1 class="text-balance">About</h1>
+  <article class="container-reading pt-16 md:pt-24 pb-16">
+    {/* Header */}
+    <header class="mb-12 md:mb-16" data-reveal>
+      <p class="mono-label mb-4">ABOUT · 2026</p>
+      <h1
+        class="text-balance"
+        style="font-family: theme(fontFamily.display); font-size: var(--step-5); font-weight: 380; line-height: 1.05; letter-spacing: -0.01em; color: rgb(var(--text-primary));"
+      >
+        About
+      </h1>
     </header>
 
-    {/* Bio */}
-    <section class="mb-16" data-reveal>
-      <p class="mono-label mb-3">Bio</p>
-      <p class="text-graphite-200 leading-relaxed">
-        David Chen (陳天樂) is a computational designer and ML engineer working at the
-        seam of generative AI and design tooling. He is finishing an MSCD thesis at
-        Carnegie Mellon — <em>Semantic Canvas</em>, an interactive latent-space
-        interface for AI-augmented footwear design. He is concurrently an ML/AI
-        engineer at HILOS Studio. Earlier he trained as an architect at Rice University
-        and worked at NBBJ (Los Angeles), EID Architects, Pure Architect (Beijing), and
-        ECADI (Shanghai), with research collaborations on fiber-based pavilions and
-        ceramic hollow columns published at IASS 2024.
+    {/* Bio + Headshot — float-right at md+ */}
+    <section class="mb-12 md:mb-16" data-reveal>
+      {portraitExists && (
+        <img
+          src="/portrait.jpg"
+          alt="David Chen portrait"
+          width="280"
+          height="280"
+          loading="lazy"
+          class="md:float-right md:ml-8 md:mb-6 mb-6 w-[200px] h-[200px] md:w-[280px] md:h-[280px] object-cover grayscale hover:grayscale-0"
+          style="border-radius: 6px; border: 1px solid rgb(var(--surface-border)); transition: filter 420ms cubic-bezier(0.22, 1, 0.36, 1);"
+        />
+      )}
+      <p style="color: rgb(var(--text-secondary)); font-size: var(--step-1); line-height: 1.65;">
+        David Chen <span style="font-size: 0.92em; opacity: 0.75;">(陳天樂)</span> is a computational designer and ML engineer working at the seam of generative AI and design tooling. He is finishing an MSCD thesis at CMU — <em>Semantic Canvas</em>, an interactive latent-space interface for AI-augmented footwear design. He joins HILOS Studio full-time as an ML/AI engineer in June 2026. Earlier he trained as an architect at Rice University and worked at NBBJ (Los Angeles), with research collaborations on fiber-based pavilions and ceramic hollow columns published at IASS 2024.
       </p>
+      <div class="md:clear-right"></div>
     </section>
 
     {/* Now */}
-    <section class="mb-16" data-reveal>
-      <p class="mono-label mb-3">Now · 2026-04</p>
+    <SectionBreak />
+    <section class="mb-12 md:mb-16" data-reveal>
+      <p class="mono-label mb-4">NOW · 2026-04</p>
       {nowBody ? (
         <div class="prose-custom" set:html={nowBody}></div>
       ) : (
-        <p class="text-graphite-200 leading-relaxed">
-          Closing out the Semantic Canvas thesis at CMU, shipping ML/AI work at HILOS
-          Studio, and talking to teams building generative tools for designers.
+        <p style="color: rgb(var(--text-secondary)); line-height: 1.65;">
+          Closing out the Semantic Canvas thesis at CMU and shipping ML/AI work at HILOS Studio. Talking to teams building generative tools for designers and looking for full-time roles where computer vision, latent spaces, and design tooling meet.
         </p>
       )}
     </section>
 
     {/* Selected experience */}
-    <section class="mb-16" data-reveal>
-      <p class="mono-label mb-4">Selected experience</p>
+    <SectionBreak />
+    <section class="mb-12 md:mb-16" data-reveal>
+      <p class="mono-label mb-5">SELECTED EXPERIENCE</p>
       <ul class="font-mono text-sm leading-relaxed">
         {experience.map((row) => (
-          <li class="grid grid-cols-[12rem_1fr] gap-4 py-1.5 border-b border-graphite-700/40">
-            <span class="text-graphite-400 uppercase tracking-[0.06em]">{row.date}</span>
-            <span class="text-graphite-200">{row.line}</span>
+          <li
+            class="grid grid-cols-1 md:grid-cols-[14rem_1fr] gap-x-4 gap-y-1 py-2.5"
+            style="border-bottom: 1px solid rgb(var(--surface-border));"
+          >
+            <span class="uppercase" style="color: rgb(var(--text-mono)); letter-spacing: 0.06em;">{row.date}</span>
+            <span style="color: rgb(var(--text-primary));">{row.line}</span>
           </li>
         ))}
       </ul>
     </section>
 
     {/* Education */}
-    <section class="mb-16" data-reveal>
-      <p class="mono-label mb-4">Education</p>
+    <section class="mb-12 md:mb-16" data-reveal>
+      <p class="mono-label mb-5">EDUCATION</p>
       <ul class="font-mono text-sm leading-relaxed">
         {education.map((row) => (
-          <li class="grid grid-cols-[12rem_1fr] gap-4 py-1.5 border-b border-graphite-700/40">
-            <span class="text-graphite-400 uppercase tracking-[0.06em]">{row.date}</span>
-            <span class="text-graphite-200">{row.line}</span>
+          <li
+            class="grid grid-cols-1 md:grid-cols-[14rem_1fr] gap-x-4 gap-y-1 py-2.5"
+            style="border-bottom: 1px solid rgb(var(--surface-border));"
+          >
+            <span class="uppercase" style="color: rgb(var(--text-mono)); letter-spacing: 0.06em;">{row.date}</span>
+            <span style="color: rgb(var(--text-primary));">{row.line}</span>
           </li>
         ))}
       </ul>
@@ -111,69 +133,61 @@ const recognition: { date: string; line: string }[] = [
 
     {/* Recognition */}
     {recognition.length > 0 && (
-      <section class="mb-16" data-reveal>
-        <p class="mono-label mb-4">Recognition</p>
+      <section class="mb-12 md:mb-16" data-reveal>
+        <p class="mono-label mb-5">RECOGNITION</p>
         <ul class="font-mono text-sm leading-relaxed">
           {recognition.map((row) => (
-            <li class="grid grid-cols-[12rem_1fr] gap-4 py-1.5 border-b border-graphite-700/40">
-              <span class="text-graphite-400 uppercase tracking-[0.06em]">{row.date}</span>
-              <span class="text-graphite-200">{row.line}</span>
+            <li
+              class="grid grid-cols-1 md:grid-cols-[14rem_1fr] gap-x-4 gap-y-1 py-2.5"
+              style="border-bottom: 1px solid rgb(var(--surface-border));"
+            >
+              <span class="uppercase" style="color: rgb(var(--text-mono)); letter-spacing: 0.06em;">{row.date}</span>
+              <span style="color: rgb(var(--text-primary));">{row.line}</span>
             </li>
           ))}
         </ul>
       </section>
     )}
 
-    {/* Headshot — only if file exists */}
-    {portraitExists && (
-      <section class="mb-16" data-reveal>
-        <p class="mono-label mb-4">Portrait</p>
-        <img
-          src="/portrait.jpg"
-          alt="David Chen portrait"
-          width="280"
-          height="280"
-          loading="lazy"
-          class="w-[280px] h-[280px] object-cover rounded-md grayscale hover:grayscale-0 transition-[filter] duration-420 ease-out-soft border border-graphite-700/60"
-        />
-      </section>
-    )}
-
-    {/* Contact strip */}
-    <section class="mb-16" data-reveal>
-      <p class="mono-label mb-4">Contact</p>
+    {/* Contact */}
+    <SectionBreak />
+    <section class="mb-12 md:mb-16" data-reveal>
+      <p class="mono-label mb-5">CONTACT</p>
       <ul class="font-mono text-sm space-y-3">
         <li class="grid grid-cols-[6.5rem_1fr] gap-4">
-          <span class="text-graphite-400 uppercase tracking-[0.06em]">LinkedIn</span>
+          <span class="uppercase" style="color: rgb(var(--text-mono)); letter-spacing: 0.06em;">LinkedIn</span>
           <a
             href="https://www.linkedin.com/in/tianle-chen"
             target="_blank"
             rel="noopener noreferrer"
-            class="text-oxide-400 hover:text-oxide-300 underline decoration-oxide-500/30 hover:decoration-oxide-400 underline-offset-4 transition-colors w-fit"
+            class="w-fit"
+            style="color: rgb(var(--accent-rgb)); text-decoration: underline; text-underline-offset: 4px; text-decoration-color: rgb(var(--accent-rgb) / 0.3);"
           >
             linkedin.com/in/tianle-chen
           </a>
         </li>
         <li class="grid grid-cols-[6.5rem_1fr] gap-4">
-          <span class="text-graphite-400 uppercase tracking-[0.06em]">Email</span>
+          <span class="uppercase" style="color: rgb(var(--text-mono)); letter-spacing: 0.06em;">Email</span>
           <button
             type="button"
             data-copy-email
-            data-email="tianlechen0324@gmail.com"
-            class="inline-flex items-center gap-2 text-graphite-200 hover:text-oxide-400 transition-colors w-fit"
+            data-email="davidch2@andrew.cmu.edu"
+            class="inline-flex items-center gap-2 w-fit"
+            style="color: rgb(var(--text-primary)); background: transparent; border: 0; padding: 0; cursor: pointer; transition: color 200ms ease;"
           >
-            <span>tianlechen0324@gmail.com</span>
-            <i class="ph ph-copy text-graphite-400" aria-hidden="true" data-copy-icon></i>
+            <span>davidch2@andrew.cmu.edu</span>
+            <i class="ph ph-copy" aria-hidden="true" data-copy-icon style="color: rgb(var(--text-mono));"></i>
             <span class="sr-only" data-copy-status>Click to copy</span>
           </button>
         </li>
         <li class="grid grid-cols-[6.5rem_1fr] gap-4">
-          <span class="text-graphite-400 uppercase tracking-[0.06em]">GitHub</span>
+          <span class="uppercase" style="color: rgb(var(--text-mono)); letter-spacing: 0.06em;">GitHub</span>
           <a
             href="https://github.com/chentianle1117"
             target="_blank"
             rel="noopener noreferrer"
-            class="text-graphite-200 hover:text-oxide-400 underline decoration-graphite-600 hover:decoration-oxide-400 underline-offset-4 transition-colors w-fit"
+            class="w-fit"
+            style="color: rgb(var(--text-primary)); text-decoration: underline; text-underline-offset: 4px; text-decoration-color: rgb(var(--text-mono) / 0.5);"
           >
             github.com/chentianle1117
           </a>
@@ -183,14 +197,12 @@ const recognition: { date: string; line: string }[] = [
 
     {/* CV */}
     <section data-reveal>
-      <p class="mono-label mb-4">Curriculum vitae</p>
-      <a href="/davidchen-cv.pdf" class="btn">
+      <p class="mono-label mb-5">CURRICULUM VITAE</p>
+      <a href="/davidchen-cv.pdf" target="_blank" rel="noopener" class="btn btn-primary">
         <i class="ph ph-arrow-down" aria-hidden="true"></i>
         <span>Download CV (PDF)</span>
       </a>
-      <p class="font-mono text-xs uppercase tracking-[0.08em] text-graphite-400 mt-3">
-        Last updated 2026-04
-      </p>
+      <p class="mono-label mt-3">LAST UPDATED 2026-04</p>
     </section>
   </article>
 

@@ -250,7 +250,7 @@ export default function ProjectCloud({
       if (state.hoveredSlug === prev.hoveredSlug) return;
       for (let i = 0; i < N; i++) {
         hoverTargets.current[i] =
-          projects[i].slug === state.hoveredSlug ? 1.18 : 1.0;
+          projects[i].slug === state.hoveredSlug ? 1.30 : 1.0;
       }
       invalidate();
     });

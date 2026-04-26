@@ -1,34 +1,41 @@
 ---
-type: portfolio-project
-title: "Generative Urbanism — U.S.-Mexico Border Revitalization"
-slug: generative-urbanism
-course: "Rice University architecture studio"
+_hero_curated: true
+artifacts:
+- Grasshopper .gh definition
+- Galapagos evolutionary solver setup
+categories:
+- Urban Planning
+course: Rice University architecture studio
 course_code: null
-semester: "Rice undergraduate (2021-2024)"
-year: 2023
-institution: Rice University
-tags: [parametric-design, grasshopper, galapagos, evolutionary-optimization, urban-planning, border, adaptive-urbanism]
-categories: [Urban Planning]
 github: null
-notion_url: https://www.notion.so/chentianle1117/Generative-Urbanism-16933d12d95a813d846efbe36700cd75
-local_path: null
 hero_image: /assets/generative-urbanism/evolution-1.png
 images:
-  - /assets/generative-urbanism/evolution-1.png
-  - /assets/generative-urbanism/evolution-2.png
-  - /assets/generative-urbanism/evolution-3.png
-  - /assets/generative-urbanism/evolution-4.png
-  - /assets/generative-urbanism/evolution-5.png
-  - /assets/generative-urbanism/evolution-6.png
-  - /assets/generative-urbanism/evolution-7.png
-artifacts:
-  - Grasshopper .gh definition
-  - Galapagos evolutionary solver setup
+- /assets/generative-urbanism/evolution-7.png
+- /assets/generative-urbanism/evolution-5.png
+- /assets/generative-urbanism/evolution-2.png
+- /assets/generative-urbanism/evolution-4.png
+- /assets/generative-urbanism/evolution-6.png
+- /assets/generative-urbanism/evolution-3.png
+institution: Rice University
+local_path: null
+notion_url: https://www.notion.so/chentianle1117/Generative-Urbanism-16933d12d95a813d846efbe36700cd75
 priority: standard
-status: ready
 publish: true
+semester: Rice undergraduate (2021-2024)
+slug: generative-urbanism
+status: ready
+tags:
+- parametric-design
+- grasshopper
+- galapagos
+- evolutionary-optimization
+- urban-planning
+- border
+- adaptive-urbanism
+title: Generative Urbanism — U.S.-Mexico Border Revitalization
+type: portfolio-project
+year: 2023
 ---
-# Generative Urbanism — U.S.-Mexico Border Revitalization
 
 > Evolutionary optimization for urban revitalization at the U.S.-Mexico border — parametric models where urban form adapts to shifting environmental and programmatic conditions rather than being fixed at design time.
 

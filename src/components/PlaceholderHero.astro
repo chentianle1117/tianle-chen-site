@@ -1,6 +1,6 @@
 ---
 interface Props {
-  slug: string;
+  slug?: string;
   title: string;
   categories?: string[];
   size?: "card" | "hero";
@@ -8,14 +8,16 @@ interface Props {
 const { slug, title, categories = [], size = "card" } = Astro.props;
 
 // Deterministic hash → hue
-function hash(s: string): number {
+function hash(s: string | undefined | null): number {
+  if (!s) return 0;
   let h = 0;
   for (let i = 0; i < s.length; i++) {
     h = (h * 31 + s.charCodeAt(i)) >>> 0;
   }
   return h;
 }
-const hue = hash(slug) % 360;
+const safeSlug = slug || (title || "untitled").toLowerCase().replace(/[^a-z0-9]+/g, "-");
+const hue = hash(safeSlug) % 360;
 const aspect = size === "card" ? "aspect-[4/3]" : "h-full w-full";
 const titleClass = size === "card"
   ? "font-display text-step-2 leading-tight text-graphite-100/90"
@@ -35,11 +37,11 @@ const gradient = `linear-gradient(135deg, oklch(0.20 0.04 ${hue}) 0%, rgba(184, 
     class="absolute inset-0 w-full h-full opacity-[0.04] mix-blend-overlay pointer-events-none"
     aria-hidden="true"
   >
-    <filter id={`n-${slug}`}>
+    <filter id={`n-${safeSlug}`}>
       <feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch" />
       <feColorMatrix values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 1 0" />
     </filter>
-    <rect width="100%" height="100%" filter={`url(#n-${slug})`} />
+    <rect width="100%" height="100%" filter={`url(#n-${safeSlug})`} />
   </svg>
 
   {/* Center title + tags — only in card mode; hero mode lets the
@@ -57,9 +59,4 @@ const gradient = `linear-gradient(135deg, oklch(0.20 0.04 ${hue}) 0%, rgba(184, 
     </div>
   )}
 
-  {/* Bottom-right caption */}
-  <span
-    class="absolute bottom-3 right-3 font-mono text-graphite-500 uppercase"
-    style="font-size: var(--step--1); letter-spacing: 0.08em;"
-  >unphotographed</span>
 </div>

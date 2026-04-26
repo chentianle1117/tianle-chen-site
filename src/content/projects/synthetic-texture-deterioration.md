@@ -1,40 +1,47 @@
 ---
-type: portfolio-project
-title: "Synthetic Tool for Visualizing Texture Deterioration"
-slug: synthetic-texture-deterioration
-course: "48-736 Master Independent Study"
+_hero_curated: true
+artifacts:
+- /assets/synthetic-texture-deterioration/progress-report.pdf
+- Svelte/Vite web UI
+- image_labeling.py
+- image_scraper.py
+- renaming_images.py
+- JSON workflow configs
+- texture sample folders (wood, metal, brick)
+- ControlNet-main.zip (98MB, integrated for image generation)
+categories:
+- Interface Design
+course: 48-736 Master Independent Study
 course_code: 48-736
-semester: "Fall 2024"
-year: 2024
-role: individual
-team_size: 1
-tags: [generative-ai, material-aging, architectural-facades, weathering, interface-design, controlnet, svelte]
-categories: [Interface Design]
 github: chentianle1117/real-time-texture-analyzer
 github_url: https://github.com/chentianle1117/real-time-texture-analyzer
-notion_url: https://www.notion.so/chentianle1117/Synthetic-Tool-for-Visualizing-Texture-Deterioration-16933d12d95a81dfbb4ad317fa136701
-local_path: "W:\\CMU_Academics\\Fall 2024 CMU\\Independent Study\\new-texture-analyzer"
-progress_report: /assets/synthetic-texture-deterioration/progress-report.pdf
-hero_image: /assets/synthetic-texture-deterioration/facade-aging-1.png
+hero_image: /assets/synthetic-texture-deterioration/facade-aging-2.png
 images:
-  - /assets/synthetic-texture-deterioration/facade-aging-1.png
-  - /assets/synthetic-texture-deterioration/facade-aging-2.png
-  - /assets/synthetic-texture-deterioration/facade-aging-3.png
-  - /assets/synthetic-texture-deterioration/facade-aging-4.png
-artifacts:
-  - /assets/synthetic-texture-deterioration/progress-report.pdf
-  - Svelte/Vite web UI
-  - image_labeling.py
-  - image_scraper.py
-  - renaming_images.py
-  - JSON workflow configs
-  - texture sample folders (wood, metal, brick)
-  - ControlNet-main.zip (98MB, integrated for image generation)
+- /assets/synthetic-texture-deterioration/facade-aging-4.png
+- /assets/synthetic-texture-deterioration/facade-aging-1.png
+- /assets/synthetic-texture-deterioration/facade-aging-3.png
+local_path: W:\CMU_Academics\Fall 2024 CMU\Independent Study\new-texture-analyzer
+notion_url: https://www.notion.so/chentianle1117/Synthetic-Tool-for-Visualizing-Texture-Deterioration-16933d12d95a81dfbb4ad317fa136701
 priority: experimental
-status: ready
+progress_report: /assets/synthetic-texture-deterioration/progress-report.pdf
 publish: true
+role: individual
+semester: Fall 2024
+slug: synthetic-texture-deterioration
+status: ready
+tags:
+- generative-ai
+- material-aging
+- architectural-facades
+- weathering
+- interface-design
+- controlnet
+- svelte
+team_size: 1
+title: Synthetic Tool for Visualizing Texture Deterioration
+type: portfolio-project
+year: 2024
 ---
-# Synthetic Tool for Visualizing Texture Deterioration
 
 > A generative-AI framework for simulating and visualizing the long-term aging of architectural façades. Unlike existing generative models that present idealized, pristine textures, this tool emphasizes realistic deterioration driven by environmental exposure.
 

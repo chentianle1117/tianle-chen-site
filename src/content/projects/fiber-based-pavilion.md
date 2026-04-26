@@ -1,47 +1,65 @@
 ---
-type: portfolio-project
-title: "Fiber-based Experimental Models — Parametric Pavilion with Topological Column and Kinematic Canopy"
-slug: fiber-based-pavilion
-course: "Computational Research Assistantship — Rice University"
-course_code: null
-semester: "2021-2024"
-year: 2024
-role: research-assistant
-team_size: 2+
-collaborators: [Prof. Juan Jose Castellon, Ceramica Cumella]
-institution: Rice University
-tags: [parametric-design, topology-optimization, kinematic-canopy, digital-twin, ceramic-fabrication, kangaroo, robotic-fabrication, iass-2024, bone-inspired]
-categories: [Parametric Design, Digital Fabrication, Architecture]
-github: null
-notion_url: https://www.notion.so/chentianle1117/Fiber-based-Experimental-Models-Parametric-Pavilion-with-Topological-Column-and-Kinematic-Canopy-16933d12d95a81b8af48f62d152c3998
-publication: "Segmental Ceramic Hollow Structures: Prefabricated Post-tensioned Columns for Ecological Urban Infrastructures (IASS 2024 Symposium)"
-publication_url: https://www.researchgate.net/publication/384055100_Segmental_Ceramic_Hollow_Structures_Prefabricated_posttensioned_columns_for_ecological_urban_infrastructures
-local_path: null
-hero_image: /assets/fiber-based-pavilion/column-catalogue-1.png
-images:
-  - /assets/fiber-based-pavilion/column-catalogue-1.png
-  - /assets/fiber-based-pavilion/column-form-finding.gif
-  - /assets/fiber-based-pavilion/form-finding-detail-1.gif
-  - /assets/fiber-based-pavilion/form-finding-detail-2.jpg
-  - /assets/fiber-based-pavilion/form-finding-detail-3.jpg
-  - /assets/fiber-based-pavilion/form-finding-detail-4.jpg
-  - /assets/fiber-based-pavilion/design-catalogue-1.png
-  - /assets/fiber-based-pavilion/design-catalogue-2.png
-  - /assets/fiber-based-pavilion/design-catalogue-3.png
-  - /assets/fiber-based-pavilion/robot-simulation.gif
-  - /assets/fiber-based-pavilion/robot-fabrication.png
-video: https://www.youtube.com/watch?v=ATiN7TGZwvQ
-video_canopy: https://www.youtube.com/watch?v=ne-7-3s7RPQ
+_hero_curated: true
 artifacts:
-  - IASS 2024 paper PDF
-  - Grasshopper definitions
-  - Robotic fabrication code
-  - Kangaroo simulation files
+- IASS 2024 paper PDF
+- Grasshopper definitions
+- Robotic fabrication code
+- Kangaroo simulation files
+categories:
+- Parametric Design
+- Digital Fabrication
+- Architecture
+collaborators:
+- Prof. Juan Jose Castellon
+- Ceramica Cumella
+course: Computational Research Assistantship — Rice University
+course_code: null
+gif_hero: /assets/fiber-based-pavilion/column-form-finding.gif
+github: null
+hero_image: /assets/fiber-based-pavilion/column-form-finding.gif
+images:
+- /assets/fiber-based-pavilion/robot-simulation.gif
+- /assets/fiber-based-pavilion/form-finding-detail-1.gif
+- /assets/fiber-based-pavilion/form-finding-detail-3.jpg
+- /assets/fiber-based-pavilion/form-finding-detail-4.jpg
+- /assets/fiber-based-pavilion/form-finding-detail-2.jpg
+- /assets/fiber-based-pavilion/column-catalogue-1.png
+- /assets/fiber-based-pavilion/robot-fabrication.png
+- /assets/fiber-based-pavilion/wood-facade-texture-wood-texture-wood-texture-pavilion-facade-milan-expo-100319045.jpg
+- /assets/fiber-based-pavilion/wood-facade-texture-wood-texture-wood-texture-pavilion-facade-milan-expo-100319121.jpg
+- /assets/fiber-based-pavilion/design-catalogue-2.png
+- /assets/fiber-based-pavilion/design-catalogue-3.png
+- /assets/fiber-based-pavilion/design-catalogue-1.png
+- /assets/fiber-based-pavilion/form-finding-detail-5.jpg
+institution: Rice University
+local_path: null
+notion_url: https://www.notion.so/chentianle1117/Fiber-based-Experimental-Models-Parametric-Pavilion-with-Topological-Column-and-Kinematic-Canopy-16933d12d95a81b8af48f62d152c3998
 priority: flagship
-status: ready
+publication: 'Segmental Ceramic Hollow Structures: Prefabricated Post-tensioned Columns
+  for Ecological Urban Infrastructures (IASS 2024 Symposium)'
+publication_url: https://www.researchgate.net/publication/384055100_Segmental_Ceramic_Hollow_Structures_Prefabricated_posttensioned_columns_for_ecological_urban_infrastructures
 publish: true
+role: research-assistant
+semester: 2021-2024
+slug: fiber-based-pavilion
+status: ready
+tags:
+- parametric-design
+- topology-optimization
+- kinematic-canopy
+- digital-twin
+- ceramic-fabrication
+- kangaroo
+- robotic-fabrication
+- iass-2024
+- bone-inspired
+team_size: 2+
+title: Fiber-based Experimental Models — Parametric Pavilion with Topological Column
+  and Kinematic Canopy
+type: portfolio-project
+video_canopy: https://www.youtube.com/watch?v=ne-7-3s7RPQ
+year: 2024
 ---
-# Fiber-based Experimental Models — Parametric Pavilion with Topological Column and Kinematic Canopy
 
 > Bone-inspired ceramic hollow columns (topology-optimized, robotically fabricated) paired with a kinematic canopy system that adapts to sunlight and wind. Published in the IASS 2024 Symposium.
 

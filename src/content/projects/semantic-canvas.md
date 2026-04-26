@@ -1,47 +1,97 @@
 ---
-type: portfolio-project
-title: "Semantic Canvas — Interactive Latent-Space Design Tool for AI-Augmented Footwear Design"
-slug: semantic-canvas
-course: "48-716 MSCD Pre-Thesis II / MSCD Thesis"
+_hero_curated: true
+advisor: TBD (thesis advisor)
+architecture_pattern: BFF (Backend-For-Frontend, API keys server-side)
+artifacts:
+- /assets/semantic-canvas/ (demo thumbnails + view templates)
+categories:
+- Thesis
+- Interactive Tool
+- AI/ML
+- Design Research
+course: 48-716 MSCD Pre-Thesis II / MSCD Thesis
 course_code: 48-716
-semester: "Fall 2025 – Spring 2026"
-year: 2025
-role: individual
-team_size: 1
-institution: Carnegie Mellon School of Design
-advisor: "TBD (thesis advisor)"
-tags: [thesis, clip, latent-space, d3, react, fastapi, fal-ai, gemini, multi-user-study, semantic-axes, genealogy, ai-augmented-design, footwear, zappos50k]
-categories: [Thesis, Interactive Tool, AI/ML, Design Research]
+dataset: Zappos50K (curated subset + generated variants)
+deployment: Railway (persistent volume at /app/backend/data; healthcheck /api/health)
+external_apis:
+- fal.ai nano-banana
+- fal.ai nano-banana-2
+- Jina AI
+- Google Gemini
 github: chentianle1117/Semantic_Canvas
 github_url: https://github.com/chentianle1117/Semantic_Canvas
-visibility: public
-local_path: "W:\\CMU_Academics\\2025 Fall\\Thesis\\Semantic_Canvas"
-local_path_alt: "W:\\CMU_Academics\\2025 Fall\\Thesis Demo\\Zappos50K_semantic_explorer"
-deployment: "Railway (persistent volume at /app/backend/data; healthcheck /api/health)"
-stack_frontend: [React 18, TypeScript, Vite, D3.js 7, Zustand]
-stack_backend: [FastAPI, Uvicorn, Jina CLIP v2, Google Gemini 2.5 Flash Lite]
-external_apis: [fal.ai nano-banana, fal.ai nano-banana-2, Jina AI, Google Gemini]
-dataset: "Zappos50K (curated subset + generated variants)"
-architecture_pattern: BFF (Backend-For-Frontend, API keys server-side)
-hero_image: /assets/semantic-canvas/hero.png
+hero_image: /assets/semantic-canvas/semantic-canvas-ui.png
 images:
-  - /assets/semantic-canvas/analysis_thumbs_0.png
-  - /assets/semantic-canvas/analysis_thumbs_5.png
-  - /assets/semantic-canvas/analysis_thumbs_10.png
-  - /assets/semantic-canvas/analysis_thumbs_15.png
-  - /assets/semantic-canvas/analysis_thumbs_20.png
-  - /assets/semantic-canvas/frontend_public_templates_multi-view_template.png
-  - /assets/semantic-canvas/frontend_public_templates_34_view_template.png
-artifacts:
-  - /assets/semantic-canvas/ (demo thumbnails + view templates)
-related_cards:
-  - "[[2025-2026--thesis-flagship]]"
-  - "[[2025-Spring--live-ai-feedback-design-assistant]]"
+- /assets/semantic-canvas/p3-stage2-session2-composite.png
+- /assets/semantic-canvas/ui-screenshot.png
+- /assets/semantic-canvas/lineage-view-ui.png
+- /assets/semantic-canvas/p2-journey.png
+- /assets/semantic-canvas/p3-stage2-session1-composite.png
+- /assets/semantic-canvas/p4-longitudinal-semantic-canvas.png
+- /assets/semantic-canvas/ghost-node-agent-ui.png
+- /assets/semantic-canvas/p3-journey.png
+- /assets/semantic-canvas/p5-canvas.png
+- /assets/semantic-canvas/p2-canvas.png
+- /assets/semantic-canvas/p3-canvas.png
+- /assets/semantic-canvas/p5-journey.png
+- /assets/semantic-canvas/p4-journey.png
+- /assets/semantic-canvas/batch-image-vs-latent-exploration.png
+- /assets/semantic-canvas/p4-canvas.png
+- /assets/semantic-canvas/p2-longitudinal-semantic-canvas.png
+- /assets/semantic-canvas/p1-journey.png
+- /assets/semantic-canvas/p4-longitudinal-lineage.png
+- /assets/semantic-canvas/p1-longitudinal-lineage.png
+- /assets/semantic-canvas/p1-canvas.png
+- /assets/semantic-canvas/runway-interface.png
+- /assets/semantic-canvas/output-nano-generated-shoe.png
+- /assets/semantic-canvas/output-fashion-interface.png
+- /assets/semantic-canvas/p1-longitudinal-semantic-canvas.png
+institution: Carnegie Mellon School of Design
+local_path: W:\CMU_Academics\2025 Fall\Thesis\Semantic_Canvas
+local_path_alt: W:\CMU_Academics\2025 Fall\Thesis Demo\Zappos50K_semantic_explorer
 priority: flagship
-status: ready
 publish: true
+related_cards:
+- '[[2025-2026--thesis-flagship]]'
+- '[[2025-Spring--live-ai-feedback-design-assistant]]'
+role: individual
+semester: Fall 2025 – Spring 2026
+slug: semantic-canvas
+stack_backend:
+- FastAPI
+- Uvicorn
+- Jina CLIP v2
+- Google Gemini 2.5 Flash Lite
+stack_frontend:
+- React 18
+- TypeScript
+- Vite
+- D3.js 7
+- Zustand
+status: ready
+tags:
+- thesis
+- clip
+- latent-space
+- d3
+- react
+- fastapi
+- fal-ai
+- gemini
+- multi-user-study
+- semantic-axes
+- genealogy
+- ai-augmented-design
+- footwear
+- zappos50k
+team_size: 1
+title: Semantic Canvas — Interactive Latent-Space Design Tool for AI-Augmented Footwear
+  Design
+type: portfolio-project
+video_proposal: /assets/semantic-canvas/proposal-presentation.mp4
+visibility: public
+year: 2025
 ---
-# Semantic Canvas
 
 > **The thesis tool.** An interactive D3-based canvas for exploring and generating shoe designs in semantic latent space. Jina CLIP v2 embeddings let you define custom semantic axes ("casual ↔ formal", "dark ↔ bright") and watch your designs reposition themselves by meaning. fal.ai generates new designs from text or reference images. Gemini is a passive observer that reads your design brief and offers insights. Multi-user study mode with per-participant isolation logs every interaction — the whole thing runs in production on Railway.
 

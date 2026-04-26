@@ -146,7 +146,7 @@ const stack = [
 >
   <section class="container-page pt-24 md:pt-32 pb-12">
     <p class="mono-label mb-4">Dashboard · {today}</p>
-    <h1 class="mb-4">Dashboard.</h1>
+    <h1 class="mb-4">Dashboard</h1>
     <p class="text-graphite-300 max-w-reading leading-relaxed">
       A small honest panel of what this site is made of — content, distribution, and
       stack. Numbers below are computed at build time.
@@ -177,19 +177,19 @@ const stack = [
       <DashboardPanel label="Content stats" span={6}>
         <div class="grid grid-cols-2 gap-4 font-mono text-sm">
           <div>
-            <p class="text-graphite-50 text-2xl font-display" style="font-weight:380">{projectCount}</p>
+            <p class="text-3xl font-display" style="font-weight:500; color: rgb(var(--text-primary));">{projectCount}</p>
             <p class="mono-label mt-1">Projects</p>
           </div>
           <div>
-            <p class="text-graphite-50 text-2xl font-display" style="font-weight:380">{wordsLabel}</p>
+            <p class="text-3xl font-display" style="font-weight:500; color: rgb(var(--text-primary));">{wordsLabel}</p>
             <p class="mono-label mt-1">Words</p>
           </div>
           <div>
-            <p class="text-graphite-50 text-2xl font-display" style="font-weight:380">{categoryCount}</p>
+            <p class="text-3xl font-display" style="font-weight:500; color: rgb(var(--text-primary));">{categoryCount}</p>
             <p class="mono-label mt-1">Categories</p>
           </div>
           <div>
-            <p class="text-graphite-50 text-2xl font-display" style="font-weight:380">{imageCount}</p>
+            <p class="text-3xl font-display" style="font-weight:500; color: rgb(var(--text-primary));">{imageCount}</p>
             <p class="mono-label mt-1">Images</p>
           </div>
         </div>

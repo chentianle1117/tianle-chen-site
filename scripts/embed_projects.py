@@ -21,11 +21,17 @@ import frontmatter
 import numpy as np
 from PIL import Image
 
+# Defensive PIL caps — set BEFORE any image opens. Module-load order matters
+# in Python; redundant with _embed_common but cheap and explicit.
+Image.MAX_IMAGE_PIXELS = 300_000_000
+
 # Local helpers
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from _embed_common import (  # noqa: E402
+    ASSETS_DIR,
     CONTENT_DIR,
     DATA_DIR,
+    IMAGE_EXTS,
     embed_images,
     embed_texts,
     find_hero_image,
@@ -34,11 +40,21 @@ from _embed_common import (  # noqa: E402
     load_clip_model,
     make_placeholder,
     normalize,
+    resolve_web_path_to_fs,
+    safe_open,
 )
 
 
+VIDEO_EXTS = {".mp4", ".webm", ".mov", ".m4v"}
+
+
 def _load_project_files() -> List[dict]:
-    """Read all .md files under content/projects/. Sort deterministically."""
+    """Read all .md files under content/projects/. Sort deterministically.
+
+    Filters out cards with `publish: false` so the data pipeline mirrors the
+    Astro content collection filter and unpublished projects don't leak into
+    embeddings.json / atlas.png.
+    """
     out: List[dict] = []
     for md_path in sorted(CONTENT_DIR.glob("*.md")):
         try:
@@ -47,6 +63,10 @@ def _load_project_files() -> List[dict]:
             print(f"  ! could not parse {md_path.name}: {e}")
             continue
         meta = dict(post.metadata)
+        # Honor `publish: false` — same filter the Astro getCollection() uses.
+        if meta.get("publish", True) is False:
+            print(f"  - skip (publish:false) {md_path.name}")
+            continue
         body = post.content or ""
         slug = meta.get("slug") or md_path.stem
         out.append({
@@ -69,14 +89,58 @@ def _load_project_files() -> List[dict]:
     return out
 
 
+def _resolve_hero_path(project: dict) -> tuple[Path | None, str]:
+    """Resolve the on-disk path to embed.
+
+    Strategy:
+      1. frontmatter.hero_image — if it points to a video, skip to step 2.
+      2. frontmatter.gif_hero (still useful as a static first-frame poster).
+      3. find_hero_image() (frontmatter.hero_image if image, else images[0],
+         else asset-dir scan).
+
+    Returns (Path or None, reason-tag). The reason-tag is logged.
+    """
+    meta = project["meta"]
+    slug = project["slug"]
+
+    hero = meta.get("hero_image")
+    if isinstance(hero, str):
+        fs = resolve_web_path_to_fs(hero)
+        if fs is not None and fs.suffix.lower() in VIDEO_EXTS:
+            # Video hero — fall through to gif_hero / images[0]
+            gif = meta.get("gif_hero")
+            if isinstance(gif, str):
+                gfs = resolve_web_path_to_fs(gif)
+                if gfs is not None and gfs.exists() and gfs.suffix.lower() in IMAGE_EXTS:
+                    return gfs, "video-hero->gif_hero"
+            # Else fall through to find_hero_image (which scans images[] / asset dir)
+            scan = find_hero_image(slug, {**meta, "hero_image": None})
+            return scan, "video-hero->scan"
+
+    fs = find_hero_image(slug, meta)
+    if fs is None:
+        return None, "no-hero"
+    return fs, "ok"
+
+
 def _hero_for(project: dict, placeholder_size: int = 256) -> tuple[Image.Image, bool]:
     """Return (PIL.Image, is_placeholder). Always succeeds."""
-    fs = find_hero_image(project["slug"], project["meta"])
-    if fs is not None:
+    fs, reason = _resolve_hero_path(project)
+    if fs is not None and fs.exists():
         try:
-            return Image.open(fs).convert("RGB"), False
+            img = safe_open(fs)
+            # Animated GIF — pin to first frame for embedding/atlas thumbnail.
+            if fs.suffix.lower() == ".gif":
+                try:
+                    img.seek(0)
+                except Exception:
+                    pass
+            return img.convert("RGB"), False
         except Exception as e:
             print(f"  ! could not open hero {fs}: {e}; using placeholder")
+    else:
+        if reason != "ok":
+            print(f"  ! missing-hero anomaly slug={project['slug']} reason={reason}")
     return make_placeholder(project["slug"], project["title"], size=placeholder_size), True
 
 

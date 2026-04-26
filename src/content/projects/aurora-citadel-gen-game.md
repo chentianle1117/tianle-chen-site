@@ -1,40 +1,55 @@
 ---
-type: portfolio-project
-title: "Aurora Citadel — Procedural Generative Game (Unreal Engine 5)"
-slug: aurora-citadel-gen-game
-course: "62-706 Generative System Design (Gen Sys Des)"
-course_code: 62-706
-semester: "Spring 2025"
-year: 2025
-role: team-member
-team_size: ">1 (team confirmed by David, collaborators TBD)"
-tags: [unreal-engine-5, wave-function-collapse, procedural-generation, ai-textures, modular-assets, game-design, brutalist-architecture]
-categories: [Game, Procedural Generation, 3D]
-github: null
-github_note: "UE5 project — not on GitHub (repo size + binary assets prohibitive)"
-local_path: "W:\\CMU_Academics\\2025 Spring\\62706 Gen Game\\Aurora Citadel"
-local_path_submission: "W:\\CMU_Academics\\2025 Spring\\62706 Gen Game\\Final_Submission_Citadel"
-stack: [Unreal Engine 5, "Wave Function Collapse (WFCPlugin-main 5.4)", PolyHaven, Megascans]
-hero_image: /assets/aurora-citadel-gen-game/hero.jpg
-images:
-  - /assets/aurora-citadel/Module Layout.jpg
-  - /assets/aurora-citadel/Module Layout plan.jpg
+_hero_curated: true
 artifacts:
-  - "Game_Design_Final_Video_Demo.mp4 (324 MB, 5-minute demo, local only)"
-  - "Final_Submission_Citadel/ (16 GB total, local only)"
-  - "14 FBX modules (corners, sockets, tiles — 24-61 MB each)"
-  - "AI-generated textures (4+ PNGs)"
-  - "/assets/aurora-citadel/Served and Servant Spaces.pdf"
-  - "/assets/aurora-citadel/The_Shadow_of_Information.pdf"
+- Game_Design_Final_Video_Demo.mp4 (324 MB, 5-minute demo, local only)
+- Final_Submission_Citadel/ (16 GB total, local only)
+- 14 FBX modules (corners, sockets, tiles — 24-61 MB each)
+- AI-generated textures (4+ PNGs)
+- /assets/aurora-citadel-gen-game/Served and Servant Spaces.pdf
+- /assets/aurora-citadel-gen-game/The_Shadow_of_Information.pdf
+categories:
+- Game
+- Procedural Generation
+- 3D
+course: 62-706 Generative System Design (Gen Sys Des)
+course_code: 62-706
+github: null
+github_note: UE5 project — not on GitHub (repo size + binary assets prohibitive)
+hero_image: /assets/aurora-citadel-gen-game/chatgpt-image-apr-12-2025-08-36-27-pm.png
+images:
+- /assets/aurora-citadel-gen-game/chatgpt-image-apr-12-2025-08-36-27-pm.png
+- /assets/aurora-citadel-gen-game/image-0.png
+- /assets/aurora-citadel-gen-game/chatgpt-image-apr-12-2025-08-54-13-pm.png
+local_path: W:\CMU_Academics\2025 Spring\62706 Gen Game\Aurora Citadel
+local_path_submission: W:\CMU_Academics\2025 Spring\62706 Gen Game\Final_Submission_Citadel
 priority: standard
-status: draft
 publish: true
+role: team-member
+semester: Spring 2025
+slug: aurora-citadel-gen-game
+stack:
+- Unreal Engine 5
+- Wave Function Collapse (WFCPlugin-main 5.4)
+- PolyHaven
+- Megascans
+status: draft
+tags:
+- unreal-engine-5
+- wave-function-collapse
+- procedural-generation
+- ai-textures
+- modular-assets
+- game-design
+- brutalist-architecture
+team_size: '>1 (team confirmed by David, collaborators TBD)'
+title: Aurora Citadel — Procedural Generative Game (Unreal Engine 5)
+type: portfolio-project
+year: 2025
 ---
-# Aurora Citadel — Procedural Generative Game
 
 > A modular-architecture tower/citadel that generates itself via **Wave Function Collapse** — each play creates a new spatial configuration. Built in Unreal Engine 5 with AI-generated brutalist textures and PolyHaven materials. 324 MB demo video, 16 GB of final assets, UE5 executable delivered.
 
-![module layout](/assets/aurora-citadel/Module Layout.jpg)
+![module layout](/assets/aurora-citadel-gen-game/Module Layout.jpg)
 
 ## Hook
 Level design at scale. Rather than authoring a single level, author the **generator**: tiles + adjacency constraints + WFC solver → infinite valid spatial configurations. Each run of Aurora Citadel produces a different navigable tower from the same module vocabulary.
@@ -96,7 +111,7 @@ These readings informed the module system: some tiles are "served" (primary prog
 - Final submission: `W:\CMU_Academics\2025 Spring\62706 Gen Game\Final_Submission_Citadel\`
 - Demo video (local only, 324 MB): `Final_Submission_Citadel\...\Game_Design_Final_Video_Demo.mp4`
 - [WFCPlugin (plugin used)](https://github.com/ikarth/WFCPlugin) — reference for the WFC integration
-- Readings in vault: `/assets/aurora-citadel/Served and Servant Spaces.pdf`, `/assets/aurora-citadel/The_Shadow_of_Information.pdf`
+- Readings in vault: `/assets/aurora-citadel-gen-game/Served and Servant Spaces.pdf`, `/assets/aurora-citadel-gen-game/The_Shadow_of_Information.pdf`
 
 ## Related cards
 

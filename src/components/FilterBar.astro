@@ -9,10 +9,10 @@ const yearsSorted = [...years].sort((a, b) => b - a);
 ---
 <div
   id="filter-bar"
-  class="sticky top-0 z-30 w-full border-b border-graphite-700/60 bg-graphite-900/85 backdrop-blur-md"
+  class="filter-bar-bg sticky top-0 z-30 w-full"
   style="height: 56px;"
 >
-  <div class="container-page h-full flex items-center gap-6 overflow-x-auto">
+  <div class="filter-chips container-page h-full flex items-center gap-6 overflow-x-auto">
     {/* Categories */}
     <div class="flex items-center gap-2" role="group" aria-label="Filter by category">
       <span class="mono-label hidden md:inline">Cat</span>
@@ -215,3 +215,15 @@ const yearsSorted = [...years].sort((a, b) => b - a);
   init();
   document.addEventListener("astro:page-load", init);
 </script>
+
+<style>
+  /* Mobile: switch from wrap to horizontal scroll with right-edge fade mask. */
+  @media (max-width: 414px) {
+    .filter-chips {
+      overflow-x: auto;
+      flex-wrap: nowrap;
+      -webkit-mask-image: linear-gradient(to right, black 90%, transparent);
+      mask-image: linear-gradient(to right, black 90%, transparent);
+    }
+  }
+</style>

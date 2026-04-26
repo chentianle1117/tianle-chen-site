@@ -9,11 +9,51 @@ import colorsys
 import hashlib
 import io
 import os
+import sys
 from pathlib import Path
-from typing import Iterable, List, Optional, Tuple
+from typing import Iterable, List, Optional, Tuple, Union
 
 import numpy as np
 from PIL import Image, ImageDraw, ImageFont
+
+# ----------------------------------------------------------------------------
+# Defensive PIL caps — never crash on a large image again.
+# Set BEFORE any other code opens an image.
+# ----------------------------------------------------------------------------
+
+Image.MAX_IMAGE_PIXELS = 300_000_000  # 300 MP — well above any realistic photo
+
+# Hard cap for raster-processed images. Anything larger is downsized in-place.
+SAFE_MAX_DIM = 4096
+
+
+def safe_open(path: Union[str, Path]) -> Image.Image:
+    """Open an image, downsizing in-place to SAFE_MAX_DIM if either side exceeds it.
+
+    Use this in place of `Image.open` ANYWHERE the image will be raster-processed
+    (resized, embedded, atlas-packed, hero-poster extracted). For verbatim copies
+    (e.g. animated GIFs being shutil.copy2'd), no PIL touch is needed.
+
+    Logs a stderr warning when downsizing happens so the pipeline is observable.
+    Returns a (possibly downsized) PIL.Image. Caller is responsible for closing.
+    """
+    p = Path(path)
+    img = Image.open(p)
+    # Force load so we can inspect size, then convert if needed.
+    try:
+        img.load()
+    except Exception:
+        # Some animated GIFs / corrupt files — re-open lazily and let caller handle.
+        img = Image.open(p)
+
+    w, h = img.size
+    if w > SAFE_MAX_DIM or h > SAFE_MAX_DIM:
+        sys.stderr.write(
+            f"[safe_open] downsizing {p.name}: {w}x{h} -> max {SAFE_MAX_DIM}\n"
+        )
+        # thumbnail mutates in-place and preserves aspect ratio.
+        img.thumbnail((SAFE_MAX_DIM, SAFE_MAX_DIM), Image.Resampling.LANCZOS)
+    return img
 
 # ----------------------------------------------------------------------------
 # Constants

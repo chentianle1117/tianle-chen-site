@@ -1,0 +1,245 @@
+---
+// MethodDiagram.astro
+// Schematic SVG of the Semantic Canvas projection pipeline:
+//   image thumbs  →  CLIP encoder  →  axis-typed text  →  dot-product →  2D scatter
+//
+// Pure inline SVG, theme-aware via currentColor + tailwind text-* classes.
+---
+
+<figure class="my-12">
+  <div
+    class="rounded-md border border-graphite-700/60 bg-graphite-900/40 p-6 md:p-10"
+  >
+    <svg
+      viewBox="0 0 1200 360"
+      role="img"
+      aria-labelledby="method-diagram-title"
+      class="w-full h-auto text-graphite-200"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <title id="method-diagram-title">
+        Semantic Canvas projection pipeline diagram
+      </title>
+
+      <defs>
+        <marker
+          id="arrow"
+          viewBox="0 0 10 10"
+          refX="9"
+          refY="5"
+          markerWidth="6"
+          markerHeight="6"
+          orient="auto-start-reverse"
+        >
+          <path d="M 0 0 L 10 5 L 0 10 z" fill="currentColor" opacity="0.6" />
+        </marker>
+
+        <pattern id="dot-grid" width="14" height="14" patternUnits="userSpaceOnUse">
+          <circle cx="1" cy="1" r="1" fill="currentColor" opacity="0.10" />
+        </pattern>
+      </defs>
+
+      {/* === Stage 1: Image dataset === */}
+      <g transform="translate(40,80)">
+        <text
+          x="0"
+          y="-18"
+          class="font-mono"
+          font-size="12"
+          fill="currentColor"
+          opacity="0.55"
+          letter-spacing="2">01 · IMAGES</text
+        >
+        <rect x="0" y="0" width="60" height="60" rx="6"
+          fill="none" stroke="currentColor" stroke-width="1.2" opacity="0.7" />
+        <rect x="14" y="14" width="60" height="60" rx="6"
+          fill="none" stroke="currentColor" stroke-width="1.2" opacity="0.7" />
+        <rect x="28" y="28" width="60" height="60" rx="6"
+          fill="currentColor" fill-opacity="0.08"
+          stroke="currentColor" stroke-width="1.4" />
+        <text x="44" y="200" font-size="13" fill="currentColor" opacity="0.7">
+          Project images
+        </text>
+        <text x="44" y="218" font-size="11" fill="currentColor" opacity="0.45"
+          font-family="ui-monospace, SFMono-Regular, monospace">
+          shoes / projects
+        </text>
+      </g>
+
+      {/* arrow 1 */}
+      <line
+        x1="170" y1="120" x2="245" y2="120"
+        stroke="currentColor" stroke-width="1.2" opacity="0.5"
+        marker-end="url(#arrow)"
+      />
+
+      {/* === Stage 2: Jina CLIP === */}
+      <g transform="translate(255,80)">
+        <text
+          x="0"
+          y="-18"
+          class="font-mono"
+          font-size="12"
+          fill="currentColor"
+          opacity="0.55"
+          letter-spacing="2">02 · ENCODE</text
+        >
+        <rect x="0" y="0" width="180" height="80" rx="8"
+          fill="currentColor" fill-opacity="0.05"
+          stroke="currentColor" stroke-width="1.2" />
+        <text x="90" y="36" text-anchor="middle"
+          font-size="15" fill="currentColor" font-weight="500">Jina CLIP v2</text>
+        <text x="90" y="56" text-anchor="middle"
+          font-size="11" fill="currentColor" opacity="0.55"
+          font-family="ui-monospace, SFMono-Regular, monospace">1024-dim shared space</text>
+        <text x="90" y="200" text-anchor="middle"
+          font-size="13" fill="currentColor" opacity="0.7">
+          Image &amp; text → vector
+        </text>
+        <text x="90" y="218" text-anchor="middle"
+          font-size="11" fill="currentColor" opacity="0.45"
+          font-family="ui-monospace, SFMono-Regular, monospace">
+          one model, two modalities
+        </text>
+      </g>
+
+      {/* arrow 2 */}
+      <line
+        x1="445" y1="120" x2="525" y2="120"
+        stroke="currentColor" stroke-width="1.2" opacity="0.5"
+        marker-end="url(#arrow)"
+      />
+
+      {/* === Stage 3: Axis text + Gemini expansion === */}
+      <g transform="translate(535,40)">
+        <text
+          x="0"
+          y="-2"
+          class="font-mono"
+          font-size="12"
+          fill="currentColor"
+          opacity="0.55"
+          letter-spacing="2">03 · AXIS</text
+        >
+        <rect x="0" y="20" width="220" height="160" rx="8"
+          fill="none" stroke="currentColor" stroke-width="1.2" opacity="0.7" />
+
+        {/* user input */}
+        <text x="14" y="44" font-size="12" fill="currentColor" opacity="0.55"
+          font-family="ui-monospace, SFMono-Regular, monospace">user types</text>
+        <text x="14" y="64" font-size="14" fill="currentColor" font-weight="500">
+          casual ↔ formal
+        </text>
+
+        {/* divider */}
+        <line x1="14" y1="78" x2="206" y2="78"
+          stroke="currentColor" stroke-width="1" opacity="0.2" />
+
+        {/* gemini expansion */}
+        <text x="14" y="98" font-size="12" fill="currentColor" opacity="0.55"
+          font-family="ui-monospace, SFMono-Regular, monospace">Gemini ×4</text>
+        <text x="14" y="118" font-size="11" fill="currentColor" opacity="0.7">
+          “sneakers, athleisure …”
+        </text>
+        <text x="14" y="134" font-size="11" fill="currentColor" opacity="0.7">
+          “oxford, derby, monk …”
+        </text>
+        <text x="14" y="150" font-size="11" fill="currentColor" opacity="0.55"
+          font-family="ui-monospace, SFMono-Regular, monospace">
+          mean → L2-normalize
+        </text>
+        <text x="110" y="240" text-anchor="middle"
+          font-size="13" fill="currentColor" opacity="0.7">
+          Ensemble axis vector
+        </text>
+        <text x="110" y="258" text-anchor="middle"
+          font-size="11" fill="currentColor" opacity="0.45"
+          font-family="ui-monospace, SFMono-Regular, monospace">
+          one direction in 1024-D
+        </text>
+      </g>
+
+      {/* arrow 3 */}
+      <line
+        x1="765" y1="120" x2="845" y2="120"
+        stroke="currentColor" stroke-width="1.2" opacity="0.5"
+        marker-end="url(#arrow)"
+      />
+
+      {/* === Stage 4: Dot product === */}
+      <g transform="translate(855,80)">
+        <text
+          x="0"
+          y="-18"
+          class="font-mono"
+          font-size="12"
+          fill="currentColor"
+          opacity="0.55"
+          letter-spacing="2">04 · PROJECT</text
+        >
+        <rect x="0" y="0" width="140" height="80" rx="8"
+          fill="currentColor" fill-opacity="0.05"
+          stroke="currentColor" stroke-width="1.2" />
+        <text x="70" y="46" text-anchor="middle"
+          font-size="18" fill="currentColor"
+          font-family="ui-monospace, SFMono-Regular, monospace">v · â</text>
+        <text x="70" y="200" text-anchor="middle"
+          font-size="13" fill="currentColor" opacity="0.7">
+          Dot product
+        </text>
+        <text x="70" y="218" text-anchor="middle"
+          font-size="11" fill="currentColor" opacity="0.45"
+          font-family="ui-monospace, SFMono-Regular, monospace">
+          O(N · D), no training
+        </text>
+      </g>
+
+      {/* arrow 4 */}
+      <line
+        x1="1005" y1="120" x2="1075" y2="120"
+        stroke="currentColor" stroke-width="1.2" opacity="0.5"
+        marker-end="url(#arrow)"
+      />
+
+      {/* === Stage 5: scatter === */}
+      <g transform="translate(1075,40)">
+        <text
+          x="0"
+          y="-2"
+          class="font-mono"
+          font-size="12"
+          fill="currentColor"
+          opacity="0.55"
+          letter-spacing="2">05 · CANVAS</text
+        >
+        <rect x="0" y="20" width="100" height="160" rx="8"
+          fill="url(#dot-grid)"
+          stroke="currentColor" stroke-width="1.2" opacity="0.9" />
+        {/* axes */}
+        <line x1="10" y1="170" x2="92" y2="170"
+          stroke="currentColor" stroke-width="1" opacity="0.5" />
+        <line x1="10" y1="170" x2="10" y2="30"
+          stroke="currentColor" stroke-width="1" opacity="0.5" />
+        {/* points */}
+        <circle cx="28" cy="140" r="4" fill="currentColor" opacity="0.85" />
+        <circle cx="48" cy="110" r="4" fill="currentColor" opacity="0.85" />
+        <circle cx="40" cy="80" r="4" fill="currentColor" opacity="0.85" />
+        <circle cx="70" cy="60" r="4" fill="currentColor" opacity="0.85" />
+        <circle cx="78" cy="120" r="4" fill="currentColor" opacity="0.85" />
+        <circle cx="60" cy="150" r="4" fill="currentColor" opacity="0.85" />
+        <text x="50" y="240" text-anchor="middle"
+          font-size="13" fill="currentColor" opacity="0.7">
+          Live D3 scatter
+        </text>
+        <text x="50" y="258" text-anchor="middle"
+          font-size="11" fill="currentColor" opacity="0.45"
+          font-family="ui-monospace, SFMono-Regular, monospace">
+          drag · zoom · re-axis
+        </text>
+      </g>
+    </svg>
+  </div>
+  <figcaption class="mono-label mt-3">
+    Pipeline · Images and axis text share one CLIP space; projection is a single dot product.
+  </figcaption>
+</figure>

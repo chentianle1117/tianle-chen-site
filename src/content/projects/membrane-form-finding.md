@@ -1,30 +1,37 @@
 ---
-type: portfolio-project
-title: "Membrane Parametric Form-finding"
-slug: membrane-form-finding
-course: "Rice studio / research"
+_hero_curated: true
+categories:
+- Parametric Design
+- Architecture
+course: Rice studio / research
 course_code: null
-semester: "2021-2024"
-year: 2024
-role: individual
-team_size: 1
-institution: Rice University
-tags: [parametric-design, membrane-structures, tensile-architecture, form-finding, kangaroo, equilibrium-form]
-categories: [Parametric Design, Architecture]
 github: null
-notion_url: https://www.notion.so/chentianle1117/Membrane-Parametric-Form-finding-16933d12d95a81c1acdeef0748c37bc9
-local_path: null
-hero_image: /assets/membrane-form-finding/membrane-1.png
+hero_image: /assets/membrane-form-finding/membrane-3.png
 images:
-  - /assets/membrane-form-finding/membrane-1.png
-  - /assets/membrane-form-finding/membrane-2.png
-  - /assets/membrane-form-finding/membrane-3.png
-  - /assets/membrane-form-finding/membrane-4.png
+- /assets/membrane-form-finding/membrane-4.png
+- /assets/membrane-form-finding/membrane-1.png
+- /assets/membrane-form-finding/membrane-2.png
+institution: Rice University
+local_path: null
+notion_url: https://www.notion.so/chentianle1117/Membrane-Parametric-Form-finding-16933d12d95a81c1acdeef0748c37bc9
 priority: standard
-status: ready
 publish: true
+role: individual
+semester: 2021-2024
+slug: membrane-form-finding
+status: ready
+tags:
+- parametric-design
+- membrane-structures
+- tensile-architecture
+- form-finding
+- kangaroo
+- equilibrium-form
+team_size: 1
+title: Membrane Parametric Form-finding
+type: portfolio-project
+year: 2024
 ---
-# Membrane Parametric Form-finding
 
 > Tensile-membrane architecture via parametric form-finding — Kangaroo-based physical simulation in Grasshopper for shell and membrane geometries whose form emerges from force equilibrium rather than top-down authorship.
 
@@ -38,16 +45,26 @@ Parametric form-finding for membrane structures: geometries that emerge from the
 
 ## Approach
 
-- **Kangaroo physics simulation** inside Grasshopper for mesh relaxation
-- **Anchor-point + force-density experiments** — varying tension and boundary conditions produces a family of shells
-- **Form emerging from equilibrium** — rather than explicit modeling of the final geometry, the designer sets up boundary conditions and constraints; the shape follows
+- **Kangaroo physics simulation** inside Grasshopper for mesh relaxation. Each shell starts as a flat triangulated mesh; springs along edges resolve to a minimal-energy configuration under the imposed boundary conditions
+- **Anchor-point + force-density experiments** — pinning, tensioning, and releasing edges in different combinations produces a family of related shells. The designer's lever is not the geometry directly but the topology and force schedule that lead to it
+- **Form emerging from equilibrium** — rather than explicit modeling of the final geometry, the designer sets up boundary conditions and constraints; the shape follows. This inverts the usual CAD workflow: the architect specifies *what the structure must do* and the simulation reports *what it must look like*
+
+## Why force-driven form
+
+Tensile membranes, cable nets, and shell structures share a property that flat-packed CAD modeling cannot fake: their geometry **is** the structural diagram. A doubly-curved minimal surface under tension carries load through pure axial force. A funicular shell in compression follows the inverted form of a hanging chain network. The same logic Antoni Gaudí used with weighted strings at Sagrada Familia — except the iteration loop now runs at thirty frames per second.
+
+For the architecture student this means the form-finding step is also the structural-intuition step. By tuning anchor positions, edge tensions, and density, the designer learns to read the relationship between boundary topology and emergent geometry — which is the precondition for designing structurally honest membrane buildings rather than decorating them after the fact.
+
+## Outputs
+
+The study produced four representative shell families documented in the gallery: a saddle, a four-point pavilion, a cable-net shading screen, and a tessellated patchwork that demonstrates how multiple smaller form-found pieces can be stitched into a larger composite envelope. Each family is a parameter range, not a single geometry — the underlying Grasshopper definition exposes anchor positions, tension scalars, and mesh density as live sliders.
 
 ## Context
 
 **Period:** 2021-2024, Rice University.
-**Role:** individual.
+**Role:** individual research, advised by Prof. Juan Jose Castellon as part of the broader CNT-fiber experimental-models lab.
 
-Companion to the [[2021-2024-Rice--fiber-based-pavilion|Fiber-based Pavilion]] research — both share the parametric form-finding + computational architecture vocabulary.
+Companion to the [[2021-2024-Rice--fiber-based-pavilion|Fiber-based Pavilion]] research — both share the parametric form-finding + computational architecture vocabulary, with the pavilion extending the membrane logic into a fabricated full-scale prototype.
 
 ## Links
 

@@ -1,6 +1,17 @@
 ---
+// @ts-nocheck
 import BaseLayout from "../../layouts/BaseLayout.astro";
+import SectionBreak from "../../components/SectionBreak.astro";
+import PlaceholderHero from "../../components/PlaceholderHero.astro";
 import { getCollection } from "astro:content";
+import { existsSync } from "node:fs";
+import { fileURLToPath } from "node:url";
+
+function publicFileExists(webPath) {
+  if (!webPath || !webPath.startsWith("/")) return false;
+  const url = new URL(`../../../public${webPath}`, import.meta.url);
+  return existsSync(fileURLToPath(url));
+}
 
 const architectureSlugs = [
   "fiber-based-pavilion",
@@ -9,79 +20,93 @@ const architectureSlugs = [
   "wire-bending",
 ];
 
-const all: any[] = await getCollection("projects", ({ data }: { data: any }) => data.publish === true);
+const all = await getCollection("projects", ({ data }) => data.publish === true);
 
-type Card = {
-  slug: string;
-  title: string;
-  hero: string | null;
-  year: number | string;
-  institution: string;
-  role: string;
-  isIASS: boolean;
-};
-
-const architecture: Card[] = architectureSlugs
-  .map((slug) => all.find((p) => p.data.slug === slug || p.slug === slug))
+const architecture = architectureSlugs
+  .map((slug) => all.find((p) => p.data.slug === slug || (p as any).slug === slug))
   .filter(Boolean)
   .map((p: any) => {
     const d: any = p.data;
+    const heroSrc = d.gif_hero || d.hero_image || (d.images && d.images[0]) || null;
     return {
       slug: d.slug,
       title: d.title,
-      hero: d.hero_image || (d.images && d.images[0]) || null,
+      hero: heroSrc,
+      heroOk: heroSrc && publicFileExists(heroSrc),
       year: d.year ?? "",
       institution: d.institution ?? "",
       role: d.role ?? "",
+      categories: d.categories ?? [],
       isIASS: d.slug === "fiber-based-pavilion",
     };
   });
+
+// Round-3 Item 7: dynamic count + year range from the architecture tier itself
+const archCount = architecture.length;
+const archYears = architecture
+  .map((c: any) => c.year)
+  .filter((y: unknown): y is number => typeof y === "number");
+const archYearRange = archYears.length
+  ? `${Math.min(...archYears)}—${Math.max(...archYears)}`
+  : "2021—2024";
+const archKicker = `RICE UNIVERSITY · ${archYearRange} · ${archCount} PROJECTS`;
 ---
 
 <BaseLayout
   title="Architecture"
   description="Selected architecture work from Rice University, 2021–2024 — including IASS 2024 published research with Prof. Castellon."
 >
-  <section class="container-page pt-24 md:pt-32 pb-12">
-    <p class="mono-label mb-4">Rice University · 2021–2024 · Selected projects</p>
-    <h1 class="max-w-3xl mb-6">Architecture.</h1>
-    <p class="max-w-reading text-graphite-300 leading-relaxed">
-      Studio and research work from the BArch — parametric form-finding,
-      ceramic-hollow column fabrication, generative urbanism, and robotic wire bending.
-      One project, the fiber-based parametric pavilion, was published at IASS 2024 with
-      Prof. Juan Jose Castellon.
+  {/* Header */}
+  <section class="container-wide pt-16 md:pt-24 pb-8">
+    <p class="mono-label mb-4">{archKicker}</p>
+    <h1
+      class="mb-6 max-w-3xl"
+      style="font-family: theme(fontFamily.display); font-size: var(--step-5); font-weight: 380; line-height: 1.05; letter-spacing: -0.01em; color: rgb(var(--text-primary));"
+    >
+      Architecture
+    </h1>
+    <p class="max-w-[68ch]" style="color: rgb(var(--text-secondary)); font-size: var(--step-1); line-height: 1.55;">
+      Studio and research work from the BArch — parametric form-finding, ceramic-hollow column fabrication, generative urbanism, and robotic wire bending. One project, the fiber-based parametric pavilion, was published at IASS 2024 with Prof. Juan Jose Castellon.
     </p>
   </section>
 
-  <section class="container-page pt-12 pb-24">
+  <SectionBreak />
+
+  {/* 2-col grid */}
+  <section class="container-wide pb-24 md:pb-32">
     {architecture.length === 0 ? (
-      <p class="font-mono text-sm text-graphite-400">
+      <p class="font-mono text-sm" style="color: rgb(var(--text-mono));">
         Architecture projects sync from the vault. Run <code>npm run sync</code>.
       </p>
     ) : (
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-x-12 gap-y-16" data-stagger>
+      <div class="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-x-12 gap-y-16" data-stagger>
         {architecture.map((card) => (
-          <a
-            href={`/work/${card.slug}`}
-            class="group block"
-            data-reveal
-          >
-            <div class="relative aspect-[3/4] overflow-hidden rounded-md border border-graphite-700/60 bg-graphite-800">
-              {card.hero ? (
+          <a href={`/work/${card.slug}`} class="group block" data-reveal>
+            <div
+              class="relative aspect-[3/4] overflow-hidden"
+              style="border: 1px solid rgb(var(--surface-border)); border-radius: 6px; background: rgb(var(--surface-1-rgb));"
+            >
+              {card.heroOk ? (
                 <img
                   src={card.hero}
                   alt={card.title}
                   loading="lazy"
                   decoding="async"
-                  class="w-full h-full object-cover transition-all duration-640 ease-out-soft group-hover:scale-[1.02] group-hover:brightness-105"
+                  class="w-full h-full object-cover transition-all duration-420 ease-out-soft group-hover:scale-[1.02] group-hover:brightness-[1.05]"
                 />
               ) : (
-                <div class="w-full h-full flex items-center justify-center">
-                  <span class="mono-label">{card.slug}</span>
-                </div>
+                <PlaceholderHero
+                  slug={card.slug}
+                  title={card.title}
+                  categories={card.categories}
+                  size="hero"
+                />
               )}
               {card.isIASS && (
-                <span class="absolute top-4 left-4 font-mono text-[10px] uppercase tracking-[0.1em] text-oxide-400 bg-graphite-900/80 border border-oxide-500/40 rounded-sm px-2 py-1">
+                <span
+                  class="absolute top-4 left-4 font-mono uppercase"
+                  style="font-size: 10px; letter-spacing: 0.1em; color: rgb(var(--accent-rgb)); background: rgba(0,0,0,0.72); border: 1px solid rgb(var(--accent-rgb) / 0.5); border-radius: 4px; padding: 4px 8px;"
+                >
                   IASS 2024 · Published
                 </span>
               )}
@@ -96,7 +121,10 @@ const architecture: Card[] = architectureSlugs
               )}
             </div>
 
-            <h3 class="mt-2 font-display tracking-tight text-graphite-50 group-hover:text-oxide-400 transition-colors" style="font-size: var(--step-3); font-weight:380; line-height:1.15;">
+            <h3
+              class="mt-2 group-hover:text-[rgb(var(--accent-rgb))] transition-colors duration-280"
+              style="font-family: theme(fontFamily.display); font-size: var(--step-3); font-weight: 380; line-height: 1.15; letter-spacing: -0.01em; color: rgb(var(--text-primary));"
+            >
               {card.title}
             </h3>
           </a>

@@ -16,6 +16,6 @@ void main() {
   vec2 borderD = abs(vQuadUv - 0.5) - 0.495;
   float borderDist = max(borderD.x, borderD.y);
   float borderMask = 1.0 - smoothstep(0.0, 0.005, borderDist);
-  rgb = mix(rgb, vec3(0.95, 0.55, 0.35), borderMask * 0.25);
-  gl_FragColor = vec4(rgb, c.a * mask * 0.92);
+  rgb = mix(rgb, vec3(0.95, 0.55, 0.35), borderMask * 0.10);
+  gl_FragColor = vec4(rgb, c.a * mask);
 }

@@ -1,50 +1,69 @@
 ---
-type: portfolio-project
-title: "CAD-MLLM: Unifying Multimodality-Conditioned CAD Generation with MLLM"
-slug: l43d-cad-mllm
-course: "16-825 Learning for 3D Vision — Final Project (Team 21)"
+_hero_curated: true
+artifacts:
+- /assets/l43d-cad-mllm/poster.pdf
+- /assets/l43d-cad-mllm/final-report.pdf
+- /assets/l43d-cad-mllm/proposal-final.pdf
+- /assets/l43d-cad-mllm/proposal-v1.pdf
+categories:
+- ML
+- Deep Learning
+- CAD Generation
+course: 16-825 Learning for 3D Vision — Final Project (Team 21)
 course_code: 16-825
-semester: "Fall 2025"
-year: 2025
-role: team-member
-team_size: 4
-team: [Yizhuo Di, David Chen, Karthick Raja, Chia Hui Yan]
-team_hierarchy: flat (no group leader)
-repo_owner: Yizhuo Di (veoery) — holder of the canonical team repo; NOT team lead
-tags: [multimodal-llm, cad-generation, point-cloud, curriculum-learning, llm-finetuning, vicuna, lora, opencascade, deepcad, autocompletion]
-categories: [ML, Deep Learning, CAD Generation]
+david_branches:
+- autocomplete
+- autocomplete_2
 github: chentianle1117/CAD-MLLM-unofficial
-github_url: https://github.com/chentianle1117/CAD-MLLM-unofficial
 github_personal_fork_url: https://github.com/chentianle1117/CAD-MLLM-unofficial
 github_upstream: veoery/CAD-MLLM-unofficial
 github_upstream_url: https://github.com/veoery/CMU16825_Final_project
-david_branches: [autocomplete, autocomplete_2]
+github_url: https://github.com/chentianle1117/CAD-MLLM-unofficial
+hero_image: null
+huggingface_dataset: omnicad-lab-L3d/omnicad-multimodal-subset-fast
 huggingface_org: omnicad-lab-L3d
 huggingface_personal: chentianle1117/autocomplete-stage3-8000
-huggingface_dataset: omnicad-lab-L3d/omnicad-multimodal-subset-fast
-reference_paper: "CAD-MLLM: Unifying Multimodality-Conditioned CAD Generation With MLLM (arXiv:2411.04954)"
-reference_repos:
-  - rundiwu/DeepCAD
-  - zhangshuming0668/Brep2Seq
-proposal_doc: https://docs.google.com/document/d/1boTa8wrT7wAHUPmNzRsZQfl0koGM_CAKl-26r41-25c/edit
-local_path: "W:\\CMU_Academics\\2025 Fall\\Learning for 3D Vision\\CMU16825_Final_project"
-hero_image: /assets/l43d-cad-mllm/poster.pdf
 images:
-  - /assets/l43d-cad-mllm/combined_summary.png
-  - /assets/l43d-cad-mllm/data_amplification.png
-  - /assets/l43d-cad-mllm/operations_comparison.png
-  - /assets/l43d-cad-mllm/truncation_distribution.png
-  - /assets/l43d-cad-mllm/versions_per_model.png
-artifacts:
-  - /assets/l43d-cad-mllm/poster.pdf
-  - /assets/l43d-cad-mllm/final-report.pdf
-  - /assets/l43d-cad-mllm/proposal-final.pdf
-  - /assets/l43d-cad-mllm/proposal-v1.pdf
+- /assets/l43d-cad-mllm/operations-comparison.png
+- /assets/l43d-cad-mllm/data-amplification.png
+- /assets/l43d-cad-mllm/truncation-distribution.png
+- /assets/l43d-cad-mllm/versions-per-model.png
+local_path: W:\CMU_Academics\2025 Fall\Learning for 3D Vision\CMU16825_Final_project
 priority: flagship
-status: ready
+proposal_doc: https://docs.google.com/document/d/1boTa8wrT7wAHUPmNzRsZQfl0koGM_CAKl-26r41-25c/edit
 publish: true
+reference_paper: 'CAD-MLLM: Unifying Multimodality-Conditioned CAD Generation With
+  MLLM (arXiv:2411.04954)'
+reference_repos:
+- rundiwu/DeepCAD
+- zhangshuming0668/Brep2Seq
+repo_owner: Yizhuo Di (veoery) — holder of the canonical team repo; NOT team lead
+role: team-member
+semester: Fall 2025
+slug: l43d-cad-mllm
+status: ready
+tags:
+- multimodal-llm
+- cad-generation
+- point-cloud
+- curriculum-learning
+- llm-finetuning
+- vicuna
+- lora
+- opencascade
+- deepcad
+- autocompletion
+team:
+- Yizhuo Di
+- David Chen
+- Karthick Raja
+- Chia Hui Yan
+team_hierarchy: flat (no group leader)
+team_size: 4
+title: 'CAD-MLLM: Unifying Multimodality-Conditioned CAD Generation with MLLM'
+type: portfolio-project
+year: 2025
 ---
-# CAD-MLLM: Unifying Multimodality-Conditioned CAD Generation with MLLM
 
 > Team 21's unofficial reproduction + extension of *CAD-MLLM* (arXiv:2411.04954). A unified CAD generation system that accepts text, point cloud, image, or any combination as input — and outputs editable CAD models. David's contribution: the **autocompletion extension** — generating full CAD sequences from partial ones via intelligent truncation.
 

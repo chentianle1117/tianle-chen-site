@@ -1,51 +1,75 @@
 ---
-type: portfolio-project
-title: "MSCD Thesis — AI-Augmented Footwear Design: Tools, Agency, and the Shape of Designer-AI Collaboration"
-slug: thesis-flagship
-course: "48-715 Pre-Thesis I + 48-716 Pre-Thesis II + 48-769 M.S. Thesis/Project"
-course_code: 48-769
-semester: "Spring 2025 – Spring 2026"
-year: 2026
-role: individual
-team_size: 1
-institution: Carnegie Mellon School of Design
-program: MSCD (Master of Science in Computational Design)
-advisor: "TBD (thesis committee)"
-tags: [thesis, ai-augmented-design, design-research, footwear-design, clip, multi-user-study, sigradi-2026, zappos50k, computational-design]
-categories: [Thesis, Design Research, AI/ML]
-github: null
-venue_target: SIGRADI 2026 (abstract submitted)
-tool_artifact: "[[2025-Fall--semantic-canvas-thesis-tool]]"
-local_path: "W:\\CMU_Academics\\2025 Fall\\Thesis"
-local_path_writeup: "W:\\CMU_Academics\\2025 Fall\\Thesis\\Thesis_Writeup\\overleaf\\thesis_body.tex"
-local_path_demo: "W:\\CMU_Academics\\2025 Fall\\Thesis Demo"
-latest_draft: "thesis_body.tex (265 KB, last edit 2026-04-23)"
-proposal_video: "Proposal Final Presentation 1204.mp4 (103 MB, 2025-12-03, local only)"
-hero_image: /assets/thesis-flagship/hero.png
-images:
-  - /assets/thesis/pre-thesis-II-A1_Worldmaking_Diagram_DavidChen.png
+_hero_curated: true
+advisor: TBD (thesis committee)
 artifacts:
-  - /assets/thesis/pre-thesis-I-David_Chen_Game_Plan_Writeup_Submission.pdf
-  - /assets/thesis/pre-thesis-II-A11*
-  - "W:\\CMU_Academics\\2025 Fall\\Thesis Demo\\Proposal Final Presentation 1204.mp4 (103MB, local only)"
-  - "overleaf/thesis_body.tex (265 KB)"
-  - "Thesis_Material/sigradi2026_abstract.md"
-  - "Thesis_Material/study_comprehensive_report.md (31 KB)"
-  - "Thesis_Material/advisor_feedback_apr7.md"
-  - "29 Pre-Thesis II PDFs (A1–A11 progression)"
-  - "11 Pre-Thesis I PDFs (game plan + territory maps)"
-related_cards:
-  - "[[2025-Fall--semantic-canvas-thesis-tool]]"
-  - "[[2025-Spring--live-ai-feedback-design-assistant]]"
+- /assets/thesis-flagship/pre-thesis-I-David_Chen_Game_Plan_Writeup_Submission.pdf
+- /assets/thesis-flagship/pre-thesis-II-A11*
+- W:\CMU_Academics\2025 Fall\Thesis Demo\Proposal Final Presentation 1204.mp4 (103MB,
+  local only)
+- overleaf/thesis_body.tex (265 KB)
+- Thesis_Material/sigradi2026_abstract.md
+- Thesis_Material/study_comprehensive_report.md (31 KB)
+- Thesis_Material/advisor_feedback_apr7.md
+- 29 Pre-Thesis II PDFs (A1–A11 progression)
+- 11 Pre-Thesis I PDFs (game plan + territory maps)
+categories:
+- Thesis
+- Design Research
+- AI/ML
+course: 48-715 Pre-Thesis I + 48-716 Pre-Thesis II + 48-769 M.S. Thesis/Project
+course_code: 48-769
+github: null
+hero_image: /assets/semantic-canvas/p3-stage2-session2-composite.png
+images:
+- /assets/thesis-flagship/lineage-view-ui.png
+- /assets/thesis-flagship/fashion-interface.png
+- /assets/thesis-flagship/form-forge.png
+- /assets/thesis-flagship/deeprise-interface.png
+- /assets/thesis-flagship/territory-map.png
+- /assets/thesis-flagship/stage1-vs-stage2-comparison.png
+- /assets/thesis-flagship/concept-config-space.png
+- /assets/thesis-flagship/ch4-system-timeline.png
+- /assets/thesis-flagship/ch4-generation-pipeline.png
+- /assets/thesis-flagship/ch4-axis-projection-pipeline.png
+institution: Carnegie Mellon School of Design
+latest_draft: thesis_body.tex (265 KB, last edit 2026-04-23)
+local_path: W:\CMU_Academics\2025 Fall\Thesis
+local_path_demo: W:\CMU_Academics\2025 Fall\Thesis Demo
+local_path_writeup: W:\CMU_Academics\2025 Fall\Thesis\Thesis_Writeup\overleaf\thesis_body.tex
 priority: flagship
-status: ready
+program: MSCD (Master of Science in Computational Design)
+proposal_video: Proposal Final Presentation 1204.mp4 (103 MB, 2025-12-03, local only)
 publish: true
+related_cards:
+- '[[2025-Fall--semantic-canvas-thesis-tool]]'
+- '[[2025-Spring--live-ai-feedback-design-assistant]]'
+role: individual
+semester: Spring 2025 – Spring 2026
+slug: thesis-flagship
+status: ready
+tags:
+- thesis
+- ai-augmented-design
+- design-research
+- footwear-design
+- clip
+- multi-user-study
+- sigradi-2026
+- zappos50k
+- computational-design
+team_size: 1
+title: 'MSCD Thesis — AI-Augmented Footwear Design: Tools, Agency, and the Shape of
+  Designer-AI Collaboration'
+tool_artifact: '[[2025-Fall--semantic-canvas-thesis-tool]]'
+type: portfolio-project
+venue_target: SIGRADI 2026 (abstract submitted)
+video_proposal: /assets/thesis-flagship/proposal-presentation.mp4
+year: 2026
 ---
-# MSCD Thesis — AI-Augmented Footwear Design
 
 > Three-semester thesis project investigating **how generative AI should integrate into expert design workflows**, with footwear design as the domain. The research artifact is [[2025-Fall--semantic-canvas-thesis-tool|Semantic Canvas]] — an interactive latent-space design tool. The argument unfolds across a multi-user study, a production deployment, and chapters in active revision.
 
-![worldmaking diagram](/assets/thesis/pre-thesis-II-A1_Worldmaking_Diagram_DavidChen.png)
+![worldmaking diagram](/assets/thesis-flagship/pre-thesis-II-A1_Worldmaking_Diagram_DavidChen.png)
 
 ## Hook
 Most AI-for-design work asks "can the model make the thing?" — and the answer is yes, always. This thesis asks the harder question: **when a designer uses a generative AI tool, what shape should that collaboration take so design judgment stays intact and compounds over time?** The investigation is empirical (real designers using a real tool on real tasks) and propositional (what does a *legible* latent space buy us vs. a flat prompt-response generator?).
@@ -108,7 +132,7 @@ From `Thesis_Writeup/chapters/` and overleaf:
 ## Pre-Thesis progression (paper trail)
 
 ### Pre-Thesis I (Spring 2025) — 11 deliverables
-Core proposal track: Statement of Interest → Draft Reading List → Annotated Bibliography → Gap Analysis → Developing the Proposed Investigation → Criteria for Success → Preliminary Game Plan → Game Plan Draft → **Game Plan Writeup Submission** (final, `/assets/thesis/pre-thesis-I-David_Chen_Game_Plan_Writeup_Submission.pdf`).
+Core proposal track: Statement of Interest → Draft Reading List → Annotated Bibliography → Gap Analysis → Developing the Proposed Investigation → Criteria for Success → Preliminary Game Plan → Game Plan Draft → **Game Plan Writeup Submission** (final, `/assets/thesis-flagship/pre-thesis-I-David_Chen_Game_Plan_Writeup_Submission.pdf`).
 
 Visual synthesis: territory map (4 versions — JPG, PDF, AI). Foundational reference: *Form+Code in Design, Art, and Architecture* (3 MB reading).
 
@@ -119,7 +143,7 @@ Visual synthesis: territory map (4 versions — JPG, PDF, AI). Foundational refe
 - **A4** — Research Questions (slides 6.4 MB + writeup)
 - **A5** — Presentation + Writeup
 - **A10** — Models Diagrams + presentation
-- **A11** — **Final Thesis Proposal Draft** (2.3 MB, `/assets/thesis/pre-thesis-II-A11...`)
+- **A11** — **Final Thesis Proposal Draft** (2.3 MB, `/assets/thesis-flagship/pre-thesis-II-A11...`)
 
 ## Study artifacts (local)
 

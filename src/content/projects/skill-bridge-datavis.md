@@ -1,49 +1,63 @@
 ---
-type: portfolio-project
-title: "Skill-Bridge Data Visualization Interface"
-slug: skill-bridge-datavis
-course: "05-619 Data Visualization"
+_hero_curated: true
+artifacts:
+- /assets/skill-bridge-datavis/final-report.pdf
+- /assets/skill-bridge-datavis/presentation.pdf
+- /assets/skill-bridge-datavis/Project Thumbnail.png
+- /assets/skill-bridge-datavis/Presentation 1.png
+- /assets/skill-bridge-datavis/Presentation 2.png
+- /assets/skill-bridge-datavis/Presentation 3.png
+- /assets/skill-bridge-datavis/Presentation 4.png
+- Svelte/Vite project
+- D3.js visualizations
+- LinkedIn 2023 job postings dataset
+categories:
+- Interface Design
+- Data Visualization
+course: 05-619 Data Visualization
 course_code: 05-619
-semester: "Fall 2024"
-year: 2024
-role: team-member
-team_size: 2
-team: [David Chen, Risa Xie]
-team_hierarchy: flat (no group leader)
-tags: [d3, svelte, data-visualization, job-market, linkedin, edge-bundling, geomap, cross-field, interactive-dashboard]
-categories: [Interface Design, Data Visualization]
+gif_hero: /assets/skill-bridge-datavis/dashboard-hero.gif
 github: chentianle1117/Skill-Bridge-DataVis
 github_url: https://github.com/chentianle1117/Skill-Bridge-DataVis
-live_url: https://chentianle1117.github.io/Skill-Bridge-DataVis/
-notion_url: https://www.notion.so/chentianle1117/Skill-Bridge-Data-Visualization-Interface-16a33d12d95a804f89f2cb345dac1b3d
-local_path: "W:\\CMU_Academics\\Fall 2024 CMU\\Data Visualization\\Skill-Bridge-DataVis"
 hero_image: /assets/skill-bridge-datavis/dashboard-hero.gif
 images:
-  - /assets/skill-bridge-datavis/dashboard-hero.gif
-  - /assets/skill-bridge-datavis/dashboard-hover.gif
-  - /assets/skill-bridge-datavis/circular-skill-job-linkage.png
-  - /assets/skill-bridge-datavis/integrated-dashboard.png
-  - /assets/skill-bridge-datavis/Project Thumbnail.png
-  - /assets/skill-bridge-datavis/Presentation 1.png
-  - /assets/skill-bridge-datavis/Presentation 2.png
-  - /assets/skill-bridge-datavis/Presentation 3.png
-  - /assets/skill-bridge-datavis/Presentation 4.png
-artifacts:
-  - /assets/skill-bridge-datavis/final-report.pdf
-  - /assets/skill-bridge-datavis/presentation.pdf
-  - /assets/skill-bridge-datavis/Project Thumbnail.png
-  - /assets/skill-bridge-datavis/Presentation 1.png
-  - /assets/skill-bridge-datavis/Presentation 2.png
-  - /assets/skill-bridge-datavis/Presentation 3.png
-  - /assets/skill-bridge-datavis/Presentation 4.png
-  - Svelte/Vite project
-  - D3.js visualizations
-  - LinkedIn 2023 job postings dataset
+- /assets/skill-bridge-datavis/dashboard-hover.gif
+- /assets/skill-bridge-datavis/integrated-dashboard.png
+- /assets/skill-bridge-datavis/Presentation 4.png
+- /assets/skill-bridge-datavis/circular-skill-job-linkage.png
+- /assets/skill-bridge-datavis/Presentation 3.png
+- /assets/skill-bridge-datavis/Project Thumbnail.png
+- /assets/skill-bridge-datavis/Presentation 1.png
+- /assets/skill-bridge-datavis/background.png
+- /assets/skill-bridge-datavis/Presentation 2.png
+live_url: https://chentianle1117.github.io/Skill-Bridge-DataVis/
+local_path: W:\CMU_Academics\Fall 2024 CMU\Data Visualization\Skill-Bridge-DataVis
+notion_url: https://www.notion.so/chentianle1117/Skill-Bridge-Data-Visualization-Interface-16a33d12d95a804f89f2cb345dac1b3d
 priority: flagship
-status: ready
 publish: true
+role: team-member
+semester: Fall 2024
+slug: skill-bridge-datavis
+status: ready
+tags:
+- d3
+- svelte
+- data-visualization
+- job-market
+- linkedin
+- edge-bundling
+- geomap
+- cross-field
+- interactive-dashboard
+team:
+- David Chen
+- Risa Xie
+team_hierarchy: flat (no group leader)
+team_size: 2
+title: Skill-Bridge Data Visualization Interface
+type: portfolio-project
+year: 2024
 ---
-# Skill-Bridge Data Visualization Interface
 
 > An interactive dashboard comparing tech and design job markets — revealing how skill requirements, salaries, and remote availability interplay across geography. Built for cross-field job seekers navigating the transition.
 

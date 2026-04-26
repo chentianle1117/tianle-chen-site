@@ -17,14 +17,22 @@ from pathlib import Path
 
 from PIL import Image
 
+# Defensive PIL caps — set BEFORE any image opens.
+Image.MAX_IMAGE_PIXELS = 300_000_000
+
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from _embed_common import (  # noqa: E402
     DATA_DIR,
+    IMAGE_EXTS,
     find_hero_image,
     make_placeholder,
+    resolve_web_path_to_fs,
+    safe_open,
 )
 import frontmatter  # noqa: E402
 from _embed_common import CONTENT_DIR  # noqa: E402
+
+VIDEO_EXTS = {".mp4", ".webm", ".mov", ".m4v"}
 
 ATLAS_SIZE = 4096
 GRID = 4
@@ -43,14 +51,37 @@ def _load_project_meta(slug: str) -> dict:
         return {}
 
 
+def _resolve_hero_path(slug: str, meta: dict):
+    """Mirror embed_projects logic: hero_image → gif_hero (if video) → scan."""
+    hero = meta.get("hero_image")
+    if isinstance(hero, str):
+        fs = resolve_web_path_to_fs(hero)
+        if fs is not None and fs.suffix.lower() in VIDEO_EXTS:
+            gif = meta.get("gif_hero")
+            if isinstance(gif, str):
+                gfs = resolve_web_path_to_fs(gif)
+                if gfs is not None and gfs.exists() and gfs.suffix.lower() in IMAGE_EXTS:
+                    return gfs
+            return find_hero_image(slug, {**meta, "hero_image": None})
+    return find_hero_image(slug, meta)
+
+
 def _hero_for(slug: str, title: str) -> Image.Image:
     meta = _load_project_meta(slug)
-    fs = find_hero_image(slug, meta)
-    if fs is not None:
+    fs = _resolve_hero_path(slug, meta)
+    if fs is not None and fs.exists():
         try:
-            return Image.open(fs).convert("RGB")
+            img = safe_open(fs)
+            if fs.suffix.lower() == ".gif":
+                try:
+                    img.seek(0)
+                except Exception:
+                    pass
+            return img.convert("RGB")
         except Exception as e:
             print(f"  ! open fail {fs}: {e}; placeholder")
+    else:
+        print(f"  ! missing-hero anomaly slug={slug}; placeholder")
     return make_placeholder(slug, title, size=CELL).convert("RGB")
 
 

@@ -1,43 +1,56 @@
 ---
-type: portfolio-project
-title: "Design the Ambience: Expanding Realities Beyond the Screen with StreamDiffusion and MediaPipe"
-slug: design-the-ambience
-course: "48-652 Pixels Photons (Mapping & TouchDesigner) — Final"
+_hero_curated: true
+artifacts:
+- FINAL FILE SUBMISSION.toe
+- StreamDiffusionTD-0.2.2.tox
+- detection_data.json
+- audio/
+- img/
+- movie/
+- 3d_blender/
+categories:
+- Digital Interaction
+course: 48-652 Pixels Photons (Mapping & TouchDesigner) — Final
 course_code: 48-652
-semester: "Fall 2024"
-year: 2024
-role: team-member
-team_size: 4
-team: [David Chen, Risa Xie, Carla, Leslie]
-team_hierarchy: flat (no group leader)
-tags: [stream-diffusion, projection-mapping, mediapipe, touchdesigner, ambient-computing, human-computer-interaction, feedback-loop, performative-idiom]
-categories: [Digital Interaction]
+gif_hero: /assets/design-the-ambience/hero.gif
 github: null
-notion_url: https://www.notion.so/chentianle1117/Design-the-Ambience-Expanding-Realities-Beyond-the-Screen-with-StreamDiffusion-and-MediaPipe-16933d12d95a80f49375c88692b3d308
-local_path: "W:\\CMU_Academics\\Fall 2024 CMU\\Mapping and TouchDesigner\\Final Project\\Final Project"
 hero_image: /assets/design-the-ambience/hero.gif
 images:
-  - /assets/design-the-ambience/hero.gif
-  - /assets/design-the-ambience/system-loop-flowchart.png
-  - /assets/design-the-ambience/trial-1-plants.png
-  - /assets/design-the-ambience/trial-2-urban-plan.png
-  - /assets/design-the-ambience/trial-3-physarum.png
-video: https://www.youtube.com/watch?v=OAg5alXv8xY
+- /assets/design-the-ambience/trial-3-physarum.png
+- /assets/design-the-ambience/trial-2-urban-plan.png
+- /assets/design-the-ambience/trial-1-plants.png
+local_path: W:\CMU_Academics\Fall 2024 CMU\Mapping and TouchDesigner\Final Project\Final
+  Project
+notion_url: https://www.notion.so/chentianle1117/Design-the-Ambience-Expanding-Realities-Beyond-the-Screen-with-StreamDiffusion-and-MediaPipe-16933d12d95a80f49375c88692b3d308
+priority: flagship
+publish: true
+role: team-member
+semester: Fall 2024
+slug: design-the-ambience
+status: ready
+tags:
+- stream-diffusion
+- projection-mapping
+- mediapipe
+- touchdesigner
+- ambient-computing
+- human-computer-interaction
+- feedback-loop
+- performative-idiom
+team:
+- David Chen
+- Risa Xie
+- Carla
+- Leslie
+team_hierarchy: flat (no group leader)
+team_size: 4
+title: 'Design the Ambience: Expanding Realities Beyond the Screen with StreamDiffusion
+  and MediaPipe'
+type: portfolio-project
 video_iter1: https://youtu.be/_m71EAxqBdY
 video_iter2: https://youtu.be/rtAv9rF6Qvg
-artifacts:
-  - "FINAL FILE SUBMISSION.toe"
-  - StreamDiffusionTD-0.2.2.tox
-  - detection_data.json
-  - audio/
-  - img/
-  - movie/
-  - 3d_blender/
-priority: flagship
-status: ready
-publish: true
+year: 2024
 ---
-# Design the Ambience
 
 > Extend human-computer interaction **beyond the screen**. The system projects real-time generative visuals into the physical workspace, driven by cursor, keyboard, posture, and live screen data — creating a feedback loop where the act of computing reshapes the ambient environment.
 

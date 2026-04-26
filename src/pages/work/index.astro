@@ -51,12 +51,17 @@ const cardsWithBuckets = work.map((p) => ({
 >
   <FilterBar categories={[...FILTER_CATEGORIES]} years={years} total={total} />
 
-  <section class="container-page pt-12 md:pt-16 pb-10">
+  <section class="container-wide pt-12 md:pt-16 pb-10">
     <p class="mono-label mb-4">{kicker}</p>
-    <h1 class="max-w-4xl" style="font-size: var(--step-5); font-weight: 380;">Work</h1>
+    <h1
+      class="max-w-4xl"
+      style="font-family: theme(fontFamily.display); font-size: var(--step-5); font-weight: 380; line-height: 1.05; letter-spacing: -0.01em; color: rgb(var(--text-primary));"
+    >
+      Selected Work
+    </h1>
   </section>
 
-  <section class="container-page py-8 md:py-12">
+  <section class="container-wide py-8 md:py-12 pb-24 md:pb-32">
     <div id="work-grid" class="grid grid-cols-12 gap-x-6 gap-y-12">
       {cardsWithBuckets.map(({ project, buckets }, i) => {
         const isFlagship = project.data.priority === "flagship";
@@ -86,11 +91,11 @@ const cardsWithBuckets = work.map((p) => ({
     </div>
 
     <div id="work-empty" class="hidden text-center py-24">
-      <p class="text-graphite-300 mb-6">No projects match. Reset filters.</p>
+      <p class="mb-6" style="color: rgb(var(--text-secondary));">No projects match. Reset filters.</p>
       <button
         type="button"
         id="filter-reset"
-        class="mono-label px-4 py-2 border border-graphite-700/60 rounded-sm hover:border-oxide-500/40 hover:text-oxide-400 transition-colors duration-180"
+        class="btn"
       >Reset</button>
     </div>
   </section>

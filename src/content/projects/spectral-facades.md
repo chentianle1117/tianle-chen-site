@@ -1,43 +1,61 @@
 ---
-type: portfolio-project
-title: "Spectral Facades"
-slug: spectral-facades
-course: "48-652 Pixels Photons (Mapping & TouchDesigner)"
+_hero_curated: true
+artifacts:
+- /assets/spectral-facades/cube.pdf
+- /assets/spectral-facades/1121 movie demo.mp4
+- /assets/spectral-facades/mapping screenshot.png
+- /assets/spectral-facades/screenshot.jpg
+- /assets/spectral-facades/test1.png
+- /assets/spectral-facades/papercube-test.png
+- W:\CMU_Academics\Fall 2024 CMU\Mapping and TouchDesigner\Assignment 3 Projection
+  Mapping\touch designer final project video.mp4 (174MB, not in vault)
+- papercube.fbx + papercube1.fbx
+- .toe TouchDesigner files (147KB)
+categories:
+- Projection Mapping
+- Digital Interaction
+course: 48-652 Pixels Photons (Mapping & TouchDesigner)
 course_code: 48-652
-semester: "Fall 2024"
-year: 2024
-role: team-member
-team_size: 4
-team: [David Chen, Risa Xie, Carla, Leslie]
-team_hierarchy: flat (no group leader)
-tags: [projection-mapping, stream-diffusion, mediapipe, gesture-control, interactive-installation, generative-ai]
-categories: [Projection Mapping, Digital Interaction]
+gif_hero: /assets/spectral-facades/hero.gif
 github: null
-notion_url: https://www.notion.so/chentianle1117/Spectral-Facades-16a33d12d95a800e8b5cfb0632519488
-local_path: "W:\\CMU_Academics\\Fall 2024 CMU\\Mapping and TouchDesigner\\Assignment 3 Projection Mapping"
 hero_image: /assets/spectral-facades/hero.gif
 images:
-  - /assets/spectral-facades/hero.gif
-  - /assets/spectral-facades/meme-collage.png
-  - /assets/spectral-facades/stream-diffusion-weights.png
-  - /assets/spectral-facades/mediapipe-gestures.png
-  - /assets/spectral-facades/final-output.png
-video: https://youtu.be/EiQlJGqY754
-artifacts:
-  - /assets/spectral-facades/cube.pdf
-  - /assets/spectral-facades/1121 movie demo.mp4
-  - /assets/spectral-facades/mapping screenshot.png
-  - /assets/spectral-facades/screenshot.jpg
-  - /assets/spectral-facades/test1.png
-  - /assets/spectral-facades/papercube-test.png
-  - "W:\\CMU_Academics\\Fall 2024 CMU\\Mapping and TouchDesigner\\Assignment 3 Projection Mapping\\touch designer final project video.mp4 (174MB, not in vault)"
-  - papercube.fbx + papercube1.fbx
-  - .toe TouchDesigner files (147KB)
+- /assets/spectral-facades/screenshot.jpg
+- /assets/spectral-facades/mapping screenshot.png
+- /assets/spectral-facades/final-output.png
+- /assets/spectral-facades/mediapipe-gestures.png
+- /assets/spectral-facades/meme-collage.png
+- /assets/spectral-facades/stream-diffusion-weights.png
+- /assets/spectral-facades/papercube-test.png
+- /assets/spectral-facades/test1.png
+local_path: W:\CMU_Academics\Fall 2024 CMU\Mapping and TouchDesigner\Assignment 3
+  Projection Mapping
+notion_url: https://www.notion.so/chentianle1117/Spectral-Facades-16a33d12d95a800e8b5cfb0632519488
 priority: standard
-status: ready
 publish: true
+role: team-member
+semester: Fall 2024
+slug: spectral-facades
+status: ready
+tags:
+- projection-mapping
+- stream-diffusion
+- mediapipe
+- gesture-control
+- interactive-installation
+- generative-ai
+team:
+- David Chen
+- Risa Xie
+- Carla
+- Leslie
+team_hierarchy: flat (no group leader)
+team_size: 4
+title: Spectral Facades
+type: portfolio-project
+video: /assets/spectral-facades/1121 movie demo.mp4
+year: 2024
 ---
-# Spectral Facades
 
 > An interactive media installation that lets a viewer sculpt architectural façades in real time using body posture and hand gestures. Stream Diffusion interpolates between two contrasting façade styles — modernist vs. radically decayed — while generative audio tracks the transition.
 
