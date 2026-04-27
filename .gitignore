@@ -41,3 +41,8 @@ dist/
 
 # CLIP model cache (large)
 *.bin
+
+# Round-9q: large assets exceeding GitHub's 100MB push limit. Kept on
+# disk / Drive but never committed.
+public/assets/**/proposal-presentation.mp4
+public/assets/aurora-citadel-gen-game/rugged-terrain-with-rocky-peaks-*
