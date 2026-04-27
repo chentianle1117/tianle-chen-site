@@ -44,9 +44,21 @@ const archKicker = `${archCount} PROJECTS · ${archYearRange} · RICE UNIVERSITY
 
     <div class="container-wide pb-24 md:pb-32">
       {architecture.length === 0 ? (
-        <p class="font-mono text-sm" style="color: rgb(var(--text-mono));">
-          Architecture projects sync from the vault. Run <code>npm run sync</code>.
-        </p>
+        <div class="max-w-[64ch]" style="color: rgb(var(--text-secondary));">
+          <p class="mb-4" style="font-size: var(--step-1); line-height: 1.55;">
+            Architecture projects from Rice University (2021&ndash;2024) are
+            currently being migrated from the vault. The page will populate as
+            each studio brief is documented.
+          </p>
+          <p class="font-mono text-sm" style="color: rgb(var(--text-mono));">
+            Computational design pieces (parametric pavilions, generative
+            urbanism, robotic wire-bending) have been re-classified as <a
+              href="/work"
+              style="color: rgb(var(--accent-rgb)); text-decoration: underline; text-underline-offset: 4px;"
+              >Work</a
+            > &mdash; they live alongside the ML/AI projects, where they belong.
+          </p>
+        </div>
       ) : (
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-12" data-stagger>
           {architecture.map((project, i) => (

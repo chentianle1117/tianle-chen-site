@@ -7,11 +7,19 @@
  */
 import { getCollection } from "astro:content";
 
+// Round-9d: 8 architecture studio projects from Rice (2021-2024), migrated
+// from the Notion portfolio vault. Computational-design pieces (fiber
+// pavilion, membrane form-finding, generative urbanism, wire bending) live
+// in WORK now — they are computational design, not built architecture.
 export const ARCHITECTURE_SLUGS = new Set<string>([
-  "fiber-based-pavilion",
-  "membrane-form-finding",
-  "generative-urbanism",
-  "wire-bending",
+  "uranium-scape",
+  "salt-marsh-research-center",
+  "urban-streamline",
+  "urban-mining",
+  "spatial-bending",
+  "deform",
+  "interlude",
+  "sound-scape",
 ]);
 
 function slugFor(p: any): string {

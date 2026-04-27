@@ -46,13 +46,30 @@ export interface LayoutsBundle {
   thesis_axes_cache: Record<string, ThesisAxisPreset>;
 }
 
+/**
+ * Round-9: project_media.json is a separate, lightweight side-bundle written
+ * by scripts/build_project_media.mjs. It carries the project's hero_image and
+ * images[] paths so the hero HoverCard can render full-resolution previews
+ * (the atlas only carries one square slice per project).
+ *
+ * Optional: if the file is missing, we still render — the HoverCard falls
+ * back to the atlas slice.
+ */
+export interface ProjectMedia {
+  hero_image: string | null;
+  images: string[];
+}
+export type ProjectMediaBundle = Record<string, ProjectMedia>;
+
 export interface LayoutDataBundle {
   embeddings: EmbeddingsBundle;
   layouts: LayoutsBundle;
+  media: ProjectMediaBundle;
 }
 
 const EMBEDDINGS_URL = "/data/embeddings.json";
 const LAYOUTS_URL = "/data/layouts.json";
+const MEDIA_URL = "/data/project_media.json";
 
 export class LayoutDataError extends Error {
   constructor(
@@ -74,11 +91,14 @@ async function fetchJSON<T>(url: string): Promise<T> {
 
 export async function loadLayoutData(): Promise<LayoutDataBundle> {
   try {
-    const [embeddings, layouts] = await Promise.all([
+    // Round-9: media is optional. If the JSON is missing or malformed,
+    // we degrade gracefully — HoverCard falls back to the atlas slice.
+    const [embeddings, layouts, media] = await Promise.all([
       fetchJSON<EmbeddingsBundle>(EMBEDDINGS_URL),
       fetchJSON<LayoutsBundle>(LAYOUTS_URL),
+      fetchJSON<ProjectMediaBundle>(MEDIA_URL).catch(() => ({}) as ProjectMediaBundle),
     ]);
-    return { embeddings, layouts };
+    return { embeddings, layouts, media };
   } catch (err) {
     if (err instanceof LayoutDataError) throw err;
     throw new LayoutDataError("Failed to load layout data", err);

@@ -33,6 +33,7 @@ import {
 import {
   type LayoutDataBundle,
   type ProjectEmbedding,
+  type ProjectMedia,
   type ThesisAxisPreset,
 } from "../../lib/layoutData";
 import { projectThesisToLayout } from "../../lib/projectThesis";
@@ -45,6 +46,11 @@ interface SemanticPlaneProps {
   reserveRightForPanel?: boolean;
   /** When provided, the bottom reservation is wider so AxisInputs never collides. */
   reserveBottomForInputs?: boolean;
+  /** Round-9d: when true, the plot fills the parent container (no internal
+   * mx-auto centering, no max-width on the plot box). Used by the new
+   * sidebar layout where the canvas already lives inside a centered
+   * max-width column — internal centering would create double-padding. */
+  fillContainer?: boolean;
 }
 
 type Coord = [number, number, number];
@@ -57,7 +63,7 @@ const SWAP_DURATION_MS = 800;
 const HOVER_SCALE = 2.5;
 const SPRITE_PX_DESKTOP = 64;
 const SPRITE_PX_MOBILE = 48;
-const CAPTION_MAX_CHARS = 18;
+const CAPTION_MAX_CHARS = 36;
 
 // Color tokens — hero stays dark in both themes per contracts.
 const PLANE_BG = "#0b0d0f";
@@ -142,12 +148,15 @@ function jitterApartLayout(layout: Layout, minDist = 0.22): Layout {
     }
     if (!moved) break;
   }
+  // Round-9: tighter clamp keeps tiles fully inside the plot inset, with
+  // breathing room for hover scale (2.5×) so sprites never overlap the
+  // axis-tick labels at the rim. Was ±0.98, now ±0.86.
   const out: Layout = {};
   for (const s of slugs) {
     const p = arr[s];
     out[s] = [
-      Math.max(-0.98, Math.min(0.98, p.x)),
-      Math.max(-0.98, Math.min(0.98, p.y)),
+      Math.max(-0.86, Math.min(0.86, p.x)),
+      Math.max(-0.86, Math.min(0.86, p.y)),
       p.z,
     ];
   }
@@ -236,6 +245,7 @@ export default function SemanticPlane({
   data,
   reserveRightForPanel = false,
   reserveBottomForInputs = false,
+  fillContainer = false,
 }: SemanticPlaneProps) {
   const activeLayout = useNavStore((s) => s.activeLayout);
   const thesisAxes = useNavStore((s) => s.thesisAxes);
@@ -359,6 +369,21 @@ export default function SemanticPlane({
 
   const labels = resolveAxisLabels(activeLayout, thesisAxes, presets);
 
+  // Round-9l: dot outer-ring opacity encodes recency. Compute the
+  // semester_recency range once here so each Sprite can normalize.
+  const recencyBounds = (() => {
+    const vals = projects
+      .map((p) => (p as any).semester_recency)
+      .filter((v): v is number => typeof v === "number");
+    if (vals.length === 0) return { min: 2022, max: 2026 };
+    return { min: Math.min(...vals), max: Math.max(...vals) };
+  })();
+
+  // Round-9l: legend interactivity — a category highlighted in the side
+  // panel dims all non-matching dots so the user can spot "where are my
+  // ML projects?" at a glance.
+  const highlightedCategory = useNavStore((s) => s.highlightedCategory);
+
   // ──────────────────────────────────────────────────────────────────────
   // Round-8: dropped canvas wheel-zoom + drag-pan. They conflicted with page
   // scrolling (wheel inside scatter consumed the event) and weren't actually
@@ -377,14 +402,18 @@ export default function SemanticPlane({
       data-reserve-right={reserveRightForPanel ? "true" : "false"}
       data-reserve-bottom={reserveBottomForInputs ? "true" : "false"}
       style={{
-        background: PLANE_BG,
-        borderTop: `1px solid ${HAIRLINE}`,
-        borderBottom: `1px solid ${HAIRLINE}`,
+        background: fillContainer ? "transparent" : PLANE_BG,
+        borderTop: fillContainer ? "none" : `1px solid ${HAIRLINE}`,
+        borderBottom: fillContainer ? "none" : `1px solid ${HAIRLINE}`,
       }}
     >
       <div
-        className="relative mx-auto aspect-[4/5] w-full sm:aspect-[16/9]"
-        style={{ maxWidth: "1280px" }}
+        className={
+          fillContainer
+            ? "relative w-full"
+            : "relative mx-auto aspect-[4/5] w-full sm:aspect-[16/9]"
+        }
+        style={fillContainer ? { height: "100%" } : { maxWidth: "1280px" }}
       >
         <PlotFrame labels={labels} />
 
@@ -407,10 +436,13 @@ export default function SemanticPlane({
               <Sprite
                 key={p.slug}
                 project={p}
+                media={data.media[p.slug]}
                 x={currentRef.current[i].x}
                 y={currentRef.current[i].y}
                 isHovered={hoveredSlug === p.slug}
                 anyHovered={hoveredSlug !== null}
+                recencyBounds={recencyBounds}
+                highlightedCategory={highlightedCategory}
                 onHoverIn={() => setHovered(p.slug)}
                 onHoverOut={() => {
                   if (useNavStore.getState().hoveredSlug === p.slug) {
@@ -425,16 +457,15 @@ export default function SemanticPlane({
       </div>
 
       {/* Plane padding adapts at small widths.
-          Right reservation widens to 256px when ModePanel sits inside the
-          scatter container (>=1280px). Bottom reservation widens when
-          AxisInputs is overlaid (>=1280px) so sprites can never reach the
-          panel area. */}
+          Round-9d: pad reduced (96 -> 72 desktop) since the centered axis
+          legend was dropped and the Y pills now sit OUTSIDE the inset on
+          the left — the inset has more room for sprites. */}
       <style>{`
         .hero-semantic-plane { --hero-plane-pad: 56px; }
-        @media (min-width: 600px) { .hero-semantic-plane { --hero-plane-pad: 80px; } }
-        @media (min-width: 1024px) { .hero-semantic-plane { --hero-plane-pad: 96px; } }
+        @media (min-width: 600px) { .hero-semantic-plane { --hero-plane-pad: 64px; } }
+        @media (min-width: 1024px) { .hero-semantic-plane { --hero-plane-pad: 72px; } }
         @media (min-width: 1280px) {
-          .hero-semantic-plane[data-reserve-right="true"] { padding-right: 240px; }
+          .hero-semantic-plane[data-reserve-right="true"] { padding-right: 200px; }
           .hero-semantic-plane[data-reserve-bottom="true"] { padding-bottom: 88px; }
         }
         .hero-sprite { --hero-sprite-px: ${SPRITE_PX_MOBILE}px; }
@@ -476,18 +507,35 @@ function PlotFrame({ labels }: PlotFrameProps) {
     height: "calc(100% - 2 * var(--hero-plane-pad, 64px))",
   };
 
-  // Axis label style — bumped contrast + 0.12em letter-spacing (eval #23).
+  // Round-9: axis labels were too small to read at a glance. Bumped to 13px,
+  // wider tracking, and a stronger color. Corner labels now also have a
+  // subtle outlined "pill" so they read as labels, not lost text.
   const labelStyle: React.CSSProperties = {
     position: "absolute",
     fontFamily:
       "'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace",
-    fontSize: "11px",
-    letterSpacing: "0.12em",
+    fontSize: "13px",
+    fontWeight: 500,
+    letterSpacing: "0.14em",
     textTransform: "uppercase",
     color: LABEL_COLOR,
     whiteSpace: "nowrap",
+    display: "inline-flex",
+    alignItems: "center",
+    gap: 8,
   };
-
+  const cornerPill: React.CSSProperties = {
+    padding: "5px 10px",
+    border: `1px solid ${HAIRLINE}`,
+    borderRadius: 3,
+    background: "rgba(11, 13, 15, 0.78)",
+  };
+  const arrowStyle: React.CSSProperties = {
+    fontSize: "16px",
+    fontWeight: 600,
+    color: "#cf7f54",
+    lineHeight: 1,
+  };
   return (
     <div className="absolute inset-0" aria-hidden style={{ pointerEvents: "none" }}>
       {/* Plot rectangle hairline + visible grid via repeating gradients */}
@@ -534,46 +582,74 @@ function PlotFrame({ labels }: PlotFrameProps) {
         />
       ))}
 
-      {/* X-axis labels — placed below the plot rim. Both corners always rendered. */}
+      {/* Round-9d: minimalist corner pills, conventional chart-axis layout.
+          - X pills sit BELOW the plot rim at left/right corners.
+          - Y pills sit OUTSIDE the plot's left edge, vertically centered on
+            the top and bottom inset rims — the standard "Y axis lives on
+            the left" convention.
+          - No "X-AXIS" / "Y-AXIS" tag — direction is obvious from the
+            arrow + the pill's position. */}
+
+      {/* X axis pills — flush with plot bottom rim. The pill's TOP edge
+          aligns exactly with the rim, so it reads as part of the plot
+          chrome instead of floating below it. Round-9i. */}
       <div
         style={{
           ...labelStyle,
+          ...cornerPill,
           left: "var(--hero-plane-pad, 64px)",
-          top: "calc(100% - var(--hero-plane-pad, 64px) + 16px)",
+          top: "calc(100% - var(--hero-plane-pad, 64px))",
         }}
       >
-        ← {labels.xLeft}
+        <span style={arrowStyle}>←</span>
+        <span>{labels.xLeft}</span>
       </div>
       <div
         style={{
           ...labelStyle,
+          ...cornerPill,
           right: "var(--hero-plane-pad, 64px)",
-          top: "calc(100% - var(--hero-plane-pad, 64px) + 16px)",
+          top: "calc(100% - var(--hero-plane-pad, 64px))",
         }}
       >
-        {labels.xRight} →
+        <span>{labels.xRight}</span>
+        <span style={arrowStyle}>→</span>
       </div>
 
-      {/* Y-axis labels — top label above plot, bottom label below.
-          Both corners always rendered. */}
+      {/* Y axis pills — sit OUTSIDE the plot rim on the LEFT, vertically
+          aligned with the plot's top and bottom edges. Round-9h fix:
+          previously Y-bottom anchored at canvas-bottom (`bottom: 12`),
+          which put it in the SAME row as the X-left pill (which sits
+          just below the plot rim), causing visual overlap. Now Y-bottom
+          aligns with the plot bottom rim itself — the X row sits cleanly
+          BELOW it. Vertical translateY centers the pill on the rim. */}
+      {/* Y axis pills — sit INSIDE the plot's top-left and bottom-left
+          corners. Left edge flush with plot left rim, top/bottom edge
+          flush with plot top/bottom rim respectively. Round-9k: previous
+          pass had pills outside on the left, which overflowed the
+          canvas/sidebar division line, and centered them on the rim
+          instead of edge-flushed. */}
       <div
         style={{
           ...labelStyle,
+          ...cornerPill,
           left: "var(--hero-plane-pad, 64px)",
-          top: "calc(var(--hero-plane-pad, 64px) - 22px)",
+          top: "var(--hero-plane-pad, 64px)",
         }}
       >
-        ↑ {labels.yTop}
+        <span style={arrowStyle}>↑</span>
+        <span>{labels.yTop}</span>
       </div>
       <div
         style={{
           ...labelStyle,
+          ...cornerPill,
           left: "var(--hero-plane-pad, 64px)",
-          top: "calc(100% - var(--hero-plane-pad, 64px) + 36px)",
-          color: LABEL_COLOR,
+          bottom: "var(--hero-plane-pad, 64px)",
         }}
       >
-        ↓ {labels.yBottom}
+        <span style={arrowStyle}>↓</span>
+        <span>{labels.yBottom}</span>
       </div>
 
       {/* Subtitle (top-right) — only when not reserving for ModePanel. */}
@@ -601,39 +677,72 @@ function PlotFrame({ labels }: PlotFrameProps) {
 
 interface SpriteProps {
   project: ProjectEmbedding;
+  /** Optional full-resolution media (hero + images[]). When absent the
+   *  HoverCard falls back to the square atlas slice. */
+  media?: ProjectMedia;
   x: number;
   y: number;
   isHovered: boolean;
   anyHovered: boolean;
+  /** Min/max semester_recency across all projects, used to normalize the
+   *  outer-ring opacity per dot. */
+  recencyBounds: { min: number; max: number };
+  /** Active legend filter (from nav-store). When set, dots not in this
+   *  category fade to a low opacity so the user sees the cluster. */
+  highlightedCategory: string | null;
   onHoverIn: () => void;
   onHoverOut: () => void;
   reduced: boolean;
 }
 
-// Round-8: 7-tag category palette. Each tile gets a hairline border in its
-// primary category color so architecture vs ML vs research is visually
-// separable at a glance, without overwhelming the dark scatter.
+// Round-9l: 5-bucket palette, mapped 1:1 with CategoryKey.
 const CATEGORY_COLORS: Record<string, string> = {
-  thesis: "#cf7f54",          // oxide accent — flagship thesis surface
-  architecture: "#5fa0a6",    // teal — Rice / fabrication
   ml: "#9b6fc9",              // violet — ML/AI pipelines
-  research: "#7aa15c",        // sage green — research projects
-  interaction: "#d49b50",     // warm amber — interactive / projection
-  design: "#a3a8af",           // graphite — design systems
-  fabrication: "#8a8f96",     // dim graphite — physical fabrication
+  research: "#7aa15c",        // sage green — research / data viz
+  interaction: "#d49b50",     // warm amber — installation / MR / generative environments
+  design: "#cf7f54",          // oxide — game / craft / interactive design
+  architecture: "#5fa0a6",    // teal — built-form / parametric / urbanism
 };
 
-function colorForProject(p: ProjectEmbedding): string {
+// Round-9l: 5 clean buckets keyed by an explicit `primary_category` field
+// in each project's metadata (overrides applied via apply_project_overrides
+// .mjs). Dropped THESIS/FABRICATION — there's only one thesis, and FAB was
+// a catch-all that didn't carry meaning. Keyword matching kept ONLY as a
+// fallback when primary_category is missing.
+export type CategoryKey =
+  | "ml"
+  | "research"
+  | "interaction"
+  | "design"
+  | "architecture";
+
+export const CATEGORY_LABELS: Record<CategoryKey, string> = {
+  ml: "ML / AI",
+  research: "RESEARCH",
+  interaction: "INTERACTION",
+  design: "DESIGN",
+  architecture: "ARCHITECTURE",
+};
+
+export function categoryKeyForProject(p: ProjectEmbedding): CategoryKey {
+  const explicit = (p as ProjectEmbedding & { primary_category?: string })
+    .primary_category;
+  if (explicit && (explicit as CategoryKey)) {
+    const k = explicit as CategoryKey;
+    if (k in CATEGORY_LABELS) return k;
+  }
+  // Fallback keyword matcher (older entries / future projects without the
+  // override applied yet).
   const cats = (p.categories ?? []).map((s) => s.toLowerCase());
-  const isFlagship =
-    (p as ProjectEmbedding & { priority?: string }).priority === "flagship";
-  if (isFlagship || cats.some((c) => c.includes("thesis"))) return CATEGORY_COLORS.thesis;
-  if (cats.some((c) => c.includes("architect") || c.includes("urban") || c.includes("pavilion") || c.includes("fab"))) return CATEGORY_COLORS.architecture;
-  if (cats.some((c) => c.includes("ml") || c.includes("ai") || c.includes("learning") || c.includes("cad generation"))) return CATEGORY_COLORS.ml;
-  if (cats.some((c) => c.includes("interact") || c.includes("project") || c.includes("game"))) return CATEGORY_COLORS.interaction;
-  if (cats.some((c) => c.includes("research") || c.includes("data viz") || c.includes("visualiz"))) return CATEGORY_COLORS.research;
-  if (cats.some((c) => c.includes("design"))) return CATEGORY_COLORS.design;
-  return CATEGORY_COLORS.fabrication;
+  if (cats.some((c) => c.includes("ml") || c.includes("ai") || c.includes("learning") || c.includes("cad generation"))) return "ml";
+  if (cats.some((c) => c.includes("research") || c.includes("data viz") || c.includes("visualiz"))) return "research";
+  if (cats.some((c) => c.includes("interact") || c.includes("mixed reality") || c.includes("installation"))) return "interaction";
+  if (cats.some((c) => c.includes("game") || c.includes("design"))) return "design";
+  return "architecture";
+}
+
+function colorForProject(p: ProjectEmbedding): string {
+  return CATEGORY_COLORS[categoryKeyForProject(p)];
 }
 
 function shortCaption(title: string, max = CAPTION_MAX_CHARS): string {
@@ -644,20 +753,94 @@ function shortCaption(title: string, max = CAPTION_MAX_CHARS): string {
   return head.slice(0, max - 1).trimEnd() + "…";
 }
 
+/**
+ * Cover-mode atlas-slice background for a non-square container. Atlas slices
+ * are 1:1 (1024×1024 cells); the HoverCard image area is wider than tall.
+ * Naively setting `background-size: 400% 400%` (the per-axis fill trick used
+ * for the square scatter tile) STRETCHES the slice. This helper computes a
+ * uniform scale + center-crop so the slice covers the box without distortion
+ * — the same semantics as `<img object-fit: cover>` but for a CSS background.
+ */
+function atlasSliceCoverStyle(
+  uv: [number, number, number, number],
+  cardW: number,
+  cardH: number,
+): React.CSSProperties {
+  const [u, v, w, h] = uv;
+  // Uniform pixel size of the FULL atlas image when rendered. Pick the
+  // larger of (cardW / sliceWfrac) and (cardH / sliceHfrac) so the slice
+  // covers the box on both axes. Excess in the unconstrained axis is
+  // cropped by overflow:hidden on the parent.
+  const bgSize = Math.max(cardW / w, cardH / h);
+  const sliceRenderW = w * bgSize;
+  const sliceRenderH = h * bgSize;
+  // GL UV → CSS-top-left: the slice's top edge in the rendered atlas is
+  // at (1 - v - h) * bgSize px.
+  const sliceTopPx = (1 - v - h) * bgSize;
+  const sliceLeftPx = u * bgSize;
+  const bgPosX = -sliceLeftPx - (sliceRenderW - cardW) / 2;
+  const bgPosY = -sliceTopPx - (sliceRenderH - cardH) / 2;
+  return {
+    width: "100%",
+    height: "100%",
+    backgroundImage: "url(/data/atlas.png)",
+    backgroundRepeat: "no-repeat",
+    backgroundSize: `${bgSize}px ${bgSize}px`,
+    backgroundPosition: `${bgPosX}px ${bgPosY}px`,
+  };
+}
+
 function Sprite({
   project,
+  media,
   x,
   y,
   isHovered,
   anyHovered,
+  recencyBounds,
+  highlightedCategory,
   onHoverIn,
   onHoverOut,
   reduced,
 }: SpriteProps) {
-  // Map embedding [-1, 1] → CSS percent [0, 100].
+  // Round-9 (revised): no grace timer. Hover handlers live on the SHARED
+  // .hero-sprite-wrapper, which contains the button AND the HoverCard AND
+  // a transparent BRIDGE element that closes the gap between the scaled
+  // button and the visible card. The cursor never enters a no-pointer-events
+  // zone, so the wrapper's mouseleave never fires until the cursor exits
+  // all descendants — no grace timer needed.
+  const buttonRef = useRef<HTMLButtonElement | null>(null);
+  const cardRef = useRef<HTMLDivElement | null>(null);
+  void buttonRef;
+  void cardRef;
+
+  // Cycle the visible image SET (not just one) while hovered. The card
+  // shows up to 2 simultaneously — 3 was too cramped and produced "image
+  // of grid of images" artifacts because many heroes are themselves grids.
+  const images = media?.images ?? [];
+  const visibleCount = Math.min(images.length, 2);
+  const [imageIdx, setImageIdx] = useState(0);
+  useEffect(() => {
+    if (!isHovered || images.length <= visibleCount || reduced) {
+      setImageIdx(0);
+      return;
+    }
+    const id = window.setInterval(() => {
+      setImageIdx((n) => (n + 1) % images.length);
+    }, 2200);
+    return () => window.clearInterval(id);
+  }, [isHovered, images.length, visibleCount, reduced]);
+
+  // Map embedding [-1, 1] → CSS percent. Round-9k: inset by TILE_INSET_PCT
+  // on each side so tiles don't sit at the plot rim (where the new in-plot
+  // axis pills now live at the corners — see PlotFrame). 8% on each side
+  // gives the pills + their first letters clear room without compressing
+  // the layout perceptibly.
   // Y inverted: data y=+1 → top of plot.
-  const cssLeft = ((x + 1) / 2) * 100;
-  const cssTop = ((-y + 1) / 2) * 100;
+  const TILE_INSET_PCT = 8;
+  const SPAN = 100 - 2 * TILE_INSET_PCT; // 84
+  const cssLeft = TILE_INSET_PCT + ((x + 1) / 2) * SPAN;
+  const cssTop = TILE_INSET_PCT + ((-y + 1) / 2) * SPAN;
 
   // Atlas slice via background-position percentages.
   // Round-8b BUGFIX: the atlas is packed in GL bottom-left UV convention
@@ -704,21 +887,73 @@ function Sprite({
 
   // Round-8: dim non-hovered tiles when something is hovered, so the focused
   // project visually pops without canvas-level zoom.
-  const dimmed = anyHovered && !isHovered;
-  const opacity = dimmed ? 0.32 : 1;
+  // Round-9l: dim logic now combines hover-state and legend filter. Legend
+  // filter takes precedence — when the user pinned a category, only those
+  // dots stay bright regardless of hover.
+  const projectCategory = categoryKeyForProject(project);
+  const filteredOut =
+    highlightedCategory != null && highlightedCategory !== projectCategory;
+  const dimmed = filteredOut || (anyHovered && !isHovered);
+  const opacity = filteredOut ? 0.12 : dimmed ? 0.32 : 1;
   const categoryColor = colorForProject(project);
   const borderColor = isHovered ? SPRITE_BORDER_HOVER : categoryColor;
+
+  // Recency-encoded ring opacity. Newer = brighter; older = fainter.
+  // Floor at 0.25 so even the oldest project's ring is visible.
+  const projectRecency =
+    (project as ProjectEmbedding & { semester_recency?: number })
+      .semester_recency ?? recencyBounds.min;
+  const recencyT =
+    recencyBounds.max > recencyBounds.min
+      ? (projectRecency - recencyBounds.min) /
+        (recencyBounds.max - recencyBounds.min)
+      : 1;
+  const ringOpacity = 0.25 + 0.7 * recencyT;
   const captionText = shortCaption(project.title);
 
-  // Round-8b: HoverCard placement — flip to the LEFT of the tile when the
-  // tile is in the right half of the scatter so the card stays on-screen.
+  // HoverCard placement — flip to the LEFT of the tile when the tile is in
+  // the right half of the scatter so the card stays on-screen. Also flip
+  // the vertical anchor: tiles in the lower half anchor the card's BOTTOM
+  // at tile center (card extends UP), tiles in the upper half anchor the
+  // card's TOP (card extends DOWN). Prevents tall cards from clipping the
+  // top or bottom of the plot.
   const cardOnLeft = cssLeft > 55;
+  const cardAbove = cssTop > 55;
+  // Geometry: sprite is 64px (half = 32). Hover scales the sprite to 2.5×,
+  // so the scaled-button hit edge is at half * 2.5 = 80 from center. The
+  // visible HoverCard sits at center + 88 (8px breathing room past scaled
+  // button). A transparent BRIDGE element fills the 56px between the
+  // unscaled button hit-edge (+32) and the card visible edge (+88), so the
+  // wrapper's onMouseLeave never fires while the cursor traverses gap →
+  // no grace timer needed.
+  // Round-9k: sprite is now an 18px dot (was 64px atlas thumbnail), so the
+  // hit-edge math is much smaller. Card offset stays generous so the dot's
+  // hover halo doesn't bleed into the card's left edge.
+  const SPRITE_HALF = 9;
+  const CARD_OFFSET_PX = 56;
+  const BRIDGE_WIDTH = CARD_OFFSET_PX - SPRITE_HALF; // 47
+  // Reference height for the hover bridge + atlas-slice fallback. The card
+  // itself grows naturally now (height: auto), but the bridge and the
+  // imageless fallback still need a definite pixel value to lay out.
+  const CARD_HEIGHT_PX = 360;
+  // Round-9c: card is now WIDE + horizontal. Three image cells stacked on
+  // the side closest to the tile, text on the opposite side. Solves the
+  // "too vertical" feedback — gives the user three SEPARATE images at full
+  // visual fidelity (not subdivided from one block) plus more reading width
+  // for the description.
+  const CARD_WIDTH_PX = 560;
+  // Round-9e: drop fixed height — let card size to its content so the
+  // summary doesn't overflow into the Open-project button.
+  const CARD_MIN_HEIGHT_PX = 320;
+  const IMAGE_COL_WIDTH = 220;
   const summary = (project as ProjectEmbedding & { summary?: string | null })
     .summary;
 
   return (
     <div
       className="hero-sprite-wrapper absolute"
+      onMouseEnter={onHoverIn}
+      onMouseLeave={onHoverOut}
       style={{
         left: `${cssLeft}%`,
         top: `${cssTop}%`,
@@ -734,29 +969,30 @@ function Sprite({
       }}
     >
       <button
+        ref={buttonRef}
         type="button"
         onClick={onClick}
-        onMouseEnter={onHoverIn}
-        onMouseLeave={onHoverOut}
         onFocus={onHoverIn}
         onBlur={onHoverOut}
         aria-label={`Open ${project.title}`}
         className="hero-sprite"
         style={{
-          width: "var(--hero-sprite-px, 64px)",
-          height: "var(--hero-sprite-px, 64px)",
+          // Round-9l: 12px filled dot + outer ring whose alpha encodes
+          // recency. Ring is rendered via box-shadow spread so it doesn't
+          // affect the layout. Hover adds a bright halo on top of the
+          // recency ring.
+          width: 12,
+          height: 12,
           transform: `scale(${scale})`,
           transformOrigin: "center",
           transition,
-          backgroundImage: "url(/data/atlas.png)",
-          backgroundRepeat: "no-repeat",
-          backgroundSize: `${bgSizeX} ${bgSizeY}`,
-          backgroundPosition: `${bgPosX} ${bgPosY}`,
-          border: `${isHovered ? "2px" : "1.5px"} solid ${borderColor}`,
-          borderRadius: 4,
+          background: categoryColor,
+          border: "none",
+          borderRadius: "50%",
+          // Layered shadows: [recency ring][hover halo (when hovered)][soft glow].
           boxShadow: isHovered
-            ? `0 14px 40px -10px ${categoryColor}66, 0 0 0 1px ${categoryColor}44`
-            : "0 1px 2px rgba(0, 0, 0, 0.4)",
+            ? `0 0 0 2px rgba(255,255,255,${ringOpacity * 0.9}), 0 0 0 5px ${categoryColor}55, 0 0 22px -2px ${categoryColor}cc`
+            : `0 0 0 2px ${categoryColor}${Math.round(ringOpacity * 255).toString(16).padStart(2, "0")}, 0 0 8px -3px ${categoryColor}aa`,
           cursor: "pointer",
           padding: 0,
           outline: "none",
@@ -775,149 +1011,299 @@ function Sprite({
           letterSpacing: "0.04em",
           color: isHovered ? LABEL_COLOR : LABEL_DIM,
           textAlign: "center",
-          maxWidth: 120,
+          maxWidth: 150,
           lineHeight: 1.2,
-          whiteSpace: "nowrap",
+          // Allow up to 2 lines so titles read complete instead of being
+          // cut off after ~18 chars. Round-9i.
+          display: "-webkit-box",
+          WebkitLineClamp: 2,
+          WebkitBoxOrient: "vertical",
           overflow: "hidden",
-          textOverflow: "ellipsis",
+          wordBreak: "break-word",
           textShadow: "0 1px 3px rgba(11, 13, 15, 0.95)",
           transition: reduced ? "none" : "color 220ms ease, font-size 220ms ease",
-          padding: "1px 4px",
+          padding: "2px 5px",
           borderRadius: 2,
           background: isHovered ? "rgba(11, 13, 15, 0.7)" : "transparent",
         }}
       >
         {captionText}
       </div>
+      {/* Round-9l: category text below dot dropped — the dot color +
+          sidebar legend already encode it, so the redundancy was costing
+          screen space without adding info. Year-only line stays as a
+          chronological cue (the outer ring also encodes recency, but
+          the explicit number disambiguates 2024/2025 etc.). */}
+      {(project as ProjectEmbedding & { year?: number }).year && (
+        <div
+          style={{
+            fontFamily:
+              "'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace",
+            fontSize: 9,
+            letterSpacing: "0.10em",
+            color: "#a8acb1",
+            opacity: anyHovered ? (isHovered ? 1 : 0.45) : 0.7,
+            transition: reduced ? "none" : "opacity 220ms ease",
+            textShadow: "0 1px 3px rgba(11, 13, 15, 0.95)",
+          }}
+        >
+          {(project as ProjectEmbedding & { year?: number }).year}
+        </div>
+      )}
 
-      {/* Round-8b HoverCard — replaces the cursor-following Tooltip and the
-          description strip below the scatter. Sits attached to the right (or
-          left if near the right edge) of the hovered tile. Pointer-events on
-          so the user can click the "Open project" link inside it. */}
+      {/* Hover BRIDGE — transparent hit area between scaled button and card.
+          Closes the gap so the wrapper's onMouseLeave doesn't fire while
+          the cursor traverses from tile → card. No grace timer needed.
+          Bridge always centered on the wrapper vertically so it covers the
+          gap regardless of card flip direction. */}
       {isHovered && (
         <div
-          onClick={(e) => e.stopPropagation()}
+          aria-hidden
           style={{
             position: "absolute",
             top: "50%",
             transform: "translateY(-50%)",
             ...(cardOnLeft
-              ? { right: "calc(50% + 88px)" }
-              : { left: "calc(50% + 88px)" }),
-            width: 280,
-            maxHeight: 360,
-            overflowY: "auto",
-            padding: "14px 16px 16px",
-            background: "rgba(11, 13, 15, 0.94)",
-            backdropFilter: "blur(12px)",
-            WebkitBackdropFilter: "blur(12px)",
+              ? { right: `calc(50% + ${SPRITE_HALF}px)`, width: BRIDGE_WIDTH }
+              : { left: `calc(50% + ${SPRITE_HALF}px)`, width: BRIDGE_WIDTH }),
+            height: CARD_HEIGHT_PX + 80,
+            pointerEvents: "auto",
+            zIndex: 1095,
+          }}
+        />
+      )}
+
+      {/* HoverCard — image-led with a real <img> (no atlas-stretching), a
+          small carousel of project images while hovered, and NO scrollbar:
+          the card grows to fit content. */}
+      {isHovered && (
+        <div
+          ref={cardRef}
+          onClick={(e) => e.stopPropagation()}
+          style={{
+            position: "absolute",
+            ...(cardAbove
+              ? { bottom: "50%", transform: "translateY(28px)" }
+              : { top: "50%", transform: "translateY(-28px)" }),
+            ...(cardOnLeft
+              ? { right: `calc(50% + ${CARD_OFFSET_PX}px)` }
+              : { left: `calc(50% + ${CARD_OFFSET_PX}px)` }),
+            width: CARD_WIDTH_PX,
+            minHeight: CARD_MIN_HEIGHT_PX,
+            padding: 0,
+            background: "rgba(11, 13, 15, 0.96)",
+            backdropFilter: "blur(14px)",
+            WebkitBackdropFilter: "blur(14px)",
             border: `1px solid ${categoryColor}66`,
             borderRadius: 6,
-            boxShadow: `0 12px 32px -8px rgba(0, 0, 0, 0.7), 0 0 0 1px ${categoryColor}33`,
+            boxShadow: `0 18px 44px -10px rgba(0, 0, 0, 0.75), 0 0 0 1px ${categoryColor}33`,
             zIndex: 1100,
             pointerEvents: "auto",
             color: "#e6e7e9",
             fontFamily:
               "'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
-            // Animate in
             animation: reduced ? "none" : "hoverCardIn 180ms cubic-bezier(0.22, 1, 0.36, 1) both",
+            // Horizontal layout: images on the side CLOSEST to the tile,
+            // text on the side away. row-reverse when the card is on the
+            // LEFT (tile is to the right) so images face the tile.
+            display: "flex",
+            flexDirection: cardOnLeft ? "row-reverse" : "row",
+            overflow: "hidden",
           }}
         >
+          {/* IMAGE COLUMN — flex column with cells stretched via flex: 1.
+              The previous CSS-grid + height:100% layout was fragile inside
+              the parent flex card and ended up rendering as 0 height,
+              hiding the images even though the image data was present. */}
           <div
             style={{
-              fontFamily:
-                "'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace",
-              fontSize: 9,
-              letterSpacing: "0.14em",
-              textTransform: "uppercase",
-              color: categoryColor,
-              marginBottom: 8,
+              flex: `0 0 ${IMAGE_COL_WIDTH}px`,
+              minHeight: CARD_MIN_HEIGHT_PX,
+              alignSelf: "stretch",
+              display: "flex",
+              flexDirection: "column",
+              gap: 2,
+              background: "#0b0d0f",
+              borderRight: cardOnLeft ? "none" : `1px solid ${categoryColor}55`,
+              borderLeft: cardOnLeft ? `1px solid ${categoryColor}55` : "none",
             }}
           >
-            {project.year ?? ""}
-            {project.categories && project.categories[0] ? (
-              <> · {project.categories[0]}</>
-            ) : null}
+            {images.length === 0 ? (
+              <div
+                style={{
+                  flex: 1,
+                  ...atlasSliceCoverStyle(
+                    project.thumbnail_uv,
+                    IMAGE_COL_WIDTH,
+                    CARD_HEIGHT_PX,
+                  ),
+                }}
+              />
+            ) : (
+              Array.from({ length: Math.max(visibleCount, 1) }).map((_, slotIdx) => {
+                const targetIdx = (imageIdx + slotIdx) % images.length;
+                const src = images[targetIdx];
+                return (
+                  <div
+                    key={slotIdx}
+                    style={{
+                      flex: 1,
+                      minHeight: 0,
+                      position: "relative",
+                      overflow: "hidden",
+                      background: "#0b0d0f",
+                    }}
+                  >
+                    <img
+                      key={src}
+                      src={src}
+                      alt=""
+                      loading="lazy"
+                      decoding="async"
+                      style={{
+                        position: "absolute",
+                        inset: 0,
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "cover",
+                        animation: reduced
+                          ? "none"
+                          : "hoverCardImgIn 320ms ease both",
+                      }}
+                    />
+                  </div>
+                );
+              })
+            )}
           </div>
-          <h4
+
+          {/* TEXT COLUMN — wide enough that the summary doesn't break into
+              5 lines anymore. */}
+          <div
             style={{
-              fontFamily: "'Domaine Display', 'Source Serif Pro', Georgia, serif",
-              fontSize: 17,
-              fontWeight: 380,
-              lineHeight: 1.2,
-              letterSpacing: "-0.005em",
-              margin: 0,
-              marginBottom: 10,
-              color: "#f0f1f2",
+              flex: 1,
+              padding: "16px 18px 16px 18px",
+              display: "flex",
+              flexDirection: "column",
+              minWidth: 0,
             }}
           >
-            {project.title}
-          </h4>
-          {summary && (
-            <p
-              style={{
-                fontSize: 12,
-                lineHeight: 1.5,
-                color: "#b2b6bb",
-                margin: 0,
-                marginBottom: 12,
-              }}
-            >
-              {summary}
-            </p>
-          )}
-          {project.categories && project.categories.length > 1 && (
             <div
               style={{
-                display: "flex",
-                flexWrap: "wrap",
-                gap: 4,
-                marginBottom: 12,
+                fontFamily:
+                  "'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace",
+                fontSize: 9,
+                letterSpacing: "0.14em",
+                textTransform: "uppercase",
+                color: categoryColor,
+                marginBottom: 8,
               }}
             >
-              {project.categories.slice(0, 4).map((c) => (
-                <span
-                  key={c}
-                  style={{
-                    fontFamily:
-                      "'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace",
-                    fontSize: 9,
-                    letterSpacing: "0.10em",
-                    textTransform: "uppercase",
-                    padding: "2px 6px",
-                    border: `1px solid ${SPRITE_BORDER}`,
-                    borderRadius: 3,
-                    color: "#b2b6bb",
-                  }}
-                >
-                  {c}
-                </span>
-              ))}
+              {project.year ?? ""}
+              {project.categories && project.categories[0] ? (
+                <> · {project.categories[0]}</>
+              ) : null}
+              {images.length > 0 ? <> · {images.length} IMG</> : null}
             </div>
-          )}
-          <a
-            href={`/work/${project.slug}`}
-            style={{
-              fontFamily:
-                "'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace",
-              fontSize: 10,
-              letterSpacing: "0.14em",
-              textTransform: "uppercase",
-              color: categoryColor,
-              textDecoration: "none",
-              display: "inline-flex",
-              alignItems: "center",
-              gap: 6,
-            }}
-          >
-            Open project →
-          </a>
+            <h4
+              style={{
+                fontFamily: "'Domaine Display', 'Source Serif Pro', Georgia, serif",
+                fontSize: 22,
+                fontWeight: 380,
+                lineHeight: 1.18,
+                letterSpacing: "-0.005em",
+                margin: 0,
+                marginBottom: 12,
+                color: "#f0f1f2",
+              }}
+            >
+              {project.title}
+            </h4>
+            {summary && (
+              <p
+                style={{
+                  fontSize: 13,
+                  lineHeight: 1.55,
+                  color: "#b2b6bb",
+                  margin: 0,
+                  marginBottom: 14,
+                  flex: 1,
+                  minHeight: 0,
+                }}
+              >
+                {summary}
+              </p>
+            )}
+            {project.categories && project.categories.length > 1 && (
+              <div
+                style={{
+                  display: "flex",
+                  flexWrap: "wrap",
+                  gap: 4,
+                  marginBottom: 14,
+                }}
+              >
+                {project.categories.slice(0, 4).map((c) => (
+                  <span
+                    key={c}
+                    style={{
+                      fontFamily:
+                        "'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace",
+                      fontSize: 9,
+                      letterSpacing: "0.10em",
+                      textTransform: "uppercase",
+                      padding: "2px 6px",
+                      border: `1px solid ${SPRITE_BORDER}`,
+                      borderRadius: 3,
+                      color: "#b2b6bb",
+                    }}
+                  >
+                    {c}
+                  </span>
+                ))}
+              </div>
+            )}
+            <a
+              href={`/work/${project.slug}`}
+              style={{
+                fontFamily:
+                  "'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace",
+                fontSize: 11,
+                letterSpacing: "0.14em",
+                textTransform: "uppercase",
+                color: categoryColor,
+                textDecoration: "none",
+                display: "inline-flex",
+                alignItems: "center",
+                gap: 6,
+                padding: "6px 10px",
+                border: `1px solid ${categoryColor}66`,
+                borderRadius: 3,
+                alignSelf: "flex-start",
+                transition: "background 180ms ease, border-color 180ms ease",
+              }}
+              onMouseEnter={(e) => {
+                (e.currentTarget as HTMLAnchorElement).style.background = `${categoryColor}1a`;
+                (e.currentTarget as HTMLAnchorElement).style.borderColor = `${categoryColor}aa`;
+              }}
+              onMouseLeave={(e) => {
+                (e.currentTarget as HTMLAnchorElement).style.background = "transparent";
+                (e.currentTarget as HTMLAnchorElement).style.borderColor = `${categoryColor}66`;
+              }}
+            >
+              Open project →
+            </a>
+          </div>
         </div>
       )}
       <style>{`
         @keyframes hoverCardIn {
-          from { opacity: 0; transform: translateY(-50%) translateX(${cardOnLeft ? "8px" : "-8px"}); }
-          to   { opacity: 1; transform: translateY(-50%) translateX(0); }
+          from { opacity: 0; }
+          to   { opacity: 1; }
+        }
+        @keyframes hoverCardImgIn {
+          from { opacity: 0; }
+          to   { opacity: 1; }
         }
       `}</style>
     </div>

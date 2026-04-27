@@ -42,7 +42,19 @@ export default function AxisInputs({
 
   if (activeLayout !== "thesis") return null;
 
-  const presetKeys = Object.keys(presets);
+  // Round-9c: trim to 4 STRONG axis presets so the dropdowns aren't a long
+  // list of mostly-redundant options. The user's feedback: "I think there
+  // are too many options for both X and Y. There should be, like, oh no,
+  // system versus artifacts. This is a good one." We keep the four that
+  // best discriminate the work; the rest are filtered out (still in
+  // layouts.json so they can be re-enabled later without rebuilding).
+  const ALLOWED_PRESETS = new Set([
+    "x_ml_design",
+    "y_research_play",
+    "x_artifact_system",
+    "z_student_production",
+  ]);
+  const presetKeys = Object.keys(presets).filter((k) => ALLOWED_PRESETS.has(k));
   if (presetKeys.length === 0) return null;
 
   // 2D shows X + Y. 3D shows X + Y + Z.
@@ -75,6 +87,9 @@ export default function AxisInputs({
           borderColor: "rgba(94, 99, 107, 0.30)",
           // z-index 30: sits above the sprite layer (z=10) — fixes eval #2.
           zIndex: 30,
+          // Opt back into pointer events; the parent wrapper in HeroNavigator
+          // is pointer-events: none so it doesn't block scatter clicks.
+          pointerEvents: "auto",
         }
       : {};
 
@@ -85,7 +100,7 @@ export default function AxisInputs({
   // ModePanel stacking below it.
   const containerClass =
     variant === "overlay"
-      ? `absolute right-4 top-4 w-[240px] rounded-md border p-3 font-mono ${className ?? ""}`
+      ? `absolute right-4 top-4 w-[200px] rounded-md border p-3 font-mono ${className ?? ""}`
       : `relative w-full font-mono ${className ?? ""}`;
 
   return (

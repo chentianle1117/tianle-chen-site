@@ -9,17 +9,23 @@ import { existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 
 function publicFileExists(webPath: string | null | undefined): boolean {
-  if (!webPath || !webPath.startsWith("/")) return false;
+  if (!webPath) return false;
+  if (/^https?:\/\//i.test(webPath)) return true;
+  if (!webPath.startsWith("/")) return false;
   const url = new URL(`../../public${webPath}`, import.meta.url);
   return existsSync(fileURLToPath(url));
 }
 
-const thesis: any = await getEntry("projects", "semantic-canvas");
-if (!thesis) {
-  throw new Error("Thesis project (semantic-canvas) not found in projects collection");
-}
-
-const data: any = thesis.data;
+// Round-9h: don't crash the page when the dev-server's content store is in
+// a bad state (Astro's .astro/data-store.json sometimes gets corrupted on
+// Windows when antivirus interferes with the atomic rename writes during
+// hot reload). Render with safe defaults instead — the curated hero/UI/
+// output candidate lists below are static, so the page still works without
+// the content collection entry.
+const thesis: any = await getEntry("projects", "semantic-canvas").catch(
+  () => null,
+);
+const data: any = thesis?.data ?? {};
 const advisor = data.advisor && data.advisor !== "TBD (thesis advisor)" ? data.advisor : "Prof. Daniel Cardoso Llach";
 const githubUrl = data.github_url as string | undefined;
 const liveUrl = data.live_url as string | undefined;

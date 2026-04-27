@@ -1,0 +1,31 @@
+{
+  "_doc": "Per-project metadata overrides — applied to embeddings.json by apply_project_overrides.mjs. primary_category drives the dot color/legend; semester drives the year-ring recency for the dot's outer stroke.",
+
+  "3t3d-vit-2d-to-3d":              { "primary_category": "ml",            "semester": "fall"   },
+  "l43d-cad-mllm":                  { "primary_category": "ml",            "semester": "fall"   },
+  "semantic-canvas":                { "primary_category": "ml",            "semester": "fall"   },
+  "spectral-facades":               { "primary_category": "ml",            "semester": "fall"   },
+
+  "s25-team-26-paper-viz":          { "primary_category": "research",      "semester": "spring" },
+  "skill-bridge-datavis":           { "primary_category": "research",      "semester": "fall"   },
+  "synthetic-texture-deterioration":{ "primary_category": "research",      "semester": "fall"   },
+
+  "design-the-ambience":            { "primary_category": "interaction",   "semester": "fall"   },
+  "wire-bending":                   { "primary_category": "interaction",   "semester": "fall"   },
+
+  "aurora-citadel-gen-game":        { "primary_category": "design",        "semester": "spring" },
+  "a-game-of-deterioration":        { "primary_category": "design",        "semester": "fall"   },
+
+  "fiber-based-pavilion":           { "primary_category": "architecture",  "semester": "spring" },
+  "membrane-form-finding":          { "primary_category": "architecture",  "semester": "fall"   },
+  "generative-urbanism":            { "primary_category": "architecture",  "semester": "spring" },
+
+  "uranium-scape":                  { "primary_category": "architecture",  "semester": "spring" },
+  "salt-marsh-research-center":     { "primary_category": "architecture",  "semester": "fall"   },
+  "urban-streamline":               { "primary_category": "architecture",  "semester": "spring" },
+  "urban-mining":                   { "primary_category": "architecture",  "semester": "fall"   },
+  "spatial-bending":                { "primary_category": "architecture",  "semester": "spring" },
+  "deform":                         { "primary_category": "architecture",  "semester": "fall"   },
+  "interlude":                      { "primary_category": "architecture",  "semester": "fall"   },
+  "sound-scape":                    { "primary_category": "architecture",  "semester": "spring" }
+}

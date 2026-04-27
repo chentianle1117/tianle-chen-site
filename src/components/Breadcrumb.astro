@@ -8,8 +8,8 @@ const { category, title } = Astro.props;
 
 <nav
   aria-label="Breadcrumb"
-  class="sticky z-30 border-b border-graphite-700/40 backdrop-blur-sm"
-  style="top: 65px; background-color: color-mix(in srgb, var(--bg) 80%, transparent);"
+  class="breadcrumb-sticky sticky z-30 border-b border-graphite-700/40 backdrop-blur-sm"
+  style="background-color: color-mix(in srgb, var(--bg) 80%, transparent);"
 >
   <div class="container-page py-2">
     <ol class="flex items-center gap-2 font-mono uppercase tracking-[0.08em]" style="font-size: var(--step--1);">
@@ -41,3 +41,13 @@ const { category, title } = Astro.props;
     </ol>
   </div>
 </nav>
+
+<style>
+  /* Round-9c: nav header is 52px mobile / 56px desktop. Previous top:65px
+     left a visible gap between the sticky header and sticky breadcrumb
+     when the user scrolled. Match exactly so the two bars touch. */
+  .breadcrumb-sticky { top: 52px; }
+  @media (min-width: 768px) {
+    .breadcrumb-sticky { top: 56px; }
+  }
+</style>

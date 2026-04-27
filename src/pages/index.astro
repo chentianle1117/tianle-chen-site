@@ -10,18 +10,20 @@ import PlaceholderHero from "../components/PlaceholderHero.astro";
 import { getEntry } from "astro:content";
 import { existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
-import { getProjectCounts, ARCHITECTURE_SLUGS } from "../lib/projectCounts";
+import { getProjectCounts } from "../lib/projectCounts";
 import { projectCategoryBuckets } from "../lib/categories";
 
 function publicFileExists(webPath) {
-  if (!webPath || !webPath.startsWith("/")) return false;
+  if (!webPath) return false;
+  if (/^https?:\/\//i.test(webPath)) return true;
+  if (!webPath.startsWith("/")) return false;
   const url = new URL(`../../public${webPath}`, import.meta.url);
   return existsSync(fileURLToPath(url));
 }
 
 // Round-5 Fix 4: route counts through projectCounts.ts (single source of truth).
 const { all: allProjects, work: workCollection, counts: pc, years: pcYears } = await getProjectCounts();
-const architectureSlugs = ARCHITECTURE_SLUGS;
+void allProjects;
 
 // Sort: flagships first, then by year desc
 const work = workCollection
@@ -46,6 +48,10 @@ type GroupedRow = {
   year: number | null;
   summary: string | null;
   buckets: string[];
+  /** Round-9: thumbnail for the Selected Work list — gives the reader an
+   * immediate preview, matching the scatter above. Falls back to first
+   * images[] entry, then null (rendered as a category-tinted placeholder). */
+  thumb: string | null;
 };
 
 const grouped: Record<string, GroupedRow[]> = {};
@@ -54,12 +60,22 @@ for (const p of work) {
   const buckets = projectCategoryBuckets(d.categories ?? []);
   const primary = buckets[0] ?? "OTHER";
   const slug = (p as any).slug ?? d.slug ?? p.id?.replace(/\.md$/, "");
+  // Pick a thumbnail. Prefer hero_image, then gif_hero, then first images[]
+  // entry. Verify the file exists in /public so we don't ship broken <img>.
+  const candidates: Array<string | null | undefined> = [
+    d.hero_image,
+    d.gif_hero,
+    Array.isArray(d.images) && d.images.length ? d.images[0] : null,
+  ];
+  const thumb =
+    candidates.find((c) => typeof c === "string" && c.length > 0 && publicFileExists(c)) ?? null;
   const row: GroupedRow = {
     slug,
     title: d.title,
     year: d.year ?? null,
     summary: typeof d.summary === "string" ? d.summary : null,
     buckets,
+    thumb,
   };
   if (!grouped[primary]) grouped[primary] = [];
   grouped[primary].push(row);
@@ -82,11 +98,19 @@ const groupedRows = CATEGORY_ORDER.filter((c) => grouped[c] && grouped[c].length
 const thesis: any = await getEntry("projects", "semantic-canvas");
 const thesisData = thesis?.data ?? {};
 const thesisLive = thesisData.live_url;
-// Use a clean output image as the thesis poster (avoid UI screenshot for the homepage poster)
+// Round-9h: home thesis poster shows the actual Semantic Canvas UI — the
+// previous output-shoe still didn't communicate "this is a tool", which is
+// the whole point of the thesis. Falls back through composites then the
+// frontmatter hero.
+const thesisPosterCandidates = [
+  "/assets/semantic-canvas/semantic-canvas-ui.png",
+  "/assets/semantic-canvas/p3-stage2-session2-composite.png",
+  "/assets/semantic-canvas/p3-stage2-session1-composite.png",
+  "/assets/semantic-canvas/lineage-view-ui.png",
+  thesisData.hero_image,
+].filter(Boolean) as string[];
 const thesisPoster =
-  publicFileExists("/assets/semantic-canvas/output-nano-generated-shoe.png")
-    ? "/assets/semantic-canvas/output-nano-generated-shoe.png"
-    : thesisData.hero_image;
+  thesisPosterCandidates.find((p) => publicFileExists(p)) ?? thesisData.hero_image;
 // Pull first ~350 chars from the thesis body content for a clean intro
 const thesisBody: string = (thesis?.body ?? "") as string;
 const thesisIntroRaw = thesisBody
@@ -101,10 +125,9 @@ const thesisIntroRaw = thesisBody
   .trim();
 const thesisIntro = thesisIntroRaw.slice(0, 380);
 
-// Architecture rail
-const archProjects = ["fiber-based-pavilion", "membrane-form-finding", "generative-urbanism", "wire-bending"]
-  .map((s) => allProjects.find((p) => ((p as any).slug ?? p.data.slug) === s))
-  .filter(Boolean);
+// Round-9c: dropped the home-page architecture rail (its 4 hardcoded slugs
+// have moved to Work). Section now shows a placeholder pointing to the
+// (forthcoming) Rice studio archive.
 ---
 
 <BaseLayout
@@ -127,7 +150,7 @@ const archProjects = ["fiber-based-pavilion", "membrane-form-finding", "generati
           class="mt-3"
           style="font-family: theme(fontFamily.display); font-size: var(--step-3); font-weight: 380; line-height: 1.15; letter-spacing: -0.005em; color: rgb(var(--text-primary));"
         >
-          Tianle Chen <span style="opacity: 0.45; letter-spacing: 0;">陳天樂</span> — Gen AI / ML Engineer.
+          Tianle Chen <span style="opacity: 0.45; letter-spacing: 0;">陳天樂</span> — Gen AI / ML Engineer & Computational Designer.
         </h1>
         <p
           style="font-family: theme(fontFamily.sans); font-size: var(--step-0); font-weight: 350; line-height: 1.55; color: rgb(var(--text-secondary)); max-width: 56ch; margin-top: 0.85rem;"
@@ -141,9 +164,9 @@ const archProjects = ["fiber-based-pavilion", "membrane-form-finding", "generati
       <aside class="home-intro-aside" aria-hidden="true">
         <p class="mono-label" style="color: rgb(var(--text-mono)); margin-bottom: 0.75rem;">↓ EXPLORE</p>
         <ul style="list-style: none; padding: 0; margin: 0; font-family: theme(fontFamily.mono); font-size: var(--step--1); line-height: 1.85; color: rgb(var(--text-secondary)); letter-spacing: 0.06em;">
-          <li><span style="color: rgb(var(--text-mono));">01 ·</span> THESIS · UMAP · PCA · METADATA</li>
-          <li><span style="color: rgb(var(--text-mono));">02 ·</span> X / Y AXIS · TYPE TO REMAP</li>
-          <li><span style="color: rgb(var(--text-mono));">03 ·</span> CLICK TILE · OPEN PROJECT</li>
+          <li><span style="color: rgb(var(--text-mono));">01 ·</span> SEMANTIC · UMAP · PCA · TIMELINE</li>
+          <li><span style="color: rgb(var(--text-mono));">02 ·</span> PICK X / Y AXIS · 4 PRESETS</li>
+          <li><span style="color: rgb(var(--text-mono));">03 ·</span> HOVER TILE · OPEN PROJECT</li>
           <li><span style="color: rgb(var(--text-mono));">04 ·</span> {String(pc.work).padStart(2, "0")} WORK · {String(pc.arch).padStart(2, "0")} ARCH · {workYearRange}</li>
         </ul>
         <p style="font-family: theme(fontFamily.mono); font-size: var(--step--1); margin-top: 1.25rem; color: rgb(var(--text-mono)); letter-spacing: 0.10em;">
@@ -207,6 +230,15 @@ const archProjects = ["fiber-based-pavilion", "membrane-form-finding", "generati
             {rows.map((row) => (
               <li>
                 <a href={`/work/${row.slug}`} class="compact-row" data-reveal>
+                  <span class="compact-row-thumb" aria-hidden="true">
+                    {row.thumb ? (
+                      <img src={row.thumb} alt="" loading="lazy" decoding="async" />
+                    ) : (
+                      <span class="compact-row-thumb-fallback">
+                        {(row.title?.[0] ?? "·").toUpperCase()}
+                      </span>
+                    )}
+                  </span>
                   <span class="compact-row-title">{row.title}</span>
                   <span class="compact-row-summary">{row.summary ?? ""}</span>
                   <span class="compact-row-year mono-label">{row.year ?? ""}</span>
@@ -248,10 +280,10 @@ const archProjects = ["fiber-based-pavilion", "membrane-form-finding", "generati
       }
       .compact-row {
         display: grid;
-        grid-template-columns: minmax(180px, 22ch) 1fr 5ch 2ch;
-        align-items: baseline;
+        grid-template-columns: 88px minmax(180px, 22ch) 1fr 5ch 2ch;
+        align-items: center;
         gap: 1rem;
-        padding: 0.65rem 0;
+        padding: 0.75rem 0;
         text-decoration: none;
         color: rgb(var(--text-primary));
         border-bottom: 1px solid rgb(var(--surface-border) / 0.4);
@@ -266,6 +298,39 @@ const archProjects = ["fiber-based-pavilion", "membrane-form-finding", "generati
       .compact-row:hover .compact-row-arrow {
         color: rgb(var(--accent-rgb));
         transform: translateX(2px);
+      }
+      .compact-row:hover .compact-row-thumb img {
+        transform: scale(1.04);
+      }
+      .compact-row-thumb {
+        position: relative;
+        display: block;
+        width: 88px;
+        height: 64px;
+        overflow: hidden;
+        border-radius: 4px;
+        background: rgb(var(--surface-1-rgb));
+        border: 1px solid rgb(var(--surface-border));
+        flex-shrink: 0;
+      }
+      .compact-row-thumb img {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
+      }
+      .compact-row-thumb-fallback {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-family: theme(fontFamily.mono);
+        font-size: 18px;
+        color: rgb(var(--text-muted));
+        letter-spacing: 0.04em;
       }
       .compact-row-title {
         font-family: theme(fontFamily.display);
@@ -294,11 +359,13 @@ const archProjects = ["fiber-based-pavilion", "membrane-form-finding", "generati
       }
       @media (max-width: 720px) {
         .compact-row {
-          grid-template-columns: 1fr 5ch 2ch;
+          grid-template-columns: 64px 1fr 5ch 2ch;
           row-gap: 0.25rem;
+          column-gap: 0.75rem;
         }
-        .compact-row-title { grid-column: 1 / 4; }
-        .compact-row-summary { grid-column: 1 / 4; }
+        .compact-row-thumb { width: 64px; height: 48px; grid-row: 1 / 3; }
+        .compact-row-title { grid-column: 2 / 5; }
+        .compact-row-summary { grid-column: 2 / 5; }
       }
     </style>
     </div>
@@ -367,75 +434,29 @@ const archProjects = ["fiber-based-pavilion", "membrane-form-finding", "generati
     </div>
   </section>
 
-  {/* ============ ARCHITECTURE ============ */}
+  {/* ============ ARCHITECTURE — placeholder until Rice archive is migrated ============ */}
   <section class="zone-raised">
     <SectionBreak number="03" label="ARCHITECTURE" />
 
-    <div class="container-display pb-4" aria-labelledby="architecture-rail">
-    <div class="flex items-baseline justify-between flex-wrap gap-4 mb-8 md:mb-10">
+    <div class="container-reading pb-12 md:pb-16" aria-labelledby="architecture-placeholder">
+      <p class="mono-label mb-4">RICE UNIVERSITY · 2021—2024 · IN MIGRATION</p>
       <h2
-        id="architecture-rail"
-        style="font-family: theme(fontFamily.display); font-size: var(--step-4); font-weight: 380; line-height: 1.05; letter-spacing: -0.01em; color: rgb(var(--text-primary));"
+        id="architecture-placeholder"
+        class="mb-5"
+        style="font-family: theme(fontFamily.display); font-size: var(--step-3); font-weight: 380; line-height: 1.1; letter-spacing: -0.01em; color: rgb(var(--text-primary));"
       >
-        Architecture
+        Studio archive coming soon.
       </h2>
-      <p class="mono-label">RICE UNIVERSITY · 2021—2024</p>
-    </div>
-
-    {/* Horizontal rail of 4 architecture cards */}
-    <div
-      class="flex gap-4 md:gap-6 overflow-x-auto pb-4 -mx-6 px-6 md:-mx-12 md:px-12 snap-x snap-mandatory"
-      data-stagger
-      style="scrollbar-width: thin;"
-    >
-      {archProjects.map((p) => {
-        const d: any = p.data;
-        const heroSrc = d.gif_hero || d.hero_image || (d.images && d.images[0]) || null;
-        const heroOk = heroSrc && publicFileExists(heroSrc);
-        const slug = (p as any).slug ?? d.slug;
-        return (
-          <a
-            href={`/work/${slug}`}
-            class="group flex-shrink-0 snap-start block"
-            style="width: 320px;"
-            data-reveal
-          >
-            <div
-              class="relative aspect-[3/4] overflow-hidden"
-              style="border: 1px solid rgb(var(--surface-border)); border-radius: 6px; background: rgb(var(--surface-1-rgb));"
-            >
-              {heroOk ? (
-                <img
-                  src={heroSrc}
-                  alt={d.title}
-                  loading="lazy"
-                  decoding="async"
-                  class="absolute inset-0 w-full h-full object-cover transition-all duration-420 ease-out-soft group-hover:scale-[1.02] group-hover:brightness-[1.05]"
-                />
-              ) : (
-                <PlaceholderHero slug={slug} title={d.title} categories={d.categories ?? []} size="hero" />
-              )}
-            </div>
-            <div class="mt-3">
-              <p class="mono-label mb-1">{d.year} · {d.role || (d.categories && d.categories[0]) || ""}</p>
-              <h3
-                style="font-family: theme(fontFamily.display); font-size: var(--step-2); font-weight: 380; line-height: 1.2; letter-spacing: -0.01em; color: rgb(var(--text-primary));"
-                class="group-hover:text-[rgb(var(--accent-rgb))] transition-colors duration-280"
-              >
-                {d.title}
-              </h3>
-            </div>
-          </a>
-        );
-      })}
-    </div>
-
-    <div class="mt-8 md:mt-12 flex justify-end">
-      <a href="/architecture" class="btn-ghost mono-label" style="display: inline-flex; align-items: center; gap: 0.5rem;">
-        View all architecture
-        <span aria-hidden="true">→</span>
-      </a>
-    </div>
+      <p class="mb-4" style="color: rgb(var(--text-secondary)); line-height: 1.65;">
+        Architectural studio work from the BArch — typological studies,
+        site-specific buildings, drawings, models — is being migrated from
+        the Notion vault and will live here once curated.
+      </p>
+      <p style="color: rgb(var(--text-secondary)); line-height: 1.65;">
+        The four computational-design pieces previously listed here (parametric
+        pavilion, membrane form-finding, generative urbanism, robotic wire
+        bending) have moved to <a href="/work" style="color: rgb(var(--accent-rgb)); text-decoration: underline; text-underline-offset: 4px;">Work</a> &mdash; they are computational design, not built architecture.
+      </p>
     </div>
   </section>
 

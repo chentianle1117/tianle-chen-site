@@ -74,7 +74,9 @@ year: 2025
 
 > Team 21's unofficial reproduction + extension of *CAD-MLLM* (arXiv:2411.04954). A unified CAD generation system that accepts text, point cloud, image, or any combination as input — and outputs editable CAD models. David's contribution: the **autocompletion extension** — generating full CAD sequences from partial ones via intelligent truncation.
 
-![poster](/assets/l43d-cad-mllm/poster.pdf)
+![Project poster — CAD-MLLM unified multimodal CAD generation, page 1](/assets/l43d-cad-mllm/poster-page-1.png)
+
+[Download full poster (PDF) ↗](/assets/l43d-cad-mllm/poster.pdf)
 
 ## Hook
 One LLM, three modalities (**text**, **point cloud**, **image**), any combination. Fine-tuned Vicuna + LoRA on a 10% DeepCAD subset amplified 3.37× through our **Intelligent Truncation algorithm** — which generates valid partial CAD sequences by recursively tracing entity dependencies. Result: 197,546 training examples covering all modality combinations, ~60% STEP-file generation success, >70% CAD-sequence accuracy on successful outputs.

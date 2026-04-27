@@ -11,7 +11,10 @@ interface Props {
 }
 
 function publicFileExists(webPath: string | null | undefined): boolean {
-  if (!webPath || !webPath.startsWith("/")) return false;
+  if (!webPath) return false;
+  // External URLs (Notion CDN, etc.) — pass through; the browser fetches them.
+  if (/^https?:\/\//i.test(webPath)) return true;
+  if (!webPath.startsWith("/")) return false;
   const url = new URL(`../../public${webPath}`, import.meta.url);
   return existsSync(fileURLToPath(url));
 }

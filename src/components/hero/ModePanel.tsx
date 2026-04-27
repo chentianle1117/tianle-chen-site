@@ -36,10 +36,12 @@ interface ModePanelProps {
 }
 
 const LAYOUTS: Array<{ key: LayoutKey; label: string }> = [
-  { key: "thesis", label: "THESIS" },
+  // Round-9c: "Thesis" was confusing — the layout has nothing to do with
+  // the thesis project per se; it's the SEMANTIC custom-axes view. Renamed.
+  { key: "thesis", label: "SEMANTIC" },
   { key: "umap", label: "UMAP" },
   { key: "pca", label: "PCA" },
-  { key: "metadata", label: "METADATA" },
+  { key: "metadata", label: "TIMELINE" },
 ];
 
 const VIEWS: Array<{ key: ViewMode; label: string }> = [
@@ -163,76 +165,31 @@ export default function ModePanel({
   if (variant === "compact") {
     return (
       <div
-        className={`flex flex-wrap items-center gap-x-4 gap-y-2 font-mono ${className ?? ""}`}
+        className={`flex flex-wrap items-center gap-x-3 gap-y-2 font-mono ${className ?? ""}`}
         style={{ zIndex: 30 }}
       >
-        {/* VIEW */}
-        <div className="flex items-center gap-1.5">
-          <span className="text-[10px] uppercase tracking-[0.14em] text-graphite-300">
-            View
-          </span>
-          {VIEWS.map(({ key, label }) => {
-            const active = key === viewMode;
-            const disabled = key === "3d" && threeDDisabled;
-            const isThreeD = key === "3d";
-            return (
-              <div key={key} className="relative">
-                <button
-                  type="button"
-                  onClick={() => {
-                    if (!disabled) setViewMode(key);
-                  }}
-                  disabled={disabled}
-                  aria-pressed={active}
-                  onMouseEnter={isThreeD ? on3DEnter : undefined}
-                  onMouseLeave={isThreeD ? on3DLeave : undefined}
-                  onFocus={isThreeD ? on3DEnter : undefined}
-                  onBlur={isThreeD ? on3DLeave : undefined}
-                  className={`rounded border px-2 py-1 text-[11px] tracking-[0.06em] transition-colors duration-180 ${
-                    active
-                      ? "border-oxide-500 text-oxide-500"
-                      : disabled
-                        ? "border-graphite-800 text-graphite-700 cursor-not-allowed"
-                        : "border-graphite-700 text-graphite-200 hover:border-oxide-500 hover:text-graphite-100"
-                  }`}
-                >
-                  {label}
-                </button>
-                {isThreeD ? (
-                  <ThreeDHoverTip
-                    active={show3DTip}
-                    message={threeDTipMessage}
-                  />
-                ) : null}
-              </div>
-            );
-          })}
-        </div>
-
-        {/* LAYOUT */}
-        <div className="flex items-center gap-1.5">
-          <span className="text-[10px] uppercase tracking-[0.14em] text-graphite-300">
-            Layout
-          </span>
-          {LAYOUTS.map(({ key, label }) => {
-            const active = key === activeLayout;
-            return (
-              <button
-                key={key}
-                type="button"
-                onClick={() => setLayout(key)}
-                aria-pressed={active}
-                className={`rounded border px-2 py-1 text-[11px] uppercase tracking-[0.10em] transition-colors duration-180 ${
-                  active
-                    ? "border-oxide-500 text-oxide-500"
-                    : "border-graphite-700 text-graphite-200 hover:border-oxide-500 hover:text-graphite-100"
-                }`}
-              >
-                {label}
-              </button>
-            );
-          })}
-        </div>
+        {/* LAYOUT — VIEW (2D/3D) was dropped; 3D no longer exists. */}
+        <span className="text-[10px] uppercase tracking-[0.14em] text-graphite-300">
+          Layout
+        </span>
+        {LAYOUTS.map(({ key, label }) => {
+          const active = key === activeLayout;
+          return (
+            <button
+              key={key}
+              type="button"
+              onClick={() => setLayout(key)}
+              aria-pressed={active}
+              className={`rounded border px-2 py-1 text-[11px] uppercase tracking-[0.10em] transition-colors duration-180 ${
+                active
+                  ? "border-oxide-500 text-oxide-500"
+                  : "border-graphite-700 text-graphite-200 hover:border-oxide-500 hover:text-graphite-100"
+              }`}
+            >
+              {label}
+            </button>
+          );
+        })}
       </div>
     );
   }
@@ -243,15 +200,15 @@ export default function ModePanel({
   // descriptions of what each layout means and how things are encoded.
   // ──────────────────────────────────────────────────────────────────────
   const layoutDescriptions: Record<LayoutKey, string> = {
-    thesis: "Custom semantic axes — type any concept and projects re-sort.",
+    thesis: "Custom semantic axes — pick any two dimensions, watch projects re-sort.",
     umap: "Auto-clustered by content similarity (non-linear neighbors).",
-    pca: "Top 2 principal components of the embedding (linear).",
-    metadata: "Year × category — no ML, just published facts.",
+    pca: "First two principal components of the embedding (linear).",
+    metadata: "Year × domain (architecture vs ML/AI) — no ML, just facts.",
   };
 
   return (
     <div
-      className={`absolute right-4 w-[240px] rounded-md border p-3 font-mono ${className ?? ""}`}
+      className={`absolute right-4 w-[200px] rounded-md border p-3 font-mono ${className ?? ""}`}
       style={{
         // Round-8b: anchored below AxisInputs (which sits at top: 16 with
         // ~190px height + 12px gap). 220 keeps a clean visual stack.
@@ -261,6 +218,8 @@ export default function ModePanel({
         background: "rgba(11,13,15,0.82)",
         borderColor: "rgba(94, 99, 107, 0.30)",
         zIndex: 30,
+        // Opt back into pointer events; parent wrapper is pointer-events: none.
+        pointerEvents: "auto",
       }}
     >
       <header className="mb-2 text-[11px] uppercase tracking-[0.14em] text-graphite-300">

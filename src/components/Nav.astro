@@ -3,12 +3,13 @@ import ThemeToggle from "./ThemeToggle.astro";
 
 const currentPath = Astro.url.pathname;
 
-// Order per Phase 2 contract: Work, Architecture, Thesis, Dashboard, About
+// Round-9c: dropped Dashboard from primary nav (still accessible via /dashboard
+// directly or from About); renamed "Work" → "Projects" since the page now
+// holds both ML/AI work and computational design pieces, not just one type.
 const links = [
-  { href: "/work", label: "Work" },
+  { href: "/work", label: "Projects" },
   { href: "/architecture", label: "Architecture" },
   { href: "/thesis", label: "Thesis" },
-  { href: "/dashboard", label: "Dashboard" },
   { href: "/about", label: "About" },
 ];
 

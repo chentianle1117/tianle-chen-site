@@ -13,7 +13,9 @@ import { existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 
 function publicFileExists(webPath: string | null | undefined): boolean {
-  if (!webPath || !webPath.startsWith("/")) return false;
+  if (!webPath) return false;
+  if (/^https?:\/\//i.test(webPath)) return true;
+  if (!webPath.startsWith("/")) return false;
   const url = new URL(`../../../public${webPath}`, import.meta.url);
   return existsSync(fileURLToPath(url));
 }
@@ -206,7 +208,7 @@ const primaryCategory = (data.categories && data.categories[0]) || undefined;
   {lead && (
     <section class="zone-raised">
       <SectionBreak number="01" label="OVERVIEW" />
-      <div class="container-reading pb-12 md:pb-16">
+      <div class="container-meta pb-12 md:pb-16">
         {kicker && (
           <p class="mono-label mb-5">{kicker}</p>
         )}
@@ -219,18 +221,95 @@ const primaryCategory = (data.categories && data.categories[0]) || undefined;
     </section>
   )}
 
-  {/* ============ BODY MDX — zone-base, marginalia rails at >=1024 (Round-3 Item 5) ============ */}
+  {/* ============ BODY MDX — zone-base, single beefy left rail (Round-9f).
+      The right rail was dropped; all metadata + links live in the left
+      rail now so the reader has one consolidated sidebar instead of
+      eyes flicking between two thin columns. ============ */}
   <section class="zone-base">
     <SectionBreak number="02" label="WRITEUP" />
     <div class="layout-with-rails py-12 md:py-16">
     <aside class="rail-left hidden lg:block">
-      <div class="sticky" style="top: 6rem;">
-        {data.year && <div class="mono-label mb-2">{data.year}</div>}
-        {data.role && <div class="mono-label mb-2">{String(data.role).replace(/-/g, " ")}</div>}
-        {data.course_code && <div class="mono-label mb-2">{data.course_code}</div>}
-        {data.team && (
-          <div class="mono-label">
-            TEAM · {Array.isArray(data.team) ? data.team.length : 1}
+      <div class="sticky space-y-5" style="top: 6rem;">
+        {/* — Project metadata — */}
+        <div class="space-y-1.5">
+          {data.year && (
+            <div>
+              <div class="mono-label" style="color: rgb(var(--text-mono)); opacity: 0.6;">YEAR</div>
+              <div class="mono-label">{data.year}</div>
+            </div>
+          )}
+          {data.role && (
+            <div>
+              <div class="mono-label" style="color: rgb(var(--text-mono)); opacity: 0.6;">ROLE</div>
+              <div class="mono-label">{String(data.role).replace(/-/g, " ")}</div>
+            </div>
+          )}
+          {(data.course_code || data.course) && (
+            <div>
+              <div class="mono-label" style="color: rgb(var(--text-mono)); opacity: 0.6;">CONTEXT</div>
+              <div class="mono-label" style="white-space: normal; line-height: 1.4;">
+                {data.course_code ?? data.course}
+              </div>
+            </div>
+          )}
+          {data.institution && (
+            <div>
+              <div class="mono-label" style="color: rgb(var(--text-mono)); opacity: 0.6;">INSTITUTION</div>
+              <div class="mono-label">{data.institution}</div>
+            </div>
+          )}
+          {(Array.isArray(data.tools) && data.tools.length > 0) && (
+            <div>
+              <div class="mono-label" style="color: rgb(var(--text-mono)); opacity: 0.6;">TOOLS</div>
+              <div class="mono-label" style="white-space: normal; line-height: 1.5;">
+                {data.tools.join(" · ")}
+              </div>
+            </div>
+          )}
+          {(Array.isArray(data.collaborators) && data.collaborators.length > 0) && (
+            <div>
+              <div class="mono-label" style="color: rgb(var(--text-mono)); opacity: 0.6;">COLLAB</div>
+              <div class="mono-label" style="white-space: normal; line-height: 1.5;">
+                {data.collaborators.join(" · ")}
+              </div>
+            </div>
+          )}
+          {data.team_size && !data.collaborators && (
+            <div>
+              <div class="mono-label" style="color: rgb(var(--text-mono)); opacity: 0.6;">TEAM</div>
+              <div class="mono-label">{data.team_size}</div>
+            </div>
+          )}
+        </div>
+
+        {/* — Links — */}
+        {(data.live_url || data.github_url || data.notion_url || data.publication_url) && (
+          <div class="space-y-1.5 pt-3" style="border-top: 1px solid rgb(var(--surface-border));">
+            <div class="mono-label" style="color: rgb(var(--text-mono)); opacity: 0.6;">LINKS</div>
+            {data.live_url && (
+              <a href={data.live_url} target="_blank" rel="noopener noreferrer"
+                 class="block mono-label hover:text-[rgb(var(--accent-rgb))] transition-colors">
+                LIVE ↗
+              </a>
+            )}
+            {data.github_url && (
+              <a href={data.github_url} target="_blank" rel="noopener noreferrer"
+                 class="block mono-label hover:text-[rgb(var(--accent-rgb))] transition-colors">
+                CODE ↗
+              </a>
+            )}
+            {data.publication_url && (
+              <a href={data.publication_url} target="_blank" rel="noopener noreferrer"
+                 class="block mono-label hover:text-[rgb(var(--accent-rgb))] transition-colors">
+                PAPER ↗
+              </a>
+            )}
+            {data.notion_url && (
+              <a href={data.notion_url} target="_blank" rel="noopener noreferrer"
+                 class="block mono-label hover:text-[rgb(var(--accent-rgb))] transition-colors">
+                NOTION ↗
+              </a>
+            )}
           </div>
         )}
       </div>
@@ -238,38 +317,6 @@ const primaryCategory = (data.categories && data.categories[0]) || undefined;
     <article class="prose-custom">
       <Content />
     </article>
-    <aside class="rail-right hidden lg:block">
-      <div class="sticky" style="top: 6rem;">
-        {data.live_url && (
-          <a
-            href={data.live_url}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="block mono-label hover:text-[rgb(var(--accent-rgb))] transition-colors"
-          >
-            LIVE ↗
-          </a>
-        )}
-        {data.github_url && (
-          <a
-            href={data.github_url}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="block mono-label hover:text-[rgb(var(--accent-rgb))] transition-colors mt-2"
-          >
-            CODE ↗
-          </a>
-        )}
-        {data.year && (
-          <a
-            href="#cite"
-            class="block mono-label hover:text-[rgb(var(--accent-rgb))] transition-colors mt-2"
-          >
-            CITE
-          </a>
-        )}
-      </div>
-    </aside>
     </div>
   </section>
 

@@ -17,11 +17,16 @@ export interface NavStore {
   /** Indices into the thesis_axes_cache keys, one per X/Y/Z axis. */
   thesisAxes: [string, string, string];
   hoveredSlug: string | null;
+  /** Round-9l: legend filter. Null = no filter; a CategoryKey string
+   *  means dim every dot whose primary_category doesn't match. Set
+   *  imperatively from the SidePanel legend (hover OR click). */
+  highlightedCategory: string | null;
 
   setViewMode: (mode: ViewMode) => void;
   setLayout: (layout: LayoutKey) => void;
   setThesisAxis: (axis: 0 | 1 | 2, presetKey: string) => void;
   setHovered: (slug: string | null) => void;
+  setHighlightedCategory: (key: string | null) => void;
 }
 
 // Preset keys must match those produced by scripts/precompute_layouts.py and stored
@@ -50,6 +55,7 @@ export const useNavStore = create<NavStore>((set) => ({
   activeLayout: "thesis",
   thesisAxes: DEFAULT_THESIS_AXES,
   hoveredSlug: null,
+  highlightedCategory: null,
 
   setViewMode: (mode) => {
     if (typeof window !== "undefined") {
@@ -73,4 +79,5 @@ export const useNavStore = create<NavStore>((set) => ({
       return { thesisAxes: next };
     }),
   setHovered: (slug) => set({ hoveredSlug: slug }),
+  setHighlightedCategory: (key) => set({ highlightedCategory: key }),
 }));

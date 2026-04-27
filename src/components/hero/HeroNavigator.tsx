@@ -33,10 +33,9 @@ import {
   type LayoutDataBundle,
 } from "../../lib/layoutData";
 
-import ModePanel from "./ModePanel";
-import AxisInputs from "./AxisInputs";
 import SemanticPlane from "./SemanticPlane";
 import MobileStrip from "./MobileStrip";
+import SidePanel from "./SidePanel";
 
 // Round-8b: dropped 3D entirely. The toggle was confusing (most visitors
 // never used it), and the latent-space scatter is best read at 2D + hover-
@@ -103,9 +102,14 @@ export default function HeroNavigator() {
   }, []);
 
   // Round-8b: 3D toggle removed. Always 2D.
+  // Round-9c: dropped the desktop-only "overlay" controls path. The right-
+  // side floating panels felt detached from the canvas. We now use a single
+  // compact bar BELOW the scatter at every desktop size — axis selectors
+  // and layout picker live RIGHT THERE alongside the chart, easier to
+  // associate with the X/Y of the plot.
   const isMobile = viewportWidth < MOBILE_BREAKPOINT;
-  const isCompact = viewportWidth < DESKTOP_BREAKPOINT;
   void reduced; // kept available for future features
+  void DESKTOP_BREAKPOINT;
 
   if (state.status === "loading") {
     return (
@@ -152,59 +156,72 @@ export default function HeroNavigator() {
     );
   }
 
-  // Tablet/small-desktop: scatter + bottom-band controls (no overlays
-  // occluding sprites).
-  if (isCompact) {
-    return (
-      <div className="hero-container relative w-full">
-        <SemanticPlane data={data} />
-        <div
-          className="border-t"
-          style={{
-            background: "rgba(11, 13, 15, 0.92)",
-            borderColor: "rgba(94, 99, 107, 0.30)",
-          }}
-        >
-          <div className="mx-auto flex max-w-[1280px] flex-col gap-3 px-4 py-3">
-            <ModePanel
-              presets={data.layouts.thesis_axes_cache}
-              canToggle3D={false}
-              variant="compact"
-            />
-            <AxisInputs
-              presets={data.layouts.thesis_axes_cache}
-              variant="band"
-            />
-          </div>
+  // Desktop ≥1024: SIDEBAR + CANVAS, centered together inside a max-width
+  // 1480 container so the dark band has consistent left/right margins on
+  // wide screens and the plot stays aligned with the sidebar (no drifting
+  // empty space on the right).
+  return (
+    <div
+      className="hero-container relative w-full"
+      style={{
+        background: "#0b0d0f",
+        borderTop: "1px solid rgba(94, 99, 107, 0.40)",
+        borderBottom: "1px solid rgba(94, 99, 107, 0.40)",
+      }}
+    >
+      <div className="hero-split">
+        <div className="hero-side">
+          <SidePanel
+            presets={data.layouts.thesis_axes_cache}
+            count={data.embeddings.projects.length}
+            projects={data.embeddings.projects}
+          />
+        </div>
+        <div className="hero-canvas">
+          <SemanticPlane data={data} fillContainer />
         </div>
       </div>
-    );
-  }
-
-  // Desktop path: scatter + right-side stacked panels (axes on top, layouts
-  // below). No more bottom-overlay AxisInputs (was overlapping with the page
-  // content below). No 3D toggle. No cursor-following Tooltip.
-  return (
-    <div className="hero-container relative w-full">
-      <SemanticPlane
-        data={data}
-        reserveRightForPanel
-        reserveBottomForInputs={false}
-      />
-      {/* Right-side stacked panels.
-          - AxisInputs (top) — foregrounded; this is the most important
-            interaction. Anchored top-right.
-          - ModePanel (below) — layout picker (Thesis / UMAP / PCA / Metadata)
-            with descriptions of what each layout means.
-          z-index 30 over sprite layer (z=10). */}
-      <AxisInputs
-        presets={data.layouts.thesis_axes_cache}
-        variant="overlay"
-      />
-      <ModePanel
-        presets={data.layouts.thesis_axes_cache}
-        canToggle3D={false}
-      />
+      <style>{`
+        /* Round-9g: full-bleed split — sidebar and canvas fill the dark
+           band edge-to-edge, no inner padding. Eliminates the awkward
+           gutters that made the canvas look offset and the sidebar
+           floating. The canvas drives height via aspect-ratio, capped at
+           a sensible max so it doesn't sprawl on tall monitors. */
+        .hero-split {
+          display: flex;
+          flex-direction: column;
+          width: 100%;
+        }
+        .hero-side  { width: 100%; }
+        .hero-canvas { width: 100%; display: flex; }
+        .hero-canvas > * { width: 100%; }
+        @media (min-width: 1024px) {
+          .hero-split {
+            flex-direction: row;
+            align-items: stretch;
+          }
+          .hero-side {
+            flex: 0 0 420px;
+            max-width: 420px;
+            border-right: 1px solid rgba(94, 99, 107, 0.30);
+          }
+          .hero-canvas {
+            flex: 1 1 auto;
+            min-width: 0;
+            /* Tall canvas: scales with viewport so it dominates the page,
+               clamped between 720px (short laptops) and 1080px (big
+               monitors). 80vh feels like "almost full screen" without
+               forcing the user to scroll a fixed amount past the band. */
+            height: clamp(720px, 82vh, 1080px);
+          }
+        }
+        @media (min-width: 1440px) {
+          .hero-side {
+            flex-basis: 480px;
+            max-width: 480px;
+          }
+        }
+      `}</style>
     </div>
   );
 }
