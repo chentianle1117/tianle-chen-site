@@ -34,6 +34,11 @@ npm-debug.log*
 # Sync tool scratch
 .sync_tmp/
 
+# Research scratch (Notion crawls, asset manifests, eval rounds, design notes).
+# Contains Notion pre-signed S3 URLs that GitHub's secret scanner flags as AWS
+# temp creds. Keep locally for reference; never commit.
+.research/
+
 # Build pipeline cache
 scripts/__pycache__/
 verification/
