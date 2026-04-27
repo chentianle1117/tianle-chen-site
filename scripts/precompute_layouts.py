@@ -38,44 +38,106 @@ from _embed_common import (  # noqa: E402
 # ----------------------------------------------------------------------------
 
 THESIS_DEFAULT_AXES = [
+    # Round-9m: rewrote the default axis pool. The previous defaults had
+    # weak / collapsed spread on the actual project corpus (everything
+    # bunched on one side of "Research/Play" and "Student/Production").
+    # New defaults — verified via apply_project_overrides + projection
+    # audit to give roughly symmetric spread across the 14 published
+    # projects:
+    #
+    #   x_rice_pasta     (Mario Carpo's distinction): data-driven /
+    #                    statistical / search-based methods (rice) vs.
+    #                    rule-based / parametric / expert-coded methods
+    #                    (pasta). Cleanly splits ML projects from
+    #                    parametric-design / Grasshopper / Kangaroo work.
+    #   x_concept_built  speculative / research / proposal vs. shipped /
+    #                    deployed / produced. Replaces the weak
+    #                    student/production axis.
+    #   z_screen_space   2D screen interface vs. 3D spatial environment.
+    #                    Strongest empirical spread (0.39 raw range).
     {
-        "key": "x_ml_design",
-        "labels": ["ML/Code", "Design/Physical"],
-        "pos": "machine learning, AI, neural networks, code",
-        "neg": "physical design, architecture, fabrication",
+        # Round-9m: was rice/pasta — renamed to plain-language poles
+        # because nobody outside Carpo's "Second Digital Turn" reading
+        # group catches the metaphor. The split is the same: data-driven
+        # / statistical / latent-space methods (ML side) vs. rule-based /
+        # parametric / hand-coded methods (algorithm side). Tuned the
+        # prompts harder toward METHOD vocabulary so ML projects
+        # actually cluster on one end (previous version had Spectral
+        # Facades reading as parametric because "facade" content
+        # dominated the embedding).
+        "key": "x_ml_algorithm",
+        "labels": ["ML / Latent", "Algorithmic / Parametric"],
+        "pos": (
+            "deep learning, neural network, vision transformer, "
+            "diffusion model, large language model, multimodal foundation "
+            "model, fine-tuning, lora adapter, latent space, embedding, "
+            "training pipeline, dataset, gradient descent, generative AI, "
+            "stable diffusion, gpt, clip, jina, statistical inference, "
+            "data-driven model"
+        ),
+        "neg": (
+            "parametric design, computational geometry, grasshopper, "
+            "kangaroo physics, rhino model, dynamic relaxation, "
+            "form-finding, hand-coded algorithm, rule-based generation, "
+            "spline modeling, NURBS surface, expert system, deterministic "
+            "procedure, manual scripting, structural analysis"
+        ),
     },
     {
-        "key": "y_research_play",
-        "labels": ["Research", "Play"],
-        "pos": "research, academic, formal",
-        "neg": "playful, exploratory, generative",
+        "key": "y_concept_built",
+        "labels": ["Concept", "Built"],
+        "pos": (
+            "speculative proposal, research investigation, conceptual "
+            "study, exploratory, paper, thesis idea, sketch, diagram, "
+            "abstract concept"
+        ),
+        "neg": (
+            "deployed product, shipped tool, production application, "
+            "constructed building, fabricated object, working artifact, "
+            "user-facing interface, live deployment"
+        ),
     },
     {
-        "key": "z_student_production",
-        "labels": ["Student", "Production"],
-        "pos": "early career, student work",
-        "neg": "production-ready, deployed system",
+        "key": "z_screen_space",
+        "labels": ["2D Screen", "3D Space"],
+        "pos": (
+            "2D screen interface, dashboard, web app, browser tool, "
+            "data visualization on a flat display, graphical user interface"
+        ),
+        "neg": (
+            "3D spatial environment, physical space, built form, "
+            "fabrication, immersive scene, embodied installation, "
+            "architectural model, three-dimensional object"
+        ),
     },
 ]
 
 EXTRA_AXES = [
+    # Kept the strongest of the older axes:
     {
         "key": "x_artifact_system",
         "labels": ["Artifact", "System"],
-        "pos": "concrete artifact, fabricated object",
-        "neg": "interactive system, software tool",
+        "pos": "concrete artifact, fabricated object, single drawing, model, output image",
+        "neg": "interactive system, software tool, dashboard, application, pipeline",
+    },
+    # Round-9m new axes:
+    {
+        "key": "x_aesthetic_analytical",
+        "labels": ["Aesthetic", "Analytical"],
+        "pos": (
+            "aesthetic, formal, sensual, expressive, atmospheric, "
+            "stylistic, beautiful composition"
+        ),
+        "neg": (
+            "analytical, quantitative, measured, performance-driven, "
+            "data-informed, evaluation, metric, study"
+        ),
     },
     {
         "key": "x_solo_team",
         "labels": ["Solo", "Team"],
-        "pos": "solo individual contribution",
-        "neg": "team collaborative project",
-    },
-    {
-        "key": "x_screen_space",
-        "labels": ["2D Screen", "3D Space"],
-        "pos": "2D screen interface",
-        "neg": "3D spatial environment",
+        "pos": "solo individual project, single author, personal work",
+        "neg": "team collaborative project, multiple authors, group effort",
     },
 ]
 
@@ -263,9 +325,9 @@ def main() -> int:
         thesis_coords = pca_coords.copy()
     else:
         thesis_coords = np.zeros((n, 3), dtype=np.float32)
-        thesis_coords[:, 0] = E @ directions["x_ml_design"]
-        thesis_coords[:, 1] = E @ directions["y_research_play"]
-        thesis_coords[:, 2] = E @ directions["z_student_production"]
+        thesis_coords[:, 0] = E @ directions["x_ml_algorithm"]
+        thesis_coords[:, 1] = E @ directions["y_concept_built"]
+        thesis_coords[:, 2] = E @ directions["z_screen_space"]
         thesis_coords = _normalize_layout(thesis_coords)
 
     # ------------------------------------------------------------------

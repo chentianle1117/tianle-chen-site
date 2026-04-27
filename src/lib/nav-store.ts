@@ -30,11 +30,11 @@ export interface NavStore {
 }
 
 // Preset keys must match those produced by scripts/precompute_layouts.py and stored
-// in public/data/layouts.json under thesis_axes_cache.
+// in public/data/layouts.json under thesis_axes_cache. Round-9m: refreshed defaults.
 export const DEFAULT_THESIS_AXES: [string, string, string] = [
-  "x_ml_design",
-  "y_research_play",
-  "z_student_production",
+  "x_ml_algorithm",    // X — ML/Latent ↔ Algorithmic/Parametric (Carpo's frame)
+  "z_screen_space",    // Y — 2D screen ↔ 3D space (strong spread)
+  "x_artifact_system", // Z (3D mode only) — artifact ↔ system
 ];
 
 const VIEW_STORAGE_KEY = "hero.view";

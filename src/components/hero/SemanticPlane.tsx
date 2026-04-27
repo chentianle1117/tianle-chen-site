@@ -284,13 +284,16 @@ export default function SemanticPlane({
 
   const reduced = useMemo(prefersReducedMotion, []);
 
-  // Initialize positions from thesis_default once.
+  // Initialize positions from thesis_default once. Apply collision-resolve
+  // here so the FIRST render is already non-overlapping. Subsequent
+  // updates resolve on the target, not on every frame (Round-9n).
   if (currentRef.current.length === 0) {
     const initial = data.layouts.thesis_default;
-    currentRef.current = projects.map((p) => {
+    const raw = projects.map((p) => {
       const c = initial[p.slug] ?? [0, 0, 0];
       return { x: c[0], y: c[1] };
     });
+    currentRef.current = resolveCollisions(raw);
     fromRef.current = currentRef.current.map((s) => ({ ...s }));
     toRef.current = currentRef.current.map((s) => ({ ...s }));
     staggerRef.current = projects.map(
@@ -305,10 +308,17 @@ export default function SemanticPlane({
   // ──────────────────────────────────────────────────────────────────────
   useLayoutEffect(() => {
     fromRef.current = currentRef.current.map((s) => ({ ...s }));
-    toRef.current = projects.map((p) => {
+    // Round-9n: collision-resolve the TARGET only — once. Previously the
+    // resolve ran every frame against currentRef which produced jittery
+    // mid-animation paths. Now the destination is locked-in non-
+    // overlapping, the animation is a clean lerp from→to, and tiles may
+    // briefly cross each other in flight (acceptable: it reads as
+    // "regrouping" rather than "stuttering").
+    const rawTarget = projects.map((p) => {
       const c = targetLayout[p.slug] ?? [0, 0, 0];
       return { x: c[0], y: c[1] };
     });
+    toRef.current = resolveCollisions(rawTarget);
 
     if (reduced) {
       currentRef.current = toRef.current.map((s) => ({ ...s }));
@@ -383,6 +393,59 @@ export default function SemanticPlane({
   // panel dims all non-matching dots so the user can spot "where are my
   // ML projects?" at a glance.
   const highlightedCategory = useNavStore((s) => s.highlightedCategory);
+
+  // Round-9m: collision-resolution pass. Text-block tiles are ~150px ×
+  // 32px which is much larger than the previous 12px dots, so semantic
+  // clusters now overlap visibly. After the layout interpolation places
+  // tiles in [-1, +1]² normalized space, we run an iterative push-apart
+  // (10 rounds, O(n²) per round, n≈14 → trivial) that nudges any pair
+  // whose bounding boxes overlap. The push happens along the smaller-
+  // overlap axis to minimize deviation from the semantic position.
+  function resolveCollisions(
+    coords: Array<{ x: number; y: number }>,
+  ): Array<{ x: number; y: number }> {
+    // Tile width ~150px, height ~32px. Plot is roughly 1100px wide × 720px
+    // tall at desktop, so in [-1, +1] units (range 2): 150/1100 = 0.27 →
+    // half-width 0.14; 32/720 = 0.044 → half-height 0.022. Pad a bit for
+    // breathing room.
+    const HW = 0.16;
+    const HH = 0.04;
+    const out = coords.map((c) => ({ x: c.x, y: c.y }));
+    for (let iter = 0; iter < 14; iter++) {
+      let moved = false;
+      for (let i = 0; i < out.length; i++) {
+        for (let j = i + 1; j < out.length; j++) {
+          const dx = out[j].x - out[i].x;
+          const dy = out[j].y - out[i].y;
+          const overlapX = 2 * HW - Math.abs(dx);
+          const overlapY = 2 * HH - Math.abs(dy);
+          if (overlapX > 0 && overlapY > 0) {
+            // Push along the smaller-overlap axis so we move the smaller
+            // distance — preserves the semantic position better.
+            if (overlapX < overlapY) {
+              const sign = dx === 0 ? 1 : Math.sign(dx);
+              const half = overlapX / 2 + 0.002;
+              out[i].x -= half * sign;
+              out[j].x += half * sign;
+            } else {
+              const sign = dy === 0 ? 1 : Math.sign(dy);
+              const half = overlapY / 2 + 0.002;
+              out[i].y -= half * sign;
+              out[j].y += half * sign;
+            }
+            moved = true;
+          }
+        }
+      }
+      if (!moved) break;
+    }
+    // Clamp back into [-1, +1] in case the push pushed something out.
+    for (const c of out) {
+      c.x = Math.max(-1, Math.min(1, c.x));
+      c.y = Math.max(-1, Math.min(1, c.y));
+    }
+    return out;
+  }
 
   // ──────────────────────────────────────────────────────────────────────
   // Round-8: dropped canvas wheel-zoom + drag-pan. They conflicted with page
@@ -582,74 +645,77 @@ function PlotFrame({ labels }: PlotFrameProps) {
         />
       ))}
 
-      {/* Round-9d: minimalist corner pills, conventional chart-axis layout.
-          - X pills sit BELOW the plot rim at left/right corners.
-          - Y pills sit OUTSIDE the plot's left edge, vertically centered on
-            the top and bottom inset rims — the standard "Y axis lives on
-            the left" convention.
-          - No "X-AXIS" / "Y-AXIS" tag — direction is obvious from the
-            arrow + the pill's position. */}
+      {/* Round-9p: ONE label per axis, centered along the axis edge.
+          Conventional chart-title style (matplotlib ax.set_xlabel /
+          set_ylabel). No pill boxes (they competed with the tiles).
+          A long arrow (`←———→`) between the two pole names makes the
+          axis direction unmistakable at a glance. */}
 
-      {/* X axis pills — flush with plot bottom rim. The pill's TOP edge
-          aligns exactly with the rim, so it reads as part of the plot
-          chrome instead of floating below it. Round-9i. */}
+      {/* X axis title — centered along the bottom edge, below plot rim. */}
       <div
         style={{
           ...labelStyle,
-          ...cornerPill,
-          left: "var(--hero-plane-pad, 64px)",
-          top: "calc(100% - var(--hero-plane-pad, 64px))",
+          left: "50%",
+          top: "calc(100% - var(--hero-plane-pad, 64px) + 16px)",
+          transform: "translateX(-50%)",
+          gap: 14,
+          fontSize: "12px",
         }}
       >
-        <span style={arrowStyle}>←</span>
         <span>{labels.xLeft}</span>
-      </div>
-      <div
-        style={{
-          ...labelStyle,
-          ...cornerPill,
-          right: "var(--hero-plane-pad, 64px)",
-          top: "calc(100% - var(--hero-plane-pad, 64px))",
-        }}
-      >
+        <span
+          aria-hidden
+          style={{
+            color: "#cf7f54",
+            fontSize: 18,
+            fontWeight: 500,
+            lineHeight: 1,
+            letterSpacing: "-0.05em",
+            fontFamily:
+              "'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace",
+            padding: "0 4px",
+          }}
+        >
+          ←————→
+        </span>
         <span>{labels.xRight}</span>
-        <span style={arrowStyle}>→</span>
       </div>
 
-      {/* Y axis pills — sit OUTSIDE the plot rim on the LEFT, vertically
-          aligned with the plot's top and bottom edges. Round-9h fix:
-          previously Y-bottom anchored at canvas-bottom (`bottom: 12`),
-          which put it in the SAME row as the X-left pill (which sits
-          just below the plot rim), causing visual overlap. Now Y-bottom
-          aligns with the plot bottom rim itself — the X row sits cleanly
-          BELOW it. Vertical translateY centers the pill on the rim. */}
-      {/* Y axis pills — sit INSIDE the plot's top-left and bottom-left
-          corners. Left edge flush with plot left rim, top/bottom edge
-          flush with plot top/bottom rim respectively. Round-9k: previous
-          pass had pills outside on the left, which overflowed the
-          canvas/sidebar division line, and centered them on the rim
-          instead of edge-flushed. */}
+      {/* Y axis title — centered along the left edge, OUTSIDE the plot rim,
+          rotated -90° so text reads bottom-to-top. transform combines a
+          translate(-50%, -50%) for centering with rotate(-90deg) for the
+          orientation; the order means the visual center of the rotated
+          label ends up exactly at (left, 50%). The source string is
+          ordered "yBottom ←———→ yTop" so post-rotation the yTop label
+          appears at the TOP of the visual axis. */}
       <div
         style={{
           ...labelStyle,
-          ...cornerPill,
-          left: "var(--hero-plane-pad, 64px)",
-          top: "var(--hero-plane-pad, 64px)",
+          left: "calc(var(--hero-plane-pad, 64px) - 18px)",
+          top: "50%",
+          transform: "translate(-50%, -50%) rotate(-90deg)",
+          transformOrigin: "center center",
+          gap: 14,
+          fontSize: "12px",
         }}
       >
-        <span style={arrowStyle}>↑</span>
-        <span>{labels.yTop}</span>
-      </div>
-      <div
-        style={{
-          ...labelStyle,
-          ...cornerPill,
-          left: "var(--hero-plane-pad, 64px)",
-          bottom: "var(--hero-plane-pad, 64px)",
-        }}
-      >
-        <span style={arrowStyle}>↓</span>
         <span>{labels.yBottom}</span>
+        <span
+          aria-hidden
+          style={{
+            color: "#cf7f54",
+            fontSize: 18,
+            fontWeight: 500,
+            lineHeight: 1,
+            letterSpacing: "-0.05em",
+            fontFamily:
+              "'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace",
+            padding: "0 4px",
+          }}
+        >
+          ←————→
+        </span>
+        <span>{labels.yTop}</span>
       </div>
 
       {/* Subtitle (top-right) — only when not reserving for ModePanel. */}
@@ -721,7 +787,7 @@ export const CATEGORY_LABELS: Record<CategoryKey, string> = {
   research: "RESEARCH",
   interaction: "INTERACTION",
   design: "DESIGN",
-  architecture: "ARCHITECTURE",
+  architecture: "COMPUTATIONAL DESIGN",
 };
 
 export function categoryKeyForProject(p: ProjectEmbedding): CategoryKey {
@@ -745,9 +811,42 @@ function colorForProject(p: ProjectEmbedding): string {
   return CATEGORY_COLORS[categoryKeyForProject(p)];
 }
 
-function shortCaption(title: string, max = CAPTION_MAX_CHARS): string {
-  // Prefer the cleanest leading phrase: split on em-dash, en-dash, colon,
-  // double-hyphen — keep the FIRST chunk. Then truncate.
+// Round-9m: hand-curated INFORMATIVE short labels keyed by slug. The
+// abbreviated project codes (3T3D, L43D, etc.) tell you nothing on a
+// canvas — these say WHAT the project is in a few words, while still
+// short enough to render single-line at ~180px tile width.
+const SHORT_TITLES: Record<string, string> = {
+  "3t3d-vit-2d-to-3d": "ViT Floorplan → 3D",
+  "l43d-cad-mllm": "Multimodal CAD LLM",
+  "semantic-canvas": "Semantic Canvas",
+  "spectral-facades": "Diffusion Facades",
+  "s25-team-26-paper-viz": "Paper Citation Viz",
+  "skill-bridge-datavis": "Skill-Bridge Dashboard",
+  "synthetic-texture-deterioration": "Texture Decay Tool",
+  "design-the-ambience": "Diffusion Installation",
+  "wire-bending": "Wire-bending Robotics",
+  "aurora-citadel-gen-game": "Procedural Game (UE5)",
+  "a-game-of-deterioration": "Time-Reversal Game",
+  "fiber-based-pavilion": "Fiber Pavilion (IASS)",
+  "membrane-form-finding": "Membrane Form-finding",
+  "generative-urbanism": "Border Urbanism Sim",
+  // architecture archive
+  "uranium-scape": "Uranium Scape",
+  "salt-marsh-research-center": "Salt Marsh Lab",
+  "urban-streamline": "Urban Streamline",
+  "urban-mining": "Urban Mining",
+  "spatial-bending": "Spatial Bending",
+  deform: "Deform",
+  interlude: "Interlude",
+  "sound-scape": "Sound Scape",
+};
+
+function shortCaption(
+  title: string,
+  slug?: string,
+  max = CAPTION_MAX_CHARS,
+): string {
+  if (slug && SHORT_TITLES[slug]) return SHORT_TITLES[slug];
   const head = title.split(/\s+[—–:]\s+|\s+--\s+/)[0].trim();
   if (head.length <= max) return head;
   return head.slice(0, max - 1).trimEnd() + "…";
@@ -831,16 +930,17 @@ function Sprite({
     return () => window.clearInterval(id);
   }, [isHovered, images.length, visibleCount, reduced]);
 
-  // Map embedding [-1, 1] → CSS percent. Round-9k: inset by TILE_INSET_PCT
-  // on each side so tiles don't sit at the plot rim (where the new in-plot
-  // axis pills now live at the corners — see PlotFrame). 8% on each side
-  // gives the pills + their first letters clear room without compressing
-  // the layout perceptibly.
+  // Map embedding [-1, 1] → CSS percent. Round-9m: text-block tiles are
+  // ~120-160px wide (vs 12px dots), so they need a bigger inset margin
+  // from the plot rim or they collide with axis pills at corners and
+  // overflow the right/bottom edges.
   // Y inverted: data y=+1 → top of plot.
-  const TILE_INSET_PCT = 8;
-  const SPAN = 100 - 2 * TILE_INSET_PCT; // 84
-  const cssLeft = TILE_INSET_PCT + ((x + 1) / 2) * SPAN;
-  const cssTop = TILE_INSET_PCT + ((-y + 1) / 2) * SPAN;
+  const TILE_INSET_X = 12; // % from each horizontal edge
+  const TILE_INSET_Y = 10; // % from each vertical edge
+  const SPAN_X = 100 - 2 * TILE_INSET_X;
+  const SPAN_Y = 100 - 2 * TILE_INSET_Y;
+  const cssLeft = TILE_INSET_X + ((x + 1) / 2) * SPAN_X;
+  const cssTop = TILE_INSET_Y + ((-y + 1) / 2) * SPAN_Y;
 
   // Atlas slice via background-position percentages.
   // Round-8b BUGFIX: the atlas is packed in GL bottom-left UV convention
@@ -909,7 +1009,7 @@ function Sprite({
         (recencyBounds.max - recencyBounds.min)
       : 1;
   const ringOpacity = 0.25 + 0.7 * recencyT;
-  const captionText = shortCaption(project.title);
+  const captionText = shortCaption(project.title, project.slug);
 
   // HoverCard placement — flip to the LEFT of the tile when the tile is in
   // the right half of the scatter so the card stays on-screen. Also flip
@@ -926,12 +1026,15 @@ function Sprite({
   // unscaled button hit-edge (+32) and the card visible edge (+88), so the
   // wrapper's onMouseLeave never fires while the cursor traverses gap →
   // no grace timer needed.
-  // Round-9k: sprite is now an 18px dot (was 64px atlas thumbnail), so the
-  // hit-edge math is much smaller. Card offset stays generous so the dot's
-  // hover halo doesn't bleed into the card's left edge.
-  const SPRITE_HALF = 9;
-  const CARD_OFFSET_PX = 56;
-  const BRIDGE_WIDTH = CARD_OFFSET_PX - SPRITE_HALF; // 47
+  // Round-9m: sprite is now a TEXT BLOCK (not a dot). Hit-edge geometry
+  // is approximated by half the average tile width — the wrapper itself
+  // is what the cursor leaves, and the bridge spans from wrapper edge to
+  // card edge. Tile width adapts to title length but caps at TILE_MAX_W.
+  const TILE_MAX_W = 168;
+  const TILE_HALF_APPROX = 50; // approx half-width used for card offset
+  const CARD_OFFSET_PX = 92;
+  const BRIDGE_WIDTH = CARD_OFFSET_PX - TILE_HALF_APPROX;
+  const SPRITE_HALF = TILE_HALF_APPROX;
   // Reference height for the hover bridge + atlas-slice fallback. The card
   // itself grows naturally now (height: auto), but the bridge and the
   // imageless fallback still need a definite pixel value to lay out.
@@ -962,12 +1065,16 @@ function Sprite({
         display: "flex",
         flexDirection: "column",
         alignItems: "center",
-        gap: 5,
+        gap: 4,
         pointerEvents: "none",
         opacity,
         transition: reduced ? "none" : "opacity 220ms ease",
       }}
     >
+      {/* Round-9m: text-block tile replaces the dot. The button IS the
+          title rectangle. Recency encoded as title brightness/weight
+          (newer = brighter + heavier). Category color drives the bottom
+          accent border. Hover scales the block ~1.25× and brightens. */}
       <button
         ref={buttonRef}
         type="button"
@@ -976,80 +1083,78 @@ function Sprite({
         onBlur={onHoverOut}
         aria-label={`Open ${project.title}`}
         className="hero-sprite"
-        style={{
-          // Round-9l: 12px filled dot + outer ring whose alpha encodes
-          // recency. Ring is rendered via box-shadow spread so it doesn't
-          // affect the layout. Hover adds a bright halo on top of the
-          // recency ring.
-          width: 12,
-          height: 12,
-          transform: `scale(${scale})`,
-          transformOrigin: "center",
-          transition,
-          background: categoryColor,
-          border: "none",
-          borderRadius: "50%",
-          // Layered shadows: [recency ring][hover halo (when hovered)][soft glow].
-          boxShadow: isHovered
-            ? `0 0 0 2px rgba(255,255,255,${ringOpacity * 0.9}), 0 0 0 5px ${categoryColor}55, 0 0 22px -2px ${categoryColor}cc`
-            : `0 0 0 2px ${categoryColor}${Math.round(ringOpacity * 255).toString(16).padStart(2, "0")}, 0 0 8px -3px ${categoryColor}aa`,
-          cursor: "pointer",
-          padding: 0,
-          outline: "none",
-          imageRendering: "auto",
-          pointerEvents: "auto",
-        }}
-      >
-        <span className="sr-only">{project.title}</span>
-      </button>
-      <div
         title={project.title}
         style={{
           fontFamily:
             "'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace",
-          fontSize: isHovered ? 11 : 10,
-          letterSpacing: "0.04em",
-          color: isHovered ? LABEL_COLOR : LABEL_DIM,
+          fontSize: isHovered ? 12 : 11,
+          fontWeight: isHovered ? 600 : ringOpacity > 0.7 ? 500 : 400,
+          letterSpacing: "0.02em",
+          lineHeight: 1.25,
+          color: isHovered
+            ? "#f0f1f2"
+            : `rgba(232, 234, 237, ${0.55 + 0.4 * ringOpacity})`,
           textAlign: "center",
-          maxWidth: 150,
-          lineHeight: 1.2,
-          // Allow up to 2 lines so titles read complete instead of being
-          // cut off after ~18 chars. Round-9i.
-          display: "-webkit-box",
-          WebkitLineClamp: 2,
-          WebkitBoxOrient: "vertical",
+          maxWidth: TILE_MAX_W,
+          minWidth: 64,
+          padding: isHovered ? "7px 11px" : "6px 10px",
+          background: isHovered
+            ? "rgba(20, 24, 28, 0.96)"
+            : "rgba(11, 13, 15, 0.78)",
+          border: `1px solid ${
+            isHovered
+              ? categoryColor
+              : `rgba(94, 99, 107, ${0.35 + 0.35 * ringOpacity})`
+          }`,
+          borderBottom: `2px solid ${categoryColor}${
+            isHovered ? "ff" : Math.round(ringOpacity * 255).toString(16).padStart(2, "0")
+          }`,
+          borderRadius: 3,
+          backdropFilter: "blur(6px)",
+          WebkitBackdropFilter: "blur(6px)",
+          boxShadow: isHovered
+            ? `0 8px 28px -6px rgba(0, 0, 0, 0.7), 0 0 0 2px ${categoryColor}33`
+            : "0 1px 3px rgba(0, 0, 0, 0.45)",
+          // Single-line, no wrap. Titles in SHORT_TITLES are tuned to fit.
+          whiteSpace: "nowrap",
           overflow: "hidden",
-          wordBreak: "break-word",
-          textShadow: "0 1px 3px rgba(11, 13, 15, 0.95)",
-          transition: reduced ? "none" : "color 220ms ease, font-size 220ms ease",
-          padding: "2px 5px",
-          borderRadius: 2,
-          background: isHovered ? "rgba(11, 13, 15, 0.7)" : "transparent",
+          cursor: "pointer",
+          outline: "none",
+          pointerEvents: "auto",
+          textShadow: "0 1px 2px rgba(11, 13, 15, 0.9)",
+          transform: isHovered ? "scale(1.18)" : "scale(1)",
+          transformOrigin: "center",
+          transition: reduced
+            ? "none"
+            : "transform 220ms cubic-bezier(0.22, 1, 0.36, 1), background 220ms ease, border-color 220ms ease, color 220ms ease, font-size 220ms ease, padding 220ms ease",
         }}
       >
         {captionText}
+      </button>
+      {/* Tag below — small monospace caps, category-tinted. Sits flush
+          against the tile's bottom accent border so they read as a unit. */}
+      <div
+        style={{
+          fontFamily:
+            "'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace",
+          fontSize: 9,
+          fontWeight: 600,
+          letterSpacing: "0.14em",
+          textTransform: "uppercase",
+          color: categoryColor,
+          opacity: filteredOut
+            ? 0.2
+            : anyHovered
+              ? isHovered
+                ? 1
+                : 0.5
+              : 0.85,
+          transition: reduced ? "none" : "opacity 220ms ease",
+          textShadow: "0 1px 2px rgba(11, 13, 15, 0.9)",
+        }}
+      >
+        {CATEGORY_LABELS[projectCategory]}
       </div>
-      {/* Round-9l: category text below dot dropped — the dot color +
-          sidebar legend already encode it, so the redundancy was costing
-          screen space without adding info. Year-only line stays as a
-          chronological cue (the outer ring also encodes recency, but
-          the explicit number disambiguates 2024/2025 etc.). */}
-      {(project as ProjectEmbedding & { year?: number }).year && (
-        <div
-          style={{
-            fontFamily:
-              "'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace",
-            fontSize: 9,
-            letterSpacing: "0.10em",
-            color: "#a8acb1",
-            opacity: anyHovered ? (isHovered ? 1 : 0.45) : 0.7,
-            transition: reduced ? "none" : "opacity 220ms ease",
-            textShadow: "0 1px 3px rgba(11, 13, 15, 0.95)",
-          }}
-        >
-          {(project as ProjectEmbedding & { year?: number }).year}
-        </div>
-      )}
 
       {/* Hover BRIDGE — transparent hit area between scaled button and card.
           Closes the gap so the wrapper's onMouseLeave doesn't fire while

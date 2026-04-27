@@ -128,11 +128,15 @@ const LAYOUTS: Array<{
   },
 ];
 
+// Round-9m: refreshed axis pool. Retired the weak / collapsed axes
+// (research/play, student/production, ml/design) and surfaced the four
+// with the strongest empirical spread + clearest semantics on this
+// project corpus.
 const ALLOWED_PRESETS = new Set([
-  "x_ml_design",
-  "y_research_play",
-  "x_artifact_system",
-  "z_student_production",
+  "x_ml_algorithm",          // ML / latent ↔ algorithmic / parametric (Carpo's frame, plain language)
+  "x_artifact_system",       // single fabricated thing ↔ interactive software system
+  "z_screen_space",          // 2D screen interface ↔ 3D spatial / built form
+  "x_aesthetic_analytical",  // formal / sensual ↔ measured / data-informed
 ]);
 
 const LAYOUT_BLURB: Record<LayoutKey, string> = {
@@ -210,83 +214,61 @@ export default function SidePanel({ presets, count, projects = [] }: Props) {
         height: "100%",
       }}
     >
-      {/* ─── 1. Layout picker ──────────────────────────────────────── */}
+      {/* ─── 1. Layout picker — horizontal tab strip (Round-9o) ────────
+          Replaced the 2×2 card grid with a single row of mono-caps tabs.
+          SEMANTIC is the primary mode (gets a subtle oxide underline even
+          when inactive); UMAP / PCA / TIMELINE read as secondary
+          comparison views. Tabs use border-bottom indicator for the
+          active state. The icons + sub-labels from the cards are dropped
+          — the one-line description below the tabs carries the meaning. */}
       <section>
-        <header
-          style={{
-            fontFamily:
-              "'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace",
-            fontSize: 10,
-            letterSpacing: "0.16em",
-            textTransform: "uppercase",
-            color: "#a8acb1",
-            marginBottom: 8,
-          }}
-        >
-          Layout
-        </header>
         <div
+          role="tablist"
+          aria-label="Layout"
           style={{
-            display: "grid",
-            gridTemplateColumns: "1fr 1fr",
-            gap: 6,
+            display: "flex",
+            gap: 0,
+            borderBottom: "1px solid rgba(94, 99, 107, 0.30)",
+            marginBottom: 10,
           }}
         >
-          {LAYOUTS.map(({ key, label, sub, icon }) => {
+          {LAYOUTS.map(({ key, label }) => {
             const active = activeLayout === key;
+            const isPrimary = key === "thesis";
             return (
               <button
                 key={key}
+                role="tab"
                 type="button"
+                aria-selected={active}
                 onClick={() => setLayout(key)}
-                aria-pressed={active}
                 style={{
                   fontFamily:
                     "'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace",
-                  textAlign: "left",
-                  padding: "10px 12px",
-                  borderRadius: 4,
-                  border: `1px solid ${active ? "#cf7f54" : "rgba(94, 99, 107, 0.55)"}`,
+                  fontSize: 11,
+                  fontWeight: isPrimary ? 600 : 500,
+                  letterSpacing: "0.12em",
+                  textTransform: "uppercase",
+                  padding: "8px 10px",
                   background: active ? "rgba(207, 127, 84, 0.10)" : "transparent",
-                  color: active ? "#cf7f54" : "#d8dadd",
+                  border: "none",
+                  borderBottom: active
+                    ? "2px solid #cf7f54"
+                    : isPrimary
+                      ? "2px solid rgba(207, 127, 84, 0.32)"
+                      : "2px solid transparent",
+                  color: active
+                    ? "#cf7f54"
+                    : isPrimary
+                      ? "#d8dadd"
+                      : "#9b9fa6",
                   cursor: "pointer",
-                  transition: "all 180ms ease",
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: 6,
-                  minHeight: 76,
+                  marginBottom: -1,
+                  transition: "all 160ms ease",
+                  flex: isPrimary ? "1.2 1 0" : "1 1 0",
                 }}
               >
-                <div style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                  <span
-                    style={{
-                      color: active ? "#cf7f54" : "#7e828a",
-                      lineHeight: 0,
-                    }}
-                  >
-                    {icon}
-                  </span>
-                  <span
-                    style={{
-                      fontSize: 12,
-                      letterSpacing: "0.12em",
-                      textTransform: "uppercase",
-                      fontWeight: 600,
-                    }}
-                  >
-                    {label}
-                  </span>
-                </div>
-                <span
-                  style={{
-                    fontSize: 10,
-                    letterSpacing: "0.04em",
-                    color: active ? "rgba(207, 127, 84, 0.85)" : "#7e828a",
-                    lineHeight: 1.35,
-                  }}
-                >
-                  {sub}
-                </span>
+                {label}
               </button>
             );
           })}
@@ -296,10 +278,9 @@ export default function SidePanel({ presets, count, projects = [] }: Props) {
             fontFamily:
               "'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif",
             fontSize: 12,
-            lineHeight: 1.55,
+            lineHeight: 1.5,
             color: "#a8acb1",
-            marginTop: 10,
-            marginBottom: 0,
+            margin: 0,
           }}
         >
           {LAYOUT_BLURB[activeLayout]}
@@ -447,22 +428,28 @@ export default function SidePanel({ presets, count, projects = [] }: Props) {
         </section>
       )}
 
-      {/* ─── 2. Axes — interactive for SEMANTIC, static labels otherwise. ─ */}
-      <section>
-        <header
-          style={{
-            fontFamily:
-              "'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace",
-            fontSize: 10,
-            letterSpacing: "0.16em",
-            textTransform: "uppercase",
-            color: "#a8acb1",
-            marginBottom: 8,
-          }}
-        >
-          Axes
-        </header>
-        {activeLayout === "thesis" ? (
+      {/* ─── 2. Axes — full controls only when SEMANTIC is active.
+          Round-9o: in UMAP/PCA/TIMELINE the axes are produced by the
+          algorithm (or by metadata fields) and aren't tweakable, so the
+          full X/Y dropdowns + RANDOMIZE button are hidden in those modes
+          and replaced with a single dim caption telling the user what
+          they're looking at. Removes ~90px of empty / read-only UI from
+          the sidebar in non-SEMANTIC modes. */}
+      {activeLayout === "thesis" ? (
+        <section>
+          <header
+            style={{
+              fontFamily:
+                "'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace",
+              fontSize: 10,
+              letterSpacing: "0.16em",
+              textTransform: "uppercase",
+              color: "#a8acb1",
+              marginBottom: 8,
+            }}
+          >
+            Axes
+          </header>
           <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
             {(["X", "Y"] as const).map((label, idx) => {
               const idxNum = idx as 0 | 1;
@@ -539,46 +526,25 @@ export default function SidePanel({ presets, count, projects = [] }: Props) {
               ⚄ randomize
             </button>
           </div>
-        ) : (
-          <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
-            {(["X", "Y"] as const).map((label, idx) => {
-              const value = staticAxes[activeLayout as Exclude<LayoutKey, "thesis">][idx];
-              return (
-                <div key={label} style={{ display: "flex", alignItems: "center", gap: 8 }}>
-                  <span
-                    style={{
-                      fontFamily:
-                        "'IBM Plex Mono', ui-monospace, monospace",
-                      fontSize: 11,
-                      color: "#7e828a",
-                      width: 18,
-                      letterSpacing: "0.12em",
-                    }}
-                  >
-                    {label}:
-                  </span>
-                  <div
-                    style={{
-                      flex: 1,
-                      fontFamily:
-                        "'IBM Plex Mono', ui-monospace, monospace",
-                      fontSize: 12,
-                      padding: "5px 8px",
-                      background: "rgba(11, 13, 15, 0.5)",
-                      border: "1px solid rgba(94, 99, 107, 0.30)",
-                      borderRadius: 3,
-                      color: "#a8acb1",
-                      letterSpacing: "0.04em",
-                    }}
-                  >
-                    {value}
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        )}
-      </section>
+        </section>
+      ) : (
+        <p
+          style={{
+            fontFamily:
+              "'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace",
+            fontSize: 10.5,
+            letterSpacing: "0.10em",
+            color: "#7e828a",
+            margin: 0,
+            fontStyle: "italic",
+            opacity: 0.8,
+          }}
+        >
+          auto · {staticAxes[activeLayout as Exclude<LayoutKey, "thesis">][0]}
+          {"  ×  "}
+          {staticAxes[activeLayout as Exclude<LayoutKey, "thesis">][1]}
+        </p>
+      )}
 
       {/* ─── 3. View toggle ────────────────────────────────────────── */}
       <section style={{ display: "flex", flexDirection: "column", gap: 8 }}>
