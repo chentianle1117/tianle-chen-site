@@ -7,7 +7,6 @@ program: BArch — Studio
 categories:
   - Architecture
   - Research
-role: Sole author
 publish: true
 priority: standard
 summary: A coastal research and exhibition building on Galveston Bay sited on an acre of salt marsh — the marsh itself is the lab. The building threads research circulation around protected ecology, with public exhibition mediating between scientist and visitor.

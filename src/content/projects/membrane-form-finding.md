@@ -16,7 +16,6 @@ local_path: null
 notion_url: https://www.notion.so/chentianle1117/Membrane-Parametric-Form-finding-16933d12d95a81c1acdeef0748c37bc9
 priority: standard
 publish: true
-role: individual
 semester: 2021-2024
 slug: membrane-form-finding
 status: ready
@@ -31,7 +30,6 @@ tags:
 - form-finding
 - kangaroo
 - equilibrium-form
-team_size: 1
 title: Membrane Parametric Form-finding
 type: portfolio-project
 year: 2024

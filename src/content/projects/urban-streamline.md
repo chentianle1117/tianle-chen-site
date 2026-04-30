@@ -7,7 +7,6 @@ program: BArch — Studio
 categories:
   - Architecture
   - Urban Design
-role: Sole author
 publish: true
 priority: standard
 summary: An urban resiliency research center sited at the junction of a horizontal urban plaza and a continuous urban band — formally inspired by the streamlines of railway terminals and the congregation scale of Buenos Aires's Villa 31.

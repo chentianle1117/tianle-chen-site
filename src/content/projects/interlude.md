@@ -7,7 +7,6 @@ program: BArch — Studio
 categories:
   - Architecture
   - Interior
-role: Sole author
 publish: true
 priority: standard
 summary: An apartment-loft study where the functional service block — bathroom, kitchen, storage — becomes the spatial divider, generating zones of inhabitation around it instead of being tucked at the perimeter.

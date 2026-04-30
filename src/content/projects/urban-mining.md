@@ -8,7 +8,6 @@ categories:
   - Architecture
   - Urban Design
   - Research
-role: Sole author
 publish: true
 priority: standard
 summary: A "scrap landscape" proposal for a community in Ciudad Juárez that materializes the steel-scrap economy at the US–Mexico border — the waste produced, its potential reuse, its politics, and its environmental and human cost.

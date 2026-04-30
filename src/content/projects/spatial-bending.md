@@ -8,7 +8,6 @@ categories:
   - Architecture
   - Parametric Design
   - Fabrication
-role: Sole author
 publish: true
 priority: standard
 summary: A four-stage structural exploration of bending — from a cantilevered bending plate to a controlled-bending frame, then a curved façade and roof, and finally a reinforced hanging structure that uses bent strings as both load-bearing roof and decorative façade.

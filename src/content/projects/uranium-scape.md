@@ -8,7 +8,6 @@ categories:
   - Architecture
   - Research
   - Data Visualization
-role: Sole author
 publish: true
 priority: standard
 summary: A speculative landscape that uses architecture to make the radioactivity of abandoned uranium mines in southern Texas visible — pairing GIS mapping and data visualization with built-form proposals for inhabitation and remediation.

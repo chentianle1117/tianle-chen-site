@@ -8,7 +8,6 @@ categories:
   - Architecture
   - Parametric Design
   - Acoustic Design
-role: Sole author
 publish: true
 priority: standard
 summary: A care facility in the Paris 13th designed for the visually and hearing-impaired. Parametric acoustic simulation drives the room geometries — disability becomes a generative driver for better design, not a secondary concern to retrofit around.

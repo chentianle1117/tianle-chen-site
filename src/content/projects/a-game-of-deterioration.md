@@ -38,7 +38,6 @@ local_path: W:\CMU_Academics\Fall 2024 CMU\112 Term Project - Final - Submission
 notion_url: https://www.notion.so/chentianle1117/A-Game-of-Deterioration-Time-Reversal-16a33d12d95a80779ab7f488cbc13f1f
 priority: flagship
 publish: true
-role: individual
 semester: Fall 2024
 slug: a-game-of-deterioration
 status: ready
@@ -55,7 +54,6 @@ tags:
 - cmu-graphics
 - simulation
 - user-generated-content
-team_size: 1
 title: A Game of Deterioration — Time Reversal
 type: portfolio-project
 year: 2024

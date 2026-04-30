@@ -6,7 +6,6 @@ institution: Rice University
 program: BArch — Studio
 categories:
   - Architecture
-role: Sole author
 publish: true
 priority: standard
 summary: A formal exercise in continuous deformation — a building envelope developed through a controlled sequence of geometric transformations, exploring how a single surface can absorb programmatic and structural demands without losing legibility as one form.

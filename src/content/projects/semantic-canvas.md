@@ -54,7 +54,6 @@ publish: true
 related_cards:
 - '[[2025-2026--thesis-flagship]]'
 - '[[2025-Spring--live-ai-feedback-design-assistant]]'
-role: individual
 semester: Fall 2025 – Spring 2026
 slug: semantic-canvas
 stack_backend:
@@ -89,7 +88,6 @@ tags:
 - ai-augmented-design
 - footwear
 - zappos50k
-team_size: 1
 title: Semantic Canvas — Interactive Latent-Space Design Tool for AI-Augmented Footwear
   Design
 type: portfolio-project

@@ -25,7 +25,6 @@ notion_url: https://www.notion.so/chentianle1117/Synthetic-Tool-for-Visualizing-
 priority: experimental
 progress_report: /assets/synthetic-texture-deterioration/progress-report.pdf
 publish: true
-role: individual
 semester: Fall 2024
 slug: synthetic-texture-deterioration
 status: ready
@@ -41,7 +40,6 @@ tags:
 - interface-design
 - controlnet
 - svelte
-team_size: 1
 title: Synthetic Tool for Visualizing Texture Deterioration
 type: portfolio-project
 year: 2024

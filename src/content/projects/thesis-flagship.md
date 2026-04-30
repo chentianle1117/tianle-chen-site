@@ -39,7 +39,6 @@ publish: false
 related_cards:
 - '[[2025-Fall--semantic-canvas-thesis-tool]]'
 - '[[2025-Spring--live-ai-feedback-design-assistant]]'
-role: individual
 semester: Spring 2025 – Spring 2026
 slug: thesis-flagship
 status: ready
@@ -53,7 +52,6 @@ tags:
 - sigradi-2026
 - zappos50k
 - computational-design
-team_size: 1
 title: 'MSCD Thesis — AI-Augmented Footwear Design: Tools, Agency, and the Shape of
   Designer-AI Collaboration'
 tool_artifact: '[[2025-Fall--semantic-canvas-thesis-tool]]'
