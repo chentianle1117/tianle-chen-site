@@ -48,7 +48,7 @@ tags:
 - modular-assets
 - game-design
 - brutalist-architecture
-team_size: '>1 (team confirmed by David, collaborators TBD)'
+team_size: '>1'
 title: Aurora Citadel — Procedural Generative Game (Unreal Engine 5)
 type: portfolio-project
 year: 2025
@@ -58,13 +58,7 @@ year: 2025
 
 ![module layout](/assets/aurora-citadel-gen-game/Module Layout.jpg)
 
-## Hook
-Level design at scale. Rather than authoring a single level, author the **generator**: tiles + adjacency constraints + WFC solver → infinite valid spatial configurations. Each run of Aurora Citadel produces a different navigable tower from the same module vocabulary.
-
-## Context
-
-**Course:** 62-706 Generative System Design, Spring 2025 — final project.
-**Role:** team project (David confirmed — collaborators TBD; need to recover team members' names from class submissions or group emails).
+Level design at scale. Rather than authoring a single level, you author the **generator** — tiles plus adjacency constraints plus a Wave Function Collapse solver — and each run produces a different navigable tower from the same module vocabulary. Built for 62-706 Generative System Design, Spring 2025, as a team final project.
 
 **Theoretical grounding** (readings in the submission folder):
 - *Served and Servant Spaces* (Louis Kahn, 2.6 MB) — architectural theory of primary vs. supporting spaces
@@ -104,13 +98,7 @@ These readings informed the module system: some tiles are "served" (primary prog
 
 ## Artifact size (why not on GitHub)
 
-16 GB of UE5 binaries + 324 MB video demo exceeds any reasonable git repo size — Git LFS would help but was out of scope. **Stays local only.** For portfolio: embed the 5-minute demo video on the site (hosted on YouTube or Vimeo — David to upload).
-
-## David — confirm
-
-- **Team members' names** — David confirmed this is a team project; need collaborator names (from Canvas group, email, or class roster)
-- **YouTube / Vimeo upload** — the 5-minute demo video exists locally (324 MB); David plans to find the public upload link when time permits
-- **Any final presentation slides** separate from the video?
+16 GB of UE5 binaries plus a 324 MB video demo exceeds any reasonable git repo size — Git LFS would help but was out of scope. The build stays local; the 5-minute demo video is the public-facing artifact.
 
 ## Links
 
@@ -122,8 +110,4 @@ These readings informed the module system: some tiles are "served" (primary prog
 
 ## Related cards
 
-None direct — this is an outlier in David's portfolio (game / procedural, not AI/design-tool). That isolation is actually useful: shows range.
-
----
-
-*Card built 2026-04-23 from Explore agent Spring 2025 scan. Minimal external-facing content right now (no GitHub, no video URL). Card becomes portfolio-ready once David uploads the demo video to YouTube and confirms team composition.*
+None direct — this sits as an outlier in the portfolio (game / procedural, not AI / design-tool), which feels right: it shows range.
