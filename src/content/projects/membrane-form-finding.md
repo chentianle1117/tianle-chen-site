@@ -63,12 +63,7 @@ For the architecture student this means the form-finding step is also the struct
 
 The study produced four representative shell families documented in the gallery: a saddle, a four-point pavilion, a cable-net shading screen, and a tessellated patchwork that demonstrates how multiple smaller form-found pieces can be stitched into a larger composite envelope. Each family is a parameter range, not a single geometry — the underlying Grasshopper definition exposes anchor positions, tension scalars, and mesh density as live sliders.
 
-## Context
-
-**Period:** 2021-2024, Rice University.
-**Role:** individual research, advised by Prof. Juan Jose Castellon as part of the broader CNT-fiber experimental-models lab.
-
-Companion to the [[2021-2024-Rice--fiber-based-pavilion|Fiber-based Pavilion]] research — both share the parametric form-finding + computational architecture vocabulary, with the pavilion extending the membrane logic into a fabricated full-scale prototype.
+Independent research at Rice University, 2021–2024, advised by Prof. Juan Jose Castellon as part of the broader CNT-fiber experimental-models lab. Companion to the [[2021-2024-Rice--fiber-based-pavilion|Fiber-based Pavilion]] — both share the parametric form-finding vocabulary, with the pavilion extending the membrane logic into a fabricated full-scale prototype.
 
 ## Links
 

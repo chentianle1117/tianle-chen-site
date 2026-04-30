@@ -67,13 +67,10 @@ year: 2026
 
 ![worldmaking diagram](/assets/thesis-flagship/pre-thesis-II-A1_Worldmaking_Diagram_DavidChen.png)
 
-## Hook
-Most AI-for-design work asks "can the model make the thing?" — and the answer is yes, always. This thesis asks the harder question: **when a designer uses a generative AI tool, what shape should that collaboration take so design judgment stays intact and compounds over time?** The investigation is empirical (real designers using a real tool on real tasks) and propositional (what does a *legible* latent space buy us vs. a flat prompt-response generator?).
+Most AI-for-design work asks "can the model make the thing?" — and the answer is yes, always. This thesis asks the harder question: **when a designer uses a generative AI tool, what shape should that collaboration take so design judgment stays intact and compounds over time?** The investigation is empirical (real designers using a real tool on real tasks) and propositional (what does a *legible* latent space buy us against a flat prompt-response generator?).
 
-## Context
+The work runs across the CMU MSCD (Master of Science in Computational Design) sequence:
 
-**Program:** CMU MSCD (Master of Science in Computational Design).
-**Sequence:**
 - Spring 2025 — **Pre-Thesis I (48-715)**: territory mapping, game plan, annotated bibliography, gap analysis. 11 PDFs.
 - Fall 2025 — **Pre-Thesis II (48-716)**: research questions, reference models, A1–A11 progression, proposal draft (A11). **29 PDFs.**
 - Fall 2025 — **Thesis Demo (48-716 deliverable)**: proposal presentation delivered 2025-12-03 (103 MB video). Tool deployed on Railway.

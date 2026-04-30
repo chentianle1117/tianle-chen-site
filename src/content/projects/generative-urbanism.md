@@ -71,11 +71,6 @@ Key technical tools included **Grasshopper** for parametric modeling and evoluti
 - Multiple optimized layouts surfacing tradeoffs (density vs. accessibility vs. program mix)
 - Positions border revitalization as a generative, adaptive problem rather than a fixed master-plan exercise
 
-## Context
-
-**Institution:** Rice University, undergraduate architecture studio (2021-2024).
-**Role:** individual.
-
 ## Links
 
 - [Notion page](https://www.notion.so/chentianle1117/Generative-Urbanism-16933d12d95a813d846efbe36700cd75)

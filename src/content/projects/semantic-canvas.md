@@ -1,6 +1,6 @@
 ---
 _hero_curated: true
-advisor: TBD (thesis advisor)
+advisor: Prof. Daniel Cardoso Llach
 architecture_pattern: BFF (Backend-For-Frontend, API keys server-side)
 artifacts:
 - /assets/semantic-canvas/ (demo thumbnails + view templates)
@@ -100,13 +100,9 @@ year: 2025
 
 > **The thesis tool.** An interactive D3-based canvas for exploring and generating shoe designs in semantic latent space. Jina CLIP v2 embeddings let you define custom semantic axes ("casual ↔ formal", "dark ↔ bright") and watch your designs reposition themselves by meaning. fal.ai generates new designs from text or reference images. Gemini is a passive observer that reads your design brief and offers insights. Multi-user study mode with per-participant isolation logs every interaction — the whole thing runs in production on Railway.
 
-## Hook
-Design exploration is fundamentally about moving through a *space of possibilities* — but that space has historically been implicit, stored in the designer's head. What if it were real: 2D, navigable, with custom axes you define in your own words? Semantic Canvas is a thesis-scale answer. Drop an image in and it finds its place along any axis you can describe. Generate variations via fal.ai. Branch with genealogy. Study participants use it for real design tasks; every event is logged for analysis.
+Design exploration is fundamentally about moving through a *space of possibilities* — but that space has historically been implicit, stored in the designer's head. Semantic Canvas is a thesis-scale attempt to make it real: 2D, navigable, with custom axes you define in your own words. Drop an image in and it finds its place along any axis you can describe; generate variations via fal.ai; branch with genealogy. Study participants use it for real design tasks, and every event is logged for analysis.
 
-## Context
-**Research frame:** CMU MSCD thesis, 2025–2026. Topic: **AI-augmented footwear design** — how should generative AI show up in an expert design workflow? The tool is both the research instrument and the thesis artifact. Multi-user study conducted Fall 2025 – Spring 2026.
-**Role:** solo engineering + design + study execution. ~4,800+ LOC backend + full React frontend.
-**Related work in vault:** pairs with [[2025-Spring--live-ai-feedback-design-assistant|Live AI Feedback]] (same observational-AI pattern at smaller scale) and precedes the thesis writeup ([[2025-2026--thesis-flagship]]).
+Research frame: CMU MSCD thesis, 2025–2026, on AI-augmented footwear design — how generative AI should show up in an expert design workflow. The tool is both the research instrument and the thesis artifact, with the multi-user study conducted across Fall 2025 and Spring 2026. Solo engineering, design, and study execution: ~4,800+ LOC backend plus the full React frontend. Pairs with [[2025-Spring--live-ai-feedback-design-assistant|Live AI Feedback]] (same observational-AI pattern at smaller scale) and feeds the thesis writeup at [[2025-2026--thesis-flagship]].
 
 ## Features
 

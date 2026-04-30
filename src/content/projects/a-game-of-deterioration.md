@@ -118,11 +118,7 @@ Start by "drawing" your own map in an editor reminiscent of Photoshop.
 
 **Deterioration & Restoration** shows how iterative texture manipulation, user-generated terrain, and survival mechanics can combine into a compelling 2D experience. The balance between decay and healing — along with two distinct game modes — adds replayability, while the real-time data visualizations make each session feel unique.
 
-## Context
-
-**Course:** 15-112 Fundamentals of Programming and Computer Science — term project final, Fall 2024.
-**Role:** solo.
-**Stack:** Python 3.6+, `cmu_graphics`, `Pillow`, `NumPy`.
+Solo term project final for 15-112 Fundamentals of Programming and Computer Science, Fall 2024. Built in Python 3.6+ with `cmu_graphics`, Pillow, and NumPy.
 
 ## Links
 
