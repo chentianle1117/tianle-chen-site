@@ -61,22 +61,9 @@ year: 2025
 
 > Browse academic research as a 3D landscape rather than a flat list. Papers positioned by metadata (year, citations, length); filter by topic; visualize citation networks; save + collect papers per user. Team project for Web App Dev, Spring 2025 — David as Product Owner.
 
-## Hook
-Academic search UIs are flat: a list of titles + abstracts, ordered by relevance. What if research discovery were *spatial* — papers as 3D objects you fly through, with citation edges connecting them, and year/citation-count/length driving position + size? Team 26's Web App Dev final project builds exactly that.
+Academic search UIs are flat — a list of titles and abstracts ordered by relevance. We wanted research discovery to be spatial: papers as 3D objects you fly through, citation edges connecting them, year and citation count and length driving position and size. This was the 17-637 Web Application Development team final, Spring 2025, built with two other students. I held the Product Owner sprint role — scope, sprint planning, product backlog — while teammates owned data scraping/database and UI/UX prototyping respectively.
 
-## Context
-
-**Course:** 17-637 Web Application Development, Spring 2025 — team final project.
-**Team of 3 (flat — no group leader).** Sprint roles were distributed Agile-style, not hierarchically:
-- **David Chen** (`davich2`) — held the Product Owner sprint role: scope, sprint planning, product backlog
-- **Graham** — Data Scraping & Database
-- **Sheen** — UI/UX Prototyping
-
-The "Product Owner" title is a sprint-level responsibility label (standard Scrum role), not a team-leadership designation — work division was peer-to-peer.
-
-**Planning artifacts in repo:**
-- `First-Sprint-Log.txt` — sprint roles, objectives, acceptance criteria
-- `Product-Backlog.txt` — full feature list
+Planning artifacts in the repo: `First-Sprint-Log.txt` (sprint roles, objectives, acceptance criteria) and `Product-Backlog.txt` (full feature list).
 
 ## Product backlog (from First-Sprint-Log)
 
@@ -97,18 +84,11 @@ The "Product Owner" title is a sprint-level responsibility label (standard Scrum
 
 ## Status
 
-**In-progress as of scan.** Only the Sprint 1 planning documents are detailed in the repo — README is a 1-line summary. Team roles + backlog set; implementation was underway.
-
-**David — confirm status:**
-- Did this project ship by end of semester?
-- Is there a demo deployment (Heroku / Railway / EC2)?
-- Final presentation slides?
+The Sprint 1 planning documents are the most detailed surviving artifact: team roles set, backlog locked, implementation underway by end of the documented period.
 
 ## Links
 
-- **GitHub repo lost** per David (previously `chentianle1117/s25_team_26`). This card is a placeholder based on local files until the repo is recovered or the project is reconstructed.
-- Local path: `W:\CMU_Academics\2025 Spring\17637 Web App Dev\s25_team_26\`
-- Related local folder: `Web-Dev-Paper-Visualizer/` (appears to be an older mirror/backup; contains `s25_team_26` subfolder)
+*Source repository not currently public.*
 
 ## Related cards
 
