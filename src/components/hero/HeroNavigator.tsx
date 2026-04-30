@@ -182,15 +182,24 @@ export default function HeroNavigator() {
         </div>
       </div>
       <style>{`
-        /* Round-9g: full-bleed split — sidebar and canvas fill the dark
-           band edge-to-edge, no inner padding. Eliminates the awkward
-           gutters that made the canvas look offset and the sidebar
-           floating. The canvas drives height via aspect-ratio, capped at
-           a sensible max so it doesn't sprawl on tall monitors. */
+        /* Round-9h (2026-04-30): the dark band remains full-bleed (so the
+           editorial border-top/bottom stretches edge-to-edge), but the
+           sidebar+canvas assembly is now centered inside a max-width
+           wrapper with consistent horizontal padding. Previously the
+           sidebar hugged the viewport-left on wide screens, biasing the
+           whole composition leftward. .hero-container also gets matching
+           top/bottom padding so the assembly has equal vertical breathing
+           room inside the dark band. */
+        .hero-container {
+          padding-block: clamp(1.5rem, 3vw, 3rem);
+        }
         .hero-split {
           display: flex;
           flex-direction: column;
           width: 100%;
+          max-width: 1480px;
+          margin-inline: auto;
+          padding-inline: clamp(1.5rem, 3vw, 3rem);
         }
         .hero-side  { width: 100%; }
         .hero-canvas { width: 100%; display: flex; }

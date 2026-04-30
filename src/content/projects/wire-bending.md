@@ -87,11 +87,7 @@ The system emphasizes **interactive fabrication without relying on robotic autom
 - Argues for MR as a bridge between digital craftsmanship and traditional making
 - Aligns with Prof. Noel's research on craft, making, and computational design pedagogy
 
-## Context
-
-**Course:** 48-736 Master Independent Study, Fall 2024.
-**Research with:** Prof. Vernelle Noel (architecture + craft / making).
-**Toolchain:** Grasshopper + Fologram + Microsoft HoloLens + Rhino.
+Independent Study research (48-736), Fall 2024, with Prof. Vernelle Noel (architecture + craft / making). Toolchain: Grasshopper, Fologram, Microsoft HoloLens, Rhino.
 
 ## Links
 

@@ -166,11 +166,6 @@ Despite its strengths, the project faced several technical constraints that limi
 - **Extended user studies.** Longer-term observation would provide a deeper understanding of how projections influence user behavior and perception. How might ambient projections alter a user's default interactions with their computer over time? How do others in the environment respond to or interact with the projections?
 - **Applications in design.** The framework has potential for use in creative workflows — designers could engage with the system using body movements, mouse inputs, and keyboard actions to generate design outputs in real time. This could shift the act of designing from a purely cognitive task to a more embodied, interactive practice.
 
-## Context
-
-**Course:** 48-652 Pixels Photons (Mapping & TouchDesigner) — final project, Fall 2024.
-**Team of 4 (flat — no group leader):** David Chen, Risa Xie, Carla, Leslie.
-
 ## Links
 
 - [Notion page (original write-up + all figures)](https://www.notion.so/chentianle1117/Design-the-Ambience-Expanding-Realities-Beyond-the-Screen-with-StreamDiffusion-and-MediaPipe-16933d12d95a80f49375c88692b3d308)

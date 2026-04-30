@@ -58,13 +58,9 @@ year: 2025
 
 ![hero](/assets/live-ai-feedback-design-assistant/hero.png)
 
-## Hook
-Most AI critics dump an unstructured blob of feedback. Live AI Feedback uses a **phased tool-calling workflow** — the AI calls specific tools (`ask_initial_questions`, `provide_feedback`, `request_summary`, `list_design_critiques`) at the right moments in a critique session. It watches your screen via the desktop capture API and delivers feedback grounded in what you're actually working on right now.
+Most AI critics dump an unstructured blob of feedback. Live AI Feedback uses a **phased tool-calling workflow** — the AI calls specific tools (`ask_initial_questions`, `provide_feedback`, `request_summary`, `list_design_critiques`) at the right moments in a critique session, and it watches your screen via the desktop capture API so the feedback stays grounded in what you're actually working on right now.
 
-## Context
-
-**Course:** 51-799 Graduate Design Independent Study, Spring 2025.
-**Collaboration:** Continuation of work with **Gati Aher** (MDes Design Studies). Gati is the upstream author; David joined for David's own Independent Study to extend the system and productionize it. The project sits within the "Design-Copilot" team GitHub org.
+This was 51-799 Graduate Design Independent Study, Spring 2025 — a continuation of upstream work with Gati Aher (MDes Design Studies). Gati is the original author of the system; I joined to extend it and productionize it during my own Independent Study, and the project lives under the "Design-Copilot" team org on GitHub.
 
 **Three-repo topology:**
 - **Upstream (Gati's original):** [`GatiAher/live_ai_feedack_react_electron`](https://github.com/GatiAher/live_ai_feedack_react_electron)

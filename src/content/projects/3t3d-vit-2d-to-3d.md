@@ -76,14 +76,9 @@ year: 2025
 
 ![architecture](/assets/3t3d-vit-2d-to-3d/arch_diagram.jpg)
 
-## Hook
-Designers think in sketches. Three orthographic napkin sketches (top, side, front) capture most of what a building wants to be. We asked: can a 2D-to-3D transformer produce a detailed 3D model from just those three inputs? **Answer: yes** — using DINOv2 multi-view embeddings + patch fusion + a custom transformer decoder that outputs triplane features. Output is full 3D geometry the designer can refine.
+Designers think in sketches. Three orthographic napkin sketches — top, side, front — capture most of what a building wants to be. We asked whether a 2D-to-3D transformer could produce a detailed 3D model from just those three inputs, and built one to find out: DINOv2 multi-view embeddings, patch fusion, and a custom transformer decoder that outputs triplane features the designer can refine downstream.
 
-## Context
-**Course:** 11-685 Introduction to Deep Learning, Spring 2025 — final project.
-**Team of 4 (flat — no group leader):** Graham Felton ([`1gfelton`](https://github.com/1gfelton), holder of the canonical public repo), **Chia Hui Yan**, **David Chen**, **Karthick Raja**. Work and responsibilities were distributed across all four; the repo living under Graham's account is a logistics choice, not a hierarchy.
-
-Note: this core trio (David + Chia + Karthick) reunited the following semester for the [[2025-Fall--l43d-cad-mllm|CAD-MLLM L43D project]] — 3T3D was the DL warm-up, L43D the multimodal sequel.
+This was the 11-685 Introduction to Deep Learning final project (Spring 2025), built with three other CMU students. The same core trio reunited in Fall 2025 for the [[2025-Fall--l43d-cad-mllm|CAD-MLLM L43D project]] — 3T3D was the DL warm-up, L43D the multimodal sequel.
 
 ## Architecture
 

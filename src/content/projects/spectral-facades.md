@@ -109,11 +109,7 @@ As the participant moves and changes hand gestures, the system immediately updat
 
 Spectral Facades demonstrates how generative AI can be used in real-time, interactive installations. By mapping human gestures and posture to diffusion weights and iteration counts, it blurs the boundary between participant and artwork — viewers *sculpt* architectural aesthetics on the fly. The approach offers a glimpse into a kind of generative media where human presence and embodied interaction directly shape design outputs rather than prompts alone.
 
-## Context
-
-**Course:** 48-652 Pixels Photons (Mapping & TouchDesigner), Fall 2024.
-**Team of 4 (flat — no group leader):** David Chen, Risa Xie, Carla, Leslie.
-**Prompt:** projection-mapping assignment — control-surface for interactive architectural imagery.
+Built for 48-652 Pixels Photons (Mapping & TouchDesigner), Fall 2024 — a projection-mapping assignment to design a control-surface for interactive architectural imagery.
 
 ## Links
 

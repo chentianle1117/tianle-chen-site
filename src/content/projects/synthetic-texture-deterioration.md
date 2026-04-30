@@ -75,11 +75,7 @@ The tool is interactive. It provides real-time feedback to designers as they app
 
 Self-described as exploratory / in-progress. The idea stands — *predictive material weathering as a design input* rather than a post-hoc render effect — but the quality bar for a production-ready tool isn't met yet. Card included as an attempt + idea worth revisiting in later thesis/material research.
 
-## Context
-
-**Course:** 48-736 Master Independent Study, Fall 2024.
-**Role:** solo.
-**Full progress report:** `/assets/synthetic-texture-deterioration/progress-report.pdf` (2.1 MB — Independent Study Progress Report).
+Solo work for 48-736 Master Independent Study, Fall 2024. Full progress report at `/assets/synthetic-texture-deterioration/progress-report.pdf`.
 
 ## Links
 
