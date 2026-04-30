@@ -18,7 +18,7 @@ hero_image: null
 images: []
 local_path: W:\CMU_Academics\2025 Spring\17637 Web App Dev\s25_team_26
 priority: standard
-publish: true
+publish: false
 role: team-member
 semester: Spring 2025
 slug: s25-team-26-paper-viz

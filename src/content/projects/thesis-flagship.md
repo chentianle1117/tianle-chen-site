@@ -1,6 +1,6 @@
 ---
 _hero_curated: true
-advisor: TBD (thesis committee)
+advisor: Prof. Daragh Byrne (chair), Prof. Daniel Cardoso Llach
 artifacts:
 - /assets/thesis-flagship/pre-thesis-I-David_Chen_Game_Plan_Writeup_Submission.pdf
 - /assets/thesis-flagship/pre-thesis-II-A11*
