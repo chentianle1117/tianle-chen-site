@@ -19,6 +19,7 @@
  * Mobile/narrow viewports stack the rail above the canvas.
  */
 
+import type { ReactNode } from "react";
 import { useMemo, useState } from "react";
 import { useNavStore, type LayoutKey } from "../../lib/nav-store";
 import type { ThesisAxisPreset } from "../../lib/layoutData";
@@ -56,7 +57,7 @@ const LAYOUTS: Array<{
   key: LayoutKey;
   label: string;
   sub: string;
-  icon: JSX.Element;
+  icon: ReactNode;
 }> = [
   {
     key: "thesis",
