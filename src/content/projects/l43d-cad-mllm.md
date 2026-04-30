@@ -78,13 +78,9 @@ year: 2025
 
 [Download full poster (PDF) ↗](/assets/l43d-cad-mllm/poster.pdf)
 
-## Hook
-One LLM, three modalities (**text**, **point cloud**, **image**), any combination. Fine-tuned Vicuna + LoRA on a 10% DeepCAD subset amplified 3.37× through our **Intelligent Truncation algorithm** — which generates valid partial CAD sequences by recursively tracing entity dependencies. Result: 197,546 training examples covering all modality combinations, ~60% STEP-file generation success, >70% CAD-sequence accuracy on successful outputs.
+One LLM, three modalities — text, point cloud, image — and any combination of the three. We fine-tuned Vicuna with LoRA on a 10% DeepCAD subset amplified 3.37× through an **Intelligent Truncation algorithm** that generates valid partial CAD sequences by recursively tracing entity dependencies. The result: 197,546 training examples covering all modality combinations, ~60% STEP-file generation success, and >70% CAD-sequence accuracy on the outputs that compiled.
 
-## Context
-**Course:** 16-825 Learning for 3D Vision, Fall 2025 — final project.
-**Team 21 (flat — no group leader):** Yizhuo Di (`veoery`, holder of the canonical team repo), **David Chen**, Karthick Raja, Chia Hui Yan. Work was distributed across all four; the repo living under Yizhuo's account is a logistics choice, not a hierarchy.
-**David's primary contribution:** the autocompletion extension on branches `autocomplete` and `autocomplete_2` — dynamic masking during training so the model learns to complete partial CAD sequences. Published fine-tuned model to HuggingFace as [`chentianle1117/autocomplete-stage3-8000`](https://huggingface.co/chentianle1117/autocomplete-stage3-8000).
+The project was the 16-825 Learning for 3D Vision final (Fall 2025), built with three other students at CMU. My specific contribution was the autocompletion extension on the `autocomplete` and `autocomplete_2` branches — dynamic masking during training so the model learns to complete partial CAD sequences. The fine-tuned weights are published as [`chentianle1117/autocomplete-stage3-8000`](https://huggingface.co/chentianle1117/autocomplete-stage3-8000) on HuggingFace.
 
 ## Dataset — 3.37× amplification via intelligent truncation
 
