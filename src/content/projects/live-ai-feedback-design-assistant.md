@@ -20,7 +20,7 @@ priority: standard
 publish: false
 related_cards:
 - '[[2025-Fall--semantic-canvas-thesis-tool]]'
-role: contributor
+role: technical-lead
 semester: Spring 2025
 slug: live-ai-feedback-design-assistant
 stack:

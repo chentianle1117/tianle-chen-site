@@ -27,7 +27,6 @@ local_path: W:\CMU_Academics\2025 Spring\62706 Gen Game\Aurora Citadel
 local_path_submission: W:\CMU_Academics\2025 Spring\62706 Gen Game\Final_Submission_Citadel
 priority: standard
 publish: true
-role: team-member
 semester: Spring 2025
 slug: aurora-citadel-gen-game
 stack:
@@ -48,7 +47,6 @@ tags:
 - modular-assets
 - game-design
 - brutalist-architecture
-team_size: '>1'
 title: Aurora Citadel — Procedural Generative Game (Unreal Engine 5)
 type: portfolio-project
 year: 2025
