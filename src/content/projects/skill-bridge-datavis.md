@@ -68,7 +68,7 @@ year: 2024
 
 ![dashboard hero](/assets/skill-bridge-datavis/dashboard-hero.gif)
 
-## Context — the dilemma for cross-field job seekers
+## The dilemma for cross-field job seekers
 
 The labor market is evolving at an unprecedented pace. Emerging technologies and shifting demands are driving individuals to acquire new skills and transition into unfamiliar fields. This phenomenon is particularly evident among cross-field job seekers — those venturing into careers that differ significantly from their previous experience. While these individuals bring diverse perspectives and creativity, they often face challenges in aligning their skills with job requirements and navigating the vast job landscape.
 
@@ -129,11 +129,7 @@ This project combined personal experience and technical collaboration to address
 
 The project deviated from our original plan to analyze long-term trends due to lack of comprehensive historical data, leading us to focus on high-quality data from the most recent year. This shift provided a clear snapshot of the current job landscape. Looking back, better upfront planning for consistent data sources and reusable components would have streamlined the process. Moving forward, we aim to apply these lessons in future projects, emphasizing a unified global design and deepening our understanding of tools like Svelte and JavaScript for more efficient collaboration and storytelling.
 
-## Context
-
-**Course:** 05-619 Data Visualization, Fall 2024.
-**Team of 2 (flat — no group leader):** David Chen, Risa Xie.
-**Stack:** Svelte + D3.js + LinkedIn 2023 job dataset.
+Built for 05-619 Data Visualization, Fall 2024 — Svelte, D3.js, LinkedIn 2023 job dataset.
 
 ## Links
 
