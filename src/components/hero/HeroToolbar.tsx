@@ -41,7 +41,7 @@ const LAYOUTS: Array<{ key: LayoutKey; label: string }> = [
 
 const LAYOUT_BLURB: Record<LayoutKey, string> = {
   thesis:
-    "Pick any two semantic axes (click an axis label below). Tiles re-sort by dot-product against your concept vectors.",
+    "Pick any two semantic axes — click the X / Y axis label on the plot to swap. Tiles re-sort by dot-product against your concept vectors.",
   umap: "Non-linear neighborhood embedding. Similar projects cluster automatically.",
   pca: "First two principal components — the directions of maximum variance in the embedding.",
   metadata: "No ML — projects laid out by year × domain (architecture vs ML/AI).",

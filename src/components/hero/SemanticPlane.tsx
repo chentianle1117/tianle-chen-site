@@ -29,6 +29,7 @@ import {
   useRef,
   useState,
 } from "react";
+import { createPortal } from "react-dom";
 
 import {
   type LayoutDataBundle,
@@ -582,8 +583,11 @@ interface AxisDropdownProps {
   onPick: (key: string) => void;
   /** Vertical mode renders the popover anchored differently (Y axis is
    *  rotated -90° around its own center; the popover must escape the
-   *  rotation by living in a non-rotated wrapper higher up). */
+   *  rotation by being portaled to <body>). */
   vertical?: boolean;
+  /** Short prefix shown inside the button (e.g. "X" or "Y") so users
+   *  recognize this as a configurable axis. */
+  axisLabel?: string;
 }
 
 function AxisDropdown({
@@ -592,28 +596,53 @@ function AxisDropdown({
   currentKey,
   onPick,
   vertical = false,
+  axisLabel,
 }: AxisDropdownProps) {
   const [open, setOpen] = useState(false);
+  const [anchor, setAnchor] = useState<{ left: number; top: number; width: number } | null>(null);
   const wrapperRef = useRef<HTMLDivElement | null>(null);
+  const buttonRef = useRef<HTMLButtonElement | null>(null);
+  const popoverRef = useRef<HTMLDivElement | null>(null);
   const current = presets[currentKey];
   const leftLabel = (current?.labels?.[1] ?? "−").toUpperCase();
   const rightLabel = (current?.labels?.[0] ?? "+").toUpperCase();
 
-  // Close on outside click / escape.
+  // Recompute popover anchor whenever it opens — uses viewport coords from
+  // getBoundingClientRect so the menu can be portaled to <body> and escape
+  // any rotated parent (Y axis is rotated -90deg).
+  useLayoutEffect(() => {
+    if (!open || !buttonRef.current) return;
+    const rect = buttonRef.current.getBoundingClientRect();
+    setAnchor({
+      left: rect.left + rect.width / 2,
+      top: vertical ? rect.bottom + 8 : rect.top - 8,
+      width: rect.width,
+    });
+  }, [open, vertical]);
+
+  // Close on outside click / escape. Outside = click neither in the
+  // anchor button nor in the portaled popover.
   useEffect(() => {
     if (!open) return;
     function onDoc(e: MouseEvent) {
-      if (!wrapperRef.current) return;
-      if (!wrapperRef.current.contains(e.target as Node)) setOpen(false);
+      const inAnchor = wrapperRef.current?.contains(e.target as Node) ?? false;
+      const inPopover = popoverRef.current?.contains(e.target as Node) ?? false;
+      if (!inAnchor && !inPopover) setOpen(false);
     }
     function onKey(e: KeyboardEvent) {
       if (e.key === "Escape") setOpen(false);
     }
     document.addEventListener("mousedown", onDoc);
     document.addEventListener("keydown", onKey);
+    // Also close on resize/scroll — the portal anchor would drift otherwise.
+    function onView() { setOpen(false); }
+    window.addEventListener("resize", onView);
+    window.addEventListener("scroll", onView, true);
     return () => {
       document.removeEventListener("mousedown", onDoc);
       document.removeEventListener("keydown", onKey);
+      window.removeEventListener("resize", onView);
+      window.removeEventListener("scroll", onView, true);
     };
   }, [open]);
 
@@ -628,6 +657,7 @@ function AxisDropdown({
       }}
     >
       <button
+        ref={buttonRef}
         type="button"
         onClick={() => setOpen((v) => !v)}
         aria-haspopup="listbox"
@@ -644,30 +674,50 @@ function AxisDropdown({
           textTransform: "uppercase",
           color: open ? "#cf7f54" : LABEL_COLOR,
           background: open
-            ? "rgba(207, 127, 84, 0.10)"
-            : "rgba(11, 13, 15, 0.55)",
-          border: `1px solid ${open ? "#cf7f54" : "rgba(94, 99, 107, 0.35)"}`,
+            ? "rgba(207, 127, 84, 0.12)"
+            : "rgba(11, 13, 15, 0.65)",
+          border: `1px solid ${open ? "#cf7f54" : "rgba(207, 127, 84, 0.40)"}`,
           borderRadius: 4,
-          padding: "5px 12px",
+          padding: "6px 14px",
           cursor: "pointer",
           whiteSpace: "nowrap",
           transition: "all 160ms ease",
+          boxShadow: open ? "0 0 0 3px rgba(207, 127, 84, 0.12)" : "none",
         }}
         onMouseEnter={(e) => {
           if (!open) {
-            (e.currentTarget as HTMLButtonElement).style.borderColor =
-              "rgba(207, 127, 84, 0.55)";
-            (e.currentTarget as HTMLButtonElement).style.color = "#e6e7e9";
+            (e.currentTarget as HTMLButtonElement).style.borderColor = "#cf7f54";
+            (e.currentTarget as HTMLButtonElement).style.color = "#cf7f54";
+            (e.currentTarget as HTMLButtonElement).style.background =
+              "rgba(207, 127, 84, 0.08)";
           }
         }}
         onMouseLeave={(e) => {
           if (!open) {
             (e.currentTarget as HTMLButtonElement).style.borderColor =
-              "rgba(94, 99, 107, 0.35)";
+              "rgba(207, 127, 84, 0.40)";
             (e.currentTarget as HTMLButtonElement).style.color = LABEL_COLOR;
+            (e.currentTarget as HTMLButtonElement).style.background =
+              "rgba(11, 13, 15, 0.65)";
           }
         }}
       >
+        {axisLabel && (
+          <span
+            aria-hidden
+            style={{
+              color: "#cf7f54",
+              fontSize: 9,
+              letterSpacing: "0.20em",
+              padding: "1px 6px",
+              border: "1px solid rgba(207, 127, 84, 0.45)",
+              borderRadius: 2,
+              marginRight: 2,
+            }}
+          >
+            {axisLabel}
+          </span>
+        )}
         <span>{leftLabel}</span>
         <span
           aria-hidden
@@ -687,8 +737,8 @@ function AxisDropdown({
           aria-hidden
           style={{
             color: "#cf7f54",
-            fontSize: 9,
-            marginLeft: 4,
+            fontSize: 11,
+            marginLeft: 6,
             transition: "transform 200ms ease",
             transform: open ? "rotate(180deg)" : "rotate(0deg)",
             display: "inline-block",
@@ -698,27 +748,24 @@ function AxisDropdown({
         </span>
       </button>
 
-      {open && (
+      {open && anchor && typeof document !== "undefined" && createPortal(
         <div
+          ref={popoverRef}
           role="listbox"
           style={{
-            position: "absolute",
-            // For X (horizontal) axis the popover drops up (it sits below
-            // the plot, so opening downward would push offscreen). For Y
-            // axis the parent is rotated -90deg, so visually the menu
-            // appears to the right of the (rotated) label, which is
-            // actually below the un-rotated rendering — fine.
-            bottom: vertical ? "auto" : "calc(100% + 8px)",
-            top: vertical ? "calc(100% + 8px)" : "auto",
-            left: "50%",
-            transform: "translateX(-50%)",
+            position: "fixed",
+            left: anchor.left,
+            top: anchor.top,
+            transform: vertical
+              ? "translate(-50%, 0%)"
+              : "translate(-50%, -100%)",
             background: "rgba(11, 13, 15, 0.97)",
             border: "1px solid rgba(94, 99, 107, 0.55)",
             borderRadius: 4,
             boxShadow: "0 12px 28px -8px rgba(0,0,0,0.7)",
             padding: 4,
-            minWidth: 320,
-            zIndex: 60,
+            minWidth: 360,
+            zIndex: 9999,
             backdropFilter: "blur(8px)",
             WebkitBackdropFilter: "blur(8px)",
             display: "flex",
@@ -788,7 +835,8 @@ function AxisDropdown({
               </button>
             );
           })}
-        </div>
+        </div>,
+        document.body,
       )}
     </div>
   );
@@ -927,6 +975,7 @@ function PlotFrame({
             presetKeys={presetKeys}
             currentKey={thesisAxes[0]}
             onPick={(k) => setThesisAxis(0, k)}
+            axisLabel="X"
           />
         ) : (
           <div
@@ -978,6 +1027,7 @@ function PlotFrame({
             currentKey={thesisAxes[1]}
             onPick={(k) => setThesisAxis(1, k)}
             vertical
+            axisLabel="Y"
           />
         ) : (
           <div
