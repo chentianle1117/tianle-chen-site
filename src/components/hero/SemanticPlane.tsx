@@ -1030,7 +1030,7 @@ function Sprite({
   // is approximated by half the average tile width — the wrapper itself
   // is what the cursor leaves, and the bridge spans from wrapper edge to
   // card edge. Tile width adapts to title length but caps at TILE_MAX_W.
-  const TILE_MAX_W = 168;
+  const TILE_MAX_W = 148;
   const TILE_HALF_APPROX = 50; // approx half-width used for card offset
   const CARD_OFFSET_PX = 92;
   const BRIDGE_WIDTH = CARD_OFFSET_PX - TILE_HALF_APPROX;
@@ -1087,7 +1087,7 @@ function Sprite({
         style={{
           fontFamily:
             "'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace",
-          fontSize: isHovered ? 12 : 11,
+          fontSize: isHovered ? 11 : 10,
           fontWeight: isHovered ? 600 : ringOpacity > 0.7 ? 500 : 400,
           letterSpacing: "0.02em",
           lineHeight: 1.25,

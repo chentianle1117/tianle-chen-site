@@ -197,7 +197,7 @@ export default function HeroNavigator() {
           display: flex;
           flex-direction: column;
           width: 100%;
-          max-width: 1480px;
+          max-width: 1800px;
           margin-inline: auto;
           padding-inline: clamp(1.5rem, 3vw, 3rem);
         }
