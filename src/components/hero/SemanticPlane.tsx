@@ -249,6 +249,7 @@ export default function SemanticPlane({
 }: SemanticPlaneProps) {
   const activeLayout = useNavStore((s) => s.activeLayout);
   const thesisAxes = useNavStore((s) => s.thesisAxes);
+  const setThesisAxis = useNavStore((s) => s.setThesisAxis);
   const hoveredSlug = useNavStore((s) => s.hoveredSlug);
   const setHovered = useNavStore((s) => s.setHovered);
 
@@ -478,7 +479,13 @@ export default function SemanticPlane({
         }
         style={fillContainer ? { height: "100%" } : { maxWidth: "1280px" }}
       >
-        <PlotFrame labels={labels} />
+        <PlotFrame
+          labels={labels}
+          activeLayout={activeLayout}
+          presets={presets}
+          thesisAxes={thesisAxes}
+          setThesisAxis={setThesisAxis}
+        />
 
         {/* Sprite layer — absolute-positioned over the plot.
             z-index 10 keeps sprites BELOW the HTML overlays (z>=30) so
@@ -544,11 +551,261 @@ export default function SemanticPlane({
 // Renders all 4 corner labels (eval #9, #54) plus a strengthened grid.
 // ──────────────────────────────────────────────────────────────────────────
 
+// Round-9q: ONLY these four presets surface as clickable axis options.
+// Same allow-list as SidePanel had (the four with strongest empirical
+// spread + clearest semantics on this corpus).
+const ALLOWED_AXIS_PRESETS = new Set([
+  "x_ml_algorithm",
+  "x_artifact_system",
+  "z_screen_space",
+  "x_aesthetic_analytical",
+]);
+
 interface PlotFrameProps {
   labels: AxisLabelSet;
+  activeLayout: LayoutKey;
+  presets: Record<string, ThesisAxisPreset>;
+  thesisAxes: [string, string, string];
+  setThesisAxis: (idx: 0 | 1, key: string) => void;
 }
 
-function PlotFrame({ labels }: PlotFrameProps) {
+/**
+ * AxisDropdown — clickable axis-title with popover menu. Used for X
+ * and Y in SEMANTIC mode. Visually mimics the static label (so the
+ * affordance reads as "this is THE axis title, click to change") but
+ * has a hover/focus ring + chevron to telegraph interactivity.
+ */
+interface AxisDropdownProps {
+  presets: Record<string, ThesisAxisPreset>;
+  presetKeys: string[];
+  currentKey: string;
+  onPick: (key: string) => void;
+  /** Vertical mode renders the popover anchored differently (Y axis is
+   *  rotated -90° around its own center; the popover must escape the
+   *  rotation by living in a non-rotated wrapper higher up). */
+  vertical?: boolean;
+}
+
+function AxisDropdown({
+  presets,
+  presetKeys,
+  currentKey,
+  onPick,
+  vertical = false,
+}: AxisDropdownProps) {
+  const [open, setOpen] = useState(false);
+  const wrapperRef = useRef<HTMLDivElement | null>(null);
+  const current = presets[currentKey];
+  const leftLabel = (current?.labels?.[1] ?? "−").toUpperCase();
+  const rightLabel = (current?.labels?.[0] ?? "+").toUpperCase();
+
+  // Close on outside click / escape.
+  useEffect(() => {
+    if (!open) return;
+    function onDoc(e: MouseEvent) {
+      if (!wrapperRef.current) return;
+      if (!wrapperRef.current.contains(e.target as Node)) setOpen(false);
+    }
+    function onKey(e: KeyboardEvent) {
+      if (e.key === "Escape") setOpen(false);
+    }
+    document.addEventListener("mousedown", onDoc);
+    document.addEventListener("keydown", onKey);
+    return () => {
+      document.removeEventListener("mousedown", onDoc);
+      document.removeEventListener("keydown", onKey);
+    };
+  }, [open]);
+
+  return (
+    <div
+      ref={wrapperRef}
+      style={{
+        position: "relative",
+        display: "inline-flex",
+        alignItems: "center",
+        pointerEvents: "auto",
+      }}
+    >
+      <button
+        type="button"
+        onClick={() => setOpen((v) => !v)}
+        aria-haspopup="listbox"
+        aria-expanded={open}
+        style={{
+          display: "inline-flex",
+          alignItems: "center",
+          gap: 14,
+          fontFamily:
+            "'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace",
+          fontSize: "12px",
+          fontWeight: 500,
+          letterSpacing: "0.14em",
+          textTransform: "uppercase",
+          color: open ? "#cf7f54" : LABEL_COLOR,
+          background: open
+            ? "rgba(207, 127, 84, 0.10)"
+            : "rgba(11, 13, 15, 0.55)",
+          border: `1px solid ${open ? "#cf7f54" : "rgba(94, 99, 107, 0.35)"}`,
+          borderRadius: 4,
+          padding: "5px 12px",
+          cursor: "pointer",
+          whiteSpace: "nowrap",
+          transition: "all 160ms ease",
+        }}
+        onMouseEnter={(e) => {
+          if (!open) {
+            (e.currentTarget as HTMLButtonElement).style.borderColor =
+              "rgba(207, 127, 84, 0.55)";
+            (e.currentTarget as HTMLButtonElement).style.color = "#e6e7e9";
+          }
+        }}
+        onMouseLeave={(e) => {
+          if (!open) {
+            (e.currentTarget as HTMLButtonElement).style.borderColor =
+              "rgba(94, 99, 107, 0.35)";
+            (e.currentTarget as HTMLButtonElement).style.color = LABEL_COLOR;
+          }
+        }}
+      >
+        <span>{leftLabel}</span>
+        <span
+          aria-hidden
+          style={{
+            color: "#cf7f54",
+            fontSize: 18,
+            fontWeight: 500,
+            lineHeight: 1,
+            letterSpacing: "-0.05em",
+            padding: "0 4px",
+          }}
+        >
+          ←————→
+        </span>
+        <span>{rightLabel}</span>
+        <span
+          aria-hidden
+          style={{
+            color: "#cf7f54",
+            fontSize: 9,
+            marginLeft: 4,
+            transition: "transform 200ms ease",
+            transform: open ? "rotate(180deg)" : "rotate(0deg)",
+            display: "inline-block",
+          }}
+        >
+          ▼
+        </span>
+      </button>
+
+      {open && (
+        <div
+          role="listbox"
+          style={{
+            position: "absolute",
+            // For X (horizontal) axis the popover drops up (it sits below
+            // the plot, so opening downward would push offscreen). For Y
+            // axis the parent is rotated -90deg, so visually the menu
+            // appears to the right of the (rotated) label, which is
+            // actually below the un-rotated rendering — fine.
+            bottom: vertical ? "auto" : "calc(100% + 8px)",
+            top: vertical ? "calc(100% + 8px)" : "auto",
+            left: "50%",
+            transform: "translateX(-50%)",
+            background: "rgba(11, 13, 15, 0.97)",
+            border: "1px solid rgba(94, 99, 107, 0.55)",
+            borderRadius: 4,
+            boxShadow: "0 12px 28px -8px rgba(0,0,0,0.7)",
+            padding: 4,
+            minWidth: 320,
+            zIndex: 60,
+            backdropFilter: "blur(8px)",
+            WebkitBackdropFilter: "blur(8px)",
+            display: "flex",
+            flexDirection: "column",
+            gap: 2,
+          }}
+        >
+          {presetKeys.map((key) => {
+            const p = presets[key];
+            const active = key === currentKey;
+            return (
+              <button
+                key={key}
+                role="option"
+                aria-selected={active}
+                type="button"
+                onClick={() => {
+                  onPick(key);
+                  setOpen(false);
+                }}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 10,
+                  fontFamily:
+                    "'IBM Plex Mono', ui-monospace, monospace",
+                  fontSize: 11,
+                  letterSpacing: "0.06em",
+                  textTransform: "uppercase",
+                  textAlign: "left",
+                  padding: "8px 10px",
+                  background: active
+                    ? "rgba(207, 127, 84, 0.16)"
+                    : "transparent",
+                  border: `1px solid ${active ? "#cf7f54" : "transparent"}`,
+                  borderRadius: 3,
+                  color: active ? "#cf7f54" : "#d8dadd",
+                  cursor: "pointer",
+                  whiteSpace: "nowrap",
+                  transition: "all 140ms ease",
+                }}
+                onMouseEnter={(e) => {
+                  if (!active) {
+                    (e.currentTarget as HTMLButtonElement).style.background =
+                      "rgba(94, 99, 107, 0.18)";
+                  }
+                }}
+                onMouseLeave={(e) => {
+                  if (!active) {
+                    (e.currentTarget as HTMLButtonElement).style.background =
+                      "transparent";
+                  }
+                }}
+              >
+                <span style={{ flex: 1, textTransform: "uppercase" }}>
+                  {(p?.labels?.[1] ?? "").toUpperCase()}
+                </span>
+                <span
+                  aria-hidden
+                  style={{ color: "#cf7f54", fontSize: 14, padding: "0 4px" }}
+                >
+                  ←→
+                </span>
+                <span style={{ flex: 1, textTransform: "uppercase" }}>
+                  {(p?.labels?.[0] ?? "").toUpperCase()}
+                </span>
+              </button>
+            );
+          })}
+        </div>
+      )}
+    </div>
+  );
+}
+
+function PlotFrame({
+  labels,
+  activeLayout,
+  presets,
+  thesisAxes,
+  setThesisAxis,
+}: PlotFrameProps) {
+  const presetKeys = useMemo(
+    () => Object.keys(presets).filter((k) => ALLOWED_AXIS_PRESETS.has(k)),
+    [presets],
+  );
+  const isInteractive = activeLayout === "thesis";
   const TICKS = 5;
   // Spread evenly over [0, 1] inclusive of both ends.
   const tickPositions = Array.from(
@@ -651,71 +908,105 @@ function PlotFrame({ labels }: PlotFrameProps) {
           A long arrow (`←———→`) between the two pole names makes the
           axis direction unmistakable at a glance. */}
 
-      {/* X axis title — centered along the bottom edge, below plot rim. */}
+      {/* X axis title — centered along the bottom edge, below plot rim.
+          In SEMANTIC mode this is an interactive dropdown; in other
+          modes it falls back to a plain label since the axes are
+          algorithm-determined. */}
       <div
         style={{
-          ...labelStyle,
+          position: "absolute",
           left: "50%",
-          top: "calc(100% - var(--hero-plane-pad, 64px) + 16px)",
+          top: "calc(100% - var(--hero-plane-pad, 64px) + 14px)",
           transform: "translateX(-50%)",
-          gap: 14,
-          fontSize: "12px",
+          pointerEvents: isInteractive ? "auto" : "none",
         }}
       >
-        <span>{labels.xLeft}</span>
-        <span
-          aria-hidden
-          style={{
-            color: "#cf7f54",
-            fontSize: 18,
-            fontWeight: 500,
-            lineHeight: 1,
-            letterSpacing: "-0.05em",
-            fontFamily:
-              "'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace",
-            padding: "0 4px",
-          }}
-        >
-          ←————→
-        </span>
-        <span>{labels.xRight}</span>
+        {isInteractive ? (
+          <AxisDropdown
+            presets={presets}
+            presetKeys={presetKeys}
+            currentKey={thesisAxes[0]}
+            onPick={(k) => setThesisAxis(0, k)}
+          />
+        ) : (
+          <div
+            style={{
+              ...labelStyle,
+              gap: 14,
+              fontSize: "12px",
+              position: "static",
+            }}
+          >
+            <span>{labels.xLeft}</span>
+            <span
+              aria-hidden
+              style={{
+                color: "#cf7f54",
+                fontSize: 18,
+                fontWeight: 500,
+                lineHeight: 1,
+                letterSpacing: "-0.05em",
+                fontFamily:
+                  "'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace",
+                padding: "0 4px",
+              }}
+            >
+              ←————→
+            </span>
+            <span>{labels.xRight}</span>
+          </div>
+        )}
       </div>
 
       {/* Y axis title — centered along the left edge, OUTSIDE the plot rim,
-          rotated -90° so text reads bottom-to-top. transform combines a
-          translate(-50%, -50%) for centering with rotate(-90deg) for the
-          orientation; the order means the visual center of the rotated
-          label ends up exactly at (left, 50%). The source string is
-          ordered "yBottom ←———→ yTop" so post-rotation the yTop label
-          appears at the TOP of the visual axis. */}
+          rotated -90° so text reads bottom-to-top. In SEMANTIC mode this
+          is an interactive dropdown; same fallback as X for other modes. */}
       <div
         style={{
-          ...labelStyle,
+          position: "absolute",
           left: "calc(var(--hero-plane-pad, 64px) - 18px)",
           top: "50%",
           transform: "translate(-50%, -50%) rotate(-90deg)",
           transformOrigin: "center center",
-          gap: 14,
-          fontSize: "12px",
+          pointerEvents: isInteractive ? "auto" : "none",
         }}
       >
-        <span>{labels.yBottom}</span>
-        <span
-          aria-hidden
-          style={{
-            color: "#cf7f54",
-            fontSize: 18,
-            fontWeight: 500,
-            lineHeight: 1,
-            letterSpacing: "-0.05em",
-            fontFamily:
-              "'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace",
-            padding: "0 4px",
-          }}
-        >
-          ←————→
-        </span>
-        <span>{labels.yTop}</span>
+        {isInteractive ? (
+          <AxisDropdown
+            presets={presets}
+            presetKeys={presetKeys}
+            currentKey={thesisAxes[1]}
+            onPick={(k) => setThesisAxis(1, k)}
+            vertical
+          />
+        ) : (
+          <div
+            style={{
+              ...labelStyle,
+              gap: 14,
+              fontSize: "12px",
+              position: "static",
+            }}
+          >
+            <span>{labels.yBottom}</span>
+            <span
+              aria-hidden
+              style={{
+                color: "#cf7f54",
+                fontSize: 18,
+                fontWeight: 500,
+                lineHeight: 1,
+                letterSpacing: "-0.05em",
+                fontFamily:
+                  "'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace",
+                padding: "0 4px",
+              }}
+            >
+              ←————→
+            </span>
+            <span>{labels.yTop}</span>
+          </div>
+        )}
       </div>
 
       {/* Subtitle (top-right) — only when not reserving for ModePanel. */}

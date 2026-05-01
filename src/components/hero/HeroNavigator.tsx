@@ -35,7 +35,18 @@ import {
 
 import SemanticPlane from "./SemanticPlane";
 import MobileStrip from "./MobileStrip";
-import SidePanel from "./SidePanel";
+import HeroToolbar from "./HeroToolbar";
+import HeroDrawer from "./HeroDrawer";
+
+// Round-9q: same allow-list as the old SidePanel — only these four
+// axis presets surface in the dropdowns (strongest spread + clearest
+// semantics on this corpus).
+const HERO_TOOLBAR_PRESETS = new Set([
+  "x_ml_algorithm",
+  "x_artifact_system",
+  "z_screen_space",
+  "x_aesthetic_analytical",
+]);
 
 // Round-8b: dropped 3D entirely. The toggle was confusing (most visitors
 // never used it), and the latent-space scatter is best read at 2D + hover-
@@ -169,85 +180,55 @@ export default function HeroNavigator() {
         borderBottom: "1px solid rgba(94, 99, 107, 0.40)",
       }}
     >
-      <div className="hero-split">
-        <div className="hero-side">
-          <SidePanel
-            presets={data.layouts.thesis_axes_cache}
-            count={data.embeddings.projects.length}
-            projects={data.embeddings.projects}
-          />
-        </div>
+      <div className="hero-stack">
+        <HeroToolbar
+          presetKeys={Object.keys(data.layouts.thesis_axes_cache).filter((k) =>
+            HERO_TOOLBAR_PRESETS.has(k),
+          )}
+          projects={data.embeddings.projects}
+        />
         <div className="hero-canvas">
           <SemanticPlane data={data} fillContainer />
         </div>
+        <HeroDrawer
+          presets={data.layouts.thesis_axes_cache}
+          count={data.embeddings.projects.length}
+        />
       </div>
       <style>{`
-        /* Round-9h (2026-04-30): the dark band remains full-bleed (so the
-           editorial border-top/bottom stretches edge-to-edge), but the
-           sidebar+canvas assembly is now centered inside a max-width
-           wrapper with consistent horizontal padding. Previously the
-           sidebar hugged the viewport-left on wide screens, biasing the
-           whole composition leftward. .hero-container also gets matching
-           top/bottom padding so the assembly has equal vertical breathing
-           room inside the dark band. */
+        /* Round-9q (2026-04-30): full-width stacked layout. Top toolbar
+           (mode picker, categories, randomize), full-width canvas with
+           interactive axis dropdowns at the plot edges, then a
+           collapsible drawer below for the projection diagram. Frees
+           the canvas to claim the full container width — the side rail
+           was eating ~30% on wide monitors and pinching the plot. */
         .hero-container {
           padding-block: clamp(1.5rem, 3vw, 3rem);
         }
-        .hero-split {
+        .hero-stack {
           display: flex;
           flex-direction: column;
           width: 100%;
-          max-width: 1800px;
+          max-width: 2000px;
           margin-inline: auto;
           padding-inline: clamp(1.5rem, 3vw, 3rem);
         }
-        .hero-side  { width: 100%; }
-        /* Stacked (mobile/narrow) layout: canvas needs an explicit height
-           or the projection collapses to ~0px and all tiles cram into a
-           horizontal strip. clamp keeps it short enough to share a phone
-           viewport with the sidebar above without forcing huge scroll. */
         .hero-canvas {
           width: 100%;
           display: flex;
-          height: clamp(560px, 75vh, 760px);
+          /* Canvas height scales with viewport; tighter floor than before
+             since the toolbar + drawer-collapsed header eat ~80px above. */
+          height: clamp(560px, 78vh, 1080px);
         }
         .hero-canvas > * { width: 100%; }
-        /* Side-by-side starts earlier (was 1024 -> 900) so 1280-class
-           laptops always get the sidebar+canvas row layout, not the
-           stacked one. */
-        @media (min-width: 900px) {
-          .hero-split {
-            flex-direction: row;
-            align-items: stretch;
-          }
-          .hero-side {
-            flex: 0 0 360px;
-            max-width: 360px;
-            border-right: 1px solid rgba(94, 99, 107, 0.30);
-          }
-          .hero-canvas {
-            flex: 1 1 auto;
-            min-width: 0;
-            /* Tall canvas: scales with viewport so it dominates the page,
-               clamped between 640px (short laptops) and 1080px (big
-               monitors). 80vh feels like "almost full screen" without
-               forcing the user to scroll a fixed amount past the band. */
-            height: clamp(640px, 80vh, 1080px);
-          }
-        }
         @media (min-width: 1280px) {
-          .hero-side {
-            flex-basis: 420px;
-            max-width: 420px;
-          }
           .hero-canvas {
-            height: clamp(720px, 82vh, 1080px);
+            height: clamp(680px, 80vh, 1080px);
           }
         }
         @media (min-width: 1440px) {
-          .hero-side {
-            flex-basis: 480px;
-            max-width: 480px;
+          .hero-canvas {
+            height: clamp(720px, 82vh, 1080px);
           }
         }
       `}</style>
