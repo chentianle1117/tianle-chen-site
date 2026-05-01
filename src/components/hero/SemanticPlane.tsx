@@ -956,107 +956,66 @@ function PlotFrame({
           A long arrow (`←———→`) between the two pole names makes the
           axis direction unmistakable at a glance. */}
 
-      {/* X axis title — centered along the bottom edge, below plot rim.
-          In SEMANTIC mode this is an interactive dropdown; in other
-          modes it falls back to a plain label since the axes are
-          algorithm-determined. */}
+      {/* X axis title — centered along the bottom edge, below plot rim. */}
       <div
         style={{
-          position: "absolute",
+          ...labelStyle,
           left: "50%",
-          top: "calc(100% - var(--hero-plane-pad, 64px) + 14px)",
+          top: "calc(100% - var(--hero-plane-pad, 64px) + 16px)",
           transform: "translateX(-50%)",
-          pointerEvents: isInteractive ? "auto" : "none",
+          gap: 14,
+          fontSize: "12px",
         }}
       >
-        {isInteractive ? (
-          <AxisDropdown
-            presets={presets}
-            presetKeys={presetKeys}
-            currentKey={thesisAxes[0]}
-            onPick={(k) => setThesisAxis(0, k)}
-            axisLabel="X"
-          />
-        ) : (
-          <div
-            style={{
-              ...labelStyle,
-              gap: 14,
-              fontSize: "12px",
-              position: "static",
-            }}
-          >
-            <span>{labels.xLeft}</span>
-            <span
-              aria-hidden
-              style={{
-                color: "#cf7f54",
-                fontSize: 18,
-                fontWeight: 500,
-                lineHeight: 1,
-                letterSpacing: "-0.05em",
-                fontFamily:
-                  "'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace",
-                padding: "0 4px",
-              }}
-            >
-              ←————→
-            </span>
-            <span>{labels.xRight}</span>
-          </div>
-        )}
+        <span>{labels.xLeft}</span>
+        <span
+          aria-hidden
+          style={{
+            color: "#cf7f54",
+            fontSize: 18,
+            fontWeight: 500,
+            lineHeight: 1,
+            letterSpacing: "-0.05em",
+            fontFamily:
+              "'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace",
+            padding: "0 4px",
+          }}
+        >
+          ←————→
+        </span>
+        <span>{labels.xRight}</span>
       </div>
 
       {/* Y axis title — centered along the left edge, OUTSIDE the plot rim,
-          rotated -90° so text reads bottom-to-top. In SEMANTIC mode this
-          is an interactive dropdown; same fallback as X for other modes. */}
+          rotated -90° so text reads bottom-to-top. */}
       <div
         style={{
-          position: "absolute",
+          ...labelStyle,
           left: "calc(var(--hero-plane-pad, 64px) - 18px)",
           top: "50%",
           transform: "translate(-50%, -50%) rotate(-90deg)",
           transformOrigin: "center center",
-          pointerEvents: isInteractive ? "auto" : "none",
+          gap: 14,
+          fontSize: "12px",
         }}
       >
-        {isInteractive ? (
-          <AxisDropdown
-            presets={presets}
-            presetKeys={presetKeys}
-            currentKey={thesisAxes[1]}
-            onPick={(k) => setThesisAxis(1, k)}
-            vertical
-            axisLabel="Y"
-          />
-        ) : (
-          <div
-            style={{
-              ...labelStyle,
-              gap: 14,
-              fontSize: "12px",
-              position: "static",
-            }}
-          >
-            <span>{labels.yBottom}</span>
-            <span
-              aria-hidden
-              style={{
-                color: "#cf7f54",
-                fontSize: 18,
-                fontWeight: 500,
-                lineHeight: 1,
-                letterSpacing: "-0.05em",
-                fontFamily:
-                  "'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace",
-                padding: "0 4px",
-              }}
-            >
-              ←————→
-            </span>
-            <span>{labels.yTop}</span>
-          </div>
-        )}
+        <span>{labels.yBottom}</span>
+        <span
+          aria-hidden
+          style={{
+            color: "#cf7f54",
+            fontSize: 18,
+            fontWeight: 500,
+            lineHeight: 1,
+            letterSpacing: "-0.05em",
+            fontFamily:
+              "'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace",
+            padding: "0 4px",
+          }}
+        >
+          ←————→
+        </span>
+        <span>{labels.yTop}</span>
       </div>
 
       {/* Subtitle (top-right) — only when not reserving for ModePanel. */}

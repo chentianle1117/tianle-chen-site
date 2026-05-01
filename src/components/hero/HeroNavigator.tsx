@@ -35,18 +35,7 @@ import {
 
 import SemanticPlane from "./SemanticPlane";
 import MobileStrip from "./MobileStrip";
-import HeroToolbar from "./HeroToolbar";
-import HeroDrawer from "./HeroDrawer";
-
-// Round-9q: same allow-list as the old SidePanel — only these four
-// axis presets surface in the dropdowns (strongest spread + clearest
-// semantics on this corpus).
-const HERO_TOOLBAR_PRESETS = new Set([
-  "x_ml_algorithm",
-  "x_artifact_system",
-  "z_screen_space",
-  "x_aesthetic_analytical",
-]);
+import SidePanel from "./SidePanel";
 
 // Round-8b: dropped 3D entirely. The toggle was confusing (most visitors
 // never used it), and the latent-space scatter is best read at 2D + hover-
@@ -82,6 +71,19 @@ function useViewportWidth(): number {
 export default function HeroNavigator() {
   const [state, setState] = useState<LoadState>({ status: "loading" });
   const [reduced, setReduced] = useState<boolean>(false);
+  // Side panel collapse — persists across navigations via localStorage so
+  // a returning visitor doesn't have to re-collapse on every page load.
+  const [sidebarCollapsed, setSidebarCollapsed] = useState<boolean>(() => {
+    if (typeof window === "undefined") return false;
+    return window.localStorage.getItem("hero:sidebar-collapsed") === "1";
+  });
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    window.localStorage.setItem(
+      "hero:sidebar-collapsed",
+      sidebarCollapsed ? "1" : "0",
+    );
+  }, [sidebarCollapsed]);
   const viewportWidth = useViewportWidth();
 
   // Capability detection on mount.
@@ -180,55 +182,141 @@ export default function HeroNavigator() {
         borderBottom: "1px solid rgba(94, 99, 107, 0.40)",
       }}
     >
-      <div className="hero-stack">
-        <HeroToolbar
-          presetKeys={Object.keys(data.layouts.thesis_axes_cache).filter((k) =>
-            HERO_TOOLBAR_PRESETS.has(k),
+      <div className={`hero-split ${sidebarCollapsed ? "is-collapsed" : ""}`}>
+        <div className="hero-side">
+          {!sidebarCollapsed && (
+            <SidePanel
+              presets={data.layouts.thesis_axes_cache}
+              count={data.embeddings.projects.length}
+              projects={data.embeddings.projects}
+            />
           )}
-          projects={data.embeddings.projects}
-        />
+          <button
+            type="button"
+            onClick={() => setSidebarCollapsed((v) => !v)}
+            className="hero-side-toggle"
+            aria-label={
+              sidebarCollapsed ? "Expand control panel" : "Collapse control panel"
+            }
+            title={sidebarCollapsed ? "Expand panel" : "Collapse panel"}
+          >
+            <span aria-hidden>{sidebarCollapsed ? "›" : "‹"}</span>
+            {sidebarCollapsed && (
+              <span className="hero-side-toggle-label">PANEL</span>
+            )}
+          </button>
+        </div>
         <div className="hero-canvas">
           <SemanticPlane data={data} fillContainer />
         </div>
-        <HeroDrawer
-          presets={data.layouts.thesis_axes_cache}
-          count={data.embeddings.projects.length}
-        />
       </div>
       <style>{`
-        /* Round-9q (2026-04-30): full-width stacked layout. Top toolbar
-           (mode picker, categories, randomize), full-width canvas with
-           interactive axis dropdowns at the plot edges, then a
-           collapsible drawer below for the projection diagram. Frees
-           the canvas to claim the full container width — the side rail
-           was eating ~30% on wide monitors and pinching the plot. */
+        /* Round-9r (2026-05-01): reverted to sidebar+canvas split, but now
+           the sidebar collapses to a thin rail with an expand button. When
+           collapsed the canvas claims the full width. Sidebar state is
+           persisted in localStorage so returning visitors don't have to
+           re-collapse on every page load. */
         .hero-container {
           padding-block: clamp(1.5rem, 3vw, 3rem);
         }
-        .hero-stack {
+        .hero-split {
           display: flex;
           flex-direction: column;
           width: 100%;
-          max-width: 2000px;
+          max-width: 1800px;
           margin-inline: auto;
           padding-inline: clamp(1.5rem, 3vw, 3rem);
+        }
+        .hero-side {
+          width: 100%;
+          position: relative;
         }
         .hero-canvas {
           width: 100%;
           display: flex;
-          /* Canvas height scales with viewport; tighter floor than before
-             since the toolbar + drawer-collapsed header eat ~80px above. */
-          height: clamp(560px, 78vh, 1080px);
+          height: clamp(560px, 75vh, 760px);
         }
         .hero-canvas > * { width: 100%; }
-        @media (min-width: 1280px) {
+
+        /* Sidebar collapse toggle — vertical strip on the right edge of
+           the side panel that the user can click to hide the rail. When
+           collapsed it becomes a thin tab on the left edge of the canvas
+           that says "PANEL ›" to expand. */
+        .hero-side-toggle {
+          position: absolute;
+          top: 50%;
+          transform: translateY(-50%);
+          right: -1px;
+          z-index: 5;
+          display: inline-flex;
+          align-items: center;
+          gap: 6px;
+          padding: 16px 6px;
+          background: rgba(11, 13, 15, 0.92);
+          border: 1px solid rgba(94, 99, 107, 0.30);
+          border-right: none;
+          border-radius: 4px 0 0 4px;
+          cursor: pointer;
+          color: #a8acb1;
+          font-family: 'IBM Plex Mono', ui-monospace, monospace;
+          font-size: 11px;
+          letter-spacing: 0.16em;
+          font-weight: 600;
+          transition: all 160ms ease;
+          writing-mode: horizontal-tb;
+        }
+        .hero-side-toggle:hover {
+          color: #cf7f54;
+          border-color: rgba(207, 127, 84, 0.55);
+        }
+        .hero-side-toggle-label {
+          font-size: 10px;
+          letter-spacing: 0.18em;
+        }
+        .hero-split.is-collapsed .hero-side {
+          flex: 0 0 28px !important;
+          max-width: 28px !important;
+          border-right: none !important;
+        }
+        .hero-split.is-collapsed .hero-side-toggle {
+          right: -28px;
+          border-radius: 0 4px 4px 0;
+          border-left: none;
+          border-right: 1px solid rgba(94, 99, 107, 0.30);
+        }
+        .hero-split.is-collapsed .hero-side-toggle:hover {
+          border-right-color: rgba(207, 127, 84, 0.55);
+        }
+
+        @media (min-width: 900px) {
+          .hero-split {
+            flex-direction: row;
+            align-items: stretch;
+          }
+          .hero-side {
+            flex: 0 0 360px;
+            max-width: 360px;
+            border-right: 1px solid rgba(94, 99, 107, 0.30);
+          }
           .hero-canvas {
-            height: clamp(680px, 80vh, 1080px);
+            flex: 1 1 auto;
+            min-width: 0;
+            height: clamp(640px, 80vh, 1080px);
+          }
+        }
+        @media (min-width: 1280px) {
+          .hero-side {
+            flex-basis: 420px;
+            max-width: 420px;
+          }
+          .hero-canvas {
+            height: clamp(720px, 82vh, 1080px);
           }
         }
         @media (min-width: 1440px) {
-          .hero-canvas {
-            height: clamp(720px, 82vh, 1080px);
+          .hero-side {
+            flex-basis: 480px;
+            max-width: 480px;
           }
         }
       `}</style>
