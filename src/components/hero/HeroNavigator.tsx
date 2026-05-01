@@ -202,25 +202,45 @@ export default function HeroNavigator() {
           padding-inline: clamp(1.5rem, 3vw, 3rem);
         }
         .hero-side  { width: 100%; }
-        .hero-canvas { width: 100%; display: flex; }
+        /* Stacked (mobile/narrow) layout: canvas needs an explicit height
+           or the projection collapses to ~0px and all tiles cram into a
+           horizontal strip. clamp keeps it short enough to share a phone
+           viewport with the sidebar above without forcing huge scroll. */
+        .hero-canvas {
+          width: 100%;
+          display: flex;
+          height: clamp(560px, 75vh, 760px);
+        }
         .hero-canvas > * { width: 100%; }
-        @media (min-width: 1024px) {
+        /* Side-by-side starts earlier (was 1024 -> 900) so 1280-class
+           laptops always get the sidebar+canvas row layout, not the
+           stacked one. */
+        @media (min-width: 900px) {
           .hero-split {
             flex-direction: row;
             align-items: stretch;
           }
           .hero-side {
-            flex: 0 0 420px;
-            max-width: 420px;
+            flex: 0 0 360px;
+            max-width: 360px;
             border-right: 1px solid rgba(94, 99, 107, 0.30);
           }
           .hero-canvas {
             flex: 1 1 auto;
             min-width: 0;
             /* Tall canvas: scales with viewport so it dominates the page,
-               clamped between 720px (short laptops) and 1080px (big
+               clamped between 640px (short laptops) and 1080px (big
                monitors). 80vh feels like "almost full screen" without
                forcing the user to scroll a fixed amount past the band. */
+            height: clamp(640px, 80vh, 1080px);
+          }
+        }
+        @media (min-width: 1280px) {
+          .hero-side {
+            flex-basis: 420px;
+            max-width: 420px;
+          }
+          .hero-canvas {
             height: clamp(720px, 82vh, 1080px);
           }
         }
