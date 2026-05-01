@@ -184,40 +184,47 @@ export default function HeroNavigator() {
     >
       <div className={`hero-split ${sidebarCollapsed ? "is-collapsed" : ""}`}>
         <div className="hero-side">
-          {!sidebarCollapsed && (
-            <SidePanel
-              presets={data.layouts.thesis_axes_cache}
-              count={data.embeddings.projects.length}
-              projects={data.embeddings.projects}
-            />
+          {!sidebarCollapsed ? (
+            <>
+              <button
+                type="button"
+                onClick={() => setSidebarCollapsed(true)}
+                className="hero-side-toggle hero-side-toggle--hide"
+                title="Collapse panel"
+              >
+                <span aria-hidden>‹</span>
+                <span>HIDE PANEL</span>
+              </button>
+              <SidePanel
+                presets={data.layouts.thesis_axes_cache}
+                count={data.embeddings.projects.length}
+                projects={data.embeddings.projects}
+              />
+            </>
+          ) : (
+            <button
+              type="button"
+              onClick={() => setSidebarCollapsed(false)}
+              className="hero-side-toggle hero-side-toggle--show"
+              title="Expand panel"
+            >
+              <span className="hero-side-toggle-vlabel">SHOW PANEL</span>
+              <span aria-hidden>›</span>
+            </button>
           )}
-          <button
-            type="button"
-            onClick={() => setSidebarCollapsed((v) => !v)}
-            className="hero-side-toggle"
-            aria-label={
-              sidebarCollapsed ? "Expand control panel" : "Collapse control panel"
-            }
-            title={sidebarCollapsed ? "Expand panel" : "Collapse panel"}
-          >
-            <span aria-hidden>{sidebarCollapsed ? "›" : "‹"}</span>
-            {sidebarCollapsed && (
-              <span className="hero-side-toggle-label">PANEL</span>
-            )}
-          </button>
         </div>
         <div className="hero-canvas">
           <SemanticPlane data={data} fillContainer />
         </div>
       </div>
       <style>{`
-        /* Round-9r (2026-05-01): reverted to sidebar+canvas split, but now
-           the sidebar collapses to a thin rail with an expand button. When
-           collapsed the canvas claims the full width. Sidebar state is
-           persisted in localStorage so returning visitors don't have to
-           re-collapse on every page load. */
+        /* Round-9s (2026-05-01): tighter container, narrower sidebar, and a
+           VISIBLE labeled toggle. Previous toggle was a tiny mid-edge arrow
+           that nobody discovered. Now: an oxide-bordered "HIDE PANEL ‹"
+           pill at the top of the sidebar header, and a vertical "SHOW
+           PANEL ›" tab on the canvas's left edge when collapsed. */
         .hero-container {
-          padding-block: clamp(1.5rem, 3vw, 3rem);
+          padding-block: clamp(1.25rem, 2.5vw, 2.5rem);
         }
         .hero-split {
           display: flex;
@@ -225,7 +232,7 @@ export default function HeroNavigator() {
           width: 100%;
           max-width: 1800px;
           margin-inline: auto;
-          padding-inline: clamp(1.5rem, 3vw, 3rem);
+          padding-inline: clamp(1rem, 2vw, 2rem);
         }
         .hero-side {
           width: 100%;
@@ -238,64 +245,86 @@ export default function HeroNavigator() {
         }
         .hero-canvas > * { width: 100%; }
 
-        /* Sidebar collapse toggle — vertical strip on the right edge of
-           the side panel that the user can click to hide the rail. When
-           collapsed it becomes a thin tab on the left edge of the canvas
-           that says "PANEL ›" to expand. */
-        .hero-side-toggle {
+        /* HIDE button — sits at top-right of the expanded sidebar so it's
+           discoverable in normal reading order. Pill style with oxide
+           accent border telegraphs interactivity. */
+        .hero-side-toggle--hide {
           position: absolute;
-          top: 50%;
-          transform: translateY(-50%);
-          right: -1px;
+          top: 14px;
+          right: 12px;
           z-index: 5;
           display: inline-flex;
           align-items: center;
           gap: 6px;
-          padding: 16px 6px;
-          background: rgba(11, 13, 15, 0.92);
-          border: 1px solid rgba(94, 99, 107, 0.30);
-          border-right: none;
-          border-radius: 4px 0 0 4px;
+          padding: 5px 10px;
+          background: rgba(11, 13, 15, 0.85);
+          border: 1px solid rgba(207, 127, 84, 0.45);
+          border-radius: 3px;
           cursor: pointer;
-          color: #a8acb1;
+          color: #d8dadd;
           font-family: 'IBM Plex Mono', ui-monospace, monospace;
-          font-size: 11px;
+          font-size: 10px;
           letter-spacing: 0.16em;
           font-weight: 600;
+          text-transform: uppercase;
           transition: all 160ms ease;
-          writing-mode: horizontal-tb;
         }
-        .hero-side-toggle:hover {
+        .hero-side-toggle--hide:hover {
           color: #cf7f54;
-          border-color: rgba(207, 127, 84, 0.55);
+          border-color: #cf7f54;
+          background: rgba(207, 127, 84, 0.10);
         }
-        .hero-side-toggle-label {
-          font-size: 10px;
+
+        /* SHOW button — replaces the entire collapsed sidebar with a
+           vertical tab that the visitor can't miss. */
+        .hero-side-toggle--show {
+          width: 100%;
+          height: 100%;
+          min-height: 200px;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          gap: 12px;
+          padding: 16px 0;
+          background: rgba(11, 13, 15, 0.85);
+          border: 1px solid rgba(207, 127, 84, 0.45);
+          border-radius: 3px;
+          cursor: pointer;
+          color: #d8dadd;
+          font-family: 'IBM Plex Mono', ui-monospace, monospace;
+          font-size: 11px;
           letter-spacing: 0.18em;
+          font-weight: 600;
+          text-transform: uppercase;
+          transition: all 160ms ease;
         }
+        .hero-side-toggle--show:hover {
+          color: #cf7f54;
+          border-color: #cf7f54;
+          background: rgba(207, 127, 84, 0.10);
+        }
+        .hero-side-toggle-vlabel {
+          writing-mode: vertical-rl;
+          transform: rotate(180deg);
+          letter-spacing: 0.22em;
+        }
+
         .hero-split.is-collapsed .hero-side {
-          flex: 0 0 28px !important;
-          max-width: 28px !important;
+          flex: 0 0 36px !important;
+          max-width: 36px !important;
           border-right: none !important;
-        }
-        .hero-split.is-collapsed .hero-side-toggle {
-          right: -28px;
-          border-radius: 0 4px 4px 0;
-          border-left: none;
-          border-right: 1px solid rgba(94, 99, 107, 0.30);
-        }
-        .hero-split.is-collapsed .hero-side-toggle:hover {
-          border-right-color: rgba(207, 127, 84, 0.55);
         }
 
         @media (min-width: 900px) {
           .hero-split {
             flex-direction: row;
             align-items: stretch;
+            gap: 14px;
           }
           .hero-side {
-            flex: 0 0 360px;
-            max-width: 360px;
+            flex: 0 0 320px;
+            max-width: 320px;
             border-right: 1px solid rgba(94, 99, 107, 0.30);
           }
           .hero-canvas {
@@ -306,8 +335,8 @@ export default function HeroNavigator() {
         }
         @media (min-width: 1280px) {
           .hero-side {
-            flex-basis: 420px;
-            max-width: 420px;
+            flex-basis: 360px;
+            max-width: 360px;
           }
           .hero-canvas {
             height: clamp(720px, 82vh, 1080px);
@@ -315,8 +344,8 @@ export default function HeroNavigator() {
         }
         @media (min-width: 1440px) {
           .hero-side {
-            flex-basis: 480px;
-            max-width: 480px;
+            flex-basis: 400px;
+            max-width: 400px;
           }
         }
       `}</style>
