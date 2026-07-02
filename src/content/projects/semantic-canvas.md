@@ -230,8 +230,9 @@ The system does *pure projection* — no trained mapping. Every image's position
 - **Full README** (10.9 KB) — deployment docs + usage
 - **Production deployment** on Railway (live URL — check Railway dashboard)
 - **Thesis proposal presentation** — `W:\CMU_Academics\2025 Fall\Thesis Demo\Proposal Final Presentation 1204.mp4` (103 MB, 2025-12-03)
-- **Thesis writeup** in progress — `overleaf/thesis_body.tex` (265 KB, last edit 2026-04-23)
-- **SIGRADI 2026 abstract** submitted (see `Thesis_Material/sigradi2026_abstract.md`)
+- **MSCD thesis** — defended and completed (May 2026)
+- **SIGRADI 2026 abstract** submitted
+- **CHI 2027 paper** — in development (full-paper adaptation, "Designing with Latent Space")
 - **Pre-Thesis II progression** — 29 PDFs (A1–A11) in `W:\CMU_Academics\2025 Fall\MSCD Pre-thesis II\`
 
 ## Config + env

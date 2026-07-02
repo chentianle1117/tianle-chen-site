@@ -26,11 +26,11 @@ try {
   portraitExists = false;
 }
 
-// Canonical from W:\SecondBrain\Career\Resumes\Tianle_Chen_Resume_2026-04.md (April 2026 snapshot).
-// Note resume reads HILOS Fellowship 2025-May → 2025-Dec, transitioning to FT 2026-06-08.
+// Canonical from W:\SecondBrain\Career\Resumes\ + vault _Facts.
+// Updated 2026-07: HILOS is now full-time (started 2026-06-08); MSCD graduated May 2026.
 const experience: { date: string; line: string }[] = [
-  { date: "2026-Jun—", line: "HILOS Studio · ML/AI Engineer (full-time, incoming)" },
-  { date: "2025-May → 2025-Dec", line: "HILOS Studio · Machine Learning Graduate Fellow · Portland, OR" },
+  { date: "2026-Jun —", line: "HILOS Studio · ML/AI Engineer (full-time) · Portland, OR" },
+  { date: "2025-May → 2026-May", line: "HILOS Studio · Machine Learning Graduate Fellow · Portland, OR" },
   { date: "2024-Aug → 2025-May", line: "CMU CodeLab · Mixed Reality Researcher (Immersive Tech in Digital Fabrication)" },
   { date: "2022-Jul → 2023-May", line: "NBBJ Architects · Junior Designer · Los Angeles, CA" },
   { date: "2021-May → 2024-May", line: "Rice CNT-Fiber Research Lab · Computational Research Assistant" },
@@ -42,6 +42,8 @@ const education: { date: string; line: string }[] = [
 ];
 
 const recognition: { date: string; line: string }[] = [
+  { date: "2027", line: "CHI 2027 · full paper in development — “Designing with Latent Space”" },
+  { date: "2026", line: "SIGRADI 2026 · abstract submitted (thesis on AI-augmented design)" },
   { date: "2024", line: "IASS 2024 Symposium · Segmental Ceramic Hollow Structures (Castellon)" },
   { date: "2024", line: "Margaret Everson-Fossi Traveling Fellowship · Rice Architecture" },
   { date: "2024", line: "STOA International Architects Inc. Award · Rice Architecture" },
@@ -52,7 +54,7 @@ const recognition: { date: string; line: string }[] = [
 
 <BaseLayout
   title="About"
-  description="David Chen — bio, trajectory, contact. CMU MSCD computational design thesis student; HILOS Studio ML/AI engineer; Rice architecture."
+  description="David Chen — bio, trajectory, contact. ML/AI engineer at HILOS Studio; CMU MSCD (Semantic Canvas thesis); Rice architecture. Computer vision, latent spaces, design tooling."
 >
   <div class="page-with-rails">
     {/* Round-5 Fix 8: marginalia rails at >=1440 */}
@@ -92,7 +94,10 @@ const recognition: { date: string; line: string }[] = [
           />
         )}
         <p style="color: rgb(var(--text-secondary)); font-size: var(--step-1); line-height: 1.65;">
-          David Chen <span style="font-size: 0.92em; opacity: 0.75;">(陳天樂)</span> is a computational designer and ML engineer working at the seam of generative AI and design tooling. He is finishing an MSCD thesis at CMU — <em>Semantic Canvas</em>, an interactive latent-space interface for AI-augmented footwear design. He joins HILOS Studio full-time as an ML/AI engineer in June 2026. Earlier he trained as an architect at Rice University and worked at NBBJ (Los Angeles), with research collaborations on fiber-based pavilions and ceramic hollow columns published at IASS 2024.
+          David Chen <span style="font-size: 0.92em; opacity: 0.75;">(陳天樂)</span> is a computational designer and ML/AI engineer working at the seam of generative AI and design tooling — where computer vision, latent spaces, and interfaces for designers meet. He builds and ships production ML and backend systems at <strong>HILOS Studio</strong> (Portland, OR), which he joined full-time in June 2026 after a graduate fellowship. His path runs from architecture through computational design into machine learning: trained as an architect at Rice University, he moved into parametric design and digital fabrication, then into AI — a trajectory he completed with an <strong>MSCD at CMU</strong>.
+        </p>
+        <p style="color: rgb(var(--text-secondary)); font-size: var(--step-1); line-height: 1.65; margin-top: 1rem;">
+          His thesis, <em>Semantic Canvas</em>, is an interactive latent-space interface for AI-augmented footwear design — a working tool arguing that design software should make AI <em>legible</em> to the designer rather than merely capable. The thesis (defended May 2026) is being adapted into a <strong>CHI 2027</strong> paper, with an abstract at <strong>SIGRADI 2026</strong>. Earlier research on fiber-based pavilions and ceramic hollow columns was published at <strong>IASS 2024</strong>.
         </p>
         <div class="md:clear-right"></div>
       </section>
@@ -104,12 +109,12 @@ const recognition: { date: string; line: string }[] = [
     <SectionBreak number="01" label="NOW" />
     <article class="container-reading pb-12 md:pb-16">
       <section data-reveal>
-        <p class="mono-label mb-4">NOW · 2026-04</p>
+        <p class="mono-label mb-4">NOW · 2026-07</p>
         {nowBody ? (
           <div class="prose-custom" set:html={nowBody}></div>
         ) : (
           <p style="color: rgb(var(--text-secondary)); line-height: 1.65;">
-            Closing out the Semantic Canvas thesis at CMU and shipping ML/AI work at HILOS Studio. Talking to teams building generative tools for designers and looking for full-time roles where computer vision, latent spaces, and design tooling meet.
+            Full-time at HILOS Studio in Portland, building production ML and backend systems for generative design tooling — computer-vision pipelines, model serving, and agentic interfaces. On the side, adapting the Semantic Canvas thesis into a CHI 2027 paper and tinkering with small tools (an interactive travel map, a latent-space portfolio, second-brain automation).
           </p>
         )}
       </section>
@@ -231,7 +236,7 @@ const recognition: { date: string; line: string }[] = [
           <i class="ph ph-arrow-down" aria-hidden="true"></i>
           <span>Download CV (PDF)</span>
         </a>
-        <p class="mono-label mt-3">LAST UPDATED 2026-04</p>
+        <p class="mono-label mt-3">LAST UPDATED 2026-07</p>
       </section>
     </article>
   </section>
