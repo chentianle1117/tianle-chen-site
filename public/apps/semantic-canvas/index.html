@@ -28,6 +28,12 @@
     background:transparent;border:1px solid var(--line);border-radius:4px;padding:7px 12px;cursor:pointer;transition:.15s}
   button:hover{border-color:var(--oxide);color:var(--oxide)}
   .note{margin-left:auto;font-size:10.5px;color:var(--dim);font-style:italic}
+  .starters{display:flex;flex-wrap:wrap;gap:8px;align-items:center;padding:10px 20px;border-bottom:1px solid var(--line)}
+  .starters .lbl{font-size:10px;letter-spacing:.16em;color:var(--dim);text-transform:uppercase;margin-right:4px}
+  .chip{font-family:var(--font);font-size:11px;letter-spacing:.02em;color:var(--mono);background:rgba(11,13,15,.6);
+    border:1px solid var(--line);border-radius:999px;padding:5px 12px;cursor:pointer;transition:.15s;white-space:nowrap}
+  .chip:hover{border-color:var(--oxide);color:var(--text)}
+  .chip[data-active="true"]{border-color:var(--oxide);color:var(--oxide);background:rgba(207,127,84,.10)}
   .stage{position:relative;flex:1;min-height:0;margin:12px 18px 18px}
   .plot{position:absolute;inset:36px 24px 42px 60px;border:1px solid var(--line);
     background-image:
@@ -57,6 +63,7 @@
     <button id="rand">⚄ Randomize</button>
     <span class="note" id="note">frontend-only · no backend · <span id="model"></span></span>
   </div>
+  <div class="starters" id="starters"><span class="lbl">Starters</span></div>
   <div class="stage">
     <div class="plot" id="plot"></div>
     <div class="axlabel xlab" id="xlab"></div>
@@ -87,6 +94,34 @@ function layout(){
   const [xl,xr]=poles(ax.name), [yb,yt]=poles(ay.name);
   $('#xlab').innerHTML=`<span class="pole">${xl}</span><span class="arrow">←———→</span><span class="pole">${xr}</span>`;
   $('#ylab').innerHTML=`<span class="pole">${yb}</span><span class="arrow">←———→</span><span class="pole">${yt}</span>`;
+  markActive();
+}
+
+// Curated starter views — one click drops the visitor into an interesting slice
+// of the space instead of two blank dropdowns.
+const PRESETS=[
+  {label:"Everyday map",   x:"Casual ↔ Formal",      y:"Athletic ↔ Elegant"},
+  {label:"Style era",      x:"Retro ↔ Futuristic",   y:"Bold ↔ Understated"},
+  {label:"Form & colour",  x:"Chunky ↔ Sleek",       y:"Muted ↔ Colorful"},
+  {label:"Terrain",        x:"Rugged ↔ Refined",     y:"Minimal ↔ Ornate"},
+];
+function idxByName(n){return DATA.axes.findIndex(a=>a.name===n);}
+function markActive(){
+  const xv=$('#ax').value, yv=$('#ay').value;
+  document.querySelectorAll('.chip').forEach(c=>{
+    c.dataset.active = (c.dataset.x===xv && c.dataset.y===yv) ? "true":"false";
+  });
+}
+function buildStarters(){
+  const box=$('#starters');
+  PRESETS.forEach(p=>{
+    const xi=idxByName(p.x), yi=idxByName(p.y);
+    if(xi<0||yi<0) return;
+    const c=document.createElement('button');
+    c.className='chip'; c.textContent=p.label; c.dataset.x=xi; c.dataset.y=yi;
+    c.onclick=()=>{ $('#ax').value=xi; $('#ay').value=yi; layout(); };
+    box.appendChild(c);
+  });
 }
 
 fetch('data.json').then(r=>r.json()).then(d=>{
@@ -101,6 +136,7 @@ fetch('data.json').then(r=>r.json()).then(d=>{
     el.innerHTML=`<img src="${im.thumb}" alt="shoe ${im.id}" loading="lazy"/>`;
     plot.appendChild(el); return el;
   });
+  buildStarters();
   $('#ax').onchange=layout; $('#ay').onchange=layout;
   $('#rand').onclick=()=>{
     const n=d.axes.length; let a=Math.floor(Math.random()*n), b=Math.floor(Math.random()*n);
