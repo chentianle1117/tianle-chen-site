@@ -14,10 +14,12 @@ github_primary: Design-Copilot/live_ai_feedack_react_electron
 github_primary_url: https://github.com/Design-Copilot/live_ai_feedack_react_electron
 github_upstream: GatiAher/live_ai_feedack_react_electron
 github_upstream_url: https://github.com/GatiAher/live_ai_feedack_react_electron
-images: []
+hero_image: /assets/live-ai-feedback-design-assistant/cover.svg
+images:
+- /assets/live-ai-feedback-design-assistant/cover.svg
 local_path: W:\CMU_Academics\2025 Spring\Independent Study gen Model\Live_AI_Feedback_Latest
 priority: standard
-publish: false
+publish: true
 related_cards:
 - '[[2025-Fall--semantic-canvas-thesis-tool]]'
 role: technical-lead
@@ -55,8 +57,6 @@ year: 2025
 ---
 
 > Electron desktop app that observes a designer's screen in real-time and delivers AI-powered critique via Google Gemini. A tool-calling architecture drives a structured feedback workflow: the AI asks setup questions, narrows focus, delivers critique, then summarizes — never free-associating. Built with Gati Aher for her MDes thesis work, continuing into David's independent study.
-
-![hero](/assets/live-ai-feedback-design-assistant/hero.png)
 
 Most AI critics dump an unstructured blob of feedback. Live AI Feedback uses a **phased tool-calling workflow** — the AI calls specific tools (`ask_initial_questions`, `provide_feedback`, `request_summary`, `list_design_critiques`) at the right moments in a critique session, and it watches your screen via the desktop capture API so the feedback stays grounded in what you're actually working on right now.
 

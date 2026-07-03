@@ -10,6 +10,7 @@ categories:
 tags:
   - agents
   - automation
+  - orchestration
 priority: standard
 status: ready
 publish: true
@@ -18,41 +19,76 @@ images:
   - /assets/job-search-copilot/cover.svg
 stack:
   - Multi-agent orchestration
-  - Claude Code
-  - Codex
-  - Gemini
+  - Claude Code / Codex / Gemini
+  - Python (Patchright browser automation)
   - MCP
 ---
 
-A multi-agent, provider-agnostic pipeline that runs a daily job search
-end-to-end — discovery, matching, tailored cover letters, application tracking,
-and a digest — built to take the grind out of a real job hunt.
+A production-grade, multi-agent system that runs a real job search end-to-end —
+discovery, résumé + cover tailoring, quality auditing, ATS form submission, and
+a review dashboard — built and run nightly for an actual, high-stakes search. It
+is engineered around one hard rule: **zero quality degradation.** A technical
+limitation is never an excuse to ship a worse application.
 
-## What it does
+## Architecture
 
-Every run, the system:
+Three git repos + two personal knowledge vaults, coordinated by a
+**choreographer + specialist-workers** pattern:
 
-1. **Discovers** new postings across sources and normalizes them.
-2. **Matches & scores** them against a target profile.
-3. **Drafts a tailored cover letter** for the strongest picks.
-4. **Files them** through per-platform application handlers.
-5. **Verifies** its own output (an adversarial pass that catches hallucinated
-   or low-quality drafts before anything ships).
-6. **Delivers** a bilingual digest — email, a Telegram message, and an updated
-   Notion tracker.
+- **A daily "skills" engine** — on-demand commands (`/evaluate`, `/tailor`,
+  `/outreach`, `/apply-pipeline`) the user drives interactively.
+- **An overnight autopilot** — a **13-step pipeline** (discovery → dedup →
+  hard-pass filter → fit gate → build → verify → render → lane-assign → submit →
+  record → brief → cost/quality log) that runs unattended.
+- **A durable memory vault** — the candidate's profile, real experience, and
+  voice, read at pipeline runtime so nothing is invented.
 
-## The interesting part: provider-agnostic routing
+## Provider-agnostic routing
 
-The pipeline isn't tied to one model. A routing layer sends each step to
-whichever engine fits — **Claude Code, Codex, or Gemini** — so cheap mechanical
-steps and expensive judgment steps go to the right place, and the whole thing
-survives any single provider rate-limiting or changing. It spans **three repos
-and two knowledge-base vaults**, wired together with MCP tooling.
+The pipeline isn't tied to one model. A thin router (`stdin context + prompt →
+stdout text`) sends each step to **Claude Code, Codex, or Gemini** via a single
+`AI_BRAIN` env var — `auto` falls back across providers, `native` runs inline in
+Claude, `codex` uses a ChatGPT-Plus subscription. Because the three engines share
+one interface, when a provider changes or a subscription lapses, **nothing else
+in the system changes.** It runs cross-platform (Windows + macOS) as pure
+subprocess calls.
 
-## Why I made it
+## Dual-layer quality gates
 
-I built it as a real tool for a real search, not a demo — which is exactly why
-it's a good showcase of the engineering I care about: **agent orchestration,
+Every application passes two independent gates before it can be submitted:
+
+1. **Eight mechanical gates** (deterministic Python) — eligibility, tailored-PDF
+   verification, résumé rules, a **substance floor** (every canonical metric must
+   survive tailoring — no content thinning), cover truth, cover format/structure,
+   and a last-mile check that the exact PDF being uploaded matches its source.
+   *"A rule that matters must be a gate, not a sentence."*
+2. **An LLM auditor** (run fresh per submission, on the most capable model) — a
+   truth gate that diffs every tailored claim against the canonical source and
+   fails anything fabricated, thinned, or off-voice, returning structured
+   evidence the orchestrator must resolve before proceeding.
+
+## Model routing, A/B-tested
+
+Agents are assigned models by an actual blind A/B benchmark: the **auditor runs
+on the strongest model** (it's the net that catches subtle fabrications), while
+discovery / build / submit workers run on a cheaper model where the benchmark
+proved identical correctness — a measured cost/quality tradeoff, not a guess.
+
+## Five-lane submission + a learning loop
+
+Post-audit, each role routes to one of five lanes (auto-submit, outreach-first,
+package-ready, needs-decision, failed). A **clean submission pipeline** summons a
+single browser instance on demand, per role, driven by a library of **8+ ATS
+handlers** (Greenhouse, Lever, Ashby, Workday, LinkedIn, and more) — every action
+screenshotted for proof. Outcomes (interviews, rejections) are read back each run
+and folded into the next run's filters.
+
+## Why it's here
+
+I built this as a real tool under real stakes, not a demo — which is exactly why
+it's the engineering I care most about: **multi-agent orchestration,
 provider-agnostic infrastructure, and adversarial self-verification** applied to
-a messy, high-stakes workflow. *(Details generalized; built for a specific
-person's search.)*
+a messy, high-consequence workflow where a wrong output has a real cost. The
+reusable core (router, ATS handlers, quality-gate framework, auditor pattern) is
+being extracted into an open-source project. *(Details here are generalized;
+personal data is deliberately omitted.)*

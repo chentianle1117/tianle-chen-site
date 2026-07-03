@@ -1,0 +1,64 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" width="1200" height="900" font-family="'IBM Plex Mono', ui-monospace, monospace">
+  <defs>
+    <radialGradient id="pv-node" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#7fbcc2"/><stop offset="100%" stop-color="#5fa0a6"/>
+    </radialGradient>
+    <radialGradient id="pv-hot" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#e79a6a"/><stop offset="100%" stop-color="#cf7f54"/>
+    </radialGradient>
+    <filter id="pv-glow" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="5" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <rect width="1200" height="900" fill="#0b0d0f"/>
+
+  <text x="70" y="95" fill="#cf7f54" font-size="17" letter-spacing="3">◍ RESEARCH PAPER LANDSCAPE</text>
+  <text x="70" y="128" fill="#7e828a" font-size="15" letter-spacing="1">Browse academic papers as a 3D space — Three.js · Django</text>
+
+  <!-- perspective floor grid (pseudo-3D) -->
+  <g stroke="#5e636b" stroke-opacity="0.18" stroke-width="1">
+    <line x1="180" y1="760" x2="1020" y2="760"/>
+    <line x1="250" y1="680" x2="950" y2="680"/>
+    <line x1="310" y1="610" x2="890" y2="610"/>
+    <line x1="360" y1="550" x2="840" y2="550"/>
+    <line x1="180" y1="760" x2="360" y2="550"/>
+    <line x1="400" y1="760" x2="500" y2="550"/>
+    <line x1="620" y1="760" x2="640" y2="550"/>
+    <line x1="840" y1="760" x2="780" y2="550"/>
+    <line x1="1020" y1="760" x2="840" y2="550"/>
+  </g>
+
+  <!-- citation edges -->
+  <g stroke="#5fa0a6" stroke-opacity="0.35" stroke-width="1.2">
+    <line x1="360" y1="420" x2="560" y2="330"/>
+    <line x1="560" y1="330" x2="780" y2="440"/>
+    <line x1="560" y1="330" x2="500" y2="520"/>
+    <line x1="780" y1="440" x2="880" y2="300"/>
+    <line x1="500" y1="520" x2="700" y2="560"/>
+    <line x1="360" y1="420" x2="500" y2="520"/>
+    <line x1="880" y1="300" x2="700" y2="560"/>
+  </g>
+
+  <!-- paper nodes: size = citations -->
+  <g>
+    <circle cx="560" cy="330" r="26" fill="url(#pv-hot)" filter="url(#pv-glow)"/>
+    <circle cx="880" cy="300" r="20" fill="url(#pv-hot)" filter="url(#pv-glow)"/>
+    <circle cx="780" cy="440" r="16" fill="url(#pv-node)" filter="url(#pv-glow)"/>
+    <circle cx="360" cy="420" r="14" fill="url(#pv-node)" filter="url(#pv-glow)"/>
+    <circle cx="500" cy="520" r="15" fill="url(#pv-node)" filter="url(#pv-glow)"/>
+    <circle cx="700" cy="560" r="12" fill="url(#pv-node)" filter="url(#pv-glow)"/>
+    <circle cx="300" cy="300" r="9"  fill="url(#pv-node)" filter="url(#pv-glow)"/>
+    <circle cx="960" cy="470" r="10" fill="url(#pv-node)" filter="url(#pv-glow)"/>
+  </g>
+
+  <!-- axis hints -->
+  <text x="600" y="800" text-anchor="middle" fill="#7e828a" font-size="13" letter-spacing="2">YEAR →</text>
+  <text x="150" y="430" text-anchor="middle" fill="#7e828a" font-size="13" letter-spacing="2" transform="rotate(-90 150 430)">CITATIONS →</text>
+  <text x="905" y="292" fill="#e79a6a" font-size="12" letter-spacing="1">● size = citations</text>
+
+  <!-- footer -->
+  <g fill="#a8acb1" font-size="26" letter-spacing="1">
+    <text x="70" y="855">Papers as objects · citation networks · collections</text>
+  </g>
+  <text x="1130" y="855" text-anchor="end" fill="#5e636b" font-size="13" letter-spacing="2">WEB APP DEV · PRODUCT OWNER · 2025</text>
+</svg>

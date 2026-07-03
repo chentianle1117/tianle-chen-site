@@ -14,11 +14,12 @@ gif_hero: null
 github: null
 github_note: GitHub repo lost per David (was chentianle1117/s25_team_26 per inventory,
   but not accessible / deleted). Local files are the source of truth.
-hero_image: null
-images: []
+hero_image: /assets/s25-team-26-paper-viz/cover.svg
+images:
+- /assets/s25-team-26-paper-viz/cover.svg
 local_path: W:\CMU_Academics\2025 Spring\17637 Web App Dev\s25_team_26
 priority: standard
-publish: false
+publish: true
 role: team-member
 semester: Spring 2025
 slug: s25-team-26-paper-viz

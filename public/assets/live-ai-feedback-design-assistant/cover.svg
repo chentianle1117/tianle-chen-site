@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" width="1200" height="900" font-family="'IBM Plex Mono', ui-monospace, monospace">
+  <defs>
+    <marker id="af-arrow" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L8,4.5 L0,9 Z" fill="#cf7f54" fill-opacity="0.8"/>
+    </marker>
+  </defs>
+  <rect width="1200" height="900" fill="#0b0d0f"/>
+
+  <!-- faint grid -->
+  <g stroke="#5e636b" stroke-opacity="0.10" stroke-width="1">
+    <line x1="0" y1="300" x2="1200" y2="300"/><line x1="0" y1="600" x2="1200" y2="600"/>
+    <line x1="400" y1="0" x2="400" y2="900"/><line x1="800" y1="0" x2="800" y2="900"/>
+  </g>
+
+  <text x="70" y="95" fill="#cf7f54" font-size="17" letter-spacing="3">◍ LIVE AI FEEDBACK</text>
+  <text x="70" y="128" fill="#7e828a" font-size="15" letter-spacing="1">Electron desktop critic that watches your screen — Gemini, tool-calling</text>
+
+  <!-- desktop window mock (left) -->
+  <g>
+    <rect x="70" y="200" width="520" height="360" rx="8" fill="#12161a" stroke="#5e636b" stroke-opacity="0.6"/>
+    <rect x="70" y="200" width="520" height="34" rx="8" fill="#1a1f24"/>
+    <circle cx="92" cy="217" r="5" fill="#cf7f54"/><circle cx="110" cy="217" r="5" fill="#d49b50"/><circle cx="128" cy="217" r="5" fill="#7aa15c"/>
+    <text x="305" y="221" text-anchor="middle" fill="#7e828a" font-size="12" letter-spacing="1">DESIGN CANVAS (observed)</text>
+    <!-- fake design content -->
+    <rect x="100" y="262" width="200" height="120" rx="4" fill="#1a1f24" stroke="#5e636b" stroke-opacity="0.4"/>
+    <rect x="320" y="262" width="240" height="56" rx="4" fill="#1a1f24" stroke="#5e636b" stroke-opacity="0.4"/>
+    <rect x="320" y="330" width="240" height="52" rx="4" fill="#1a1f24" stroke="#5e636b" stroke-opacity="0.4"/>
+    <rect x="100" y="402" width="460" height="134" rx="4" fill="#1a1f24" stroke="#5e636b" stroke-opacity="0.4"/>
+    <!-- AI focus ring -->
+    <rect x="316" y="258" width="248" height="64" rx="6" fill="none" stroke="#cf7f54" stroke-width="2" stroke-dasharray="4 4"/>
+    <text x="440" y="348" fill="#cf7f54" font-size="11" letter-spacing="1">← AI focuses one element</text>
+  </g>
+
+  <!-- phased workflow (right) -->
+  <text x="660" y="230" fill="#7e828a" font-size="13" letter-spacing="3">PHASED WORKFLOW</text>
+  <g font-size="15" letter-spacing="1">
+    <rect x="660" y="250" width="470" height="52" rx="4" fill="#12161a" stroke="#5fa0a6" stroke-opacity="0.7"/>
+    <text x="680" y="282" fill="#e8eaed">1 · ask_initial_questions</text>
+    <rect x="660" y="316" width="470" height="52" rx="4" fill="#12161a" stroke="#9b6fc9" stroke-opacity="0.7"/>
+    <text x="680" y="348" fill="#e8eaed">2 · narrow focus → element</text>
+    <rect x="660" y="382" width="470" height="52" rx="4" fill="#12161a" stroke="#cf7f54" stroke-opacity="0.8"/>
+    <text x="680" y="414" fill="#e8eaed">3 · provide_feedback</text>
+    <rect x="660" y="448" width="470" height="52" rx="4" fill="#12161a" stroke="#7aa15c" stroke-opacity="0.7"/>
+    <text x="680" y="480" fill="#e8eaed">4 · request_summary</text>
+  </g>
+  <g stroke="#cf7f54" stroke-opacity="0.5" stroke-width="1.6" fill="none">
+    <line x1="895" y1="302" x2="895" y2="316" marker-end="url(#af-arrow)"/>
+    <line x1="895" y1="368" x2="895" y2="382" marker-end="url(#af-arrow)"/>
+    <line x1="895" y1="434" x2="895" y2="448" marker-end="url(#af-arrow)"/>
+  </g>
+
+  <!-- footer -->
+  <g fill="#a8acb1" font-size="26" letter-spacing="1">
+    <text x="70" y="660">Structured critique, not a feedback blob</text>
+    <text x="70" y="698" font-size="15" fill="#7e828a">Tool-calling architecture · screen capture API · Gemini · Electron + React</text>
+  </g>
+  <text x="1130" y="698" text-anchor="end" fill="#5e636b" font-size="13" letter-spacing="2">GRADUATE INDEPENDENT STUDY · 2025</text>
+</svg>
