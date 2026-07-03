@@ -82,6 +82,11 @@ This was the 11-685 Introduction to Deep Learning final project (Spring 2025), b
 
 ## Architecture
 
+<figure class="diagram">
+  <img src="/assets/3t3d-vit-2d-to-3d/architecture.svg" alt="3T3D architecture — model pipeline (3 sketches → DINOv2 → fusion → transformer decoder → triplane) and the custom dataset-generation pipeline" />
+  <figcaption>Model pipeline (sketches → DINOv2 → fusion → decoder → triplane) + the from-scratch dataset-generation pipeline and training setup.</figcaption>
+</figure>
+
 Four stages, end-to-end:
 
 ### 1. Input Processing

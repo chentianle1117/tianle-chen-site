@@ -140,6 +140,11 @@ Research frame: CMU MSCD thesis, 2025–2026, on AI-augmented footwear design �
 
 ## Architecture
 
+<figure class="diagram">
+  <img src="/assets/semantic-canvas/architecture.svg" alt="Semantic Canvas architecture — projection pipeline (embed → project → normalize → render) and BFF service architecture (React/D3 frontend, FastAPI backend, Jina/fal.ai/Gemini)" />
+  <figcaption>Projection pipeline (embed → project → normalize → render) + the BFF service architecture and multi-user study instrumentation.</figcaption>
+</figure>
+
 ```
 Frontend (React 18 + TypeScript + Vite)
 ├── SemanticCanvas (D3.js 7)    ← 2D semantic space, zoom/pan, glow effects

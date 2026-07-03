@@ -82,6 +82,11 @@ One LLM, three modalities — text, point cloud, image — and any combination o
 
 The project was the 16-825 Learning for 3D Vision final (Fall 2025), built with three other students at CMU. My specific contribution was the autocompletion extension on the `autocomplete` and `autocomplete_2` branches — dynamic masking during training so the model learns to complete partial CAD sequences. The fine-tuned weights are published as [`chentianle1117/autocomplete-stage3-8000`](https://huggingface.co/chentianle1117/autocomplete-stage3-8000) on HuggingFace.
 
+<figure class="diagram">
+  <img src="/assets/l43d-cad-mllm/architecture.svg" alt="CAD-MLLM architecture — frozen multimodal encoders → projection → Vicuna+LoRA → CAD sequence → STEP, plus the intelligent-truncation data amplification pipeline and results" />
+  <figcaption>Multimodal model (encoders → projection → Vicuna+LoRA → STEP) + the intelligent-truncation data amplification (my contribution) and results.</figcaption>
+</figure>
+
 ## Dataset — 3.37× amplification via intelligent truncation
 
 The original CAD-MLLM paper's dataset doesn't include point clouds, multi-view images, or partial-sequence pairs. Team 21 rebuilt the dataset from scratch:

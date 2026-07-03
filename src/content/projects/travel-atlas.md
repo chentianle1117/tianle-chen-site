@@ -1,6 +1,7 @@
 ---
 title: Travel Atlas
 slug: travel-atlas
+summary: "An interactive world map built entirely from my own data — mined from Notion via MCP, plus a metadata-only photo-geolocation harvest — tracing five years across 103 places and 10 countries on a scrubbable timeline."
 year: 2026
 semester: Personal project
 categories:

@@ -1,6 +1,7 @@
 ---
 title: Job Search Copilot
 slug: job-search-copilot
+summary: "A multi-agent, provider-agnostic system that runs a real job search end-to-end — discovery, résumé + cover tailoring, an adversarial LLM audit, and ATS form submission — engineered around one rule: never ship a lower-quality application to work around a technical limit."
 year: 2026
 semester: Personal project
 categories:
@@ -31,6 +32,11 @@ is engineered around one hard rule: **zero quality degradation.** A technical
 limitation is never an excuse to ship a worse application.
 
 ## Architecture
+
+<figure class="diagram">
+  <img src="/assets/job-search-copilot/architecture.svg" alt="Job Search Copilot architecture — provider router, 8-stage pipeline, Opus auditor, 8 mechanical gates, 5-lane routing, ATS handlers, and an outcomes learning loop" />
+  <figcaption>Provider router → 8-stage pipeline → Opus auditor → 8 mechanical gates → 5-lane routing → ATS submit → outcomes learning loop.</figcaption>
+</figure>
 
 Three git repos + two personal knowledge vaults, coordinated by a
 **choreographer + specialist-workers** pattern:

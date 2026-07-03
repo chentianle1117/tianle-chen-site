@@ -583,6 +583,29 @@
     border-radius: 6px;
     margin-block: 1.5rem;
   }
+  /* Architecture diagrams break out wider than the 72ch reading column so
+     dense system diagrams stay legible. Centered on the column; capped so it
+     never exceeds the viewport. */
+  .prose-custom figure.diagram {
+    width: min(1120px, 92vw);
+    margin-left: 50%;
+    transform: translateX(-50%);
+    margin-block: 2.25rem;
+  }
+  .prose-custom figure.diagram img {
+    width: 100%;
+    margin: 0;
+    display: block;
+    background: #0b0d0f;
+  }
+  .prose-custom figure.diagram figcaption {
+    margin-top: 0.6rem;
+    font-family: theme(fontFamily.mono, monospace);
+    font-size: 0.8rem;
+    letter-spacing: 0.03em;
+    color: rgb(var(--text-mono));
+    text-align: center;
+  }
   .prose-custom strong {
     color: rgb(var(--text-primary));
     font-weight: 600;
