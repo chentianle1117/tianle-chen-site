@@ -583,22 +583,27 @@
     border-radius: 6px;
     margin-block: 1.5rem;
   }
-  /* Architecture diagrams break out wider than the 72ch reading column so
-     dense system diagrams stay legible. Centered on the column; capped so it
-     never exceeds the viewport. */
-  .prose-custom figure.diagram {
+  /* Architecture diagrams + live embeds break out wider than the 72ch reading
+     column so dense diagrams / interactive tools stay legible. Centered on the
+     parent; capped to the viewport. Un-scoped (not .prose-custom) so they also
+     work on custom layouts like /thesis. */
+  figure.diagram,
+  figure.embed {
     width: min(1120px, 92vw);
     margin-left: 50%;
     transform: translateX(-50%);
     margin-block: 2.25rem;
+    max-width: 1120px;
   }
-  .prose-custom figure.diagram img {
+  figure.diagram img {
     width: 100%;
     margin: 0;
     display: block;
     background: #0b0d0f;
+    border: 1px solid rgb(var(--surface-border));
+    border-radius: 6px;
   }
-  .prose-custom figure.diagram figcaption {
+  figure.diagram figcaption {
     margin-top: 0.6rem;
     font-family: theme(fontFamily.mono, monospace);
     font-size: 0.8rem;
@@ -606,15 +611,7 @@
     color: rgb(var(--text-mono));
     text-align: center;
   }
-  /* Live interactive embeds (iframes of a real deployed app) — same breakout,
-     with a tall viewport so the tool is actually usable inline. */
-  .prose-custom figure.embed {
-    width: min(1120px, 92vw);
-    margin-left: 50%;
-    transform: translateX(-50%);
-    margin-block: 2rem;
-  }
-  .prose-custom figure.embed iframe {
+  figure.embed iframe {
     width: 100%;
     height: min(78vh, 720px);
     border: 1px solid rgb(var(--surface-border));

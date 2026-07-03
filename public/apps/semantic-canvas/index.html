@@ -1,0 +1,114 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Semantic Canvas — live demo</title>
+<style>
+  :root{
+    --bg:#0b0d0f; --panel:#12161a; --line:rgba(94,99,107,.30); --line2:rgba(94,99,107,.16);
+    --oxide:#cf7f54; --text:#e8eaed; --mono:#a8acb1; --dim:#7e828a;
+    --font:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;background:var(--bg);color:var(--text);font-family:var(--font);overflow:hidden}
+  .wrap{display:flex;flex-direction:column;height:100%}
+  /* Header is ~48px so it maps to the portfolio /thesis embed's clipped top
+     band; standalone it reads as a compact title bar. */
+  header{padding:9px 20px 8px;border-bottom:1px solid var(--line);height:48px;overflow:hidden}
+  h1{margin:0;font-size:13px;letter-spacing:.16em;color:var(--oxide);text-transform:uppercase;font-weight:600}
+  .sub{margin:3px 0 0;font-size:10.5px;color:var(--dim);letter-spacing:.02em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .controls{display:flex;flex-wrap:wrap;gap:14px 22px;align-items:center;padding:12px 20px;border-bottom:1px solid var(--line)}
+  .ctrl{display:flex;align-items:center;gap:8px}
+  .ctrl label{font-size:10px;letter-spacing:.16em;color:var(--dim);text-transform:uppercase}
+  select{font-family:var(--font);font-size:12px;background:rgba(11,13,15,.85);color:var(--text);
+    border:1px solid var(--line);border-radius:4px;padding:6px 9px;cursor:pointer}
+  select:hover{border-color:var(--oxide)}
+  button{font-family:var(--font);font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--text);
+    background:transparent;border:1px solid var(--line);border-radius:4px;padding:7px 12px;cursor:pointer;transition:.15s}
+  button:hover{border-color:var(--oxide);color:var(--oxide)}
+  .note{margin-left:auto;font-size:10.5px;color:var(--dim);font-style:italic}
+  .stage{position:relative;flex:1;min-height:0;margin:12px 18px 18px}
+  .plot{position:absolute;inset:36px 24px 42px 60px;border:1px solid var(--line);
+    background-image:
+      repeating-linear-gradient(to right,var(--line2) 0,var(--line2) 1px,transparent 1px,transparent 12.5%),
+      repeating-linear-gradient(to bottom,var(--line2) 0,var(--line2) 1px,transparent 1px,transparent 12.5%);}
+  .tile{position:absolute;width:58px;height:58px;transform:translate(-50%,-50%);transition:left .7s cubic-bezier(.22,1,.36,1),top .7s cubic-bezier(.22,1,.36,1),width .18s,height .18s,box-shadow .18s;cursor:pointer}
+  .tile img{width:100%;height:100%;object-fit:contain;background:#fff;border:1px solid var(--line);border-radius:4px;display:block}
+  .tile:hover{z-index:50;width:120px;height:120px;box-shadow:0 10px 30px -6px rgba(0,0,0,.8)}
+  .tile:hover img{border-color:var(--oxide)}
+  .axlabel{position:absolute;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--mono);white-space:nowrap}
+  .arrow{color:var(--oxide);padding:0 6px}
+  .xlab{left:60px;right:24px;bottom:12px;text-align:center}
+  .ylab{left:8px;top:36px;bottom:42px;writing-mode:vertical-rl;transform:rotate(180deg);display:flex;align-items:center;justify-content:center}
+  .pole{color:var(--dim)}
+  @media(max-width:640px){ .tile{width:42px;height:42px} .plot{inset:32px 14px 40px 44px} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>◍ Semantic Canvas — live demo</h1>
+    <p class="sub">Pick two semantic axes. Each shoe is placed by the dot product of its CLIP embedding against your axis vectors — projection runs entirely in your browser.</p>
+  </header>
+  <div class="controls">
+    <div class="ctrl"><label>X axis</label><select id="ax"></select></div>
+    <div class="ctrl"><label>Y axis</label><select id="ay"></select></div>
+    <button id="rand">⚄ Randomize</button>
+    <span class="note" id="note">frontend-only · no backend · <span id="model"></span></span>
+  </div>
+  <div class="stage">
+    <div class="plot" id="plot"></div>
+    <div class="axlabel xlab" id="xlab"></div>
+    <div class="axlabel ylab" id="ylab"></div>
+  </div>
+</div>
+<script>
+const $=s=>document.querySelector(s);
+let DATA=null, tiles=[];
+const dot=(a,b)=>{let s=0;for(let i=0;i<a.length;i++)s+=a[i]*b[i];return s;};
+
+function normalize(vals){
+  const mn=Math.min(...vals), mx=Math.max(...vals), r=(mx-mn)||1;
+  return vals.map(v=>(v-mn)/r);
+}
+function poles(name){const p=name.split('↔');return [p[0].trim(),(p[1]||'').trim()];}
+
+function layout(){
+  const ax=DATA.axes[+$('#ax').value], ay=DATA.axes[+$('#ay').value];
+  const px=normalize(DATA.images.map(im=>dot(im.emb,ax.vec)));
+  const py=normalize(DATA.images.map(im=>dot(im.emb,ay.vec)));
+  const pad=6; // percent
+  DATA.images.forEach((im,i)=>{
+    const t=tiles[i];
+    t.style.left=(pad+px[i]*(100-2*pad))+'%';
+    t.style.top =(pad+(1-py[i])*(100-2*pad))+'%'; // invert: high y = top
+  });
+  const [xl,xr]=poles(ax.name), [yb,yt]=poles(ay.name);
+  $('#xlab').innerHTML=`<span class="pole">${xl}</span><span class="arrow">←———→</span><span class="pole">${xr}</span>`;
+  $('#ylab').innerHTML=`<span class="pole">${yb}</span><span class="arrow">←———→</span><span class="pole">${yt}</span>`;
+}
+
+fetch('data.json').then(r=>r.json()).then(d=>{
+  DATA=d;
+  $('#model').textContent=d.model;
+  const opts=d.axes.map((a,i)=>`<option value="${i}">${a.name}</option>`).join('');
+  $('#ax').innerHTML=opts; $('#ay').innerHTML=opts;
+  $('#ax').value=0; $('#ay').value=1;
+  const plot=$('#plot');
+  tiles=d.images.map(im=>{
+    const el=document.createElement('div'); el.className='tile';
+    el.innerHTML=`<img src="${im.thumb}" alt="shoe ${im.id}" loading="lazy"/>`;
+    plot.appendChild(el); return el;
+  });
+  $('#ax').onchange=layout; $('#ay').onchange=layout;
+  $('#rand').onclick=()=>{
+    const n=d.axes.length; let a=Math.floor(Math.random()*n), b=Math.floor(Math.random()*n);
+    if(b===a)b=(b+1)%n; $('#ax').value=a; $('#ay').value=b; layout();
+  };
+  layout();
+  window.addEventListener('resize',layout);
+});
+</script>
+</body>
+</html>

@@ -68,6 +68,7 @@ stack_frontend:
 - D3.js 7
 - Zustand
 status: ready
+live_url: /apps/semantic-canvas/
 summary: An AI-augmented design canvas where designers navigate latent space along
   their own typed semantic axes. Project image embeddings get dot-projected against
   ensemble axis vectors built from natural-language label expansions — no learned
@@ -99,6 +100,14 @@ year: 2025
 > **The thesis tool.** An interactive D3-based canvas for exploring and generating shoe designs in semantic latent space. Jina CLIP v2 embeddings let you define custom semantic axes ("casual ↔ formal", "dark ↔ bright") and watch your designs reposition themselves by meaning. fal.ai generates new designs from text or reference images. Gemini is a passive observer that reads your design brief and offers insights. Multi-user study mode with per-participant isolation logs every interaction — the whole thing runs in production on Railway.
 
 Design exploration is fundamentally about moving through a *space of possibilities* — but that space has historically been implicit, stored in the designer's head. Semantic Canvas is a thesis-scale attempt to make it real: 2D, navigable, with custom axes you define in your own words. Drop an image in and it finds its place along any axis you can describe; generate variations via fal.ai; branch with genealogy. Study participants use it for real design tasks, and every event is logged for analysis.
+
+### Try the core interaction
+
+**[▶ Open the live demo →](/apps/semantic-canvas/)** — pick two semantic axes and watch a set of shoes reposition by meaning. The projection runs **entirely in your browser** on precomputed CLIP embeddings (no backend — generation and the AI observer are omitted in this lightweight version; the full tool uses Jina CLIP v2 + fal.ai on Railway).
+
+<figure class="embed">
+  <iframe src="/apps/semantic-canvas/" title="Semantic Canvas — live client-side demo" loading="lazy"></iframe>
+</figure>
 
 Research frame: CMU MSCD thesis, 2025–2026, on AI-augmented footwear design — how generative AI should show up in an expert design workflow. The tool is both the research instrument and the thesis artifact, with the multi-user study conducted across Fall 2025 and Spring 2026. Solo engineering, design, and study execution: ~4,800+ LOC backend plus the full React frontend. Pairs with [[2025-Spring--live-ai-feedback-design-assistant|Live AI Feedback]] (same observational-AI pattern at smaller scale) and feeds the thesis writeup at [[2025-2026--thesis-flagship]].
 
