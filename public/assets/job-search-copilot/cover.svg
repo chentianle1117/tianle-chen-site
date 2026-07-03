@@ -1,0 +1,91 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" width="1200" height="900" font-family="'IBM Plex Mono', ui-monospace, monospace">
+  <defs>
+    <marker id="arrow" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L8,4.5 L0,9 Z" fill="#cf7f54" fill-opacity="0.75"/>
+    </marker>
+  </defs>
+
+  <rect width="1200" height="900" fill="#0b0d0f"/>
+
+  <!-- faint grid -->
+  <g stroke="#5e636b" stroke-opacity="0.10" stroke-width="1">
+    <line x1="0" y1="225" x2="1200" y2="225"/>
+    <line x1="0" y1="450" x2="1200" y2="450"/>
+    <line x1="0" y1="675" x2="1200" y2="675"/>
+    <line x1="300" y1="0" x2="300" y2="900"/>
+    <line x1="600" y1="0" x2="600" y2="900"/>
+    <line x1="900" y1="0" x2="900" y2="900"/>
+  </g>
+
+  <!-- title -->
+  <text x="70" y="95" fill="#cf7f54" font-size="17" letter-spacing="3">◍ JOB SEARCH COPILOT</text>
+  <text x="70" y="128" fill="#7e828a" font-size="15" letter-spacing="1">Multi-agent, provider-agnostic job-search automation</text>
+
+  <!-- column headers -->
+  <g fill="#7e828a" font-size="13" letter-spacing="3">
+    <text x="70" y="185">AI ENGINES</text>
+    <text x="360" y="185">ROUTER</text>
+    <text x="620" y="185">PIPELINE</text>
+    <text x="915" y="185">OUTPUTS</text>
+  </g>
+
+  <!-- connectors -->
+  <g fill="none" stroke="#cf7f54" stroke-opacity="0.45" stroke-width="1.6">
+    <path d="M285,242 L345,330" marker-end="url(#arrow)"/>
+    <path d="M285,332 L345,342" marker-end="url(#arrow)"/>
+    <path d="M285,422 L345,354" marker-end="url(#arrow)"/>
+    <path d="M545,342 L605,342" marker-end="url(#arrow)"/>
+    <path d="M825,342 L900,278" marker-end="url(#arrow)"/>
+    <path d="M825,352 L900,368" marker-end="url(#arrow)"/>
+    <path d="M825,362 L900,458" marker-end="url(#arrow)"/>
+  </g>
+
+  <!-- AI engine boxes -->
+  <g font-size="17" letter-spacing="1">
+    <rect x="70" y="210" width="215" height="64" rx="4" fill="#12161a" stroke="#5fa0a6" stroke-opacity="0.7"/>
+    <text x="177" y="248" text-anchor="middle" fill="#e8eaed">CLAUDE CODE</text>
+    <rect x="70" y="300" width="215" height="64" rx="4" fill="#12161a" stroke="#9b6fc9" stroke-opacity="0.7"/>
+    <text x="177" y="338" text-anchor="middle" fill="#e8eaed">CODEX</text>
+    <rect x="70" y="390" width="215" height="64" rx="4" fill="#12161a" stroke="#7aa15c" stroke-opacity="0.7"/>
+    <text x="177" y="428" text-anchor="middle" fill="#e8eaed">GEMINI</text>
+  </g>
+
+  <!-- router box -->
+  <rect x="345" y="210" width="200" height="244" rx="4" fill="#1a130e" stroke="#cf7f54"/>
+  <g fill="#cf7f54" font-size="16" letter-spacing="1" text-anchor="middle">
+    <text x="445" y="312">PROVIDER-</text>
+    <text x="445" y="338">AGNOSTIC</text>
+    <text x="445" y="364">ROUTER</text>
+  </g>
+
+  <!-- pipeline stages -->
+  <g font-size="15" letter-spacing="1">
+    <rect x="605" y="205" width="220" height="46" rx="4" fill="#12161a" stroke="#5e636b" stroke-opacity="0.7"/>
+    <text x="715" y="234" text-anchor="middle" fill="#d8dadd">DISCOVER</text>
+    <rect x="605" y="261" width="220" height="46" rx="4" fill="#12161a" stroke="#5e636b" stroke-opacity="0.7"/>
+    <text x="715" y="290" text-anchor="middle" fill="#d8dadd">MATCH / SCORE</text>
+    <rect x="605" y="317" width="220" height="46" rx="4" fill="#12161a" stroke="#5e636b" stroke-opacity="0.7"/>
+    <text x="715" y="346" text-anchor="middle" fill="#d8dadd">COVER LETTER</text>
+    <rect x="605" y="373" width="220" height="46" rx="4" fill="#12161a" stroke="#5e636b" stroke-opacity="0.7"/>
+    <text x="715" y="402" text-anchor="middle" fill="#d8dadd">ATS HANDLERS</text>
+    <rect x="605" y="429" width="220" height="46" rx="4" fill="#12161a" stroke="#5e636b" stroke-opacity="0.7"/>
+    <text x="715" y="458" text-anchor="middle" fill="#d8dadd">VERIFY</text>
+  </g>
+
+  <!-- output boxes -->
+  <g font-size="16" letter-spacing="1">
+    <rect x="900" y="246" width="230" height="64" rx="4" fill="#12161a" stroke="#5e636b" stroke-opacity="0.7"/>
+    <text x="1015" y="284" text-anchor="middle" fill="#e8eaed">GMAIL DIGEST</text>
+    <rect x="900" y="336" width="230" height="64" rx="4" fill="#12161a" stroke="#5e636b" stroke-opacity="0.7"/>
+    <text x="1015" y="374" text-anchor="middle" fill="#e8eaed">TELEGRAM</text>
+    <rect x="900" y="426" width="230" height="64" rx="4" fill="#12161a" stroke="#5e636b" stroke-opacity="0.7"/>
+    <text x="1015" y="464" text-anchor="middle" fill="#e8eaed">NOTION TRACKER</text>
+  </g>
+
+  <!-- footer stats -->
+  <g fill="#a8acb1" font-size="26" letter-spacing="1">
+    <text x="70" y="640">3 repos · 2 vaults · 3 AI engines</text>
+    <text x="70" y="678" font-size="15" fill="#7e828a">Provider-agnostic routing · adversarial verification · 8 ATS handlers</text>
+  </g>
+  <text x="1130" y="678" text-anchor="end" fill="#5e636b" font-size="13" letter-spacing="2">MULTI-AGENT ORCHESTRATION</text>
+</svg>

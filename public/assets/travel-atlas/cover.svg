@@ -1,0 +1,76 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" width="1200" height="900" font-family="'IBM Plex Mono', ui-monospace, monospace">
+  <defs>
+    <radialGradient id="dotOxide" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#e79a6a"/>
+      <stop offset="100%" stop-color="#cf7f54"/>
+    </radialGradient>
+    <radialGradient id="dotTeal" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#7fbcc2"/>
+      <stop offset="100%" stop-color="#5fa0a6"/>
+    </radialGradient>
+    <filter id="glow" x="-60%" y="-60%" width="220%" height="220%">
+      <feGaussianBlur stdDeviation="7" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <rect width="1200" height="900" fill="#0b0d0f"/>
+
+  <!-- graticule -->
+  <g stroke="#5e636b" stroke-opacity="0.16" stroke-width="1">
+    <line x1="0" y1="150" x2="1200" y2="150"/>
+    <line x1="0" y1="262" x2="1200" y2="262"/>
+    <line x1="0" y1="375" x2="1200" y2="375"/>
+    <line x1="0" y1="487" x2="1200" y2="487"/>
+    <line x1="0" y1="600" x2="1200" y2="600"/>
+    <line x1="0" y1="712" x2="1200" y2="712"/>
+    <line x1="150" y1="0" x2="150" y2="900"/>
+    <line x1="350" y1="0" x2="350" y2="900"/>
+    <line x1="550" y1="0" x2="550" y2="900"/>
+    <line x1="750" y1="0" x2="750" y2="900"/>
+    <line x1="950" y1="0" x2="950" y2="900"/>
+    <line x1="1050" y1="0" x2="1050" y2="900"/>
+  </g>
+
+  <!-- flight arcs -->
+  <g fill="none" stroke="#cf7f54" stroke-opacity="0.5" stroke-width="1.6" stroke-dasharray="2 7" stroke-linecap="round">
+    <path d="M283,475 Q640,300 1003,466"/>
+    <path d="M333,385 Q263,250 193,340"/>
+    <path d="M607,304 Q483,300 360,400"/>
+  </g>
+
+  <!-- city dots: r scaled by weeks spent -->
+  <g>
+    <!-- Houston 126w -->
+    <circle cx="283" cy="475" r="30" fill="url(#dotOxide)" filter="url(#glow)"/>
+    <circle cx="283" cy="475" r="30" fill="none" stroke="#e79a6a" stroke-opacity="0.5"/>
+    <!-- Pittsburgh 80w -->
+    <circle cx="333" cy="385" r="24" fill="url(#dotOxide)" filter="url(#glow)"/>
+    <!-- Shanghai 27w -->
+    <circle cx="1003" cy="466" r="16" fill="url(#dotTeal)" filter="url(#glow)"/>
+    <!-- Paris 20w -->
+    <circle cx="607" cy="304" r="15" fill="url(#dotTeal)" filter="url(#glow)"/>
+    <!-- New York 18w -->
+    <circle cx="360" cy="400" r="14" fill="url(#dotTeal)" filter="url(#glow)"/>
+    <!-- Portland 14w -->
+    <circle cx="193" cy="340" r="13" fill="url(#dotTeal)" filter="url(#glow)"/>
+  </g>
+
+  <!-- city labels -->
+  <g fill="#e8eaed" font-size="15" letter-spacing="1">
+    <text x="283" y="524" text-anchor="middle" fill="#e79a6a">HOUSTON</text>
+    <text x="333" y="352" text-anchor="middle">PITTSBURGH</text>
+    <text x="1003" y="500" text-anchor="middle" fill="#7fbcc2">SHANGHAI</text>
+    <text x="607" y="278" text-anchor="middle" fill="#7fbcc2">PARIS</text>
+    <text x="392" y="428" text-anchor="start" fill="#9aa0a6">NEW YORK</text>
+    <text x="193" y="312" text-anchor="middle" fill="#7fbcc2">PORTLAND</text>
+  </g>
+
+  <!-- title + stats -->
+  <text x="70" y="115" fill="#cf7f54" font-size="17" letter-spacing="3">◍ TRAVEL ATLAS</text>
+  <g fill="#a8acb1" font-size="26" letter-spacing="1">
+    <text x="70" y="800">103 PLACES</text>
+    <text x="70" y="838" font-size="15" fill="#7e828a">10 COUNTRIES · 450 WEEKS · 2021—2026</text>
+  </g>
+  <text x="1130" y="838" text-anchor="end" fill="#5e636b" font-size="13" letter-spacing="2">DOT SIZE = WEEKS SPENT</text>
+</svg>
