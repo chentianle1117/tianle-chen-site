@@ -102,12 +102,32 @@ function captionFor(img: string): string | undefined {
 
 const slugVal = (project as any).slug ?? data.slug ?? project.id?.replace(/\.md$/, "");
 const primaryCategory = (data.categories && data.categories[0]) || undefined;
+
+// Per-project JSON-LD (CreativeWork) — makes each project a resolvable entity.
+// If it has a code repo, SoftwareSourceCode is a more specific type.
+const repoUrl: string | undefined =
+  dataAny.github_url || (dataAny.github ? `https://github.com/${dataAny.github}` : undefined);
+const projectDescription: string =
+  lead || data.title + (data.course ? ` — ${data.course}` : "");
+const projectStructuredData = {
+  "@type": repoUrl ? "SoftwareSourceCode" : "CreativeWork",
+  name: data.title,
+  description: projectDescription,
+  url: new URL(`/work/${slugVal}`, Astro.site).toString(),
+  ...(heroExists || gifHero ? { image: new URL(heroImg, Astro.site).toString() } : {}),
+  ...(data.year ? { dateCreated: String(data.year) } : {}),
+  ...(data.categories?.length ? { keywords: data.categories.join(", ") } : {}),
+  ...(repoUrl ? { codeRepository: repoUrl } : {}),
+  author: { "@id": new URL("/#person", Astro.site).toString() },
+  creator: { "@id": new URL("/#person", Astro.site).toString() },
+};
 ---
 
 <BaseLayout
   title={data.title}
   description={data.title + (data.course ? ` — ${data.course}` : "")}
   image={heroImg}
+  structuredData={projectStructuredData}
 >
   <Breadcrumb category={primaryCategory} title={data.title} />
 

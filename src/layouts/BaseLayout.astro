@@ -8,17 +8,71 @@ interface Props {
   title: string;
   description?: string;
   image?: string;
+  /** Optional page-level JSON-LD node(s) — merged into the @graph so a
+   *  project page can add a CreativeWork, a publication a ScholarlyArticle,
+   *  etc. Accepts a single object or an array. */
+  structuredData?: Record<string, unknown> | Record<string, unknown>[];
 }
 
 const {
   title,
-  description = "David Chen — Gen-AI engineer & computational designer. Tools at the seam of generative AI and design. CMU MSCD.",
+  description = "David Chen — AI/ML engineer & computational designer. Computer vision, latent spaces, and tools at the seam of generative AI and design. CMU MSCD.",
   image = "/og-default.png",
+  structuredData,
 } = Astro.props;
 
 const siteName = "David Chen";
 const fullTitle = title === siteName ? title : `${title} — ${siteName}`;
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+
+// ── Structured data (JSON-LD) ────────────────────────────────────────────
+// A stable Person + WebSite graph is emitted on every page (helps entity
+// resolution + knowledge-panel eligibility for a personal site). Page-level
+// nodes passed via `structuredData` are appended. Facts sourced from the
+// About page + vault _Facts (AI/ML Engineer at HILOS, CMU MSCD, Rice B.Arch).
+const personNode = {
+  "@type": "Person",
+  "@id": new URL("/#person", Astro.site).toString(),
+  name: "David Chen",
+  alternateName: ["Tianle Chen", "陈天乐"],
+  url: Astro.site?.toString(),
+  jobTitle: "AI/ML Engineer",
+  worksFor: { "@type": "Organization", name: "HILOS Studio" },
+  alumniOf: [
+    { "@type": "CollegeOrUniversity", name: "Carnegie Mellon University" },
+    { "@type": "CollegeOrUniversity", name: "Rice University" },
+  ],
+  knowsAbout: [
+    "Machine Learning",
+    "Computer Vision",
+    "Computational Design",
+    "Generative AI",
+    "Latent Spaces",
+    "Design Tooling",
+    "Human-Computer Interaction",
+  ],
+  sameAs: [
+    "https://www.linkedin.com/in/tianle-david-chen/",
+    "https://github.com/chentianle1117",
+  ],
+};
+const websiteNode = {
+  "@type": "WebSite",
+  "@id": new URL("/#website", Astro.site).toString(),
+  url: Astro.site?.toString(),
+  name: siteName,
+  description,
+  publisher: { "@id": new URL("/#person", Astro.site).toString() },
+};
+const extraNodes = structuredData
+  ? Array.isArray(structuredData)
+    ? structuredData
+    : [structuredData]
+  : [];
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": [personNode, websiteNode, ...extraNodes],
+};
 ---
 
 <!doctype html>
@@ -70,6 +124,10 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
     <meta name="twitter:image" content={new URL(image, Astro.site)} />
 
     <meta name="generator" content={Astro.generator} />
+
+    {/* Structured data — Person + WebSite (+ optional page nodes) */}
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+
     <ViewTransitions />
   </head>
   <body>
