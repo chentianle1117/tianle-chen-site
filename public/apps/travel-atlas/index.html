@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>David's Travel Atlas</title>
+
+<!-- Leaflet -->
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<!-- PapaParse (CSV) -->
+<script src="https://unpkg.com/papaparse@5.4.1/papaparse.min.js"></script>
+<!-- Leaflet.heat (heatmap) -->
+<script src="https://unpkg.com/leaflet.heat@0.2.0/dist/leaflet-heat.js"></script>
+
+<style>
+  :root{
+    --bg:#0d1117; --panel:#161b22e6; --line:#30363d; --text:#e6edf3; --muted:#8b949e;
+    --accent:#58a6ff;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--text)}
+  #map{position:absolute;inset:0;background:#0d1117}
+
+  /* Title card */
+  #title{position:absolute;top:14px;left:14px;z-index:1000;background:var(--panel);
+    border:1px solid var(--line);border-radius:12px;padding:12px 16px;backdrop-filter:blur(6px);max-width:300px}
+  #title h1{margin:0;font-size:17px;letter-spacing:.2px}
+  #title p{margin:4px 0 0;font-size:12px;color:var(--muted);line-height:1.4}
+
+  /* Stats */
+  #stats{position:absolute;top:14px;right:14px;z-index:1000;background:var(--panel);
+    border:1px solid var(--line);border-radius:12px;padding:12px 14px;backdrop-filter:blur(6px);min-width:170px}
+  #stats .row{display:flex;justify-content:space-between;font-size:12px;padding:3px 0;gap:18px}
+  #stats .row b{font-size:13px}
+  #stats .muted{color:var(--muted)}
+
+  /* Controls / timeline */
+  #controls{position:absolute;left:50%;transform:translateX(-50%);bottom:18px;z-index:1000;
+    background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:12px 16px;
+    backdrop-filter:blur(6px);width:min(720px,calc(100vw - 28px))}
+  #controls .top{display:flex;align-items:center;gap:12px;margin-bottom:8px}
+  #controls .label{font-size:13px;font-weight:600;min-width:140px}
+  #controls .modes{margin-left:auto;display:flex;gap:6px}
+  button{background:#21262d;color:var(--text);border:1px solid var(--line);border-radius:8px;
+    padding:6px 12px;font-size:12px;cursor:pointer}
+  button:hover{border-color:var(--accent)}
+  button.active{background:var(--accent);color:#0d1117;border-color:var(--accent);font-weight:600}
+  #slider{width:100%;accent-color:var(--accent)}
+
+  /* Loader / drop zone */
+  #drop{position:absolute;inset:0;z-index:2000;display:none;align-items:center;justify-content:center;
+    background:#0d1117cc;backdrop-filter:blur(3px)}
+  #drop .box{border:2px dashed var(--accent);border-radius:16px;padding:40px 60px;text-align:center;font-size:18px}
+  #loadbtn{position:absolute;bottom:18px;right:14px;z-index:1000}
+  #banner{position:absolute;left:50%;transform:translateX(-50%);top:14px;z-index:1500;background:#9e6a03;
+    color:#fff;font-size:12px;padding:6px 14px;border-radius:20px;border:1px solid #b8860b;display:none}
+
+  /* Legend */
+  #legend{position:absolute;left:14px;bottom:128px;z-index:1000;background:var(--panel);
+    border:1px solid var(--line);border-radius:12px;padding:10px 12px;font-size:11px;backdrop-filter:blur(6px)}
+  #legend .item{display:flex;align-items:center;gap:6px;padding:2px 0}
+  #legend .dot{width:10px;height:10px;border-radius:50%}
+  .leaflet-popup-content-wrapper,.leaflet-popup-tip{background:#161b22;color:var(--text)}
+  .leaflet-popup-content{font-size:12px}
+  a{color:var(--accent)}
+  /* City name labels on the map */
+  .city-label{background:none;border:none;box-shadow:none;color:#fff;font-size:11px;
+    font-weight:600;padding:0;text-shadow:0 0 3px #000,0 0 4px #000,0 0 4px #000;white-space:nowrap}
+  .city-label::before{display:none !important}
+  .city-label.big{font-size:13px;color:#ffd479}
+</style>
+</head>
+<body>
+
+<div id="map"></div>
+
+<div id="title">
+  <h1>🌍 Travel Atlas</h1>
+  <p id="subtitle">Demo data — drag your Notion <b>Weekly Review</b> CSV export anywhere on the map to load your real history.</p>
+</div>
+
+<div id="banner">⚠️ Showing demo data — load your CSV to replace</div>
+
+<div id="stats">
+  <div class="row"><span class="muted">Places</span><b id="s-places">–</b></div>
+  <div class="row"><span class="muted">Weeks tracked</span><b id="s-weeks">–</b></div>
+  <div class="row"><span class="muted">Countries</span><b id="s-countries">–</b></div>
+  <div class="row"><span class="muted">Span</span><b id="s-span">–</b></div>
+  <div class="row"><span class="muted">Most weeks</span><b id="s-top">–</b></div>
+</div>
+
+<div id="legend"></div>
+
+<div id="controls">
+  <div class="top">
+    <span class="label" id="t-date">All time</span>
+    <button id="play">▶ Play</button>
+    <div class="modes">
+      <button id="t-journey" class="active">✈ Journey</button>
+      <button id="t-labels" class="active">🏷 Labels</button>
+      <button id="m-cumulative" class="active">Cumulative</button>
+      <button id="m-window">Window</button>
+    </div>
+  </div>
+  <input id="slider" type="range" min="0" max="100" value="100" />
+</div>
+
+<button id="loadbtn">📂 Load CSV</button>
+<input id="file" type="file" accept=".csv" style="display:none" />
+
+<div id="drop"><div class="box">Drop your Notion Weekly Review CSV here</div></div>
+
+<script>
+/* ---------------------------------------------------------------------------
+   Geocode table — keyed by the EXACT option strings in the Notion Location
+   multi-select (including David's spellings: "Santa Barbra", "Harrisburgh",
+   "Yellow Stone National Park"). Aliases handled by the normalizer.
+--------------------------------------------------------------------------- */
+const PLACES = {
+  // East Asia
+  "Shanghai":{lat:31.2304,lng:121.4737,region:"East Asia",country:"China"},
+  "Suzhou":{lat:31.2989,lng:120.5853,region:"East Asia",country:"China"},
+  "Hangzhou":{lat:30.2741,lng:120.1551,region:"East Asia",country:"China"},
+  "Huangshan":{lat:30.1313,lng:118.1556,region:"East Asia",country:"China"},
+  "Hong Kong":{lat:22.3193,lng:114.1694,region:"East Asia",country:"Hong Kong"},
+  "Tokyo":{lat:35.6762,lng:139.6503,region:"East Asia",country:"Japan"},
+  "Kyoto":{lat:35.0116,lng:135.7681,region:"East Asia",country:"Japan"},
+  "Osaka":{lat:34.6937,lng:135.5023,region:"East Asia",country:"Japan"},
+  "Taipei":{lat:25.0330,lng:121.5654,region:"East Asia",country:"Taiwan"},
+  "Kaohsiung":{lat:22.6273,lng:120.3014,region:"East Asia",country:"Taiwan"},
+  // Europe
+  "Paris":{lat:48.8566,lng:2.3522,region:"Europe",country:"France"},
+  "Lyon":{lat:45.7640,lng:4.8357,region:"Europe",country:"France"},
+  "Copenhagen":{lat:55.6761,lng:12.5683,region:"Europe",country:"Denmark"},
+  // US West
+  "Los Angeles":{lat:34.0522,lng:-118.2437,region:"US West",country:"USA"},
+  "Irvine":{lat:33.6846,lng:-117.8265,region:"US West",country:"USA"},
+  "San Francisco":{lat:37.7749,lng:-122.4194,region:"US West",country:"USA"},
+  "Santa Barbra":{lat:34.4208,lng:-119.6982,region:"US West",country:"USA"},
+  "Santa Cruz":{lat:36.9741,lng:-122.0308,region:"US West",country:"USA"},
+  "Yosemite":{lat:37.8651,lng:-119.5383,region:"US West",country:"USA"},
+  "Sequoia National Park":{lat:36.4864,lng:-118.5658,region:"US West",country:"USA"},
+  "Seattle":{lat:47.6062,lng:-122.3321,region:"US West",country:"USA"},
+  "Portland":{lat:45.5152,lng:-122.6784,region:"US West",country:"USA"},
+  "Yellow Stone National Park":{lat:44.4280,lng:-110.5885,region:"US West",country:"USA"},
+  // US Central / South
+  "Houston":{lat:29.7604,lng:-95.3698,region:"US South",country:"USA"},
+  "Dallas":{lat:32.7767,lng:-96.7970,region:"US South",country:"USA"},
+  // US East / Midwest
+  "Pittsburgh":{lat:40.4406,lng:-79.9959,region:"US East",country:"USA"},
+  "State College":{lat:40.7934,lng:-77.8600,region:"US East",country:"USA"},
+  "Cleveland":{lat:41.4993,lng:-81.6944,region:"US East",country:"USA"},
+  "Harrisburgh":{lat:40.2732,lng:-76.8867,region:"US East",country:"USA"},
+  "Chicago":{lat:41.8781,lng:-87.6298,region:"US East",country:"USA"},
+  "New York":{lat:40.7128,lng:-74.0060,region:"US East",country:"USA"},
+  "New Jersey":{lat:40.0583,lng:-74.4057,region:"US East",country:"USA"},
+  "DC":{lat:38.9072,lng:-77.0369,region:"US East",country:"USA"},
+  "Miami":{lat:25.7617,lng:-80.1918,region:"US East",country:"USA"},
+  "Key West":{lat:24.5551,lng:-81.7800,region:"US East",country:"USA"},
+  "Orlando":{lat:28.5383,lng:-81.3792,region:"US East",country:"USA"},
+};
+
+const REGION_COLORS = {
+  "East Asia":"#f78166", "Europe":"#bc8cff", "US West":"#3fb950",
+  "US South":"#d29922", "US East":"#58a6ff",
+};
+
+// Aliases / spelling normalization → canonical Notion key
+const ALIAS = {
+  "santa barbara":"Santa Barbra","harrisburg":"Harrisburgh",
+  "yellowstone":"Yellow Stone National Park","yellowstone national park":"Yellow Stone National Park",
+  "sequoia":"Sequoia National Park","washington dc":"DC","washington, dc":"DC",
+  "nyc":"New York","sf":"San Francisco","la":"Los Angeles","hk":"Hong Kong",
+};
+const KEY_BY_NORM = {};
+Object.keys(PLACES).forEach(k=>KEY_BY_NORM[k.toLowerCase()]=k);
+function canonical(raw){
+  const n=raw.trim().toLowerCase();
+  if(KEY_BY_NORM[n]) return KEY_BY_NORM[n];
+  if(ALIAS[n]) return ALIAS[n];
+  return null; // unknown place — ignored (logged)
+}
+
+/* ---------------------------------------------------------------------------
+   Demo data — clearly illustrative anchor points so the map renders on open.
+   Replaced entirely when a real CSV is loaded.
+--------------------------------------------------------------------------- */
+const DEMO = [
+  {date:"2021-09-15",places:["Irvine","Los Angeles"]},
+  {date:"2021-11-20",places:["San Francisco"]},
+  {date:"2022-03-10",places:["Houston"]},
+  {date:"2022-07-01",places:["Los Angeles","Santa Barbra"]},
+  {date:"2023-02-15",places:["Paris"]},
+  {date:"2023-04-01",places:["Lyon","Copenhagen"]},
+  {date:"2024-01-10",places:["Pittsburgh"]},
+  {date:"2024-09-01",places:["New York"]},
+  {date:"2026-05-25",places:["Portland"]},
+];
+
+/* ---------------------------------------------------------------------------
+   Map setup
+--------------------------------------------------------------------------- */
+const map = L.map('map',{worldCopyJump:true,minZoom:2}).setView([35,-40],3);
+L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',{
+  attribution:'&copy; OpenStreetMap &copy; CARTO', subdomains:'abcd', maxZoom:19
+}).addTo(map);
+
+let markerLayer = L.layerGroup().addTo(map);
+let routeLayer  = L.layerGroup().addTo(map);
+
+let EVENTS = [];      // [{date:Date, places:[canonicalKey,...]}]
+let TIMELINE = [];    // sorted unique dates
+let mode = "cumulative";
+let showLabels = true, showJourney = true;
+let PHOTO_DAYS = null;        // date-ordered photo GPS track (from photos.json .days)
+let isDemo = true;
+
+/* ---- ingest a list of {date, places} (places as canonical keys) ---------- */
+function setData(rawEvents, demo){
+  isDemo = !!demo;
+  EVENTS = rawEvents
+    .map(e=>({date:new Date(e.date), places:e.places.filter(p=>PLACES[p]), label:e.label||''}))
+    .filter(e=>!isNaN(e.date) && e.places.length)
+    .sort((a,b)=>a.date-b.date);
+  TIMELINE = EVENTS.map(e=>e.date);
+  const slider=document.getElementById('slider');
+  slider.max = Math.max(EVENTS.length-1,0);
+  slider.value = slider.max;
+  document.getElementById('banner').style.display = isDemo ? 'block' : 'none';
+  document.getElementById('subtitle').innerHTML = isDemo
+    ? 'Demo data — drag your Notion <b>Weekly Review</b> CSV export anywhere on the map to load your real history.'
+    : 'Your Weekly Review location history. Scrub the timeline; circle size = weeks spent.';
+  render(EVENTS.length-1);
+  fitToData();
+}
+
+// Frame the map to all visited places
+function fitToData(){
+  const pts=[];
+  EVENTS.forEach(e=>e.places.forEach(p=>{const g=PLACES[p];if(g)pts.push([g.lat,g.lng]);}));
+  if(pts.length) map.fitBounds(L.latLngBounds(pts).pad(0.15));
+}
+
+/* ---- render up to slider index ------------------------------------------ */
+function render(idx){
+  markerLayer.clearLayers(); routeLayer.clearLayers();
+  if(!EVENTS.length) return;
+  idx = Math.max(0,Math.min(idx,EVENTS.length-1));
+
+  let lo = 0;
+  if(mode==="window") lo = Math.max(0, idx-6); // ~6-week trailing window
+
+  const slice = EVENTS.slice(lo, idx+1);
+  const cutoff = EVENTS[idx].date;
+
+  // aggregate weeks per place + chronological route sequence
+  const counts={}, firstSeen={}, lastSeen={}, labels={};
+  const seq=[];
+  slice.forEach(e=>{
+    e.places.forEach(p=>{
+      counts[p]=(counts[p]||0)+1;
+      if(!firstSeen[p]) firstSeen[p]=e.date;
+      lastSeen[p]=e.date;
+      if(e.label) (labels[p]=labels[p]||[]).push(`${fmt(e.date)} — ${e.label}`);
+    });
+    // route node = first listed place of the week (primary location)
+    const primary=e.places[0];
+    if(primary && (seq.length===0 || seq[seq.length-1]!==primary)) seq.push(primary);
+  });
+
+  // Journey — arched flight-paths through the chronological route.
+  // Uses the photo GPS day-track when available (finer), else the Notion place sequence.
+  let path;
+  if(PHOTO_DAYS && PHOTO_DAYS.length){
+    path = PHOTO_DAYS.filter(d=>new Date(d.d)<=cutoff).map(d=>({ll:[d.lat,d.lng], t:new Date(d.d)}));
+  } else {
+    path = seq.map(p=>PLACES[p]).filter(Boolean).map(g=>({ll:[g.lat,g.lng], t:null}));
+  }
+  if(showJourney){
+    for(let i=0;i<path.length-1;i++){
+      const a=path[i], b=path[i+1];
+      if(Math.abs(a.ll[0]-b.ll[0])<0.05 && Math.abs(a.ll[1]-b.ll[1])<0.05) continue; // in-place
+      const dayGap = (a.t && b.t) ? Math.round((b.t-a.t)/86400000) : null;
+      const st = LEG_STYLE[legType(a.ll, b.ll, dayGap)];
+      const t=(i+1)/path.length;                       // recent legs brighter
+      L.polyline(arc(a.ll,b.ll,st.bow),{color:st.color,weight:1.2,opacity:0.2+0.5*t}).addTo(routeLayer);
+    }
+    if(path.length){                                   // current location
+      L.circleMarker(path[path.length-1].ll,{radius:5,color:'#fff',weight:2,
+        fillColor:'#e63946',fillOpacity:1}).addTo(routeLayer);
+    }
+  }
+
+  // markers + city-name labels (size + color both encode weeks-spent)
+  const maxN = Math.max(1, ...Object.values(counts));
+  const labelMin = Math.max(2, maxN*0.06);   // declutter: skip one-off trip dots
+  Object.keys(counts).forEach(p=>{
+    const g=PLACES[p]; const n=counts[p];
+    const r = Math.min(2.5 + Math.sqrt(n)*1.5, 15);
+    const color = weeksColor(n, maxN);
+    const notes=(labels[p]||[]).slice(-5).reverse();
+    const notesHtml = notes.length
+      ? `<hr style="border-color:#30363d;margin:5px 0"><div style="max-height:120px;overflow:auto">`+
+        notes.map(t=>`• ${t}`).join('<br>')+`</div>` : '';
+    const m=L.circleMarker([g.lat,g.lng],{radius:r,color:'#fff',weight:0.6,opacity:0.5,
+      fillColor:color,fillOpacity:0.85})
+      .bindPopup(`<b>${p}</b><br>${g.country}<br>`+
+        `<b>${n}</b> week${n>1?'s':''}<br>`+
+        `${fmt(firstSeen[p])} → ${fmt(lastSeen[p])}`+notesHtml, {maxWidth:280});
+    if(showLabels && n >= labelMin){
+      const big = n >= maxN*0.4;
+      m.bindTooltip(`${p}${n>2?` · ${n}w`:''}`,
+        {permanent:true,direction:'top',offset:[0,-r-1],
+         className:'city-label'+(big?' big':'')});
+    }
+    m.addTo(markerLayer);
+  });
+  // keep dots + labels above the heat canvas
+  markerLayer.eachLayer(l=>{ if(l.bringToFront) l.bringToFront(); });
+
+  // stats + label
+  updateStats(counts, EVENTS[0].date, EVENTS[EVENTS.length-1].date);
+  document.getElementById('t-date').textContent =
+    (mode==="window" ? "Window ending " : "Through ") + fmt(cutoff);
+}
+
+function fmt(d){ if(!d) return '–';
+  return d.toLocaleDateString('en-US',{year:'numeric',month:'short',day:'numeric'}); }
+
+// Time-spent color ramp (one consistent scale for dots + legend), t in 0..1
+function weeksColor(n, max){
+  const t = n / (max || 1);
+  return t > 0.66 ? '#e63946' : t > 0.33 ? '#fb8500' :
+         t > 0.12 ? '#f1e05a' : t > 0.04 ? '#2dd4bf' : '#1f6feb';
+}
+
+// Curved flight-path arc between two [lat,lng] points (quadratic bezier, bowed)
+function arc(a, b, bow){
+  let lat1=a[0],lng1=a[1],lat2=b[0],lng2=b[1];
+  const dl=lng2-lng1;                       // take the shortest way around the globe
+  if(dl>180) lng2-=360; else if(dl<-180) lng2+=360;
+  const dlat=lat2-lat1, dlng=lng2-lng1;
+  const k=(bow==null?0.17:bow);
+  const cx=(lat1+lat2)/2 - dlng*k;          // control point, perpendicular offset
+  const cy=(lng1+lng2)/2 + dlat*k;
+  const N=40, pts=[];
+  for(let i=0;i<=N;i++){const t=i/N,u=1-t;
+    pts.push([u*u*lat1+2*u*t*cx+t*t*lat2, u*u*lng1+2*u*t*cy+t*t*lng2]);}
+  return pts;
+}
+
+function haversineKm(a, b){
+  const R=6371, toR=x=>x*Math.PI/180;
+  const dLat=toR(b[0]-a[0]), dLng=toR(b[1]-a[1]);
+  const s=Math.sin(dLat/2)**2 + Math.cos(toR(a[0]))*Math.cos(toR(b[0]))*Math.sin(dLng/2)**2;
+  return 2*R*Math.asin(Math.sqrt(s));
+}
+
+// Classify a journey leg: road / flight / unsure.
+// With a day-gap (photo track) we use travel speed; otherwise distance + ocean-crossing.
+function legType(a, b, dayGap){
+  const d = haversineKm(a, b);
+  const zone = lng => lng < -30 ? 'AM' : (lng < 65 ? 'EU' : 'AS');  // crude continents
+  if(zone(a[1]) !== zone(b[1]) && d > 1500) return 'flight';         // trans-ocean
+  if(dayGap != null && dayGap > 0){
+    const kmPerDay = d / dayGap;
+    if(kmPerDay > 1400) return 'flight';   // no one drives >1400km/day
+    if(kmPerDay < 850)  return 'road';
+    return 'unsure';
+  }
+  if(d > 1800) return 'flight';
+  if(d < 900)  return 'road';
+  return 'unsure';
+}
+const LEG_STYLE = {
+  road:   {color:'#ffa657', bow:0.05},   // amber, hugs the ground
+  flight: {color:'#7bdcff', bow:0.24},   // cyan, high arc
+  unsure: {color:'#b388ff', bow:0.14}    // violet, the third color
+};
+
+
+function updateStats(counts, first, last){
+  const places=Object.keys(counts);
+  const totalWeeks=places.reduce((s,p)=>s+counts[p],0);
+  const countries=new Set(places.map(p=>PLACES[p].country));
+  let top='–',topN=0; places.forEach(p=>{if(counts[p]>topN){topN=counts[p];top=p;}});
+  document.getElementById('s-places').textContent=places.length;
+  document.getElementById('s-weeks').textContent=totalWeeks;
+  document.getElementById('s-countries').textContent=countries.size;
+  document.getElementById('s-span').textContent=`${first.getFullYear()}–${last.getFullYear()}`;
+  document.getElementById('s-top').textContent=`${top} (${topN})`;
+}
+
+/* ---------------------------------------------------------------------------
+   CSV parsing — auto-detect the Location column and a date column.
+--------------------------------------------------------------------------- */
+function loadCSV(text){
+  const parsed = Papa.parse(text,{header:true,skipEmptyLines:true});
+  const rows = parsed.data;
+  if(!rows.length){ alert("No rows found in CSV."); return; }
+  const cols = Object.keys(rows[0]);
+
+  // 1) Location column = the one whose cells most often match known places
+  let locCol=null, bestHits=-1;
+  cols.forEach(c=>{
+    let hits=0;
+    rows.forEach(r=>{ (String(r[c]||'').split(',')).forEach(tok=>{ if(canonical(tok)) hits++; }); });
+    if(hits>bestHits){ bestHits=hits; locCol=c; }
+  });
+
+  // 2) Date column = best at parsing to a Date (prefer name hints)
+  let dateCol=null, bestDate=-1;
+  cols.forEach(c=>{
+    let ok=0;
+    rows.forEach(r=>{ if(!isNaN(new Date(r[c]))) ok++; });
+    const bonus=/date|time|property|created/i.test(c)?rows.length*0.2:0;
+    if(ok+bonus>bestDate){ bestDate=ok+bonus; dateCol=c; }
+  });
+
+  const titleCol = cols.find(c=>/name|title/i.test(c)) || cols[0];
+  const events=[]; const unknown=new Set();
+  rows.forEach(r=>{
+    let d = dateCol ? new Date(r[dateCol]) : null;
+    if((!d||isNaN(d)) && r[titleCol]) d = parseTitleDate(r[titleCol]);
+    if(!d||isNaN(d)) return;
+    const places=[];
+    String(r[locCol]||'').split(',').forEach(tok=>{
+      const k=canonical(tok); if(k) places.push(k);
+      else if(tok.trim()) unknown.add(tok.trim());
+    });
+    if(places.length) events.push({date:d,places});
+  });
+
+  if(!events.length){ alert("Couldn't find any recognizable locations.\nDetected location column: "+locCol); return; }
+  if(unknown.size) console.warn("Unmapped place names (add to PLACES table):",[...unknown]);
+  setData(events,false);
+}
+
+// Fallback: pull a date out of titles like "9.27-10.3, 2021" / "7/12 - 7/18, 2021"
+function parseTitleDate(t){
+  const ym=t.match(/(\d{4})/); if(!ym) return null;
+  const year=ym[1];
+  const md=t.match(/(\d{1,2})[.\/](\d{1,2})/);
+  if(md) return new Date(`${year}-${String(md[1]).padStart(2,'0')}-${String(md[2]).padStart(2,'0')}`);
+  return new Date(`${year}-06-30`);
+}
+
+/* ---------------------------------------------------------------------------
+   UI wiring
+--------------------------------------------------------------------------- */
+const slider=document.getElementById('slider');
+slider.addEventListener('input',()=>render(+slider.value));
+
+document.getElementById('m-cumulative').onclick=function(){mode="cumulative";this.classList.add('active');document.getElementById('m-window').classList.remove('active');render(+slider.value);};
+document.getElementById('m-window').onclick=function(){mode="window";this.classList.add('active');document.getElementById('m-cumulative').classList.remove('active');render(+slider.value);};
+
+let playing=null;
+document.getElementById('play').onclick=function(){
+  if(playing){clearInterval(playing);playing=null;this.textContent="▶ Play";return;}
+  this.textContent="⏸ Pause";
+  if(+slider.value>=+slider.max) slider.value=0;
+  playing=setInterval(()=>{
+    if(+slider.value>=+slider.max){clearInterval(playing);playing=null;document.getElementById('play').textContent="▶ Play";return;}
+    slider.value=+slider.value+1; render(+slider.value);
+  },420);
+};
+
+// File input + drag/drop
+document.getElementById('loadbtn').onclick=()=>document.getElementById('file').click();
+document.getElementById('file').onchange=e=>{const f=e.target.files[0];if(f)f.text().then(loadCSV);};
+const drop=document.getElementById('drop');
+window.addEventListener('dragover',e=>{e.preventDefault();drop.style.display='flex';});
+drop.addEventListener('dragleave',e=>{if(e.target===drop)drop.style.display='none';});
+window.addEventListener('drop',e=>{e.preventDefault();drop.style.display='none';
+  const f=e.dataTransfer.files[0]; if(f)f.text().then(loadCSV);});
+
+// Toggles: heat + city-name labels
+document.getElementById('t-journey').onclick=function(){showJourney=!showJourney;this.classList.toggle('active',showJourney);render(+slider.value);};
+document.getElementById('t-labels').onclick=function(){showLabels=!showLabels;this.classList.toggle('active',showLabels);render(+slider.value);};
+
+// Legend — single consistent scale: dot size + color = time spent
+document.getElementById('legend').innerHTML =
+  `<div style="margin-bottom:4px;font-weight:600">Time spent here</div>`+
+  `<div style="height:8px;width:150px;border-radius:4px;background:linear-gradient(90deg,#1f6feb,#2dd4bf,#f1e05a,#fb8500,#e63946)"></div>`+
+  `<div style="display:flex;justify-content:space-between;color:var(--muted);margin-top:2px"><span>days</span><span>years</span></div>`+
+  `<div style="margin-top:6px;color:var(--muted)">● dot size &amp; color = time spent</div>`+
+  `<div style="margin-top:4px;color:var(--muted)">`+
+  `<span style="color:#ffa657">━ road</span>　<span style="color:#7bdcff">⌒ flight</span>　<span style="color:#b388ff">┄ unsure</span></div>`;
+
+// Merge extra geocoded places (from travel-data.json) into the lookup tables.
+function mergePlaces(extra){
+  Object.assign(PLACES, extra||{});
+  Object.keys(PLACES).forEach(k=>KEY_BY_NORM[k.toLowerCase()]=k);
+}
+
+// Auto-load: prefer travel-data.json (the real Notion-derived dataset),
+// then a sibling weekly-review.csv export, else fall back to demo.
+fetch('travel-data.json').then(r=>{if(r.ok)return r.json();throw 0;})
+  .then(d=>{ mergePlaces(d.newPlaces); setData(d.events,false); })
+  .catch(()=>fetch('weekly-review.csv').then(r=>{if(r.ok)return r.text();throw 0;})
+    .then(loadCSV).catch(()=>setData(DEMO,true)));
+
+// Photo GPS journey track (optional) — present after icloud_metadata.py emits .days
+fetch('photos.json').then(r=>r.ok?r.json():null).then(d=>{
+  if(!d) return;
+  if(d.days && d.days.length){
+    PHOTO_DAYS = d.days.filter(x=>!(Math.abs(x.lat)<0.5 && Math.abs(x.lng)<0.5));
+    render(+document.getElementById('slider').value);   // redraw journey from photo track
+  }
+}).catch(()=>{});
+</script>
+</body>
+</html>

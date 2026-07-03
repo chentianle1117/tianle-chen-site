@@ -606,6 +606,22 @@
     color: rgb(var(--text-mono));
     text-align: center;
   }
+  /* Live interactive embeds (iframes of a real deployed app) — same breakout,
+     with a tall viewport so the tool is actually usable inline. */
+  .prose-custom figure.embed {
+    width: min(1120px, 92vw);
+    margin-left: 50%;
+    transform: translateX(-50%);
+    margin-block: 2rem;
+  }
+  .prose-custom figure.embed iframe {
+    width: 100%;
+    height: min(78vh, 720px);
+    border: 1px solid rgb(var(--surface-border));
+    border-radius: 6px;
+    background: #0b0d0f;
+    display: block;
+  }
   .prose-custom strong {
     color: rgb(var(--text-primary));
     font-weight: 600;

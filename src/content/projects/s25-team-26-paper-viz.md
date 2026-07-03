@@ -19,7 +19,8 @@ images:
 - /assets/s25-team-26-paper-viz/cover.svg
 local_path: W:\CMU_Academics\2025 Spring\17637 Web App Dev\s25_team_26
 priority: standard
-publish: true
+publish: false
+publish_reason: "Removed from portfolio — no substantial deliverable / live artifact (repo lost, planning docs only)."
 role: team-member
 semester: Spring 2025
 slug: s25-team-26-paper-viz

@@ -29,7 +29,7 @@ images:
 - /assets/skill-bridge-datavis/Project Thumbnail.png
 - /assets/skill-bridge-datavis/Presentation 1.png
 - /assets/skill-bridge-datavis/Presentation 2.png
-live_url: https://chentianle1117.github.io/Skill-Bridge-DataVis/
+live_url: /apps/skill-bridge/
 local_path: W:\CMU_Academics\Fall 2024 CMU\Data Visualization\Skill-Bridge-DataVis
 notion_url: https://www.notion.so/chentianle1117/Skill-Bridge-Data-Visualization-Interface-16a33d12d95a804f89f2cb345dac1b3d
 priority: flagship
@@ -64,7 +64,11 @@ year: 2024
 
 > An interactive dashboard comparing tech and design job markets — revealing how skill requirements, salaries, and remote availability interplay across geography. Built for cross-field job seekers navigating the transition.
 
-**[Live demo](https://chentianle1117.github.io/Skill-Bridge-DataVis/)** · Team: David Chen, Risa Xie.
+**[▶ Launch the live dashboard →](/apps/skill-bridge/)** · Team: David Chen, Risa Xie.
+
+<figure class="embed">
+  <iframe src="/apps/skill-bridge/" title="Skill-Bridge — interactive job-market dashboard" loading="lazy"></iframe>
+</figure>
 
 ![dashboard hero](/assets/skill-bridge-datavis/dashboard-hero.gif)
 
@@ -133,7 +137,7 @@ Built for 05-619 Data Visualization, Fall 2024 — Svelte, D3.js, LinkedIn 2023 
 
 ## Links
 
-- **[Live demo](https://chentianle1117.github.io/Skill-Bridge-DataVis/)**
+- **[Live demo](/apps/skill-bridge/)**
 - [GitHub repo](https://github.com/chentianle1117/Skill-Bridge-DataVis)
 - [Notion page (full findings + all figures)](https://www.notion.so/chentianle1117/Skill-Bridge-Data-Visualization-Interface-16a33d12d95a804f89f2cb345dac1b3d)
 - Local: `W:\CMU_Academics\Fall 2024 CMU\Data Visualization\Skill-Bridge-DataVis\`

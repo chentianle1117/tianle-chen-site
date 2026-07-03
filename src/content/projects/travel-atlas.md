@@ -14,6 +14,7 @@ tags:
 priority: standard
 status: ready
 publish: true
+live_url: /apps/travel-atlas/
 hero_image: /assets/travel-atlas/cover.svg
 images:
   - /assets/travel-atlas/cover.svg
@@ -28,6 +29,12 @@ An interactive world map of everywhere I've lived and traveled, built entirely
 from my own data — no manual entry. A time-scrubber animates the journey from
 2021 to 2026; each dot is a place, sized and colored by how many weeks I spent
 there.
+
+**[▶ Launch the interactive map →](/apps/travel-atlas/)** — or explore it right here:
+
+<figure class="embed">
+  <iframe src="/apps/travel-atlas/" title="Travel Atlas — interactive map" loading="lazy"></iframe>
+</figure>
 
 ## What it does
 

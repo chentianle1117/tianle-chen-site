@@ -1,0 +1,540 @@
+{
+    "skills": [
+        {
+            "name": "php",
+            "category": "programming_languages",
+            "count": 1,
+            "connections": {
+                "required": [
+                    "Software Engineering"
+                ],
+                "preferred": [
+                    "Software Engineering"
+                ]
+            }
+        },
+        {
+            "name": "java",
+            "category": "programming_languages",
+            "count": 2,
+            "connections": {
+                "required": [
+                    "Java Development"
+                ],
+                "preferred": [
+                    "Data Engineering"
+                ]
+            }
+        },
+        {
+            "name": "typescript",
+            "category": "programming_languages",
+            "count": 1,
+            "connections": {
+                "required": [
+                    "Java Development"
+                ],
+                "preferred": []
+            }
+        },
+        {
+            "name": "react",
+            "category": "web_tech",
+            "count": 2,
+            "connections": {
+                "required": [
+                    "Java Development"
+                ],
+                "preferred": []
+            }
+        },
+        {
+            "name": "rest api",
+            "category": "web_tech",
+            "count": 1,
+            "connections": {
+                "required": [
+                    "Java Development"
+                ],
+                "preferred": []
+            }
+        },
+        {
+            "name": "gcp",
+            "category": "cloud_devops",
+            "count": 1,
+            "connections": {
+                "required": [
+                    "Software Engineering"
+                ],
+                "preferred": [
+                    "Data Engineering"
+                ]
+            }
+        },
+        {
+            "name": "postgresql",
+            "category": "databases",
+            "count": 1,
+            "connections": {
+                "required": [
+                    "Software Engineering"
+                ],
+                "preferred": []
+            }
+        },
+        {
+            "name": "sql",
+            "category": "databases",
+            "count": 4,
+            "connections": {
+                "required": [
+                    "Software Engineering",
+                    "Data Engineering"
+                ],
+                "preferred": []
+            }
+        },
+        {
+            "name": "python",
+            "category": "programming_languages",
+            "count": 2,
+            "connections": {
+                "required": [
+                    "Software Engineering",
+                    "Data Engineering"
+                ],
+                "preferred": [
+                    "Data Engineering"
+                ]
+            }
+        },
+        {
+            "name": "linux",
+            "category": "cloud_devops",
+            "count": 3,
+            "connections": {
+                "required": [
+                    "Software Engineering",
+                    "Data Engineering"
+                ],
+                "preferred": []
+            }
+        },
+        {
+            "name": "shell scripting",
+            "category": "cloud_devops",
+            "count": 1,
+            "connections": {
+                "required": [
+                    "Data Engineering"
+                ],
+                "preferred": []
+            }
+        },
+        {
+            "name": "aws",
+            "category": "cloud_devops",
+            "count": 1,
+            "connections": {
+                "required": [
+                    "Data Engineering"
+                ],
+                "preferred": [
+                    "Data Engineering"
+                ]
+            }
+        },
+        {
+            "name": "snowflake",
+            "category": "databases",
+            "count": 1,
+            "connections": {
+                "required": [
+                    "Data Engineering"
+                ],
+                "preferred": []
+            }
+        },
+        {
+            "name": "spring",
+            "category": "web_tech",
+            "count": 1,
+            "connections": {
+                "required": [
+                    "Java Development"
+                ],
+                "preferred": []
+            }
+        },
+        {
+            "name": "communication",
+            "category": "soft_skills",
+            "count": 2,
+            "connections": {
+                "required": [
+                    "Java Development",
+                    "Software Engineering"
+                ],
+                "preferred": [
+                    "Software Engineering",
+                    "Data Engineering"
+                ]
+            }
+        },
+        {
+            "name": "problem solving",
+            "category": "soft_skills",
+            "count": 1,
+            "connections": {
+                "required": [
+                    "Java Development"
+                ],
+                "preferred": []
+            }
+        },
+        {
+            "name": "azure",
+            "category": "cloud_devops",
+            "count": 1,
+            "connections": {
+                "required": [
+                    "Data Engineering"
+                ],
+                "preferred": [
+                    "Data Engineering"
+                ]
+            }
+        },
+        {
+            "name": "data analysis",
+            "category": "data_science_ai",
+            "count": 1,
+            "connections": {
+                "required": [
+                    "Data Engineering"
+                ],
+                "preferred": []
+            }
+        },
+        {
+            "name": "big data",
+            "category": "data_science_ai",
+            "count": 1,
+            "connections": {
+                "required": [
+                    "Data Engineering"
+                ],
+                "preferred": []
+            }
+        },
+        {
+            "name": "pandas",
+            "category": "data_science_ai",
+            "count": 1,
+            "connections": {
+                "required": [
+                    "Software Engineering"
+                ],
+                "preferred": []
+            }
+        },
+        {
+            "name": "numpy",
+            "category": "data_science_ai",
+            "count": 1,
+            "connections": {
+                "required": [
+                    "Software Engineering"
+                ],
+                "preferred": []
+            }
+        },
+        {
+            "name": "agile",
+            "category": "project_management",
+            "count": 2,
+            "connections": {
+                "required": [
+                    "Software Engineering"
+                ],
+                "preferred": []
+            }
+        },
+        {
+            "name": "jira",
+            "category": "project_management",
+            "count": 1,
+            "connections": {
+                "required": [
+                    "Software Engineering"
+                ],
+                "preferred": []
+            }
+        },
+        {
+            "name": "program management",
+            "category": "project_management",
+            "count": 1,
+            "connections": {
+                "required": [
+                    "Software Engineering"
+                ],
+                "preferred": []
+            }
+        },
+        {
+            "name": "waterfall",
+            "category": "project_management",
+            "count": 1,
+            "connections": {
+                "required": [
+                    "Software Engineering"
+                ],
+                "preferred": []
+            }
+        },
+        {
+            "name": "collaboration",
+            "category": "soft_skills",
+            "count": 1,
+            "connections": {
+                "required": [
+                    "Software Engineering"
+                ],
+                "preferred": [
+                    "Software Engineering"
+                ]
+            }
+        }
+    ],
+    "subcategories": [
+        {
+            "name": "Data Engineering",
+            "jobs": [
+                {
+                    "title": "Sr Data Engineer with Kafka",
+                    "required_skills": {
+                        "programming_languages": [
+                            "sql",
+                            "python"
+                        ],
+                        "cloud_devops": [
+                            "linux",
+                            "shell scripting",
+                            "aws"
+                        ],
+                        "databases": [
+                            "sql",
+                            "snowflake"
+                        ]
+                    },
+                    "preferred_skills": {},
+                    "normalized_salary": null,
+                    "company_name": "ZenithMinds Inc",
+                    "location": "Austin, TX",
+                    "applies": 10.0,
+                    "original_listed_time": 1713210000000.0
+                },
+                {
+                    "title": "Cloud Platform Big Data Engineer",
+                    "required_skills": {
+                        "cloud_devops": [
+                            "azure"
+                        ],
+                        "data_science_ai": [
+                            "data analysis",
+                            "big data"
+                        ]
+                    },
+                    "preferred_skills": {
+                        "programming_languages": [
+                            "python",
+                            "java"
+                        ],
+                        "cloud_devops": [
+                            "aws",
+                            "gcp",
+                            "azure"
+                        ],
+                        "soft_skills": [
+                            "communication"
+                        ]
+                    },
+                    "normalized_salary": null,
+                    "company_name": "Subaru Research and Development, Inc",
+                    "location": "Michigan, United States",
+                    "applies": 1.0,
+                    "original_listed_time": 1713550000000.0
+                }
+            ]
+        },
+        {
+            "name": "Java Development",
+            "jobs": [
+                {
+                    "title": "Java architect  Lead Java developer",
+                    "required_skills": {
+                        "programming_languages": [
+                            "java",
+                            "typescript"
+                        ],
+                        "web_tech": [
+                            "react",
+                            "rest api"
+                        ]
+                    },
+                    "preferred_skills": {},
+                    "normalized_salary": null,
+                    "company_name": "NLB Services",
+                    "location": "Jersey City, NJ",
+                    "applies": null,
+                    "original_listed_time": 1712860000000.0
+                },
+                {
+                    "title": "backend Java developer",
+                    "required_skills": {
+                        "programming_languages": [
+                            "java"
+                        ],
+                        "web_tech": [
+                            "react",
+                            "spring"
+                        ],
+                        "soft_skills": [
+                            "communication",
+                            "problem solving"
+                        ]
+                    },
+                    "preferred_skills": {},
+                    "normalized_salary": null,
+                    "company_name": "TekisHub Consulting Services ",
+                    "location": "Austin, TX",
+                    "applies": 2.0,
+                    "original_listed_time": 1713470000000.0
+                }
+            ]
+        },
+        {
+            "name": "Software Engineering",
+            "jobs": [
+                {
+                    "title": "Software Engineer",
+                    "required_skills": {
+                        "programming_languages": [
+                            "php"
+                        ]
+                    },
+                    "preferred_skills": {
+                        "programming_languages": [
+                            "php",
+                            "javascript"
+                        ],
+                        "web_tech": [
+                            "css[3]?",
+                            "html[5]?"
+                        ],
+                        "databases": [
+                            "mysql"
+                        ],
+                        "soft_skills": [
+                            "collaboration",
+                            "communication"
+                        ]
+                    },
+                    "normalized_salary": null,
+                    "company_name": "GOYT",
+                    "location": "Denver, CO",
+                    "applies": 49.0,
+                    "original_listed_time": 1713280000000.0
+                },
+                {
+                    "title": "Senior Software Engineer",
+                    "required_skills": {
+                        "cloud_devops": [
+                            "gcp"
+                        ],
+                        "databases": [
+                            "postgresql"
+                        ]
+                    },
+                    "preferred_skills": {
+                        "soft_skills": [
+                            "attention to detail"
+                        ]
+                    },
+                    "normalized_salary": null,
+                    "company_name": "StyleAI",
+                    "location": "San Francisco Bay Area",
+                    "applies": 5.0,
+                    "original_listed_time": 1713400000000.0
+                },
+                {
+                    "title": "Data Science Software Engineer",
+                    "required_skills": {
+                        "programming_languages": [
+                            "sql",
+                            "python"
+                        ],
+                        "cloud_devops": [
+                            "linux"
+                        ],
+                        "databases": [
+                            "sql"
+                        ],
+                        "data_science_ai": [
+                            "pandas",
+                            "numpy"
+                        ],
+                        "project_management": [
+                            "agile",
+                            "jira"
+                        ],
+                        "soft_skills": [
+                            "communication"
+                        ]
+                    },
+                    "preferred_skills": {},
+                    "normalized_salary": null,
+                    "company_name": "Sovrinti",
+                    "location": "United States",
+                    "applies": 19.0,
+                    "original_listed_time": 1704740000000.0
+                },
+                {
+                    "title": "Flight Software Engineer",
+                    "required_skills": {
+                        "cloud_devops": [
+                            "linux"
+                        ]
+                    },
+                    "preferred_skills": {},
+                    "normalized_salary": 155000.0,
+                    "company_name": "Insight Global",
+                    "location": "Webster, TX",
+                    "applies": 7.0,
+                    "original_listed_time": 1713460000000.0
+                },
+                {
+                    "title": "Staff Software Engineer AHT",
+                    "required_skills": {
+                        "project_management": [
+                            "program management",
+                            "agile",
+                            "waterfall"
+                        ],
+                        "soft_skills": [
+                            "collaboration"
+                        ]
+                    },
+                    "preferred_skills": {},
+                    "normalized_salary": 201200.0,
+                    "company_name": "Northrop Grumman",
+                    "location": "Los Angeles, California, United States",
+                    "applies": 2.0,
+                    "original_listed_time": 1706310000000.0
+                }
+            ]
+        }
+    ]
+}
