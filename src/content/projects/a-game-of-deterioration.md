@@ -56,7 +56,7 @@ images:
 - /assets/a-game-of-deterioration/texture-pathrocks-deteriorated.png
 local_path: W:\CMU_Academics\Fall 2024 CMU\112 Term Project - Final - Submission
 notion_url: https://www.notion.so/chentianle1117/A-Game-of-Deterioration-Time-Reversal-16a33d12d95a80779ab7f488cbc13f1f
-priority: flagship
+priority: standard
 publish: true
 semester: Fall 2024
 slug: a-game-of-deterioration

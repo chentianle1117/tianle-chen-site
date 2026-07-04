@@ -46,7 +46,8 @@ const yearsSorted = [...years].sort((a, b) => b - a);
     {/* Sort */}
     <div class="flex items-center gap-2 ml-auto" role="group" aria-label="Sort">
       <span class="mono-label hidden md:inline">Sort</span>
-      <button type="button" class="filter-sort mono-label px-2 py-1 border border-graphite-700/60 rounded-sm transition-colors duration-180 hover:border-oxide-500/40 hover:text-[rgb(var(--accent-rgb))] aria-pressed:bg-oxide-500/15 aria-pressed:text-[rgb(var(--accent-rgb))] aria-pressed:border-oxide-500/40" data-sort="recent" aria-pressed="true">Recent</button>
+      <button type="button" class="filter-sort mono-label px-2 py-1 border border-graphite-700/60 rounded-sm transition-colors duration-180 hover:border-oxide-500/40 hover:text-[rgb(var(--accent-rgb))] aria-pressed:bg-oxide-500/15 aria-pressed:text-[rgb(var(--accent-rgb))] aria-pressed:border-oxide-500/40" data-sort="featured" aria-pressed="true">Featured</button>
+      <button type="button" class="filter-sort mono-label px-2 py-1 border border-graphite-700/60 rounded-sm transition-colors duration-180 hover:border-oxide-500/40 hover:text-[rgb(var(--accent-rgb))] aria-pressed:bg-oxide-500/15 aria-pressed:text-[rgb(var(--accent-rgb))] aria-pressed:border-oxide-500/40" data-sort="recent" aria-pressed="false">Recent</button>
       <button type="button" class="filter-sort mono-label px-2 py-1 border border-graphite-700/60 rounded-sm transition-colors duration-180 hover:border-oxide-500/40 hover:text-[rgb(var(--accent-rgb))] aria-pressed:bg-oxide-500/15 aria-pressed:text-[rgb(var(--accent-rgb))] aria-pressed:border-oxide-500/40" data-sort="az" aria-pressed="false">A–Z</button>
 
       <span class="mono-label text-graphite-500 ml-3 hidden sm:inline" data-count>{total}</span>
@@ -68,7 +69,7 @@ const yearsSorted = [...years].sort((a, b) => b - a);
     const state = {
       cats: new Set((params.get("cat") || "").split(",").filter(Boolean)),
       years: new Set((params.get("year") || "").split(",").filter(Boolean)),
-      sort: params.get("sort") || "recent",
+      sort: params.get("sort") || "featured",
     };
 
     const cards = Array.from(grid.querySelectorAll<HTMLElement>("[data-card-slug]"));
@@ -79,20 +80,33 @@ const yearsSorted = [...years].sort((a, b) => b - a);
       return buckets ? buckets.split("|").filter(Boolean) : [];
     }
 
+    // priority rank: flagship first, experimental last. Drives the default
+    // "Featured" order so the highest-value work leads, not just the newest.
+    const priRank = (p?: string) =>
+      p === "flagship" ? 0 : p === "experimental" ? 2 : 1;
+
     function applySort() {
       const sorted = cards.slice();
       if (state.sort === "az") {
         sorted.sort((a, b) =>
           (a.dataset.cardTitle || "").localeCompare(b.dataset.cardTitle || "")
         );
-      } else {
+      } else if (state.sort === "recent") {
         sorted.sort((a, b) => {
           const ay = parseInt(a.dataset.cardYear || "0", 10);
           const by = parseInt(b.dataset.cardYear || "0", 10);
           if (by !== ay) return by - ay;
-          if (a.dataset.cardPriority === "flagship" && b.dataset.cardPriority !== "flagship") return -1;
-          if (b.dataset.cardPriority === "flagship" && a.dataset.cardPriority !== "flagship") return 1;
-          return 0;
+          return priRank(a.dataset.cardPriority) - priRank(b.dataset.cardPriority);
+        });
+      } else {
+        // featured (default): priority tier, then year desc within a tier.
+        sorted.sort((a, b) => {
+          const ra = priRank(a.dataset.cardPriority);
+          const rb = priRank(b.dataset.cardPriority);
+          if (ra !== rb) return ra - rb;
+          const ay = parseInt(a.dataset.cardYear || "0", 10);
+          const by = parseInt(b.dataset.cardYear || "0", 10);
+          return by - ay;
         });
       }
       sorted.forEach((c) => grid.appendChild(c));
@@ -126,7 +140,7 @@ const yearsSorted = [...years].sort((a, b) => b - a);
       const next = new URLSearchParams();
       if (state.cats.size) next.set("cat", Array.from(state.cats).join(","));
       if (state.years.size) next.set("year", Array.from(state.years).join(","));
-      if (state.sort && state.sort !== "recent") next.set("sort", state.sort);
+      if (state.sort && state.sort !== "featured") next.set("sort", state.sort);
       const qs = next.toString();
       const url = qs ? `?${qs}` : window.location.pathname;
       window.history.replaceState({}, "", url);

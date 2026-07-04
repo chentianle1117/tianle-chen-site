@@ -14,12 +14,18 @@ import { getProjectCounts } from "../../lib/projectCounts";
 // /work, /architecture, /dashboard, and /home agree.
 const { work: workCollection, counts, years: yearRanges } = await getProjectCounts();
 
-const work = workCollection
-  .sort((a, b) => {
-    if (a.data.priority === "flagship" && b.data.priority !== "flagship") return -1;
-    if (b.data.priority === "flagship" && a.data.priority !== "flagship") return 1;
-    return (b.data.year ?? 0) - (a.data.year ?? 0);
-  });
+// Default "Featured" order: priority tier first (flagship → standard →
+// experimental), then year desc within a tier. Matches FilterBar's featured
+// sort so there's no reflow on load, and keeps the highest-value work leading
+// rather than whatever is merely newest (e.g. Travel Atlas, an interest piece).
+const priRank = (p?: string) =>
+  p === "flagship" ? 0 : p === "experimental" ? 2 : 1;
+const work = workCollection.sort((a, b) => {
+  const ra = priRank(a.data.priority);
+  const rb = priRank(b.data.priority);
+  if (ra !== rb) return ra - rb;
+  return (b.data.year ?? 0) - (a.data.year ?? 0);
+});
 
 // Years for filter bar
 const years = Array.from(
