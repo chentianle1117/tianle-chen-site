@@ -589,11 +589,18 @@
      work on custom layouts like /thesis. */
   figure.diagram,
   figure.embed {
-    width: min(1120px, 92vw);
+    width: min(1000px, 92vw);
     margin-left: 50%;
     transform: translateX(-50%);
-    margin-block: 2.25rem;
-    max-width: 1120px;
+    margin-block: 3.25rem;
+    max-width: 1000px;
+    /* Framed "exhibit" treatment: a subtle bezel around each diagram so the
+       break-out width reads as a deliberate figure rather than a width conflict
+       with the reading column. */
+    background: rgb(var(--surface-1-rgb));
+    border: 1px solid rgb(var(--surface-border));
+    border-radius: 12px;
+    padding: clamp(0.55rem, 1.6vw, 1.25rem);
   }
   figure.diagram img {
     width: 100%;
@@ -601,12 +608,14 @@
     display: block;
     background: #0b0d0f;
     border: 1px solid rgb(var(--surface-border));
-    border-radius: 6px;
+    border-radius: 7px;
   }
-  figure.diagram figcaption {
-    margin-top: 0.6rem;
+  figure.diagram figcaption,
+  figure.embed figcaption {
+    margin: 0.85rem 0.5rem 0.2rem;
     font-family: theme(fontFamily.mono, monospace);
-    font-size: 0.8rem;
+    font-size: 0.76rem;
+    line-height: 1.5;
     letter-spacing: 0.03em;
     color: rgb(var(--text-mono));
     text-align: center;
