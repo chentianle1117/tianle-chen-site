@@ -42,7 +42,6 @@ images:
 - /assets/semantic-canvas/p4-longitudinal-lineage.png
 - /assets/semantic-canvas/p1-longitudinal-lineage.png
 - /assets/semantic-canvas/p1-canvas.png
-- /assets/semantic-canvas/runway-interface.png
 - /assets/semantic-canvas/p1-longitudinal-semantic-canvas.png
 institution: Carnegie Mellon School of Design
 local_path: W:\CMU_Academics\2025 Fall\Thesis\Semantic_Canvas

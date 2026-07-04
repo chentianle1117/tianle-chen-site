@@ -246,6 +246,18 @@ const stageImages = stageCandidates.filter(publicFileExists);
     <p>
       Gemini 2.5 Flash Lite runs as a passive observer — it reads the designer's typed brief, highlights primary goals (blue) and secondary considerations (amber), and surfaces sticky insights when canvas state suggests them. Crucially, it never interrupts. Insight timers stop the moment an insight is displayed, so unread insights cost zero further tokens. The agent is a colleague, not a chatbot.
     </p>
+
+    <figure class="diagram">
+      <img
+        src="/assets/semantic-canvas/architecture.svg"
+        alt="Semantic Canvas system architecture: the browser D3 canvas talks only to one keyed FastAPI backend, which brokers Jina CLIP embeddings, fal.ai generation, and the Gemini observer, logging per-participant JSONL to a Railway volume."
+        loading="lazy"
+        decoding="async"
+      />
+      <figcaption>
+        System wiring — the browser holds no keys; a single FastAPI backend brokers every embedding, generation, and observer call, and logs each participant's session for the study.
+      </figcaption>
+    </figure>
     </div>
   </section>
 

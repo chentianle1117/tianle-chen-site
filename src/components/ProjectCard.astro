@@ -64,7 +64,7 @@ const tagPills: string[] = getTagsForProject(data);
 
 <a
   href={`/work/${slug}`}
-  class="card-surface group block"
+  class="card-surface group flex flex-col h-full"
 >
   <div class:list={["relative overflow-hidden", aspect]} style="background: rgb(var(--surface-bg)); border-bottom: 1px solid rgb(var(--surface-border));">
     {gifExists ? (
@@ -112,7 +112,7 @@ const tagPills: string[] = getTagsForProject(data);
     )}
   </div>
 
-  <div class="p-5 md:p-6 flex flex-col gap-2.5">
+  <div class="p-5 md:p-6 flex flex-col gap-2.5 flex-1">
     {/* Round-6 unified metadata layout (every card, every page):
           row 1: TAG pills — type identification
           row 2: title — display serif
@@ -131,7 +131,7 @@ const tagPills: string[] = getTagsForProject(data);
       {data.title}
     </h3>
     {monoBits.length > 0 && (
-      <div class="mono-label flex items-center gap-2" style="color: rgb(var(--text-muted));">
+      <div class="mono-label flex items-center gap-2 mt-auto pt-1" style="color: rgb(var(--text-muted));">
         {monoBits.map((bit, i) => (
           <>
             {i > 0 && <span aria-hidden="true">·</span>}
