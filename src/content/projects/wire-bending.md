@@ -41,13 +41,6 @@ publish: true
 role: research-assistant
 semester: Fall 2024
 slug: wire-bending
-stats:
-- value: "594.2"
-  label: "wire length tracked"
-- value: "190mm"
-  label: "QR spatial anchor"
-- value: "30°"
-  label: "laser-cut jig angle"
 status: ready
 summary: A mixed-reality workflow for fabricating complex bent-wire forms by hand.
   A Grasshopper definition stays in live two-way sync with Microsoft HoloLens through

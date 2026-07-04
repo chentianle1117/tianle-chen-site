@@ -19,15 +19,6 @@ images:
   - /assets/sound-scape/8cf46214-18b6-48fe-8f1b-750532596313_rw_1920.jpg
   - /assets/sound-scape/26078d8d-143c-4aea-919b-f91921c7972a_rw_1920.jpg
   - /assets/sound-scape/41dbb471-c92c-4fd6-a22a-4304592f48a1_rw_1920.jpg
-stats:
-  - value: "13th"
-    label: "Paris arrondissement"
-  - value: "3"
-    label: "spatial-acoustic profiles"
-  - value: "80/40/20 cm"
-    label: "panel depths"
-  - value: "1:20"
-    label: "technical detail scale"
 image_captions:
   - Interior circulation render, with acoustic devices (red) and tactile paving (yellow) overlaid on the atrium
   - Contextual analysis — target-group and sensorial-strategy diagrams, section, and adaptive-reuse axonometric of the railroad warehouse (original frame in blue, added circulation in grey)

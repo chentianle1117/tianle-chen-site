@@ -8,13 +8,6 @@ categories:
   - Architecture
 publish: true
 priority: standard
-stats:
-  - value: "6"
-    label: "aggregated variations"
-  - value: "2"
-    label: "frame scales (5\", 10\")"
-  - value: "1–5\""
-    label: "weighted disc range"
 summary: A physical form-finding study in continuous deformation — stretched fabric membranes loaded with hanging weights inside a tensioned frame rig, letting gravity pull the surfaces into funnels and cones. The variables (frame size, object weight, drop depth) are tuned to see how far a single surface can deform before it stops reading as one form.
 hero_image: /assets/deform/4a4cce00-ae83-4683-884f-d2e570913ade_rw_1920.jpg
 images:

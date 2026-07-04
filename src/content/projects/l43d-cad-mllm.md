@@ -57,11 +57,10 @@ role: team-member
 semester: Fall 2025
 slug: l43d-cad-mllm
 status: ready
-summary: 'Multimodality-conditioned CAD generation: a Qwen2.5-7B LLM fine-tuned with
-  LoRA that produces editable parametric CAD command sequences from text, point clouds,
-  or images (or any combination). Includes a synthetic multimodal data pipeline that
-  amplifies a DeepCAD subset 3.37x via an Intelligent Truncation algorithm and an
-  autocompletion variant. Team project, CMU 16-825.'
+summary: 'Generates editable parametric CAD command sequences from text, point clouds,
+  or images (or any combination) with a LoRA-fine-tuned Qwen2.5-7B LLM, and unlocks
+  design autocompletion via an Intelligent Truncation data pipeline that amplifies a
+  DeepCAD subset 3.37x. Team project, CMU 16-825.'
 tags:
 - multimodal-llm
 - cad-generation

@@ -56,10 +56,10 @@ stats:
 - value: "1,098"
   label: "remote roles"
 status: ready
-summary: An interactive dashboard that visualizes cross-disciplinary tech and design
-  job-market data — skill demands, salary trends, geographic distributions. Built
-  with Svelte + D3, scraping live job postings. Empowers career-changers to see where
-  their existing skills meet real demand.
+summary: Helps career-changers see where their existing skills meet real demand by
+  visualizing cross-disciplinary tech and design job-market data — skill demands,
+  salary trends, and geographic distributions in one interactive dashboard. Built
+  with Svelte + D3 over live job postings.
 tags:
 - d3
 - svelte

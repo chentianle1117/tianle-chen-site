@@ -60,14 +60,14 @@ stats:
   label: "SDXL building images"
 - value: "300"
   label: "meshes evaluated"
-- value: "37"
-  label: "epochs on A100"
+- value: "5"
+  label: "pipeline stages, sketch to mesh"
 status: ready
-summary: A vision-transformer pipeline that lifts three orthographic architectural
-  sketches (plan + elevations) into a 3D massing model via a triplane representation
-  and Marching Cubes. A frozen DINOv2 encoder feeds a custom 6-layer transformer decoder;
-  trained on a self-built dataset (SDXL → TripoSR → edge maps) and evaluated with Chamfer
-  Distance (mean CD 0.200). First-author CMU 11-685 deep-learning final project.
+summary: Turns three orthographic architectural sketches (plan + elevations) into a
+  3D massing model at mean Chamfer Distance 0.200, competitive with a single-image
+  reconstruction baseline. A frozen DINOv2 encoder feeds a custom 6-layer transformer
+  decoder that predicts a triplane, meshed with Marching Cubes; trained on a self-built
+  dataset (SDXL → TripoSR → edge maps). First-author CMU 11-685 deep-learning final project.
 tags:
 - vision-transformer
 - dinov2

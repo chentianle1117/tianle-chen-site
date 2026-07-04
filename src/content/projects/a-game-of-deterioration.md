@@ -61,15 +61,6 @@ publish: true
 semester: Fall 2024
 slug: a-game-of-deterioration
 status: ready
-stats:
-- value: "60 fps"
-  label: "live texture decay"
-- value: "30,000"
-  label: "per-cell terrain map"
-- value: "200×150"
-  label: "world grid"
-- value: "60 s"
-  label: "timed-mode run"
 summary: A 2D simulation game where the player heals a procedurally deteriorating
   world before it collapses. Built in Python with cmu_graphics, Pillow, and NumPy.
   Real-time texture decay and restoration mechanics turn environmental survival into

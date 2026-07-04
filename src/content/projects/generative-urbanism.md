@@ -51,11 +51,12 @@ stats:
 - value: "36"
   label: "evolved layouts"
 status: ready
-summary: A generative-urbanism study of the Zaragoza community in Ciudad Juarez,
-  Mexico, where 60%+ of dwellings sit vacant. Abandoned houses are mapped, demolished,
-  and fed into the border's existing scrap economy; emptied parcels are then scored on
-  size, accessibility, and demographics, and a Galapagos genetic solver places new
-  public programs to maximize a multi-criteria layout score.
+summary: A Galapagos genetic solver evolves block-by-block public-program layouts for
+  the Zaragoza community in Ciudad Juarez, Mexico, where 60%+ of dwellings sit vacant —
+  scoring emptied parcels on size, accessibility, and demographics to maximize a
+  multi-criteria layout fitness. Abandoned houses are first mapped, demolished, and fed
+  into the border's existing steel-scrap economy, turning the vacant parcels into the
+  solver's search space.
 tags:
 - parametric-design
 - grasshopper

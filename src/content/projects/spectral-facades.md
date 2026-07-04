@@ -45,21 +45,13 @@ publish: true
 role: team member (real-time diffusion + gesture-control pipeline)
 semester: Fall 2024
 slug: spectral-facades
-stats:
-- value: "512×512"
-  label: "img2img resolution"
-- value: "1.19"
-  label: "calibration error"
-- value: "1280×720"
-  label: "projector resolution"
-- value: "sd-turbo"
-  label: "diffusion backbone"
 status: ready
-summary: An interactive projection-mapping installation built in TouchDesigner. MediaPipe
-  hand and face tracking drive a real-time StreamDiffusion (sd-turbo) img2img loop that
-  morphs a building facade between a modernist and a decayed style; the synthesized frame
-  is projected onto a folded paper cube via camSchnappr calibration. No model training —
-  gesture and posture continuously modulate prompt weights and denoise steps.
+summary: Turns an un-fine-tuned diffusion model (sd-turbo) into a body-steered design
+  instrument — an interactive TouchDesigner installation where MediaPipe hand and face
+  tracking drive a real-time StreamDiffusion img2img loop that morphs a building facade
+  between modernist and decayed styles, projection-mapped onto a folded paper cube via
+  camSchnappr. No model training; gesture and posture continuously modulate prompt weights
+  and denoise steps.
 tags:
 - projection-mapping
 - stream-diffusion

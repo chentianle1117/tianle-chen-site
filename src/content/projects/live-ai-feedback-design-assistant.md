@@ -36,10 +36,10 @@ stack:
 - WebSocket streaming
 - Figma REST API
 status: ready
-summary: A desktop companion that streams a designer's screen and voice to Gemini's
-  Multimodal Live API in real time and speaks critique back, driven by a phased
-  tool-calling workflow. Researches how an AI reviewer can sit alongside the designer
-  and facilitate their reasoning rather than interrupting with a wall of advice.
+summary: A desktop companion that lets an AI reviewer sit alongside a designer and
+  facilitate their reasoning instead of interrupting with a wall of advice — streaming
+  the designer's screen and voice to Gemini's Multimodal Live API in real time and
+  speaking critique back, driven by a phased tool-calling workflow.
 tags:
 - electron
 - react
@@ -57,15 +57,6 @@ team_size: 2
 title: Live AI Feedback — Real-Time Design Critique Assistant
 type: portfolio-project
 year: 2025
-stats:
-  - value: "5s"
-    label: "frame stream interval"
-  - value: "0.25×"
-    label: "frame downscale"
-  - value: "16 kHz"
-    label: "mic PCM audio"
-  - value: "8"
-    label: "feedback prompt bodies"
 ---
 
 > A desktop companion that watches a designer's screen while they work and talks back — a real-time design critique assistant built on Gemini's Multimodal Live API. It streams the working canvas and the designer's voice to the model over a WebSocket, and the model responds by speaking questions and critique out loud, grounded in whatever is on screen right now. The engineering problem underneath is *restraint*: how to make an AI reviewer that facilitates the designer's own reasoning instead of generating a wall of unsolicited advice.

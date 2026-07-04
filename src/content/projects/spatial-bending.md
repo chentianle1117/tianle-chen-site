@@ -10,7 +10,7 @@ categories:
   - Fabrication
 publish: true
 priority: standard
-summary: A four-stage structural exploration of bending — from a cantilevered bending plate to a controlled-bending frame, then a curved façade and roof, and finally a reinforced hanging structure that uses bent strings as both load-bearing roof and decorative façade.
+summary: A structural exploration that derives an inhabited hanging building from physical bending experiments — bent strings serve at once as load-bearing roof, façade, and structure. Four stages progress from a cantilevered bending plate through a controlled-bending frame and a curved façade-and-roof to the final reinforced hanging structure.
 hero_image: /assets/spatial-bending/cbad0bbe-42e6-4df7-8f77-c0136eb9f076_rw_3840.jpg
 image_captions:
   - Four-stage axonometric sequence — bending plate, controlled-bending frame, curved facade and roof, reinforced hanging structure.

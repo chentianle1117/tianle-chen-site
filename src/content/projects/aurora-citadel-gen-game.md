@@ -36,15 +36,6 @@ priority: standard
 publish: true
 semester: Spring 2025
 slug: aurora-citadel-gen-game
-stats:
-- value: "10"
-  label: "hand-modeled modules"
-- value: "5.4"
-  label: "Unreal Engine version"
-- value: "~10 GB"
-  label: "asset library"
-- value: "324 MB"
-  label: "demo video"
 stack:
 - Unreal Engine 5.4
 - WFCPlugin 5.4 (Wave Function Collapse)

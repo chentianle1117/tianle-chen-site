@@ -26,21 +26,12 @@ progress_report: /assets/synthetic-texture-deterioration/progress-report.pdf
 publish: true
 semester: Fall 2024
 slug: synthetic-texture-deterioration
-stats:
-- value: "10 fps"
-  label: "live capture loop"
-- value: "0.7"
-  label: "detection confidence"
-- value: "0.5"
-  label: "NMS IoU threshold"
-- value: "2"
-  label: "scoped interfaces"
 status: ready
-summary: An independent-study prototype that treats facade weathering as a design input.
-  A working real-time tool captures a live architectural render off-screen, classifies the
-  material with a sliding-window model, and asks a local vision LLM to describe it and
-  estimate its age; a second, exploratory interface aimed to synthesize the aged version
-  via ControlNet-conditioned diffusion. Honest work-in-progress from Fall 2024.
+summary: A working real-time prototype captures a live architectural render off-screen,
+  classifies the material with a sliding-window model, and asks a local vision LLM to
+  describe it and estimate its age — treating facade weathering as a design input. A
+  second, exploratory interface aimed to synthesize the aged version via
+  ControlNet-conditioned diffusion; honest work-in-progress from Fall 2024.
 image_captions:
 - "System architecture I diagrammed: a real-time analysis interface (screen capture → Teachable Machine classifier → Llama 3 description) feeding a second, exploratory ComfyUI/ControlNet synthesis interface."
 - "User-action flow chart: WebSocket handshake, set-capture-area, then the capture → analyze → log state machine with reconnect and abort paths."

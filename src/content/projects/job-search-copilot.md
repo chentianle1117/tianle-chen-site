@@ -31,8 +31,8 @@ stats:
     label: "deterministic gates"
   - value: "7"
     label: "safety layers"
-  - value: "500K"
-    label: "nightly token budget"
+  - value: "8"
+    label: "pipeline stages"
 stack:
   - Multi-agent orchestration (choreographer + workers)
   - Claude Code / Codex / Gemini (provider-agnostic router)

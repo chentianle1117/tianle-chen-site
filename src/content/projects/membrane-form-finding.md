@@ -23,10 +23,10 @@ publish: true
 semester: 2021-2024
 slug: membrane-form-finding
 status: ready
-summary: A rooftop urban-farming canopy for Rice students, form-found as a tensile membrane
-  in Grasshopper + Kangaroo. Controlled curves in a 3x5 m module and planter loads drive
-  dynamic relaxation into waterproof shells shaped for rain-water collection; the scheme
-  covers program, structure, and Ladybug radiation analysis.
+summary: Form-finds a rooftop urban-farming canopy for Rice students into waterproof tensile
+  shells whose curvature, driven by planter loads, channels and collects rain-water. Built in
+  Grasshopper + Kangaroo from controlled curves in a 3x5 m module, the scheme resolves program,
+  cable-net structure, and Ladybug radiation analysis.
 tags:
 - parametric-design
 - membrane-structures

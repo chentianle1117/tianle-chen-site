@@ -9,7 +9,7 @@ categories:
   - Research
 publish: true
 priority: standard
-summary: A coastal research and exhibition building on Galveston Bay sited on an acre of salt marsh — the marsh itself is the lab. The building threads research circulation around protected ecology, with public exhibition mediating between scientist and visitor.
+summary: Turns the marsh itself into the lab — a coastal research and exhibition building on Galveston Bay that preserves an acre of salt marsh and threads research circulation around the protected ecology. Public exhibition is woven past and beneath the research floors, so visitors watch science happen rather than view it from a separate wing.
 hero_image: /assets/salt-marsh-research-center/0f2d663f-33d7-4677-9847-cd0f2cd949d4_rw_3840.jpg
 images:
   - /assets/salt-marsh-research-center/92b86b53-ae75-48f2-a78a-183abf2a430e_rw_3840.jpg

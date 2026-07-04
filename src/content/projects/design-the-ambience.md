@@ -34,15 +34,6 @@ publish: true
 role: team-member
 semester: Fall 2024
 slug: design-the-ambience
-stats:
-- value: "16 fps"
-  label: "real-time generation"
-- value: "514×514"
-  label: "diffusion output"
-- value: "3"
-  label: "prompt iterations"
-- value: "4"
-  label: "team members"
 status: ready
 summary: A real-time generative environment that translates user behavior in physical
   space into projected imagery via StreamDiffusion + MediaPipe + TouchDesigner. Hand

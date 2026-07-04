@@ -10,6 +10,13 @@ categories:
 publish: true
 priority: standard
 summary: A blue carbon research center in Buenos Aires, sited on the transformation point between the informal settlement of Villa 31 and the city's railway terminal. A streamline pattern drawn from the fanning rail lines organizes structure, circulation, program, and a flood-mitigating landscape.
+stats:
+  - value: +20ft
+    label: Projected sea-level rise mitigated
+  - value: "3-stage"
+    label: Water detention landscape
+  - value: "4"
+    label: Wall typologies from one streamline
 hero_image: /assets/urban-streamline/01baf033-a8f2-4927-865b-f8dc91332d10_rw_3840.jpg
 images:
   - /assets/urban-streamline/9ddc5c51-6eb6-4dce-82f6-b118e41bd2c1_rw_3840.jpg
