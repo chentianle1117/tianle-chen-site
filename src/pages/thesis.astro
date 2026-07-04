@@ -37,7 +37,6 @@ const liveUrl = data.live_url as string | undefined;
 const heroStillCandidates = [
   "/assets/semantic-canvas/p3-stage2-session2-composite.png",
   "/assets/semantic-canvas/p3-stage2-session1-composite.png",
-  "/assets/semantic-canvas/output-nano-generated-shoe.png",
   data.hero_image as string | undefined,
 ].filter(Boolean) as string[];
 const heroStill = heroStillCandidates.find((p) => publicFileExists(p));
@@ -63,14 +62,14 @@ const uiCandidates = [
 ];
 const uiImages = uiCandidates.filter(publicFileExists);
 
-// Output gallery — generated footwear
-const outputCandidates = [
-  "/assets/semantic-canvas/output-nano-generated-shoe.png",
-  "/assets/semantic-canvas/output-fashion-interface.png",
-  "/assets/semantic-canvas/output-form-forge.png",
-  "/assets/semantic-canvas/output-deeprise-interface.png",
-];
-const outputImages = outputCandidates.filter(publicFileExists);
+// Output gallery — REMOVED 2026-07: the four "output-*" files are not
+// generated footwear at all. output-nano-generated-shoe.png is a grid of raw
+// reference/dataset photos; output-fashion-interface / output-form-forge /
+// output-deeprise-interface are screenshots of OTHER researchers' precedent
+// tools (a fashion style-mixing GAN, a latent-form tool, a building generator)
+// pulled in during precedent research. Presenting them as "generated footwear
+// concept" misattributed other people's work as this project's output.
+const outputImages: string[] = [];
 
 // Stage / longitudinal study composites
 const stageCandidates = [
