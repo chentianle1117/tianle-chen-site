@@ -10,6 +10,12 @@
     --oxide:#cf7f54; --text:#e8eaed; --mono:#a8acb1; --dim:#7e828a;
     --font:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
   }
+  /* Light theme — activated when the parent embeds ?theme=light */
+  html.lightmode{
+    --bg:#faf9f5; --panel:#ffffff; --line:rgba(20,20,18,.18); --line2:rgba(20,20,18,.08);
+    --text:#1a1714; --mono:#5b564f; --dim:#8a857c;
+  }
+  html.lightmode select,html.lightmode .chip{background:#fff}
   *{box-sizing:border-box}
   html,body{margin:0;height:100%;background:var(--bg);color:var(--text);font-family:var(--font);overflow:hidden}
   .wrap{display:flex;flex-direction:column;height:100%}
@@ -123,6 +129,7 @@
 </div>
 
 <script>
+(function(){try{if(new URLSearchParams(location.search).get('theme')==='light')document.documentElement.classList.add('lightmode');}catch(e){}})();
 const $=s=>document.querySelector(s);
 let DATA=null, tiles=[];
 const dot=(a,b)=>{let s=0;for(let i=0;i<a.length;i++)s+=a[i]*b[i];return s;};

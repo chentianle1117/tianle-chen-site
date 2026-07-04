@@ -90,14 +90,27 @@ const jsonLd = {
         // covers + architecture diagrams) each have a `*-light.svg` twin. In
         // light mode we point the <img> at the twin. No per-image markup needed.
         var IMG_RE = /^(\/assets\/[^?#]*?(?:cover|architecture|d[1-4]-[a-z-]+))(-light)?\.svg$/;
+        var PNG_RE = /^(\/assets\/travel-atlas\/hero)(-light)?\.png$/;
         function themeImages(theme) {
           var imgs = document.images;
           for (var i = 0; i < imgs.length; i++) {
-            var s = imgs[i].getAttribute("src") || "";
+            var s = imgs[i].getAttribute("src") || "", want;
             var m = s.match(IMG_RE);
-            if (!m) continue;
-            var want = m[1] + (theme === "light" ? "-light" : "") + ".svg";
+            if (m) { want = m[1] + (theme === "light" ? "-light" : "") + ".svg"; }
+            else { var p = s.match(PNG_RE); if (!p) continue; want = p[1] + (theme === "light" ? "-light" : "") + ".png"; }
             if (s !== want) imgs[i].setAttribute("src", want);
+          }
+        }
+        // Embedded /apps/ demos read their own ?theme param; pass it through so
+        // the iframes follow the site theme (they self-style light/dark).
+        function themeFrames(theme) {
+          var fr = document.getElementsByTagName("iframe");
+          for (var i = 0; i < fr.length; i++) {
+            var s = fr[i].getAttribute("src") || "";
+            if (!/^\/apps\//.test(s)) continue;
+            var base = s.replace(/([?&])theme=light/, "").replace(/[?&]$/, "");
+            var want = theme === "light" ? base + (base.indexOf("?") >= 0 ? "&" : "?") + "theme=light" : base;
+            if (s !== want) fr[i].setAttribute("src", want);
           }
         }
         function currentTheme() {
@@ -109,17 +122,18 @@ const jsonLd = {
           root.setAttribute("data-theme", theme);
           root.classList.remove("dark", "light");
           root.classList.add(theme);
-          themeImages(theme);
+          themeImages(theme); themeFrames(theme);
         }
         applyTheme();
         // Re-apply after every View-Transition navigation — WITHOUT this the
         // swapped-in page ships its hardcoded class="dark" and the chosen theme
         // silently reverts. after-swap runs before paint, so no flash.
         document.addEventListener("astro:after-swap", applyTheme);
-        // Swap late/lazy images once loaded, and whenever the toggle fires.
-        document.addEventListener("astro:page-load", function () { themeImages(currentTheme()); });
+        // Swap late/lazy images + iframes once loaded, and whenever the toggle fires.
+        document.addEventListener("astro:page-load", function () { var t = currentTheme(); themeImages(t); themeFrames(t); });
         window.addEventListener("theme-change", function (e) {
-          themeImages((e && e.detail && e.detail.theme) || currentTheme());
+          var t = (e && e.detail && e.detail.theme) || currentTheme();
+          themeImages(t); themeFrames(t);
         });
       })();
     </script>
