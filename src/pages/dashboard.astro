@@ -92,11 +92,14 @@ for (let y = minY; y <= maxY; y++) {
 }
 
 // ── Category buckets — uses the canonical FILTER_CATEGORIES from /work ──
+// Category palette — matches the latent-space scatter legend; all mid-tone so
+// every wedge stays legible in BOTH themes (the old ramp ended in near-black
+// #1a1c20, which rendered as a stuck-dark wedge on the light dashboard).
 const bucketColors: Record<string, string> = {
-  "ML/AI": "#b8623f",
-  Design: "#969ba2",
-  Interaction: "#5e636b",
-  Research: "#1a1c20",
+  "ML/AI": "#9b6fc9",
+  Design: "#cf7f54",
+  Interaction: "#d49b50",
+  Research: "#7aa15c",
 };
 const bucketCounts: Record<string, number> = Object.fromEntries(
   FILTER_CATEGORIES.map((b) => [b, 0])

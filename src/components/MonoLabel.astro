@@ -8,9 +8,9 @@ interface Props {
 const { as: Tag = "span", tone = "tertiary", class: className = "" } = Astro.props;
 
 const toneMap: Record<string, string> = {
-  primary: "text-graphite-50",
-  secondary: "text-graphite-300",
-  tertiary: "text-graphite-400",
+  primary: "text-[rgb(var(--text-primary))]",
+  secondary: "text-[rgb(var(--text-secondary))]",
+  tertiary: "text-[rgb(var(--text-mono))]",
 };
 
 const toneClass = toneMap[tone] ?? toneMap.tertiary;

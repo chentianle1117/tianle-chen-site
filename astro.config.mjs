@@ -24,7 +24,13 @@ export default defineConfig({
   markdown: {
     remarkPlugins: [],
     rehypePlugins: [],
-    shikiConfig: { theme: "github-dark-dimmed", wrap: true },
+    // Dual-theme: each token carries --shiki-light/--shiki-dark; global.css
+    // swaps them by active theme so code blocks aren't stranded dark in light.
+    shikiConfig: {
+      themes: { light: "github-light", dark: "github-dark-dimmed" },
+      defaultColor: false,
+      wrap: true,
+    },
   },
   image: {
     domains: [],

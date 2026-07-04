@@ -12,7 +12,9 @@ interface Props {
 
 const { data, size = 200 } = Astro.props;
 
-const defaultColors = ["#b8623f", "#969ba2", "#5e636b", "#1a1c20"];
+// Mid-tone palette legible in both themes (no near-black wedge that strands
+// dark in light mode). Mirrors the latent-space category colors.
+const defaultColors = ["#9b6fc9", "#cf7f54", "#d49b50", "#7aa15c"];
 const total = Math.max(1, data.reduce((s, d) => s + d.value, 0));
 
 const radius = size / 2;

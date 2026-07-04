@@ -606,7 +606,9 @@
     width: 100%;
     margin: 0;
     display: block;
-    background: #0b0d0f;
+    /* Theme-reactive plate: byte-identical to #0b0d0f in dark, flips to paper in
+       light so diagram figures are never a black box on a light page. */
+    background: rgb(var(--surface-bg));
     border: 1px solid rgb(var(--surface-border));
     border-radius: 7px;
   }
@@ -625,8 +627,51 @@
     height: min(78vh, 720px);
     border: 1px solid rgb(var(--surface-border));
     border-radius: 6px;
-    background: #0b0d0f;
+    background: rgb(var(--surface-bg));
     display: block;
+  }
+
+  /* Markdown tables — no table CSS existed site-wide before this. Themed,
+     monospace header, hairline rows. */
+  .prose-custom table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-block: 1.75rem;
+    font-size: 0.9em;
+  }
+  .prose-custom th,
+  .prose-custom td {
+    text-align: left;
+    padding: 0.5rem 0.85rem;
+    border-bottom: 1px solid rgb(var(--surface-border));
+    vertical-align: top;
+  }
+  .prose-custom thead th {
+    font-family: theme(fontFamily.mono, monospace);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    font-size: 0.78em;
+    color: rgb(var(--text-mono));
+  }
+  .prose-custom tbody tr:hover {
+    background: rgb(var(--surface-1-rgb) / 0.5);
+  }
+
+  /* Fenced code blocks (Shiki .astro-code) — framed, themed container. Token
+     colors come from the dual-theme swap block below. */
+  .prose-custom pre.astro-code {
+    padding: 1rem 1.25rem;
+    border-radius: 8px;
+    border: 1px solid rgb(var(--surface-border));
+    overflow-x: auto;
+    margin-block: 1.5rem;
+    font-size: 0.85em;
+    line-height: 1.6;
+  }
+  .prose-custom pre.astro-code code {
+    background: transparent;
+    padding: 0;
+    font-size: inherit;
   }
   .prose-custom strong {
     color: rgb(var(--text-primary));
@@ -767,6 +812,70 @@ img[src$=".gif"] {
 ::-webkit-scrollbar-thumb:hover {
   background: rgb(var(--accent-rgb) / 0.5);
 }
+
+/* ──────────────────────────────────────────────────────────────────────
+   Light-mode utility remap — CRITICAL theme-correctness layer.
+   Tailwind's graphite-N / oxide-N classes are FIXED literal colors (see
+   tailwind.config.ts), so any component painting with them stays dark in
+   light mode. The theme system only switches CSS variables. This block
+   remaps the *text/border* graphite utilities (never backgrounds — those
+   are intentionally dark on deform plates / placeholder heroes / gif
+   letterboxes) and the accent-orange text to AA-safe values in light mode.
+   Placed UNLAYERED so it beats Tailwind's @layer utilities in the cascade.
+   ──────────────────────────────────────────────────────────────────── */
+:root[data-theme="light"] .text-graphite-100,
+:root.light .text-graphite-100 { color: rgb(var(--text-primary)); }
+:root[data-theme="light"] .text-graphite-200,
+:root.light .text-graphite-200 { color: rgb(var(--text-secondary)); }
+:root[data-theme="light"] .text-graphite-300,
+:root.light .text-graphite-300 { color: rgb(var(--text-secondary)); }
+:root[data-theme="light"] .text-graphite-400,
+:root.light .text-graphite-400 { color: rgb(var(--text-mono)); }
+:root[data-theme="light"] .text-graphite-500,
+:root.light .text-graphite-500 { color: rgb(var(--text-muted)); }
+:root[data-theme="light"] .text-graphite-600,
+:root.light .text-graphite-600 { color: rgb(var(--text-muted)); }
+:root[data-theme="light"] .text-graphite-700,
+:root.light .text-graphite-700 { color: rgb(var(--surface-border)); }
+
+:root[data-theme="light"] .border-graphite-700\/60,
+:root.light .border-graphite-700\/60,
+:root[data-theme="light"] .border-graphite-700\/40,
+:root.light .border-graphite-700\/40,
+:root[data-theme="light"] .border-graphite-700,
+:root.light .border-graphite-700 { border-color: rgb(var(--surface-border)); }
+
+:root[data-theme="light"] .hover\:bg-graphite-800\/40:hover,
+:root.light .hover\:bg-graphite-800\/40:hover { background-color: rgb(var(--surface-2-rgb) / 0.5); }
+
+/* Accent orange as TEXT: oxide-400 (#d18260) is below AA on paper. In light
+   mode route the base + common variant classes to the AA-safe accent var. */
+:root[data-theme="light"] .text-oxide-400,
+:root.light .text-oxide-400,
+:root[data-theme="light"] .hover\:text-oxide-400:hover,
+:root.light .hover\:text-oxide-400:hover,
+:root[data-theme="light"] .group:hover .group-hover\:text-oxide-400,
+:root.light .group:hover .group-hover\:text-oxide-400 { color: rgb(var(--accent-rgb)); }
+:root[data-theme="light"] .hover\:text-oxide-300:hover,
+:root.light .hover\:text-oxide-300:hover { color: rgb(var(--accent-hover)); }
+
+/* ──────────────────────────────────────────────────────────────────────
+   Shiki dual-theme token swap. astro.config sets themes:{light,dark} with
+   defaultColor:false, so each token span carries --shiki-light / --shiki-dark
+   custom props and no baked color. Pick the right one per active theme.
+   ──────────────────────────────────────────────────────────────────── */
+:root[data-theme="dark"] .astro-code,
+:root.dark .astro-code { background-color: var(--shiki-dark-bg) !important; }
+:root[data-theme="dark"] .astro-code,
+:root[data-theme="dark"] .astro-code span,
+:root.dark .astro-code,
+:root.dark .astro-code span { color: var(--shiki-dark) !important; }
+:root[data-theme="light"] .astro-code,
+:root.light .astro-code { background-color: var(--shiki-light-bg) !important; }
+:root[data-theme="light"] .astro-code,
+:root[data-theme="light"] .astro-code span,
+:root.light .astro-code,
+:root.light .astro-code span { color: var(--shiki-light) !important; }
 
 /* Convention: em-dash with no surrounding spaces — like this. Applies to
    prose body and UI strings alike. CSS can't enforce; this is a hint for

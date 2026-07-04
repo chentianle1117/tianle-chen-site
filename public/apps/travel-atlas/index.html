@@ -25,6 +25,10 @@
   html.lightmode #map{background:#eef0ee}
   html.lightmode .city-label{color:#26221d;text-shadow:0 0 3px #fff,0 0 5px #fff,0 0 6px #fff}
   html.lightmode .city-label.big{color:#8a5a00}
+  /* Inactive control buttons hardcode a dark bg (base rule below); flip them in
+     light mode so they aren't stranded black. Active buttons use var(--accent). */
+  html.lightmode button{background:#eceae3}
+  html.lightmode .leaflet-popup-content-wrapper,html.lightmode .leaflet-popup-tip{background:#fffffff2}
   *{box-sizing:border-box}
   html,body{margin:0;height:100%;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;background:var(--bg);color:var(--text)}
   #map{position:absolute;inset:0;background:#0d1117}
