@@ -1,0 +1,47 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 410" width="1200" height="410" font-family="'IBM Plex Mono', ui-monospace, monospace">
+  <defs>
+    <marker id="e1a" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto"><path d="M0,0 L8,4.5 L0,9 Z" fill="#cf7f54" fill-opacity="0.8"/></marker>
+  </defs>
+  <rect width="1200" height="410" fill="#0b0d0f"/>
+  <text x="48" y="46" fill="#cf7f54" font-size="16" letter-spacing="3">01 · PROVIDER-AGNOSTIC ENGINE LAYER</text>
+  <text x="48" y="70" fill="#7e828a" font-size="12.5">One router, three interchangeable engines — swap a provider or survive a subscription lapse with a one-line change.</text>
+
+  <!-- engines -->
+  <g font-size="14">
+    <rect x="48" y="150" width="150" height="54" rx="5" fill="#12161a" stroke="#5fa0a6" stroke-opacity="0.8"/>
+    <text x="123" y="176" text-anchor="middle" fill="#e8eaed" font-size="13.5">Claude Code</text>
+    <text x="123" y="193" text-anchor="middle" fill="#7e828a" font-size="10.5">native</text>
+    <rect x="48" y="216" width="150" height="54" rx="5" fill="#12161a" stroke="#9b6fc9" stroke-opacity="0.8"/>
+    <text x="123" y="242" text-anchor="middle" fill="#e8eaed" font-size="13.5">Codex CLI</text>
+    <text x="123" y="259" text-anchor="middle" fill="#7e828a" font-size="10.5">ChatGPT sub</text>
+    <rect x="48" y="282" width="150" height="54" rx="5" fill="#12161a" stroke="#7aa15c" stroke-opacity="0.8"/>
+    <text x="123" y="308" text-anchor="middle" fill="#e8eaed" font-size="13.5">Gemini CLI</text>
+    <text x="123" y="325" text-anchor="middle" fill="#7e828a" font-size="10.5">API tier</text>
+  </g>
+
+  <!-- router -->
+  <g fill="none" stroke="#cf7f54" stroke-opacity="0.5" stroke-width="1.6">
+    <path d="M198,177 L300,235" marker-end="url(#e1a)"/>
+    <path d="M198,243 L300,243" marker-end="url(#e1a)"/>
+    <path d="M198,309 L300,251" marker-end="url(#e1a)"/>
+  </g>
+  <rect x="302" y="206" width="256" height="74" rx="5" fill="#1a130e" stroke="#cf7f54"/>
+  <text x="430" y="234" text-anchor="middle" fill="#cf7f54" font-size="15" letter-spacing="1">AI_BRAIN ROUTER</text>
+  <text x="430" y="255" text-anchor="middle" fill="#a8acb1" font-size="11">stdin + prompt → stdout · one interface</text>
+  <text x="430" y="270" text-anchor="middle" fill="#7e828a" font-size="10">auto-fallback · grounding + cliché guards</text>
+
+  <!-- model routing panel -->
+  <path d="M558,243 L586,243" fill="none" stroke="#cf7f54" stroke-opacity="0.5" stroke-width="1.6" marker-end="url(#e1a)"/>
+  <rect x="588" y="120" width="564" height="246" rx="5" fill="#12161a" stroke="#5e636b" stroke-opacity="0.5"/>
+  <text x="606" y="146" fill="#7e828a" font-size="11" letter-spacing="2">MODEL ROUTING — ASSIGNED BY BLIND A/B BENCHMARK</text>
+  <g font-size="13">
+    <text x="606" y="176" fill="#a8acb1">Choreographer (orchestrator)</text><text x="1134" y="176" text-anchor="end" fill="#e8eaed">Sonnet · medium</text>
+    <text x="606" y="202" fill="#a8acb1">Discovery workers</text><text x="1134" y="202" text-anchor="end" fill="#e8eaed">Sonnet · high</text>
+    <text x="606" y="228" fill="#a8acb1">Build / tailor workers</text><text x="1134" y="228" text-anchor="end" fill="#e8eaed">Sonnet · Opus for high-stakes</text>
+    <text x="606" y="254" fill="#a8acb1">Submit workers</text><text x="1134" y="254" text-anchor="end" fill="#e8eaed">Sonnet · low</text>
+  </g>
+  <rect x="600" y="270" width="540" height="34" rx="4" fill="#1a130e" stroke="#cf7f54" stroke-opacity="0.85"/>
+  <text x="614" y="292" fill="#cf7f54" font-size="13">MASTER AUDITOR (the safety net)</text><text x="1128" y="292" text-anchor="end" fill="#cf7f54" font-size="13">OPUS · high — non-negotiable</text>
+  <text x="606" y="330" fill="#7e828a" font-size="10.5">Reasoning effort routed per role (low → max): depth where it catches errors, cheap where it doesn't.</text>
+  <text x="606" y="348" fill="#7e828a" font-size="10.5">Never a weak model on candidate content. Measured cost/quality, not a guess.</text>
+</svg>

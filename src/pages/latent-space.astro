@@ -9,9 +9,10 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import HeroNavigator from "../components/hero/HeroNavigator";
 import { getProjectCounts } from "../lib/projectCounts";
 
-const { counts: pc, years: pcYears } = await getProjectCounts();
-const totalCount = pc.work;
-const workYearRange = `${pcYears.work.min}—${pcYears.work.max}`;
+const { counts: pc } = await getProjectCounts();
+// The scatter (HeroNavigator) plots every published project — work + architecture.
+const totalCount = pc.work + pc.arch;
+const workYearRange = "2021—2026";
 ---
 
 <BaseLayout

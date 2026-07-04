@@ -28,7 +28,7 @@ interface Props {
 }
 
 const NODES = [
-  { key: "embed", title: "EMBED", sub: "1024-D" },
+  { key: "embed", title: "EMBED", sub: "768-D" },
   { key: "project", title: "PROJECT", sub: "dot(v, axis)" },
   { key: "normalize", title: "NORMALIZE", sub: "[-1, +1]" },
   { key: "render", title: "RENDER", sub: "ease · 800ms" },
@@ -109,7 +109,7 @@ export default function ProjectionDiagram({ presets, count }: Props) {
         }}
       >
         <span>Projection pipeline</span>
-        <span style={{ color: "#7aa15c" }}>{count} × 1024-D</span>
+        <span style={{ color: "#7aa15c" }}>{count} × 768-D</span>
       </div>
 
       <svg

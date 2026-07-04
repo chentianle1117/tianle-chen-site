@@ -49,8 +49,8 @@ deliberately omitted.)*
 ## Architecture
 
 <figure class="diagram">
-  <img src="/assets/job-search-copilot/architecture.svg" alt="Job Search Copilot architecture — a provider-agnostic engine layer feeding an 8-step overnight pipeline, a two-layer quality wall (mechanical gates + an Opus master auditor), lane routing into a library of ATS handlers, and an outcome-learning loop back into discovery." />
-  <figcaption>Provider-agnostic engine layer → the overnight pipeline → a two-layer quality wall (deterministic gates + an Opus auditor) → lane routing + ATS handlers → record + an outcome-learning loop back into discovery.</figcaption>
+  <img src="/assets/job-search-copilot/d2-pipeline.svg" alt="The overnight pipeline: pre-flight, discovery, fit-triage, build, audit, submit, record, and a self-improve / outcome-learning step that feeds back into discovery." />
+  <figcaption>The overnight pipeline — the choreographer dispatches specialist workers through eight stages, then folds outcomes back into the next run. The routing, quality wall, and submission layers are broken out in the sections below.</figcaption>
 </figure>
 
 Three git repos and two personal knowledge vaults, coordinated by a
@@ -72,6 +72,11 @@ to fresh, single-purpose sub-agents — a bright line that came directly from
 watching earlier versions drift when the orchestrator improvised.
 
 ## Provider-agnostic routing
+
+<figure class="diagram">
+  <img src="/assets/job-search-copilot/d1-engine-routing.svg" alt="Three engines (Claude Code, Codex, Gemini) behind one AI_BRAIN router, plus the benchmark-assigned model and effort routing table with the Opus master auditor pinned as the safety net." />
+  <figcaption>One AI_BRAIN router in front of three interchangeable engines — plus the benchmark-assigned model/effort routing (the auditor is always Opus).</figcaption>
+</figure>
 
 The pipeline is not tied to one model or one vendor. A thin router exposes a
 single interface — **`stdin context + prompt → stdout text`** — and sends each
@@ -113,6 +118,11 @@ save it where it doesn't — is the whole point, and it's a decision the data
 made, not a guess.
 
 ## The quality wall — two independent layers
+
+<figure class="diagram">
+  <img src="/assets/job-search-copilot/d3-quality-wall.svg" alt="Layer 1: a chain of eight-plus deterministic mechanical gates. Layer 2: an Opus master auditor returning PASS / FIX / BLOCK. Both must clear before submit." />
+  <figcaption>Two independent layers — a deterministic mechanical-gate chain, then a fresh-context Opus auditor. Both must clear before anything can be submitted.</figcaption>
+</figure>
 
 Every application clears **two independent gates** before it can be submitted.
 The principle behind the whole design: *a rule that matters must be a gate, not
@@ -163,6 +173,11 @@ invariant: **any layer failing routes the application to a *safe* lane (hold or
 package-only), never to a wrong submission.**
 
 ## Submission: ATS handlers + a token, not a promise
+
+<figure class="diagram">
+  <img src="/assets/job-search-copilot/d4-submission.svg" alt="Post-audit lane routing into a library of eight ATS handlers, with screenshot proof, a submit-guard clearance token bound to the gate-passed PDF, and a hard stop at interactive captchas." />
+  <figcaption>Lane routing → the ATS handler library → record. Authorization is a token bound to the gate-passed PDF's hashes, not a prose instruction a fresh agent has to trust.</figcaption>
+</figure>
 
 Post-audit, each role routes to one of several lanes — auto-submit for small
 firms, a **high-stakes hold** for anything that benefits from human judgment,

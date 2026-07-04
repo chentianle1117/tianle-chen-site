@@ -55,7 +55,7 @@ export default function EncodingConsole({ presets, count }: Props) {
     if (activeLayout === "thesis") {
       return [
         `▸ semantic.project(x="${xSig}", y="${ySig}")`,
-        `  load embeddings · ${count} × 1024-D · jina-clip-v2`,
+        `  load embeddings · ${count} × 768-D · open-clip ViT-L-14`,
         `  dot(emb, x_axis_vec) → x_coord  · normalize [-1,+1]`,
         `  dot(emb, y_axis_vec) → y_coord  · normalize [-1,+1]`,
         `  ease ${count} sprites · 800ms · easeInOutCubic`,
@@ -64,7 +64,7 @@ export default function EncodingConsole({ presets, count }: Props) {
     if (activeLayout === "umap") {
       return [
         `▸ umap.fit_transform(embeddings, n_neighbors=5)`,
-        `  ${count} × 1024-D → ${count} × 2-D`,
+        `  ${count} × 768-D → ${count} × 2-D`,
         `  cosine metric · iterative non-linear projection`,
         `  ease ${count} sprites · 800ms`,
       ];
@@ -72,14 +72,14 @@ export default function EncodingConsole({ presets, count }: Props) {
     if (activeLayout === "pca") {
       return [
         `▸ pca.fit_transform(embeddings, n_components=2)`,
-        `  ${count} × 1024-D → ${count} × 2-D`,
+        `  ${count} × 768-D → ${count} × 2-D`,
         `  PC1 = direction of max variance · linear`,
         `  ease ${count} sprites · 800ms`,
       ];
     }
     return [
       `▸ metadata.layout(domain × year)`,
-      `  ${count} projects · 2022..2025`,
+      `  ${count} projects · 2021..2026`,
       `  no ML — published facts only`,
       `  ease ${count} sprites · 800ms`,
     ];

@@ -5,6 +5,9 @@
   "l43d-cad-mllm":                  { "primary_category": "ml",            "semester": "fall"   },
   "semantic-canvas":                { "primary_category": "ml",            "semester": "fall"   },
   "spectral-facades":               { "primary_category": "ml",            "semester": "fall"   },
+  "job-search-copilot":             { "primary_category": "ml",            "semester": "spring" },
+  "live-ai-feedback-design-assistant": { "primary_category": "ml",         "semester": "spring" },
+  "travel-atlas":                   { "primary_category": "research",      "semester": "spring" },
 
   "s25-team-26-paper-viz":          { "primary_category": "research",      "semester": "spring" },
   "skill-bridge-datavis":           { "primary_category": "research",      "semester": "fall"   },

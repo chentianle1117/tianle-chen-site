@@ -3,7 +3,7 @@
 Also writes thumbnail_uv [u, v, w, h] into each project entry of
 public/data/embeddings.json (GL convention: origin bottom-left).
 
-Layout: 4x4 grid of 1024x1024 thumbnails. 16 cells total.
+Layout: 5x5 grid of ~819x819 thumbnails. 25 cells total (fits 24 published).
 Project order matches embeddings.json (year DESC, title ASC).
 """
 
@@ -35,9 +35,9 @@ from _embed_common import CONTENT_DIR  # noqa: E402
 VIDEO_EXTS = {".mp4", ".webm", ".mov", ".m4v"}
 
 ATLAS_SIZE = 4096
-GRID = 4
-CELL = ATLAS_SIZE // GRID  # 1024
-TOTAL_CELLS = GRID * GRID  # 16
+GRID = 5
+CELL = ATLAS_SIZE // GRID  # 819
+TOTAL_CELLS = GRID * GRID  # 25 (fits 24 published projects)
 
 
 def _load_project_meta(slug: str) -> dict:
