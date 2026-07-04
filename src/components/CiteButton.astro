@@ -3,9 +3,10 @@ import { toBibTeX } from "../lib/bibtex";
 
 interface Props {
   data: any;
+  slug?: string;
 }
-const { data } = Astro.props;
-const bibtex = toBibTeX(data);
+const { data, slug } = Astro.props;
+const bibtex = toBibTeX(data, undefined, slug ?? data.slug);
 const dialogId = `cite-${data.slug ?? Math.random().toString(36).slice(2, 8)}`;
 ---
 

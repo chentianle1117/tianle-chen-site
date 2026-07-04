@@ -3,8 +3,9 @@ import CiteButton from "./CiteButton.astro";
 
 interface Props {
   data: any;
+  slug?: string;
 }
-const { data } = Astro.props;
+const { data, slug } = Astro.props;
 
 // Helper: render either a (label, text) row, or (label, text+url) link row
 type Row = { label: string; value: string; href?: string | null };
@@ -176,7 +177,7 @@ function hostname(u: string): string {
       <div class="flex flex-col gap-1 ml-auto">
         <dt class="mono-label sr-only">Cite</dt>
         <dd>
-          <CiteButton data={data} />
+          <CiteButton data={data} slug={slug} />
         </dd>
       </div>
     </dl>
