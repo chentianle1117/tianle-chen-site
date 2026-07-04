@@ -41,6 +41,15 @@ priority: standard
 publish: true
 semester: Rice undergraduate (2021-2024)
 slug: generative-urbanism
+stats:
+- value: "60%"
+  label: "dwellings vacant"
+- value: "10K"
+  label: "solver iterations"
+- value: "63→100"
+  label: "layout score climb"
+- value: "36"
+  label: "evolved layouts"
 status: ready
 summary: A generative-urbanism study of the Zaragoza community in Ciudad Juarez,
   Mexico, where 60%+ of dwellings sit vacant. Abandoned houses are mapped, demolished,
@@ -64,7 +73,7 @@ year: 2023
 
 ![Site context map of the Zaragoza community, Ciudad Juarez, with abandoned housing mapped in red across the urban fabric](/assets/generative-urbanism/evolution-1.png)
 
-The Zaragoza community sits among the large informal residential areas of Ciudad Juarez, where up to 60% of dwellings are uninhabited — the result of a high crime rate and emigration driven by neighborhood instability. Rather than propose a fixed redevelopment plan, this project treats revitalization as a **generative, rule-based problem**: map the vacancy, recover its material, and let an algorithm decide what to build where.
+**Revitalization as a generative, rule-based problem** — rather than propose a fixed redevelopment plan, this project maps the vacancy, recovers its material, and lets an algorithm decide what to build where. The Zaragoza community sits among the large informal residential areas of Ciudad Juarez, where up to 60% of dwellings are uninhabited — the result of a high crime rate and emigration driven by neighborhood instability.
 
 The move begins by **selectively demolishing empty settlements** and sorting the demolition material into the local steel-recycling economy that is already prominent at the border. The emptied parcels then become a search space. Each parcel is scored on measurable qualities — size (roughly 200 to 1,000+ m²), street access, within- and between-block relationships, surrounding demographics, and how many existing programs it reaches within a five-minute walk. That quantitative site analysis becomes the database against which new public programs are placed.
 

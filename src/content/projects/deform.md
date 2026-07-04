@@ -8,6 +8,13 @@ categories:
   - Architecture
 publish: true
 priority: standard
+stats:
+  - value: "6"
+    label: "aggregated variations"
+  - value: "2"
+    label: "frame scales (5\", 10\")"
+  - value: "1–5\""
+    label: "weighted disc range"
 summary: A physical form-finding study in continuous deformation — stretched fabric membranes loaded with hanging weights inside a tensioned frame rig, letting gravity pull the surfaces into funnels and cones. The variables (frame size, object weight, drop depth) are tuned to see how far a single surface can deform before it stops reading as one form.
 hero_image: /assets/deform/4a4cce00-ae83-4683-884f-d2e570913ade_rw_1920.jpg
 images:
@@ -34,10 +41,10 @@ image_captions:
   - "Iterations — the six variations grouped by aggregation and interaction logic, paired with their generating sketches"
 ---
 
-Deform is a physical form-finding study. Rather than model surfaces in software, I built a rig — a cube of clear acrylic panels laced with a grid of tensioned wire — and stretched a stretchy fabric mesh over open wood frames set inside it. Hanging a small weighted object from the center of a membrane pulls it down into a funnel; the taut surface finds its own shape under load. The project asks how far that single surface can be deformed before it stops reading as one continuous form.
+**A physical form-finding study** — rather than model surfaces in software, I built a rig — a cube of clear acrylic panels laced with a grid of tensioned wire — and stretched a stretchy fabric mesh over open wood frames set inside it. Hanging a small weighted object from the center of a membrane pulls it down into a funnel; the taut surface finds its own shape under load. The project asks how far that single surface can be deformed before it stops reading as one continuous form.
 
 ## Approach
 
-The method reduces to three variables, held explicit throughout: the **frame** that fixes the membrane's edges (5" and 10" squares), the **object** whose weight loads it (hooked discs from 1" to 5"), and the **drop depth** the surface is allowed to reach. Swapping one at a time produces a controlled family of cones and funnels — shallow bowls under light loads, deep pinched cones under heavier ones — each documented as a physical model alongside a force diagram and a plan. In the diagrams, red marks the loaded membrane and blue the frame edges, so the section reads as a record of where tension concentrates.
+The method reduces to three variables, held explicit throughout: the **frame** that fixes the membrane's edges (5" and 10" squares), the object whose weight loads it (hooked discs from 1" to 5"), and the drop depth the surface is allowed to reach. Swapping one at a time produces a controlled family of cones and funnels — shallow bowls under light loads, deep pinched cones under heavier ones — each documented as a physical model alongside a force diagram and a plan. In the diagrams, red marks the loaded membrane and blue the frame edges, so the section reads as a record of where tension concentrates.
 
-From these study modules the project builds six variations that aggregate and interact the basic cone. Some line up graduated funnels in a row or a four-cell grid; the more resolved ones stack membranes across two frame scales so an upper funnel meets a lower cone at a single point — the hourglass condition, where two deformations share one line of force. The result is a catalog of continuous surfaces generated not by drawing but by letting material, gravity, and a fixed set of variables do the shaping.
+From these study modules the project builds **six variations** that aggregate and interact the basic cone. Some line up graduated funnels in a row or a four-cell grid; the more resolved ones stack membranes across two frame scales so an upper funnel meets a lower cone at a single point — the hourglass condition, where two deformations share one line of force. The result is a catalog of continuous surfaces generated not by drawing but by letting material, gravity, and a fixed set of variables do the shaping.

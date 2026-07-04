@@ -53,6 +53,15 @@ repo_owner: Graham Felton (1gfelton) — holder of the canonical public repo; NO
 role: team-member
 semester: Spring 2025
 slug: 3t3d-vit-2d-to-3d
+stats:
+- value: "0.200"
+  label: "mean Chamfer Distance"
+- value: "1,800"
+  label: "SDXL building images"
+- value: "300"
+  label: "meshes evaluated"
+- value: "37"
+  label: "epochs on A100"
 status: ready
 summary: A vision-transformer pipeline that lifts three orthographic architectural
   sketches (plan + elevations) into a 3D massing model via a triplane representation
@@ -93,8 +102,8 @@ This was the 11-685 Introduction to Deep Learning final project (Spring 2025), a
 ## Problem & framing
 
 - **Goal.** A design tool an architect could use to generate 3D iterations of simple sketches in near real time — three inputs (plan + two elevations) chosen deliberately so the designer keeps full control of the resulting form.
-- **Why it's hard.** 3D-aware generative models are optimized for object-centric tasks and don't preserve the spatial/hierarchical relationships buildings require. We frame this as controlled 2D→3D generation conditioned on sketches.
-- **Relation to prior work.** We build on the 3D-aware conditional-synthesis idea from **pix2pix3D** (Deng et al.), but condition on *sketches* rather than label/segmentation maps, and adopt the **triplane** 3D representation from **Neural Field Diffusion** (Shue et al.) — swapping their diffusion generator for a ViT encoder-decoder.
+- Why it's hard: 3D-aware generative models are optimized for object-centric tasks and don't preserve the spatial/hierarchical relationships buildings require. We frame this as controlled 2D→3D generation conditioned on sketches.
+- Relation to prior work: we build on the 3D-aware conditional-synthesis idea from pix2pix3D (Deng et al.), but condition on *sketches* rather than label/segmentation maps, and adopt the triplane 3D representation from Neural Field Diffusion (Shue et al.) — swapping their diffusion generator for a ViT encoder-decoder.
 
 ## Architecture
 
@@ -108,14 +117,14 @@ The model is a ViT encoder-decoder that maps three sketches to a triplane, follo
 | Stage | Operation | Detail | Output shape |
 |---|---|---|---|
 | Encoder | Input encoder | 3 image views → DINOv2 ViT | 3 × `[B, N, D_enc]` |
-| Decoder | Input fusion | Linear-project each view to `D_dec`, then **sum** | `[B, N, D_dec]` |
+| Decoder | Input fusion | Linear-project each view to `D_dec`, then sum | `[B, N, D_dec]` |
 | Decoder | Core decoder | Reshape, add 2D spatial pos-enc, transformer layers | `[B, N, D_dec]` |
 | Upsampling | Upsampling neck | Reshape + ConvTranspose stages | `[B, C_neck, H_out, W_out]` |
 | Output | Output layer | Conv 1×1 + Tanh → triplane channels | `[B, C_out, H_out, W_out]` |
 
 ### 1. Input processing
 - **3 orthographic sketches** — plan (top), front elevation, side (analogous to a floorplan + elevations)
-- Rescaled from 256×256 → **512×512** for the encoder
+- Rescaled from 256×256 → 512×512 for the encoder
 - Concatenated along the channel dim into tensors of shape `[B, C, H, W]`
 
 ### 2. Encoder — DINOv2 (frozen)
@@ -125,7 +134,7 @@ The model is a ViT encoder-decoder that maps three sketches to a triplane, follo
 
 ### 3. Fusion
 - Each patch embedding produced by the ViT is assumed to correspond to the same location in 3D across the three views
-- Fusion linear-projects each view's embeddings to the decoder dimension and **sums the co-located patches** into a single fused feature vector, which is passed to the decoder
+- Fusion linear-projects each view's embeddings to the decoder dimension and sums the co-located patches into a single fused feature vector, which is passed to the decoder
 
 ![fusion](/assets/3t3d-vit-2d-to-3d/fusion_diagram.jpg)
 
@@ -137,8 +146,8 @@ The model is a ViT encoder-decoder that maps three sketches to a triplane, follo
 ![decoder](/assets/3t3d-vit-2d-to-3d/decoder_diagram.jpg)
 
 ### 5. Upsampling → triplane → mesh
-- The decoded features are progressively upsampled by the ConvTranspose **neck (R¹⁶ → R¹²⁸)** and projected with a Conv 1×1 + Tanh to the **triplane representation**
-- A 3D surface mesh is extracted with **Marching Cubes** by sampling and combining the occupancy field derived from the triplane
+- The decoded features are progressively upsampled by the ConvTranspose neck (R¹⁶ → R¹²⁸) and projected with a Conv 1×1 + Tanh to the triplane representation
+- A 3D surface mesh is extracted with Marching Cubes by sampling and combining the occupancy field derived from the triplane
 
 ### Triplane representation (the 3D encoding)
 Following Shue et al., each 3D object is decomposed into three orthogonal 2D feature planes `F_xy`, `F_xz`, `F_yz`. To query a point `p = (x, y, z)`, the model samples each plane and sums, then decodes with a shared MLP:
@@ -148,10 +157,10 @@ n_p  = F_xy(x, y) + F_xz(x, z) + F_yz(y, z)
 NF(p) = MLP(n_p)          # neural field value at p
 ```
 
-We experimented with **two ways to encode geometry into the triplanes**:
+We experimented with two ways to encode geometry into the triplanes:
 
-1. **Binary occupancy** — each plane stores a single channel (`C = 1`); the value at `(u, v)` is 1 if the projected point is inside the object, 0 if outside. Trained with **BCE loss**.
-2. **Normal map + SDF** — each plane stores 3D surface-normal vectors, combined with the object's **Signed Distance Field** (shortest signed distance to the surface). A richer target meant to teach finer geometry; trained with **L1 loss** (continuous regression).
+1. **Binary occupancy** — each plane stores a single channel (`C = 1`); the value at `(u, v)` is 1 if the projected point is inside the object, 0 if outside. Trained with BCE loss.
+2. **Normal map + SDF** — each plane stores 3D surface-normal vectors, combined with the object's Signed Distance Field (shortest signed distance to the surface). A richer target meant to teach finer geometry; trained with L1 loss (continuous regression).
 
 ## Dataset — built from scratch
 
@@ -159,19 +168,19 @@ Existing 3D architectural datasets were unusable for us — too much detail gran
 
 ![dataset creation](/assets/3t3d-vit-2d-to-3d/dataset_creation1.jpg)
 
-1. Generate **1,800 building images** with [**Stable Diffusion XL**](https://arxiv.org/abs/2307.01952)
-2. Convert each image to an `.obj` mesh with [**TripoSR**](https://github.com/VAST-AI-Research/TripoSR); **keep the best ~500 candidates**
-3. Render aligned **front / top (plan) / side (elevation)** views of each mesh
-4. Convert each rendered view into a sketch-like edge map via [**Informative Drawings**](https://github.com/carolineec/informative-drawings)
+1. Generate **1,800 building images** with [Stable Diffusion XL](https://arxiv.org/abs/2307.01952)
+2. Convert each image to an `.obj` mesh with [TripoSR](https://github.com/VAST-AI-Research/TripoSR); keep the best **~500 candidates**
+3. Render aligned front / top (plan) / side (elevation) views of each mesh
+4. Convert each rendered view into a sketch-like edge map via [Informative Drawings](https://github.com/carolineec/informative-drawings)
 5. Result: triplets of (front, right, top) edge-map sketches paired with a 3D mesh (`.obj`), each converted to a ground-truth triplane target
 
-**Dataset samples:**
+Dataset samples:
 
 | Sketches | 3D Models |
 |---|---|
 | ![sketches](/assets/3t3d-vit-2d-to-3d/data_sketch.png) | ![3d models](/assets/3t3d-vit-2d-to-3d/data_3d.png) |
 
-**Dataset structure (public, Google Drive):**
+Dataset structure (public, Google Drive):
 
 ```
 Dataset/
@@ -182,22 +191,22 @@ Dataset/
 └── 3dmodel/       # 3D meshes (.obj files)
 ```
 
-**[Download dataset](https://drive.google.com/drive/folders/1jQuu2hA1_R0IRaaHouJ5B9rVDO61THqD)**
+[Download dataset](https://drive.google.com/drive/folders/1jQuu2hA1_R0IRaaHouJ5B9rVDO61THqD)
 
 ## Training
 
-- **Loss.** Depends on the triplane encoding: **BCE** for binary occupancy (per-voxel occupied/empty probability), **L1** for the normal-map + SDF triplanes (continuous regression). The Triplanar DDPM baseline used cross-entropy.
-- **Two-stage schedule.**
+- Loss depends on the triplane encoding: BCE for binary occupancy (per-voxel occupied/empty probability), L1 for the normal-map + SDF triplanes (continuous regression). The Triplanar DDPM baseline used cross-entropy.
+- Two-stage schedule:
   1. Freeze the DINOv2 encoder; train the decoder only until predictions are good
   2. Unfreeze the entire model; fine-tune with *differentiated learning rates* (low for the pretrained encoder, higher for the decoder)
-- **Compute.** 37 epochs on a single **A100**, ~480 s/epoch, ~5 hours total.
-- **Tracking.** Weights & Biases.
+- Compute: 37 epochs on a single **A100**, ~480 s/epoch, ~5 hours total.
+- Tracking: Weights & Biases.
 
 ![training loss](/assets/3t3d-vit-2d-to-3d/val_train_loss.png)
 
 ## Results
 
-We report **bidirectional Chamfer Distance (CD)** between predicted and ground-truth meshes — a fairer comparison than pixel losses given the idiosyncratic output. The **binary-occupancy** model performed best; the normal-map + SDF variant produced plausible SDFs but smoothed normals, suggesting the richer target needs more architecture/optimization work.
+We report **bidirectional Chamfer Distance (CD)** between predicted and ground-truth meshes — a fairer comparison than pixel losses given the idiosyncratic output. The binary-occupancy model performed best; the normal-map + SDF variant produced plausible SDFs but smoothed normals, suggesting the richer target needs more architecture/optimization work.
 
 | Metric (binary-occupancy model) | Value |
 |---|---|
@@ -215,7 +224,7 @@ Against reference models (lower CD is better) — 3T3D is competitive with the c
 | TGS | 0.122 |
 | ZeroShape | 0.160 |
 | OpenLRM | 0.180 |
-| **3T3D (ours)** | **0.200** |
+| 3T3D (ours) | 0.200 |
 | One-2-3-45 | 0.227 |
 
 An analysis of CD vs ground-truth mesh complexity showed mean CD *decreasing* as vertex count grew — the model reconstructs more complex geometries with lower error within the tested range. The loss curves fall slowly but steadily; the team's honest read is that hyperparameter optimization and longer training would close much of the gap. Example output vs ground truth:
@@ -224,19 +233,19 @@ An analysis of CD vs ground-truth mesh complexity showed mean CD *decreasing* as
 
 ## Outcomes & honest assessment
 
-- **Feasibility demonstrated.** 3T3D shows a ViT + triplane pipeline *can* do sketch-to-3D for architecture — a domain most 2D→3D work ignores in favor of object categories — with a mean CD of 0.200 that beats one baseline (One-2-3-45) while trailing dedicated single-image reconstructors.
-- **What didn't work yet.** The richer normal-map + SDF encoding was harder to learn than binary occupancy; the model trains slowly. The writeup is candid that architecture refinement, hyperparameter optimization, and longer training are the open work — this was a course project under a hard deadline, not a finished system.
-- **Reusable dataset pipeline.** SDXL → TripoSR → rendered views → Informative Drawings edge maps → triplane targets is a repeatable recipe for building paired sketch/mesh corpora when none exist.
-- **Published dataset** on Google Drive; **final writeup PDF** (`/assets/3t3d-vit-2d-to-3d/3t3d_writeup.pdf`); **final presentation** on [YouTube](https://www.youtube.com/watch?v=DEXX0CsDG4U).
-- **Flagship portfolio piece** — my most substantial ML-systems work alongside [[2025-Fall--l43d-cad-mllm|L43D CAD-MLLM]]; the two share 3/4 team members and continue the same "designer-facing generative 3D" thread.
+- **Feasibility demonstrated** — 3T3D shows a ViT + triplane pipeline *can* do sketch-to-3D for architecture, a domain most 2D→3D work ignores in favor of object categories, with a mean CD of 0.200 that beats one baseline (One-2-3-45) while trailing dedicated single-image reconstructors.
+- What didn't work yet: the richer normal-map + SDF encoding was harder to learn than binary occupancy; the model trains slowly. The writeup is candid that architecture refinement, hyperparameter optimization, and longer training are the open work — this was a course project under a hard deadline, not a finished system.
+- Reusable dataset pipeline: SDXL → TripoSR → rendered views → Informative Drawings edge maps → triplane targets is a repeatable recipe for building paired sketch/mesh corpora when none exist.
+- Published dataset on Google Drive; final writeup PDF (`/assets/3t3d-vit-2d-to-3d/3t3d_writeup.pdf`); final presentation on [YouTube](https://www.youtube.com/watch?v=DEXX0CsDG4U).
+- Flagship portfolio piece — my most substantial ML-systems work alongside [[2025-Fall--l43d-cad-mllm|L43D CAD-MLLM]]; the two share 3/4 team members and continue the same "designer-facing generative 3D" thread.
 
 ## My contribution
 
 Four-person team, flat structure (no group lead). I am **first author on the writeup**, and my work concentrated on the data, evaluation framing, and the paper:
 
-- **Dataset provisioning & management** — built and shared the paired sketch/mesh corpus, provisioned the Google Drive folders the team trained from.
-- **Literature review** — surveyed the sketch-to-3D and triplane landscape (CLIP, TripoSR, DINOv2, pix2pix3D, Neural Field Diffusion) to select the encoder backbone, 3D representation, and baselines.
-- **Experiment tracking** and the **technical writeup** (the team's "Overleaf master").
+- Dataset provisioning & management — built and shared the paired sketch/mesh corpus, provisioned the Google Drive folders the team trained from.
+- Literature review — surveyed the sketch-to-3D and triplane landscape (CLIP, TripoSR, DINOv2, pix2pix3D, Neural Field Diffusion) to select the encoder backbone, 3D representation, and baselines.
+- Experiment tracking and the technical writeup (the team's "Overleaf master").
 
 The other three (Graham Felton, Chia Hui Yen, Karthick Raja) drove much of the model/decoder engineering and the training runs. Note: not all GitHub commits attribute to my `chentianle1117` username — Colab sessions often committed under alternate identities.
 
@@ -261,7 +270,7 @@ Under `Portfolio//assets/3t3d-vit-2d-to-3d/`:
 
 | File | Size | Purpose |
 |---|---|---|
-| `3t3d_writeup.pdf` | 1.8 MB | **Final project writeup** (pulled from repo `/img/`) |
+| `3t3d_writeup.pdf` | 1.8 MB | Final project writeup (pulled from repo `/img/`) |
 | `project_notebook.ipynb` | 5.1 MB | Final project notebook (from team WhatsApp) |
 | `dev_triplane.ipynb` | 1.7 MB | Triplane representation development notebook |
 | `dev_with_validation.ipynb` | 2.9 MB | Training + validation notebook |
@@ -272,11 +281,11 @@ Under `Portfolio//assets/3t3d-vit-2d-to-3d/`:
 
 ## Links
 
-- **[GitHub: chentianle1117/3T3D](https://github.com/chentianle1117/3T3D)** — **David's personal fork** (primary link for portfolio; preserves the project under his name)
-- **[GitHub: 1gfelton/3T3D](https://github.com/1gfelton/3T3D)** — upstream canonical public repo on Graham's account (READMEd, polished for public use, writeup PDF)
-- **[GitHub: 11-685-Team-52/3Ts-Model-for-Architectural-design-process](https://github.com/11-685-Team-52/3Ts-Model-for-Architectural-design-process)** — team's shared working repo with 3 notebooks: `3_2d_to_3d_w_validation+dataaug_2504.ipynb` (29 MB, late-iteration data-augmentation version), `ImageGEN-Chia.ipynb` (1.1 MB — Chia's dataset pipeline), `triplane_encoder_decoder.ipynb` (74 KB)
-- **[Final video presentation (YouTube)](https://www.youtube.com/watch?v=DEXX0CsDG4U)**
-- **[Public dataset (Google Drive)](https://drive.google.com/drive/folders/1jQuu2hA1_R0IRaaHouJ5B9rVDO61THqD)**
+- [GitHub: chentianle1117/3T3D](https://github.com/chentianle1117/3T3D) — David's personal fork (primary link for portfolio; preserves the project under his name)
+- [GitHub: 1gfelton/3T3D](https://github.com/1gfelton/3T3D) — upstream canonical public repo on Graham's account (READMEd, polished for public use, writeup PDF)
+- [GitHub: 11-685-Team-52/3Ts-Model-for-Architectural-design-process](https://github.com/11-685-Team-52/3Ts-Model-for-Architectural-design-process) — team's shared working repo with 3 notebooks: `3_2d_to_3d_w_validation+dataaug_2504.ipynb` (29 MB, late-iteration data-augmentation version), `ImageGEN-Chia.ipynb` (1.1 MB — Chia's dataset pipeline), `triplane_encoder_decoder.ipynb` (74 KB)
+- [Final video presentation (YouTube)](https://www.youtube.com/watch?v=DEXX0CsDG4U)
+- [Public dataset (Google Drive)](https://drive.google.com/drive/folders/1jQuu2hA1_R0IRaaHouJ5B9rVDO61THqD)
 - Final writeup PDF (in vault): `/assets/3t3d-vit-2d-to-3d/3t3d_writeup.pdf`
 - Overleaf report source: https://www.overleaf.com/project/680ad1d4af18bc319d37a756
 

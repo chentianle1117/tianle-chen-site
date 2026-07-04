@@ -78,11 +78,11 @@ images:
 
 ## Concept
 
-The project treats bending as a design method rather than a defect to be engineered out. Each stage is a physical experiment in what a curved, load-carrying member can hold, and the geometry of the building is read back out of those experiments instead of drawn first and rationalized later.
+**Bending as a design method** — not a defect to be engineered out. Each stage is a physical experiment in what a curved, load-carrying member can hold, and the geometry of the building is read back out of those experiments instead of drawn first and rationalized later.
 
-The early studies are tabletop equilibrium tests, photographed against black to isolate the structure. A thin wooden plate is bent into an arch or an S-curve and asked to cantilever a stacked timber block far past its base — the whole point is to find how little material, bent well, can hold how much. The controlled-bending frame turns this into a tunable rig: lengths of steel chain hang from bent strips as adjustable weight while strings act as counterweight, so the curvature of each strip can be dialed in by hand rather than assumed.
+The early studies are tabletop equilibrium tests, photographed against black to isolate the structure. A thin wooden plate is bent into an arch or an S-curve and asked to cantilever a stacked timber block far past its base — the whole point is to find how little material, bent well, can hold how much. The **controlled-bending frame** turns this into a tunable rig: lengths of steel chain hang from bent strips as adjustable weight while strings act as counterweight, so the curvature of each strip can be dialed in by hand rather than assumed.
 
-That physical logic scales up into an inhabited structure. Instead of columns and beams in compression, floor plates are suspended from a dense field of bent strings that serve at once as roof, facade, and structure; the upper floor hangs from the roof rather than standing on the floor below. In the final models the strings become taut wire arcs strung between paired post walls, and the floor plates read as laser-cut coffered slabs whose triangulated pattern lightens them where the hanging forces allow. Scale figures — walking, seated, at a piano — place the string field at building scale and test it as a space to occupy.
+That physical logic scales up into an **inhabited structure**. Instead of columns and beams in compression, floor plates are suspended from a dense field of bent strings that serve at once as roof, facade, and structure; the upper floor hangs from the roof rather than standing on the floor below. In the final models the strings become taut wire arcs strung between paired post walls, and the floor plates read as laser-cut coffered slabs whose triangulated pattern lightens them where the hanging forces allow. Scale figures — walking, seated, at a piano — place the string field at building scale and test it as a space to occupy.
 
 ## Four stages
 

@@ -70,4 +70,21 @@ const site = defineCollection({
     .passthrough(),
 });
 
-export const collections = { projects, site };
+// Writing / notes — the exposure hub. Short technical essays tied to the OSS
+// repos + the second-brain system. publish:true gates visibility.
+const writing = defineCollection({
+  type: "content",
+  schema: z
+    .object({
+      title: z.string(),
+      date: z.string(),
+      summary: z.string().nullish(),
+      tags: z.array(z.string()).nullish(),
+      canonical_project: z.string().nullish(),
+      external_url: z.string().nullish(),
+      publish: z.boolean().default(false),
+    })
+    .passthrough(),
+});
+
+export const collections = { projects, site, writing };

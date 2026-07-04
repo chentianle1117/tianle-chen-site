@@ -41,6 +41,13 @@ publish: true
 role: research-assistant
 semester: Fall 2024
 slug: wire-bending
+stats:
+- value: "594.2"
+  label: "wire length tracked"
+- value: "190mm"
+  label: "QR spatial anchor"
+- value: "30°"
+  label: "laser-cut jig angle"
 status: ready
 summary: A mixed-reality workflow for fabricating complex bent-wire forms by hand.
   A Grasshopper definition stays in live two-way sync with Microsoft HoloLens through
@@ -68,11 +75,11 @@ year: 2024
 
 ## What it is
 
-Bending a complex wire form by hand is hard to do accurately. There is no printed drawing to measure against in three dimensions, each bend compounds the error of the last, and a multi-part structure means keeping track of which segment and which bend you are on. The usual computational answer is to hand the geometry to a robot. This project takes the other path: keep the person as the fabricator, and use mixed reality to give them the precision a robot would have.
+**Mixed reality gives a human fabricator robot-grade precision** — without the robot. Bending a complex wire form by hand is hard to do accurately: there is no printed drawing to measure against in three dimensions, each bend compounds the error of the last, and a multi-part structure means keeping track of which segment and which bend you are on. The usual computational answer is to hand the geometry to a robot. This project takes the other path: keep the person as the fabricator, and use mixed reality to give them the precision a robot would have.
 
 The workflow puts a **Grasshopper** parametric definition in continuous, two-way sync with a **Microsoft HoloLens** through **Fologram** (the Rhino/Grasshopper-to-HoloLens plug-in). The HoloLens draws the target wireframe, the current wire, the bender jig, per-bend angles, and running readouts *in place* on the physical bench. The fabricator bends the wire to match the overlay and air-taps to advance to the next bend. Editing the Grasshopper definition updates what they see live; advancing a step at the bench feeds state back into the definition. It is a loop, not a one-way export.
 
-This was Independent Study research (**48-736**, Fall 2024) with **Prof. Vernelle Noel**, whose work centers on craft, making, and computational design — so the framing question was deliberately not "how do we automate the maker away" but "how do we give the maker computational precision while keeping the craft in their hands."
+This was Independent Study research (48-736, Fall 2024) with Prof. Vernelle Noel, whose work centers on craft, making, and computational design — so the framing question was deliberately not "how do we automate the maker away" but "how do we give the maker computational precision while keeping the craft in their hands."
 
 ## The round-trip: HoloLens ↔ Grasshopper ↔ fabrication
 
@@ -88,35 +95,35 @@ This was Independent Study research (**48-736**, Fall 2024) with **Prof. Vernell
 The Grasshopper side is organized into three parts (documented in the workflow export):
 
 - **Input geometry organization & reorientation** — takes the input curves, sorts them into a consistent order, and regularizes them into a clean, bend-ready wireframe. This is the housekeeping that makes everything downstream deterministic.
-- **Part → wire-bending transfer** — the core solver. It segments the form into *parts*, and for each part turns the geometry into an ordered sequence of bending instructions: a straight run, then a bend of a given angle, and so on. Bend radius is solved against the physical **RadiusBender** tool so the instructions match what the bench hardware can actually produce.
+- **Part → wire-bending transfer** — the core solver. It segments the form into *parts*, and for each part turns the geometry into an ordered sequence of bending instructions: a straight run, then a bend of a given angle, and so on. Bend radius is solved against the physical RadiusBender tool so the instructions match what the bench hardware can actually produce.
 - **Fologram interface module** — the AR UI, split into part/bend-index navigation and the static-plus-interactive display. It owns the gesture-button logic and the readouts that get pushed into the headset.
 
 The definition went through a long iteration trail across the semester (September through November 2024 `.gh` revisions), from an early `wire bending draft` to the `Master_fologram` line and, finally, a `construction details` version tuned for a real built piece.
 
 ### 2 · Fologram as the bridge
 
-Fologram is what makes this a live workflow rather than a print-and-follow exercise. It streams the Grasshopper geometry, text, and interactive UI straight into the HoloLens with no export step, and it carries interaction back the other way — so a gesture in the headset can drive the Grasshopper definition. Crucially, Fologram registers the digital coordinate system to the real world through a **printed QR marker**: the project's `MasterQR` anchor is specified at **190 mm, placed at origin (0, 0, 0), in millimeters**. Placing that sheet on the bench pins Grasshopper's world origin to a known physical point, which is why the overlay lands on the actual tool instead of floating.
+Fologram is what makes this a live workflow rather than a print-and-follow exercise. It streams the Grasshopper geometry, text, and interactive UI straight into the HoloLens with no export step, and it carries interaction back the other way — so a gesture in the headset can drive the Grasshopper definition. Crucially, Fologram registers the digital coordinate system to the real world through a printed QR marker: the project's `MasterQR` anchor is specified at **190 mm**, placed at origin (0, 0, 0), in millimeters. Placing that sheet on the bench pins Grasshopper's world origin to a known physical point, which is why the overlay lands on the actual tool instead of floating.
 
 ### 3 · The overlay on the bench
 
 Through the headset the fabricator sees the digital model composited onto the real desk. In the captured HoloLens footage the layers read as:
 
-- **magenta** — the target wireframe (the form to build),
-- **teal** — the current wire being worked,
-- **orange** — the bender-jig geometry, locked onto the physical bending tool,
-- **green** — the interactive HUD: gesture buttons and step markers.
+- magenta — the target wireframe (the form to build),
+- teal — the current wire being worked,
+- orange — the bender-jig geometry, locked onto the physical bending tool,
+- green — the interactive HUD: gesture buttons and step markers.
 
-Text readouts are rendered in place too — the footage shows a live **"Total Length 594.2"** measurement and step labels like **"Part #0 · Bend #2"** / **"Part #2 · Bend #3"**, so the fabricator always knows exactly which segment and bend they are on and how much wire the piece consumes.
+Text readouts are rendered in place too — the footage shows a live **"Total Length 594.2"** measurement and step labels like "Part #0 · Bend #2" / "Part #2 · Bend #3", so the fabricator always knows exactly which segment and bend they are on and how much wire the piece consumes.
 
 ![Fologram overlay at the bender](/assets/wire-bending/hololens-workflow-1.png)
 
 ### 4 · Hands-free control
 
-Because both hands are on the wire, the interface is driven by HoloLens **air-tap gestures** rather than a keyboard. On-screen buttons — **P / B** toggles plus next/previous controls — step through parts and bends. Advancing a bend updates the overlay to the following segment; the fabricator never has to walk back to the laptop mid-piece.
+Because both hands are on the wire, the interface is driven by HoloLens air-tap gestures rather than a keyboard. On-screen buttons — P / B toggles plus next/previous controls — step through parts and bends. Advancing a bend updates the overlay to the following segment; the fabricator never has to walk back to the laptop mid-piece.
 
 ### 5 · Manual fabrication
 
-The wire is bent by hand at a **manual radius bender** on the bench, cut to length with bolt cutters, using a **laser-cut angle jig** for repeatable geometry. One jig detail in the sources is dimensioned at **30°** with a **2.70 / 2.18 / 0.42** proportion and a bolt hole (`recut piece 1106`, nested four-up for laser cutting). The fabricator reads the next angle and length off the HUD, bends to the magenta target, checks the fit against the overlay, and air-taps to the next step.
+The wire is bent by hand at a manual radius bender on the bench, cut to length with bolt cutters, using a laser-cut angle jig for repeatable geometry. One jig detail in the sources is dimensioned at **30°** with a 2.70 / 2.18 / 0.42 proportion and a bolt hole (`recut piece 1106`, nested four-up for laser cutting). The fabricator reads the next angle and length off the HUD, bends to the magenta target, checks the fit against the overlay, and air-taps to the next step.
 
 ![bending process](/assets/wire-bending/bending-process.gif)
 

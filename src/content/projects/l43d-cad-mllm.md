@@ -84,12 +84,21 @@ team_hierarchy: flat (no group leader)
 team_size: 3 active + 1 audit
 title: 'CAD-MLLM: Unifying Multimodality-Conditioned CAD Generation with MLLM'
 type: portfolio-project
+stats:
+- value: "197K"
+  label: "training sequences"
+- value: "3.37×"
+  label: "data amplification"
+- value: "7B"
+  label: "Qwen LoRA backbone"
+- value: "90%"
+  label: "STEP conversion (text)"
 year: 2025
 ---
 
-> Team 21's unofficial reproduction and extension of *CAD-MLLM* (arXiv:2411.04954) for CMU 16-825, Learning for 3D Vision (Fall 2025). One large language model accepts **text, a rendered image, a point cloud, or any non-empty combination** and generates an **editable parametric CAD command sequence** that compiles to a real B-Rep solid. My contribution was the **autocompletion extension** — training the model to complete partial designs, built on the `autocomplete` / `autocomplete_2` branches.
+> Team 21's unofficial reproduction and extension of *CAD-MLLM* (arXiv:2411.04954) for CMU 16-825, Learning for 3D Vision (Fall 2025). One large language model accepts text, a rendered image, a point cloud, or any non-empty combination and generates an **editable parametric CAD command sequence** that compiles to a real B-Rep solid. My contribution was the autocompletion extension — training the model to complete partial designs, built on the `autocomplete` / `autocomplete_2` branches.
 
-The problem is narrow and real. Parametric CAD is authored as a *history* of construction operations (sketch a profile, extrude it, fillet an edge), but it is *stored* as a Boundary Representation (B-Rep) — a graph of faces, edges, and vertices. A graph is not a sequence, so autoregressive models can't emit it directly, and there is a genuine gap between high-level design intent ("a bracket with two mounting holes") and the precise parametric operations that realize it. CAD-MLLM closes that gap by treating CAD generation as **sequence prediction**: serialize the construction history into a command sequence an LLM can generate token by token, then compile the sequence back into geometry.
+The problem is narrow and real. Parametric CAD is authored as a *history* of construction operations (sketch a profile, extrude it, fillet an edge), but it is *stored* as a Boundary Representation (B-Rep) — a graph of faces, edges, and vertices. A graph is not a sequence, so autoregressive models can't emit it directly, and there is a genuine gap between high-level design intent ("a bracket with two mounting holes") and the precise parametric operations that realize it. CAD-MLLM closes that gap by treating CAD generation as sequence prediction: serialize the construction history into a command sequence an LLM can generate token by token, then compile the sequence back into geometry.
 
 <figure class="diagram">
   <img src="/assets/l43d-cad-mllm/architecture.svg" alt="CAD-MLLM system diagram: text/image/point-cloud inputs through frozen encoders and trainable projection layers into a Qwen2.5-7B LLM with LoRA, emitting a parametric CAD command sequence compiled to a STEP B-Rep; plus the synthetic data pipeline with Intelligent Truncation and the evaluation results." />
@@ -100,9 +109,9 @@ The problem is narrow and real. Parametric CAD is authored as a *history* of con
 
 Three pieces, in dependency order:
 
-1. **A synthetic multimodal dataset** built on a 10% DeepCAD subset (58,653 models), because DeepCAD ships only JSON command sequences — no aligned images, point clouds, or partial-sequence pairs. The team synthesized all of them with the OpenCascade geometry kernel.
-2. **An "Intelligent Truncation" algorithm** that derives *geometrically valid* partial CAD sequences from complete ones, amplifying the training set and enabling design autocompletion — a capability the original paper does not have.
-3. **A multimodal LLM** — Qwen2.5-7B with LoRA plus frozen per-modality encoders and trainable projection layers — trained with a two-stage curriculum and evaluated on both geometric validity and sequence accuracy.
+1. A synthetic multimodal dataset built on a 10% DeepCAD subset (58,653 models), because DeepCAD ships only JSON command sequences — no aligned images, point clouds, or partial-sequence pairs. The team synthesized all of them with the OpenCascade geometry kernel.
+2. An **"Intelligent Truncation" algorithm** that derives *geometrically valid* partial CAD sequences from complete ones, amplifying the training set and enabling design autocompletion — a capability the original paper does not have.
+3. A multimodal LLM — Qwen2.5-7B with LoRA plus frozen per-modality encoders and trainable projection layers — trained with a two-stage curriculum and evaluated on both geometric validity and sequence accuracy.
 
 ## CAD as a command sequence
 
@@ -121,15 +130,15 @@ A CAD model *M* is represented as a sequence of construction operations `S = {c1
 }
 ```
 
-The model is trained with a standard **causal-LM objective** — maximize the log-likelihood of the next command token given the conditioning inputs `C ⊆ {T, I, P}` and the preceding tokens.
+The model is trained with a standard causal-LM objective — maximize the log-likelihood of the next command token given the conditioning inputs `C ⊆ {T, I, P}` and the preceding tokens.
 
 ## Dataset — synthesizing the missing modalities
 
 For every one of the 58,653 source models, the pipeline (`pipeline/process_cad.py`, `pipeline/render_cad.py`) generates, via `pythonocc` / OpenCascade:
 
-- **B-Rep geometry (STEP)** — the raw JSON commands compiled into a precise boundary representation.
-- **Point clouds** — surface-sampled points using DeepCAD's sampling logic, feeding the 3D encoder.
-- **Multi-view renderings** — four standardized viewpoints (**Front, Top, Side, Isometric**) per model. Across the dataset this comes to **790,184 renderings**.
+- B-Rep geometry (STEP) — the raw JSON commands compiled into a precise boundary representation.
+- Point clouds — surface-sampled points using DeepCAD's sampling logic, feeding the 3D encoder.
+- Multi-view renderings — four standardized viewpoints (Front, Top, Side, Isometric) per model. Across the dataset this comes to **790,184 renderings**.
 
 The result is a unified corpus where each design exists in textual (command sequence), visual (renders), and geometric (B-Rep / point cloud) form.
 
@@ -137,9 +146,9 @@ The result is a unified corpus where each design exists in textual (command sequ
 
 To train autocompletion you need `(partial input → complete target)` pairs. Naively cutting a parametric sequence at a random index usually breaks it — you get a sketch with no reference plane, or a fillet referencing an edge that doesn't exist yet. The Intelligent Truncation algorithm enforces **geometric validity at every cut**:
 
-1. **Operation-boundary detection** — only cut at valid stopping points (e.g. immediately after an `ExtrudeFeature` completes), never mid-feature.
-2. **Dependency tracing** — for a chosen cut, recursively walk the entity dependency graph (`ExtrudeFeature → profiles → Sketch → reference plane`) and keep everything the partial sequence needs.
-3. **Entity cleanup** — prune "orphan" entities that are defined but no longer referenced, and attach truncation metadata (`original_operations`, `kept_operations`, `truncation_percentage`).
+1. Operation-boundary detection — only cut at valid stopping points (e.g. immediately after an `ExtrudeFeature` completes), never mid-feature.
+2. Dependency tracing — for a chosen cut, recursively walk the entity dependency graph (`ExtrudeFeature → profiles → Sketch → reference plane`) and keep everything the partial sequence needs.
+3. Entity cleanup — prune "orphan" entities that are defined but no longer referenced, and attach truncation metadata (`original_operations`, `kept_operations`, `truncation_percentage`).
 
 ```python
 def truncate_json(self, data, truncate_at_idx):
@@ -168,7 +177,7 @@ Each source model yields up to five evenly-spaced partial variants (roughly 25% 
 | Avg. versions / model | 1.0 | 2.37 | 2.37× |
 | Completeness coverage | 100% only | 1%–99% | — |
 
-The two multipliers describe the same result from different angles: truncation adds an **average of 2.37 partial versions per model**, so the total sequence count grows to **3.37× the source** (1.0 original + 2.37 truncated). Reported processing was fast — the full-subset truncation pass runs in roughly 10–20 minutes.
+The two multipliers describe the same result from different angles: truncation adds an average of 2.37 partial versions per model, so the total sequence count grows to **3.37× the source** (1.0 original + 2.37 truncated). Reported processing was fast — the full-subset truncation pass runs in roughly 10–20 minutes.
 
 ## Model architecture
 
@@ -192,22 +201,22 @@ Everything ran in PyTorch + HuggingFace Transformers on a single **NVIDIA A100 (
 
 **LoRA + optimization (final report §5):**
 
-- LoRA **rank r = 16, α = 32, dropout = 0.05**
+- LoRA rank r = 16, α = 32, dropout = 0.05
 - AdamW (β1 = 0.9, β2 = 0.95), weight decay
-- **Cosine-annealing** LR, 3% warmup, peak LR **2 × 10⁻⁴**
-- Global batch size **16** via gradient accumulation
-- **max sequence length 4096**
+- Cosine-annealing LR, 3% warmup, peak LR 2 × 10⁻⁴
+- Global batch size 16 via gradient accumulation
+- max sequence length 4096
 
 **Two-stage curriculum:**
 
-1. **Stage I — text-only alignment.** Train exclusively on Text-to-CAD pairs so the model learns the valid command-sequence syntax and a strong NL → CAD mapping before any other modality is introduced.
-2. **Stage II — randomized multimodal fusion.** Introduce image and point-cloud modalities, and for each sample condition on a *random non-empty subset* `C ⊆ {T, I, P}`. This forces robustness to whatever combination is available at inference — text alone, image alone, or all three together.
+1. Stage I — text-only alignment. Train exclusively on Text-to-CAD pairs so the model learns the valid command-sequence syntax and a strong NL → CAD mapping before any other modality is introduced.
+2. Stage II — randomized multimodal fusion. Introduce image and point-cloud modalities, and for each sample condition on a *random non-empty subset* `C ⊆ {T, I, P}`. This forces robustness to whatever combination is available at inference — text alone, image alone, or all three together.
 
 ## Evaluation
 
 The eval pipeline runs seven steps per sample: text prompt → JSON inference → JSON→STEP export → 3D visualization → topology check → JSON structure validation → sequence-metric scoring. Samples are filtered to ground-truth sequences under 2048 tokens; sampling temperature 0.5.
 
-**Topology metrics:** STEP/raw conversion rate (% of outputs that compile to a valid STEP), Dangling-Edge Length (DangEL, unclosed boundary), Self-Intersection Ratio (SIR), Flux Enclosure Error (FluxEE). **Sequence metrics:** Entity Count Accuracy, Type-Sequence Accuracy (edit-distance based), Type-Distribution Similarity (Jaccard).
+Topology metrics: STEP/raw conversion rate (% of outputs that compile to a valid STEP), Dangling-Edge Length (DangEL, unclosed boundary), Self-Intersection Ratio (SIR), Flux Enclosure Error (FluxEE). Sequence metrics: Entity Count Accuracy, Type-Sequence Accuracy (edit-distance based), Type-Distribution Similarity (Jaccard).
 
 Four configurations were run (final report Tables 2–4):
 
@@ -223,16 +232,16 @@ Two findings hold up across the runs:
 - **Text-only conditioning maximizes geometric validity** (up to 90% STEP conversion) because it produces simpler, more syntactically conservative outputs.
 - **Multimodal conditioning maximizes sequence fidelity** — the best multimodal run (Eval 4) reaches the highest entity-count, type-sequence, and type-distribution accuracy — but at a lower conversion rate, because richer inputs push the model toward more detailed and therefore more fragile geometry.
 
-Token budget matters too: a very large budget (10,240) lets the model produce longer, more detailed sequences but also more inconsistent ones (Eval 1's 40% conversion), while a tighter budget (2,048) is more stable at the cost of fine detail. This is the central trade-off documented in the report: **expressiveness vs. reliability**. The honest limitation stated in the report and poster: the current pipeline reliably handles **simple shapes only**, constrained by the modest training-data size and short text prompts.
+Token budget matters too: a very large budget (10,240) lets the model produce longer, more detailed sequences but also more inconsistent ones (Eval 1's 40% conversion), while a tighter budget (2,048) is more stable at the cost of fine detail. This is the central trade-off documented in the report: **expressiveness vs. reliability**. The honest limitation stated in the report and poster: the current pipeline reliably handles simple shapes only, constrained by the modest training-data size and short text prompts.
 
 ## My contribution — the autocompletion extension
 
 My work lives on the `autocomplete` and `autocomplete_2` branches and targets the partial-to-complete task that Intelligent Truncation makes possible:
 
 - **Truncated-text masking during training** — the training loop masks the completed portion of a partial sequence so the loss is computed only over the tokens the model must predict, teaching it to *continue* a design rather than regenerate it (`scripts/train_curriculum.py`, commit "Update: truncated_text masking").
-- **Autocomplete inference + evaluation pipeline** — dedicated `scripts/inference_autocomplete.py` and `scripts/evaluate_autocomplete.py`, plus fixes to make generation work correctly under PEFT/LoRA (overriding the default `max_length=20`, switching to `max_new_tokens`, and working around a PEFT `inputs_embeds` limitation for text-only mode).
-- **Hyperparameter sweeps** — an overnight sweep harness (`scripts/run_overnight_sweep.sh`, `sweep_overnight_5070ti.yaml`) run locally on an RTX 5070 Ti, with W&B logging and checkpoint cleanup utilities.
-- **Published weights** — the resulting fine-tuned model is on HuggingFace as [`chentianle1117/autocomplete-stage3-8000`](https://huggingface.co/chentianle1117/autocomplete-stage3-8000).
+- Autocomplete inference + evaluation pipeline — dedicated `scripts/inference_autocomplete.py` and `scripts/evaluate_autocomplete.py`, plus fixes to make generation work correctly under PEFT/LoRA (overriding the default `max_length=20`, switching to `max_new_tokens`, and working around a PEFT `inputs_embeds` limitation for text-only mode).
+- Hyperparameter sweeps — an overnight sweep harness (`scripts/run_overnight_sweep.sh`, `sweep_overnight_5070ti.yaml`) run locally on an RTX 5070 Ti, with W&B logging and checkpoint cleanup utilities.
+- Published weights — the resulting fine-tuned model is on HuggingFace as [`chentianle1117/autocomplete-stage3-8000`](https://huggingface.co/chentianle1117/autocomplete-stage3-8000).
 
 ## Results and outcomes
 
@@ -244,7 +253,7 @@ My work lives on the `autocomplete` and `autocomplete_2` branches and targets th
 
 ## Team and role
 
-Flat team, no group leader. Active members: **David Chen, Karthick Raja BG, Yizhuo Di**; **Chia Hui Yen** participated as an audit. The canonical repo lives on Yizhuo's GitHub (`veoery`); a personal fork preserves the project under my name. My scope was the autocompletion extension and its training/eval tooling.
+Flat team, no group leader. Active members: David Chen, Karthick Raja BG, Yizhuo Di; Chia Hui Yen participated as an audit. The canonical repo lives on Yizhuo's GitHub (`veoery`); a personal fork preserves the project under my name. My scope was the autocompletion extension and its training/eval tooling.
 
 ## Links
 

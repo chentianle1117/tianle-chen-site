@@ -45,6 +45,15 @@ publish: true
 role: team member (real-time diffusion + gesture-control pipeline)
 semester: Fall 2024
 slug: spectral-facades
+stats:
+- value: "512×512"
+  label: "img2img resolution"
+- value: "1.19"
+  label: "calibration error"
+- value: "1280×720"
+  label: "projector resolution"
+- value: "sd-turbo"
+  label: "diffusion backbone"
 status: ready
 summary: An interactive projection-mapping installation built in TouchDesigner. MediaPipe
   hand and face tracking drive a real-time StreamDiffusion (sd-turbo) img2img loop that
@@ -75,11 +84,11 @@ year: 2024
 
 ![hero](/assets/spectral-facades/hero.gif)
 
-Spectral Facades treats a diffusion model not as a text-to-image tool you prompt once, but as a continuous surface you can *steer with your body*. The viewer's nose height sets where the facade sits between two style extremes, and an open-vs-closed palm sets how hard the model pushes toward the synthesized look. Because the output is projection-mapped onto a physical cube the viewer is standing next to, moving to see the result changes the tracking input — closing the loop between participant and artwork.
+**A diffusion model as a surface you steer with your body** — Spectral Facades treats it not as a text-to-image tool you prompt once, but as a continuous surface you can *steer with your body*. The viewer's nose height sets where the facade sits between two style extremes, and an open-vs-closed palm sets how hard the model pushes toward the synthesized look. Because the output is projection-mapped onto a physical cube the viewer is standing next to, moving to see the result changes the tracking input — closing the loop between participant and artwork.
 
 ## What it actually is (scope note)
 
-Everything here runs live inside one TouchDesigner 2023.12 project (`projection 1121.toe`). The pipeline is: **webcam → MediaPipe tracking → control signals → StreamDiffusion img2img → projection-mapped output → viewer moves → repeat.** The diffusion model is the off-the-shelf `stabilityai/sd-turbo` running through the StreamDiffusionTD component at 512×512 — it is *not* fine-tuned, and there is no daylight/environmental-performance simulation anywhere in the project. The novelty is the real-time embodied *control surface*, not a trained model.
+Everything here runs live inside one TouchDesigner 2023.12 project (`projection 1121.toe`). The pipeline is: webcam → MediaPipe tracking → control signals → StreamDiffusion img2img → projection-mapped output → viewer moves → repeat. The diffusion model is the off-the-shelf `stabilityai/sd-turbo` running through the StreamDiffusionTD component at 512×512 — it is *not* fine-tuned, and there is no daylight/environmental-performance simulation anywhere in the project. The novelty is the real-time embodied *control surface*, not a trained model.
 
 I worked on this as one of four team members (Risa Xie, Carla, Leslie, and me), with no group leader. My contribution centered on the real-time generation and gesture-control side — wiring the MediaPipe tracking CHOPs into the StreamDiffusion prompt/step parameters and getting the whole loop to run interactively.
 
@@ -106,7 +115,7 @@ A single webcam feed goes into a MediaPipe component that exposes four tracker o
 
 ![MediaPipe tracking network](/assets/spectral-facades/mediapipe-gestures.png)
 
-The two control signals that matter most are deliberately simple and legible on camera: **the vertical position of the nose tip**, and **whether the hand is an open or closed palm**. Keeping the control vocabulary this small is what makes the installation usable by a first-time viewer with no instructions.
+The two control signals that matter most are deliberately simple and legible on camera: the vertical position of the **nose tip**, and whether the hand is an **open or closed palm**. Keeping the control vocabulary this small is what makes the installation usable by a first-time viewer with no instructions.
 
 ## 2 · Generate — StreamDiffusion (real-time img2img)
 

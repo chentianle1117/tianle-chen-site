@@ -61,6 +61,15 @@ publish: true
 semester: Fall 2024
 slug: a-game-of-deterioration
 status: ready
+stats:
+- value: "60 fps"
+  label: "live texture decay"
+- value: "30,000"
+  label: "per-cell terrain map"
+- value: "200×150"
+  label: "world grid"
+- value: "60 s"
+  label: "timed-mode run"
 summary: A 2D simulation game where the player heals a procedurally deteriorating
   world before it collapses. Built in Python with cmu_graphics, Pillow, and NumPy.
   Real-time texture decay and restoration mechanics turn environmental survival into
@@ -83,18 +92,18 @@ year: 2024
 
 **Deterioration & Restoration** (a.k.a. *Can You Reverse Time?*) is my solo final project for CMU 15-112 (Fundamentals of Programming, Fall 2024). The whole game is one tension held in a loop: the world is always decaying, and you are always healing, and the question is whether your reach grows faster than the rot spreads. There's no combat and no enemies — the antagonist is entropy.
 
-I built it in pure Python on the `cmu_graphics` canvas, with **Pillow** doing the image work and **NumPy** doing the array work. The interesting engineering is not the game logic; it's making per-cell texture decay run at 60 fps on a 200×150 world when every visible cell is a freshly blended, resized image.
+I built it in pure Python on the `cmu_graphics` canvas, with Pillow doing the image work and NumPy doing the array work. The interesting engineering is not the game logic; it's making per-cell texture decay run at **60 fps on a 200×150 world** when every visible cell is a freshly blended, resized image.
 
 ## What it actually is
 
-You don't get a pre-made level. You **draw** one. The game opens in a map editor where you paint a grayscale image — bright = high ground, dark = water — and that image *is* the world. When you hit **Generate World**, the editor grid is upscaled into a 30,000-cell terrain map, each cell classified into a material by elevation. Then you drop in as a small four-directional character and the clock starts.
+You don't get a pre-made level. You **draw** one. The game opens in a map editor where you paint a grayscale image — bright = high ground, dark = water — and that image *is* the world. When you hit Generate World, the editor grid is upscaled into a **30,000-cell terrain map**, each cell classified into a material by elevation. Then you drop in as a small four-directional character and the clock starts.
 
 From that point the loop is:
 
-1. **Decay** — every non-water cell's `lifeRatio` creeps up every frame.
-2. **Heal** — the cells inside your restoration radius get pushed back down, scaled by your strength.
-3. **Read the world** — textures fade, fractal trees turn yellow → red → bare, and a global deterioration bar tells you how close the whole map is to collapse.
-4. **Resolve** — in Timed Mode you win by keeping global deterioration under 80% until the 60-second clock runs out; cross 80% and the run is lost.
+1. Decay — every non-water cell's `lifeRatio` creeps up every frame.
+2. Heal — the cells inside your restoration radius get pushed back down, scaled by your strength.
+3. Read the world — textures fade, fractal trees turn yellow → red → bare, and a global deterioration bar tells you how close the whole map is to collapse.
+4. Resolve — in Timed Mode you win by keeping global deterioration under 80% until the 60-second clock runs out; cross 80% and the run is lost.
 
 ## How it works
 
@@ -105,7 +114,7 @@ From that point the loop is:
 
 ### 1 · The world starts as an image you paint
 
-The editor (`map_editor.py`) holds a low-resolution NumPy grid of grayscale values in `[0, 1]`. Painting isn't pixel-by-pixel — the brush builds a **circular mask with `np.ogrid`** and opacity-blends the target value into the covered cells, so dragging feels like a soft airbrush rather than a hard stamp:
+The editor (`map_editor.py`) holds a low-resolution NumPy grid of grayscale values in `[0, 1]`. Painting isn't pixel-by-pixel — the brush builds a circular mask with `np.ogrid` and opacity-blends the target value into the covered cells, so dragging feels like a soft airbrush rather than a hard stamp:
 
 ```python
 y, x = np.ogrid[-brushSize:brushSize+1, -brushSize:brushSize+1]
@@ -128,32 +137,32 @@ Water is special-cased: instead of blending, it gets a `sin`-driven Gaussian blu
 
 The hard part was performance. Naively you'd re-open, blend, and resize a Pillow image for all 30,000 cells every frame — that never hits 60 fps. Two decisions make it viable:
 
-- **A rounded-key render cache.** Each generated `CMUImage` is keyed by `(terrainType, width, height, round(lifeRatio, 2))`. Rounding the float ratio to two decimals collapses thousands of near-identical decay states into a small, bounded set of cache entries, so a cell at 0.53 and 0.531 share one image. The cache is flushed every 30 update steps to bound memory.
-- **Visible-only rebuilds.** Only cells inside the camera viewport (plus a 5-cell pad) are ever re-textured; the rest of the 200×150 world keeps its state but costs nothing to draw.
+- **A rounded-key render cache** — each generated `CMUImage` is keyed by `(terrainType, width, height, round(lifeRatio, 2))`. Rounding the float ratio to two decimals collapses thousands of near-identical decay states into a small, bounded set of cache entries, so a cell at 0.53 and 0.531 share one image. The cache is flushed every 30 update steps to bound memory.
+- **Visible-only rebuilds** — only cells inside the camera viewport (plus a 5-cell pad) are ever re-textured; the rest of the 200×150 world keeps its state but costs nothing to draw.
 
 The image-cache design here was one place I explicitly used Claude 3.5 as a pair-programmer for the caching strategy and debugging — the repo comments mark those sections honestly, which matters for a 15-112 submission.
 
 ### 3 · Movement, healing, and power-ups
 
-The character (`character.py`) moves on WASD/arrows with shift to sprint, animates a four-frame directional sprite, and carries a **restoration radius**. Each frame, `game.update()` walks the cells inside that radius and subtracts `strength × 0.01` from their `lifeRatio` — so healing is spatial and continuous, not a click. Pressing space fires an expanding **healing wave**; the four power-up types are collected on contact and feed an inventory:
+The character (`character.py`) moves on WASD/arrows with shift to sprint, animates a four-frame directional sprite, and carries a restoration radius. Each frame, `game.update()` walks the cells inside that radius and subtracts `strength × 0.01` from their `lifeRatio` — so healing is spatial and continuous, not a click. Pressing space fires an expanding healing wave; the four power-up types are collected on contact and feed an inventory:
 
 | Power-up | Effect |
 |---|---|
-| **Speed** | Faster movement |
-| **Radius** | +8 to healing radius |
-| **Power** | +0.75 healing strength |
-| **Burst** | Instant strong heal over a 5×5 area (consumed on pickup) |
+| Speed | Faster movement |
+| Radius | +8 to healing radius |
+| Power | +0.75 healing strength |
+| Burst | Instant strong heal over a 5×5 area (consumed on pickup) |
 
 Decay also feeds back into movement: any cell whose `lifeRatio` reaches **0.8 becomes impassable**. So a neglected corner of the map doesn't just look bad — it walls itself off, which is what makes triage decisions real.
 
 ### 4 · Living feedback
 
-The world tells you how it's doing without a HUD. `tree.py` grows **recursive fractal trees** whose branch depth and leaf color track the average `lifeRatio` of the ground around them — healthy patches grow full green canopies, dying patches turn yellow, then red, then shed leaves. A global deterioration bar shifts green→red with the world's overall health, and a minimap plus debug overlay (zoom, tree density, strength keys) let you inspect state on the fly.
+The world tells you how it's doing without a HUD. `tree.py` grows recursive fractal trees whose branch depth and leaf color track the average `lifeRatio` of the ground around them — healthy patches grow full green canopies, dying patches turn yellow, then red, then shed leaves. A global deterioration bar shifts green→red with the world's overall health, and a minimap plus debug overlay (zoom, tree density, strength keys) let you inspect state on the fly.
 
 ### 5 · Two modes and a results screen
 
-- **Timed Mode** — 60 seconds; keep global deterioration under 80% to win.
-- **Infinite Mode** — no countdown; the world decays continuously and you end the run with **E** when you're ready. While it runs, the game samples deterioration, power, speed, and radius over time.
+- Timed Mode — 60 seconds; keep global deterioration under **80%** to win.
+- Infinite Mode — no countdown; the world decays continuously and you end the run with E when you're ready. While it runs, the game samples deterioration, power, speed, and radius over time.
 
 Ending a run brings up a results screen that charts the two competing curves of the whole design — how fast the world decayed versus how fast your abilities grew.
 
@@ -165,7 +174,7 @@ Design-wise, the "deterioration" theme stuck. It became a throughline across my 
 
 ## Inspirations
 
-- **Don't Starve**, **RimWorld**, and **Hyper Light Drifter** for the 2D survival aesthetic and procedural-terrain ideas
+- *Don't Starve*, *RimWorld*, and *Hyper Light Drifter* for the 2D survival aesthetic and procedural-terrain ideas
 - The "reverse time by healing" framing borrows from games that fuse resource management with real-time crisis mitigation
 
 Solo term project final for 15-112 Fundamentals of Programming and Computer Science, Fall 2024. Python 3.6+ · `cmu_graphics` · Pillow · NumPy. Character sprite from Sandro Maglione's pixel-art tutorial; base textures from an OpenGameArt pixel pack (deteriorated variants hand-edited).

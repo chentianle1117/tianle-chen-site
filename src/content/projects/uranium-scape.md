@@ -8,6 +8,15 @@ categories:
   - Architecture
   - Research
   - Data Visualization
+stats:
+  - value: "100+"
+    label: "former uranium mines"
+  - value: "4.5B yr"
+    label: "uranium decay span"
+  - value: "3in–4ft"
+    label: "shielding wall thickness"
+  - value: "100 yr"
+    label: "architecture life cycle"
 publish: true
 priority: standard
 summary: A speculative landscape that uses architecture to make the radioactivity of abandoned uranium mines in southern Texas visible — pairing GIS mapping and data visualization with built-form proposals for inhabitation and remediation.
@@ -32,18 +41,18 @@ image_captions:
 
 ## How can GIS mapping and data visualization reveal the history of uranium mining and inform rehabilitation strategies?
 
-Uranium Scape challenges the status quo of radioactive waste storage at abandoned uranium mines in southern Texas. The project uses architecture as a medium to reveal the radioactivity of the site, remediate the altered landscape, and re-imagine ways to inhabit the radioactive terrain.
+**Architecture as an instrument to see radiation** — Uranium Scape challenges the status quo of radioactive waste storage at abandoned uranium mines in southern Texas, using built form to reveal the radioactivity of the site, remediate the altered landscape, and re-imagine ways to inhabit the radioactive terrain.
 
 The proposal layers two methods: GIS mapping and historical data visualization to read the site's mining record, and a sequence of architectural moves that make the contamination legible to a visitor on the ground.
 
 ## Site
 
-Southern Texas holds over a hundred former open-pit uranium mines, most operated through the 1970s and 1980s. Before 1975, inadequate regulation led to improper disposal of radioactive waste. Mapping these sites by operational period reveals a dense cluster near the San Antonio River, and the project focuses on one of them: the Conquista Project (1971–1988) in Karnes County — a filled mining pit and a radioactive waste pile of uranium mill tailings and municipal waste. Despite being adjacent to a farmhouse and used for fishing and cattle grazing, the site carries no warning of its radioactivity. The design begins by drawing what is otherwise invisible: a plan of radiation contours (50, 100, 200 R/hour) that reasserts the waste pile and the former retention pond as things to be reckoned with.
+Southern Texas holds **over a hundred former open-pit uranium mines**, most operated through the 1970s and 1980s. Before 1975, inadequate regulation led to improper disposal of radioactive waste. Mapping these sites by operational period reveals a dense cluster near the San Antonio River, and the project focuses on one of them: the **Conquista Project (1971–1988)** in Karnes County — a filled mining pit and a radioactive waste pile of uranium mill tailings and municipal waste. Despite being adjacent to a farmhouse and used for fishing and cattle grazing, the site carries no warning of its radioactivity. The design begins by drawing what is otherwise invisible: a plan of radiation contours (50, 100, 200 R/hour) that reasserts the waste pile and the former retention pond as things to be reckoned with.
 
 ## Approach
 
-A single linear building crosses the contaminated ground, acting as both a bio-remediation institution and a testing ground for re-inhabitation. Its section is organized by radiation exposure: hydroponics labs and researcher amenities sit farthest from the source, phytoremediation labs and composting occupy the center, and storage and monitoring press closest to the waste mound. Wall thickness varies from three inches to four feet, so the building's own mass becomes a shielding gradient — the architecture registers the hazard it is built to withstand. A containment wall, monitoring wells, and an observation tower complete the infrastructure, while a phytoremediation field of sunflowers and hydroponic plants works to draw contaminants out of the soil and water.
+A single **linear building** crosses the contaminated ground, acting as both a bio-remediation institution and a testing ground for re-inhabitation. Its section is organized by radiation exposure: hydroponics labs and researcher amenities sit farthest from the source, phytoremediation labs and composting occupy the center, and storage and monitoring press closest to the waste mound. Wall thickness varies from **three inches to four feet**, so the building's own mass becomes a shielding gradient — the architecture registers the hazard it is built to withstand. A containment wall, monitoring wells, and an observation tower complete the infrastructure, while a phytoremediation field of sunflowers and hydroponic plants works to draw contaminants out of the soil and water.
 
 ## Life cycle
 
-The intervention is designed to expire. Over roughly a decade, the labs identify remediation plants and run continuous cycles of planting, harvesting for compost, and replanting. Once remediation succeeds, the labs are decommissioned and the site is left to natural growth; the building slowly crumbles, its core segments remaining as monuments on the artificial landscape. Set against uranium's 4.5-billion-year decay, the hundred-year arc of the architecture is deliberately modest — a temporary instrument for making a permanent hazard visible, and for testing whether such a landscape can be lived with at all.
+The intervention is **designed to expire.** Over roughly a decade, the labs identify remediation plants and run continuous cycles of planting, harvesting for compost, and replanting. Once remediation succeeds, the labs are decommissioned and the site is left to natural growth; the building slowly crumbles, its core segments remaining as monuments on the artificial landscape. Set against uranium's **4.5-billion-year decay**, the hundred-year arc of the architecture is deliberately modest — a temporary instrument for making a permanent hazard visible, and for testing whether such a landscape can be lived with at all.

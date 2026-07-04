@@ -1,0 +1,67 @@
+---
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { getCollection } from "astro:content";
+
+const posts = (await getCollection("writing", ({ data }) => data.publish === true)).sort(
+  (a, b) => new Date(b.data.date).getTime() - new Date(a.data.date).getTime()
+);
+
+function fmtDate(d: string): string {
+  // Parse at local noon so a date-only string doesn't shift a day across UTC.
+  const dt = new Date(`${d}T12:00:00`);
+  return dt.toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric" });
+}
+---
+
+<BaseLayout
+  title="Writing"
+  description="Short technical essays on agentic systems, computer vision, and the tools David Chen builds at the seam of generative AI and design."
+>
+  <section class="container-reading pt-24 md:pt-32 pb-10">
+    <p class="mono-label mb-4">Writing · Notes</p>
+    <h1 class="mb-4">Writing</h1>
+    <p style="color: rgb(var(--text-secondary)); font-size: var(--step-1); font-weight: 350; line-height: 1.55; max-width: 60ch;">
+      Teardowns of the systems I build — agentic pipelines, vision models, and the
+      second-brain that runs behind them. Written for engineers who want the how.
+    </p>
+  </section>
+
+  <section class="container-reading pb-28">
+    {posts.length === 0 ? (
+      <p class="mono-label">First posts landing soon.</p>
+    ) : (
+      <ul class="flex flex-col" style="border-top: 1px solid rgb(var(--surface-border));">
+        {posts.map((post) => {
+          const slug = post.id.replace(/\.md$/, "");
+          return (
+            <li style="border-bottom: 1px solid rgb(var(--surface-border));">
+              <a
+                href={`/writing/${slug}`}
+                class="writing-row group block py-7"
+                data-reveal
+              >
+                <div class="mono-label mb-2" style="color: rgb(var(--text-mono));">
+                  {fmtDate(post.data.date)}
+                  {post.data.tags && post.data.tags.length > 0 && (
+                    <span> · {post.data.tags.slice(0, 3).join(" · ")}</span>
+                  )}
+                </div>
+                <h2
+                  class="font-display group-hover:text-oxide-400 transition-colors"
+                  style="font-size: var(--step-2); font-weight: 400; line-height: 1.2; color: rgb(var(--text-primary));"
+                >
+                  {post.data.title}
+                </h2>
+                {post.data.summary && (
+                  <p class="mt-2" style="color: rgb(var(--text-secondary)); line-height: 1.55; max-width: 68ch;">
+                    {post.data.summary}
+                  </p>
+                )}
+              </a>
+            </li>
+          );
+        })}
+      </ul>
+    )}
+  </section>
+</BaseLayout>

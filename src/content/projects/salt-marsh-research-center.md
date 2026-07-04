@@ -41,11 +41,11 @@ image_captions:
   - "Sectional model, long elevation — the stepped section from low wings up to the central tower"
 ---
 
-The Salt Marsh Research Center provides research space for university faculty and an educational exhibition area for visitors to learn about research processes and outcomes. Located on the coast of Galveston Bay inside Texas A&M University, the site contains an acre of salt marshes — the marsh itself becomes the field of study.
+**The marsh itself becomes the field of study.** The Salt Marsh Research Center provides research space for university faculty and an educational exhibition area for visitors to learn about research processes and outcomes. Located on the coast of Galveston Bay inside Texas A&M University, the site contains an acre of salt marshes.
 
 ## Concept
 
-The design keeps the marsh intact and builds around it. Rather than filling the wetland, the plan preserves two basins of open water and planted marsh and sets the building between them, so the ecology being studied stays in view from nearly every space. The massing reads as a single curved white volume that rises to a tapered central tower and steps down into low wings — a stepped section that lets research, circulation, and exhibition stack without walling off the water.
+**Keep the marsh intact and build around it.** Rather than filling the wetland, the plan preserves two basins of open water and planted marsh and sets the building between them, so the ecology being studied stays in view from nearly every space. The massing reads as a single curved white volume that rises to a tapered central tower and steps down into low wings — a stepped section that lets research, circulation, and exhibition stack without walling off the water.
 
 Program is organized into three braided systems, carried through the diagrams and plans: research areas for faculty, public exhibition for visitors, and a vertical circulation core that stitches the two together. The exhibition path is deliberately threaded past — and beneath — the research floors, so the visitor's route becomes a way of watching science happen rather than a separate wing bolted on.
 

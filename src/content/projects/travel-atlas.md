@@ -25,13 +25,22 @@ stack:
   - D3 / timeline
   - Notion API / MCP
   - Python (pyicloud)
+stats:
+  - value: "103"
+    label: "places mapped"
+  - value: "10"
+    label: "countries"
+  - value: "395"
+    label: "dated events"
+  - value: "73K"
+    label: "iCloud items scanned"
 ---
 
-An interactive world map of everywhere I've lived and traveled from 2021 to 2026,
-built **entirely from my own data** — no manual entry, no spreadsheet. A timeline
-scrubber animates the journey week by week; each dot is a place, sized and
+**Built entirely from my own data** — an interactive world map of everywhere I've
+lived and traveled from 2021 to 2026, with no manual entry and no spreadsheet. A
+timeline scrubber animates the journey week by week; each dot is a place, sized and
 colored by how many weeks I spent there. It surfaces **103 places across 10
-countries** and **395 dated events**, all reconstructed from records I'd already
+countries** and 395 dated events, all reconstructed from records I'd already
 written and photos I'd already taken.
 
 **[▶ Launch the interactive map →](/apps/travel-atlas/)** — or explore it right here:
@@ -48,8 +57,8 @@ national-park road trips — but no single record of it. The history was *latent
 scattered across ~249 Notion Weekly Reviews, ~1,330 Daily Reviews, and ~73,000
 photos in iCloud. None of it was in a form a map could read.
 
-The interesting constraint was **not building a travel tracker from scratch** —
-it was recovering a travel history I never explicitly logged, from data I
+The interesting constraint was not building a travel tracker from scratch —
+it was recovering a **travel history I never explicitly logged**, from data I
 generated as a byproduct of other habits, without re-typing any of it. Every
 place on the map has to trace back to something I actually wrote or a photo I
 actually took.
@@ -66,11 +75,11 @@ single-file client that renders it.
 
 ### Source A — mining Notion via MCP
 
-The location history is mined from my **Notion Weekly and Daily Reviews through
-the Notion MCP** — not a CSV export, not the REST API by hand. The Weekly Review
-DB (~249 pages) is enumerated with date-filtered search, then each page **title
-is mined for location names**. Weeks with untitled pages get a home base
-**inferred by era** (e.g. "this stretch of 2022 = Houston").
+The location history is mined from my Notion Weekly and Daily Reviews through
+the **Notion MCP** — not a CSV export, not the REST API by hand. The Weekly Review
+DB (~249 pages) is enumerated with date-filtered search, then each page title
+is mined for location names. Weeks with untitled pages get a home base
+inferred by era (e.g. "this stretch of 2022 = Houston").
 
 A second pass over ~1,330 Daily Reviews catches trips the weekly titles missed —
 the West Texas desert loop, the China summers, national-park stops, cross-country
@@ -80,19 +89,19 @@ are parsed into a real date plus a place, so the data lands as clean
 
 ### Source B — a metadata-only photo harvest
 
-A second layer harvests **photo geolocation from my iCloud library, metadata
+A second layer harvests photo geolocation from my iCloud library, **metadata
 only** (`icloud_metadata.py`, built on `pyicloud`). It pages through all
-**73,009 items** and pulls GPS + date **without ever downloading a single
-photo** — the privacy-preserving part is the whole point.
+73,009 items and pulls GPS + date without ever downloading a single
+photo — the privacy-preserving part is the whole point.
 
 The non-obvious engineering was *where the GPS actually lives*. On this account
-it is **not** in the expected `locationLatitude` / `locationEnc` fields. It's
-buried in the master record's `mediaMetaDataEnc` — a **base64-wrapped binary
-plist** whose `{GPS}` dict holds `Latitude` / `Longitude` plus `LatitudeRef` /
+it is not in the expected `locationLatitude` / `locationEnc` fields. It's
+buried in the master record's `mediaMetaDataEnc` — a base64-wrapped binary
+plist whose `{GPS}` dict holds `Latitude` / `Longitude` plus `LatitudeRef` /
 `LongitudeRef`. The extractor decodes that blob and applies the S/W sign flips;
 a single null-island (~0,0) GPS-error point is dropped client-side. Result:
-**22,663 geotagged items out of 73,009**, collapsed into **4,122 rounded density
-cells** (the rest are screenshots and receipts with no location).
+**22,663 geotagged items out of 73,009**, collapsed into 4,122 rounded density
+cells (the rest are screenshots and receipts with no location).
 
 ```python
 # where the GPS actually was — not the obvious field
@@ -106,13 +115,13 @@ if gps.get("LongitudeRef","E").upper().startswith("W"): lng = -abs(lng)
 
 ### Merge + correction
 
-`merge.py` is an **idempotent rebuild**: it preserves the pure-weekly dataset in
+`merge.py` is an **idempotent rebuild** — it preserves the pure-weekly dataset in
 `weekly-data.json`, then always regenerates `travel-data.json` from
 `weekly-data.json` + `daily-raw.json` so a re-run never double-counts. It sorts
 all events by date and dedupes the place-geocode tables.
 
 It also encodes one real data-quality fix. The era-inference had mislabeled my
-**China summers as Houston** — I was home in Shanghai, not Texas. `merge.py`
+China summers as Houston — I was home in Shanghai, not Texas. `merge.py`
 reassigns those untitled weeks (I arrived Houston 2021-08-23; the corrected
 in-China windows are `2021-06-29 → 08-22` and `2023-06-11 → 08-13`), moving
 **17 weeks** from Houston to Shanghai and tagging them `(China summer)`.
@@ -129,23 +138,23 @@ in-China windows are `2021-06-29 → 08-22` and `2023-06-11 → 08-13`), moving
 The client is a **single self-contained `index.html`** — Leaflet on a CARTO dark
 basemap, no build step — that auto-loads `travel-data.json`. If that's absent it
 falls back to a sibling CSV export or a small demo set, and a Notion CSV can be
-**dropped directly onto the map** (it auto-detects the location and date columns
+dropped directly onto the map (it auto-detects the location and date columns
 against the known-places table).
 
 Concrete rendering decisions:
 
-- **Weight encoding.** Each place is a `circleMarker` whose **radius and color
-  both map to weeks spent** (`r = min(2.5 + √n·1.5, 15)`, plus a
+- **Weight encoding.** Each place is a `circleMarker` whose radius and color
+  both map to weeks spent (`r = min(2.5 + √n·1.5, 15)`, plus a
   blue→teal→yellow→orange→red ramp), so the places that mattered most —
-  **Houston (126 weeks)** and **Pittsburgh (80 weeks)** — read instantly against
+  Houston (126 weeks) and Pittsburgh (80 weeks) — read instantly against
   one-off trips.
-- **Journey mode.** Consecutive locations are joined by **quadratic-bezier arcs**
-  classified as **road / flight / uncertain** — inferred from great-circle
+- **Journey mode.** Consecutive locations are joined by quadratic-bezier arcs
+  classified as road / flight / uncertain — inferred from great-circle
   distance and, when a photo day-track is present, travel speed
   (`km/day`). Flights bow high in cyan; road hugs the ground in amber.
 - **Timeline scrubber.** Dragging the slider (or hitting Play) walks the 395
-  events and **re-aggregates dwell time per frame**, in either a **cumulative**
-  view or a **6-week trailing window** — so you watch the trail build and fade.
+  events and re-aggregates dwell time per frame, in either a cumulative
+  view or a 6-week trailing window — so you watch the trail build and fade.
 - **Legibility.** Exact Notion spellings are canonicalized through an alias map
   (my own `Santa Barbra`, `Harrisburgh`, `Yellow Stone National Park`), and city
   labels declutter below a per-frame threshold so early trip dots don't crowd.
@@ -154,9 +163,9 @@ Concrete rendering decisions:
 
 The sources are transparent about their limits, and so is the map. Home-base
 weeks are **era-inferred**, not per-day GPS; some bulk-backfilled trip days carry
-**±a-few-days** dates (the *sequence* is reliable, the exact day may not be); and
+±a-few-days dates (the *sequence* is reliable, the exact day may not be); and
 a trip only appears if I wrote it into a weekly or daily title. Places geocode to
-**city or park centroids** — right for a travel map, not GPS-exact. These are
+city or park centroids — right for a travel map, not GPS-exact. These are
 noted rather than hidden because the whole exercise is about honest provenance.
 
 ## Why I made it

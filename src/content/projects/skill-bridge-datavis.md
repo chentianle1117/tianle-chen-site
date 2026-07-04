@@ -46,6 +46,15 @@ publish: true
 role: team-member
 semester: Fall 2024
 slug: skill-bridge-datavis
+stats:
+- value: "4,725"
+  label: "job postings"
+- value: "76"
+  label: "skills mapped"
+- value: "23"
+  label: "job categories"
+- value: "1,098"
+  label: "remote roles"
 status: ready
 summary: An interactive dashboard that visualizes cross-disciplinary tech and design
   job-market data — skill demands, salary trends, geographic distributions. Built
@@ -85,7 +94,7 @@ year: 2024
 
 The labor market is evolving at an unprecedented pace. Emerging technologies and shifting demands are driving individuals to acquire new skills and transition into unfamiliar fields. This is particularly evident among cross-field job seekers — those venturing into careers that differ significantly from their previous experience. They bring diverse perspectives, but often struggle to align their existing skills with what a target role actually requires, and to see where in the country that demand concentrates.
 
-We built a data-driven view of how specific skills — particularly in tech and design — connect to job categories, alongside how salaries, competition, and geography vary across those roles. Starting from LinkedIn job postings collected in 2023, we extracted skills from job descriptions and organized them into **nine overarching skill groups** and **23 job categories** spanning both a Tech and a Design track, using a consistent keyword-mapping process so the same skill string always resolves to the same node. The output is a single interactive interface that lets a career-changer start from a skill they already have — or a role they want — and follow the connections outward into demand, pay, and location.
+We built a data-driven view of how specific skills — particularly in tech and design — connect to job categories, alongside how salaries, competition, and geography vary across those roles. Starting from LinkedIn job postings collected in 2023, we extracted skills from job descriptions and organized them into nine overarching skill groups and **23 job categories** spanning both a Tech and a Design track, using a consistent keyword-mapping process so the same skill string always resolves to the same node. The output is a single interactive interface that lets a career-changer start from a skill they already have — or a role they want — and follow the connections outward into demand, pay, and location.
 
 ## What it is
 
@@ -93,9 +102,9 @@ Three linked D3 views over the same cleaned dataset, coordinated so a selection 
 
 | View | What it answers | Technique |
 |---|---|---|
-| **Circular skill-job linkage** | Which roles pull on both tech *and* design skills? | Radial hierarchical edge bundling (`d3.cluster` + `curveBundle`) |
-| **Geographic demand map** | Where are these jobs, and which are remote? | Albers-USA projection over per-posting dot markers |
-| **Integrated dashboard** | For a chosen role/skill: how many openings, what pay, how much competition? | Bipartite skill↔category graph + log-scaled count, salary, and application bars |
+| Circular skill-job linkage | Which roles pull on both tech *and* design skills? | Radial hierarchical edge bundling (`d3.cluster` + `curveBundle`) |
+| Geographic demand map | Where are these jobs, and which are remote? | Albers-USA projection over per-posting dot markers |
+| Integrated dashboard | For a chosen role/skill: how many openings, what pay, how much competition? | Bipartite skill↔category graph + log-scaled count, salary, and application bars |
 
 The data is real throughout — every dot on the map is a single posting with its own title, company, salary, and application count, surfaced on hover rather than aggregated away.
 
@@ -106,19 +115,19 @@ The data is real throughout — every dot on the map is a single posting with it
   <figcaption>From raw postings to three cross-filtered D3 views. The Svelte store layer is what keeps the views coordinated: a selection or zoom in any one of them re-filters the others.</figcaption>
 </figure>
 
-The interface is a **SvelteKit** app (Svelte 5, Vite 6) using **D3 v7** for every visualization and **topojson-client** for the US basemap; it ships as a static build to GitHub Pages. Upstream of the app, the raw postings are cleaned and parsed in Python before anything reaches the browser.
+The interface is a **SvelteKit** app (Svelte 5, Vite 6) using D3 v7 for every visualization and topojson-client for the US basemap; it ships as a static build to GitHub Pages. Upstream of the app, the raw postings are cleaned and parsed in Python before anything reaches the browser.
 
-**Preprocessing.** The raw `ai_ml_jobs_linkedin.csv` carries free-text title, location, company, description, and application-count columns. The pipeline (1) normalizes messy job titles into 23 categories by clustering them into a `title_cluster` / `new_title` and tagging each posting Tech or Design; (2) extracts skills from descriptions with a regex keyword-map, splitting them into *required* vs. *preferred* and tagging each by skill group; (3) normalizes heterogeneous pay strings into a single `normalized_yearly_salary` and keeps the raw application count; (4) geocodes each location to latitude/longitude (plus a FIPS code) and drops skills mentioned in fewer than 50 postings to cut long-tail noise.
+Preprocessing. The raw `ai_ml_jobs_linkedin.csv` carries free-text title, location, company, description, and application-count columns. The pipeline (1) normalizes messy job titles into 23 categories by clustering them into a `title_cluster` / `new_title` and tagging each posting Tech or Design; (2) extracts skills from descriptions with a regex keyword-map, splitting them into *required* vs. *preferred* and tagging each by skill group; (3) normalizes heterogeneous pay strings into a single `normalized_yearly_salary` and keeps the raw application count; (4) geocodes each location to latitude/longitude (plus a FIPS code) and drops skills mentioned in fewer than 50 postings to cut long-tail noise.
 
-**Two artifacts drive the front end.** The skill-graph file (`filtered_nonpop_1129_50.json`) holds **76 skills** across **9 skill groups** and **24 subcategory nodes**, each skill carrying its own `required` / `preferred` connection list — this edge list is what both the circular graph and the dashboard render. The geocoded jobs file (`jobs_with_coordinates_formatted_1113.json`) holds **4,725 postings** (3,423 Tech / 1,302 Design; 1,098 flagged remote), each with salary, application count, skills-by-category, and coordinates.
+**Two artifacts** drive the front end. The skill-graph file (`filtered_nonpop_1129_50.json`) holds **76 skills** across 9 skill groups and 24 subcategory nodes, each skill carrying its own `required` / `preferred` connection list — this edge list is what both the circular graph and the dashboard render. The geocoded jobs file (`jobs_with_coordinates_formatted_1113.json`) holds **4,725 postings** (3,423 Tech / 1,302 Design; 1,098 flagged remote), each with salary, application count, skills-by-category, and coordinates.
 
-**Coordinated views.** Rather than three isolated charts, the views share a small set of Svelte stores — `selectedSkills`, `selectedSubcategories`, `visibleJobs`, `cachedJobs`, `hoveredJobCategory`. Selecting skills or categories in the dashboard writes to the stores; the map reacts by fading non-matching dots to ~5% opacity and rescaling its salary/application bars, and the linkage graph highlights the relevant edges. Zooming the map narrows `visibleJobs` by geographic bounds, which in turn filters what the dashboard summarizes. Category selection is capped at four to keep the comparison legible.
+Coordinated views. Rather than three isolated charts, the views share a small set of Svelte stores — `selectedSkills`, `selectedSubcategories`, `visibleJobs`, `cachedJobs`, `hoveredJobCategory`. Selecting skills or categories in the dashboard writes to the stores; the map reacts by fading non-matching dots to ~5% opacity and rescaling its salary/application bars, and the linkage graph highlights the relevant edges. Zooming the map narrows `visibleJobs` by geographic bounds, which in turn filters what the dashboard summarizes. Category selection is capped at four to keep the comparison legible.
 
 ### Selected engineering details
 
-- **Circular linkage (edge bundling).** Skills and job categories are arranged on a radial `d3.cluster` layout; connections are drawn as bundled splines with `d3.curveBundle.beta(0.85)`, so co-terminating edges visually group and the tech/design overlap on a role reads as edge density. Hovering a node raises its incident edges and dims the rest.
-- **Geographic map.** A `geoAlbersUsa` projection places one marker per posting over a `us-atlas` TopoJSON basemap; markers are colored blue (Tech) / pink (Design), remote roles are pulled into stacked side panels, and marker radius scales with zoom. State-level zoom-to-bounds and per-dot tooltips (title, company, location, salary) give the macro→micro drill-down.
-- **Dashboard bars.** Job counts per subcategory use a `d3.scaleLog` so Software Engineering's volume doesn't flatten the smaller categories, split into remote vs. on-site segments. Salary and application bars sample down to a bounded number of bars per category and connect a hovered bar back to its dot on the map with a folded leader line.
+- Circular linkage (edge bundling). Skills and job categories are arranged on a radial `d3.cluster` layout; connections are drawn as bundled splines with `d3.curveBundle.beta(0.85)`, so co-terminating edges visually group and the tech/design overlap on a role reads as edge density. Hovering a node raises its incident edges and dims the rest.
+- Geographic map. A `geoAlbersUsa` projection places one marker per posting over a `us-atlas` TopoJSON basemap; markers are colored blue (Tech) / pink (Design), remote roles are pulled into stacked side panels, and marker radius scales with zoom. State-level zoom-to-bounds and per-dot tooltips (title, company, location, salary) give the macro→micro drill-down.
+- Dashboard bars. Job counts per subcategory use a `d3.scaleLog` so Software Engineering's volume doesn't flatten the smaller categories, split into remote vs. on-site segments. Salary and application bars sample down to a bounded number of bars per category and connect a hovered bar back to its dot on the map with a folded leader line.
 
 ## Key results
 
@@ -126,10 +135,10 @@ The interface is a **SvelteKit** app (Svelte 5, Vite 6) using **D3 v7** for ever
 
 ![circular skill-job linkage](/assets/skill-bridge-datavis/circular-skill-job-linkage.png)
 
-- Certain roles — **Software Engineer** in particular — demonstrate a strong preference for both technical and design skills, evident from the dense network of connections linking both skill types. Other roles like **Interior Design** predominantly emphasize design-specific skills with little to no overlap with technical skills.
+- Certain roles — **Software Engineer** in particular — demonstrate a strong preference for both technical and design skills, evident from the dense network of connections linking both skill types. Other roles like Interior Design predominantly emphasize design-specific skills with little to no overlap with technical skills.
 - Overall, technical jobs tend to require a broader and more diverse set of skills than design jobs. This discrepancy could stem from:
-  - **Tech stack variability** — in technical fields, differentiation among tools and frameworks is pronounced. There are over 20 variations in software scaffolding tools alone (e.g. React, Angular, Node.js), whereas design focuses primarily on a few key solutions like Adobe and Figma
-  - **Data bias** — the dataset itself contains fewer design job postings than technical roles, leading to the omission of less frequently mentioned design skills (filtered out for having fewer than 50 mentions)
+  - Tech stack variability — in technical fields, differentiation among tools and frameworks is pronounced. There are over 20 variations in software scaffolding tools alone (e.g. React, Angular, Node.js), whereas design focuses primarily on a few key solutions like Adobe and Figma
+  - Data bias — the dataset itself contains fewer design job postings than technical roles, leading to the omission of less frequently mentioned design skills (filtered out for having fewer than 50 mentions)
 
 ### Observation 2 — tech jobs have more openings and more remote positions than design
 
@@ -139,8 +148,8 @@ The data shows:
 - Tech jobs significantly outnumber design job openings
 - **About half** of tech positions offer remote work, compared to **less than 20%** for design
 - Some design job categories have no remote positions in our sample dataset
-- **Software engineering** leads the tech category with over 2,000 job postings
-- **Electrical and mechanical engineering** are the largest design categories
+- Software engineering leads the tech category with over 2,000 job postings
+- Electrical and mechanical engineering are the largest design categories
 
 Some categories show very low posting numbers — just 3 for HVAC engineering and 1 for interior design. The dataset isn't comprehensive, but the trend pattern is robust.
 
@@ -148,10 +157,10 @@ Some categories show very low posting numbers — just 3 for HVAC engineering an
 
 ### Observation 3 — tech jobs have higher salaries and more competition
 
-- **Average salary by subcategory:** tech-related job categories command the highest average salaries, followed by design-related categories. Backend-related and algorithmically complex jobs offer the highest average salaries, with compensation decreasing toward front-end positions. Within design, technical engineering roles pay the most, while less technical positions like architectural designer and graphic designer have the lowest averages.
-- **Application volume:** some tech job categories receive up to 500 applicants for a single role. Many tech subcategories including frontend development and Python development have at least 25% of positions attracting more than 50 applicants each.
-- **Design jobs** cap at around 50 applications per posting, with the first quartile around 10 per opening. Design positions attract fewer applicants than tech roles.
-- **Salary distribution:** top-paying tech positions can exceed \$600,000 annually, with most roles clustering around \$150,000. Design jobs cap at approximately \$300,000, with the majority falling below \$100,000.
+- Average salary by subcategory: tech-related job categories command the highest average salaries, followed by design-related categories. Backend-related and algorithmically complex jobs offer the highest average salaries, with compensation decreasing toward front-end positions. Within design, technical engineering roles pay the most, while less technical positions like architectural designer and graphic designer have the lowest averages.
+- Application volume: some tech job categories receive up to 500 applicants for a single role. Many tech subcategories including frontend development and Python development have at least 25% of positions attracting more than 50 applicants each.
+- Design jobs cap at around 50 applications per posting, with the first quartile around 10 per opening. Design positions attract fewer applicants than tech roles.
+- Salary distribution: top-paying tech positions can exceed \$600,000 annually, with most roles clustering around \$150,000. Design jobs cap at approximately \$300,000, with the majority falling below \$100,000.
 
 ## Design decisions
 
@@ -171,7 +180,7 @@ Multiple data dimensions are seamlessly connected — integrating skills and job
 
 ## My role
 
-A two-person team with a flat structure (no group lead). The idea came from Risa's own move from a design background into tech, and mine from a parallel transition. We sourced and cleaned the dataset together, and I led the data preprocessing — the title normalization, skill extraction, salary normalization, and geocoding that produced the two JSON artifacts the whole front end reads. On the visualization side, Risa built the circular edge-bundling diagram, I built the GeoMap, and we collaborated on the skill dashboard. **Integrating the dashboard with the GeoMap was the hardest part** — the two views had been built against differently-shaped data — so we handed that integration entirely to me, and I owned reconciling the data structures and wiring the shared-store cross-filtering that keeps the views in sync.
+A two-person team with a flat structure (no group lead). The idea came from Risa's own move from a design background into tech, and mine from a parallel transition. We sourced and cleaned the dataset together, and I led the data preprocessing — the title normalization, skill extraction, salary normalization, and geocoding that produced the two JSON artifacts the whole front end reads. On the visualization side, Risa built the circular edge-bundling diagram, I built the GeoMap, and we collaborated on the skill dashboard. **Integrating the dashboard with the GeoMap** was the hardest part — the two views had been built against differently-shaped data — so we handed that integration entirely to me, and I owned reconciling the data structures and wiring the shared-store cross-filtering that keeps the views in sync.
 
 ## Reflection
 

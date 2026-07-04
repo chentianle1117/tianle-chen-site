@@ -26,6 +26,15 @@ progress_report: /assets/synthetic-texture-deterioration/progress-report.pdf
 publish: true
 semester: Fall 2024
 slug: synthetic-texture-deterioration
+stats:
+- value: "10 fps"
+  label: "live capture loop"
+- value: "0.7"
+  label: "detection confidence"
+- value: "0.5"
+  label: "NMS IoU threshold"
+- value: "2"
+  label: "scoped interfaces"
 status: ready
 summary: An independent-study prototype that treats facade weathering as a design input.
   A working real-time tool captures a live architectural render off-screen, classifies the
@@ -81,7 +90,7 @@ The working prototype reads a facade *as it's being rendered*. Instead of an upl
 
 **Detection.** Each frame runs through a sliding-window classifier — a model I trained and exported from Google's Teachable Machine, loaded as a Keras `.h5`. It sweeps two window scales (224×224 and 448×448) at stride 112, keeps windows classified as the target material above 0.7 confidence, and merges overlapping hits with non-maximum suppression (IoU 0.5) into clean bounding boxes.
 
-**Description.** Each detected region is sent to a locally-served vision LLM (Llama 3 via **Ollama**) with a set prompt — *"Describe the texture concisely, including material, surface quality, and estimated age in years."* The free-text reply is then parsed with regex into three structured fields:
+**Description.** Each detected region is sent to a locally-served vision LLM (Llama 3 via Ollama) with a set prompt — *"Describe the texture concisely, including material, surface quality, and estimated age in years."* The free-text reply is then parsed with regex into three structured fields:
 
 ```python
 material = re.search(r'(wood|stone|rock|concrete|metal|fabric|plastic)', desc, re.I)
@@ -103,7 +112,7 @@ The second interface is the one the project is *named* for, and it's the one I d
 
 The intended machinery, from the report's references and my architecture diagram:
 
-- **ControlNet** conditioning (Depth + Canny) to hold the facade's structure fixed while only the surface weathers, driven through a **ComfyUI** graph running **Flux ControlNet** workflows.
+- **ControlNet** conditioning (Depth + Canny) to hold the facade's structure fixed while only the surface weathers, driven through a ComfyUI graph running Flux ControlNet workflows.
 - A result-evaluation loop comparing generated aged textures against real-world weathering references.
 - Output surfaced back in the Svelte UI as a before/after pair with a "deteriorated years" control.
 
@@ -113,8 +122,8 @@ This lane produced a design, workflow references, and a mock in the UI — not a
 
 The progress report's reflections are the most useful part of this project, so I'm keeping them intact rather than polishing them away:
 
-- **Local vision LLMs were impractical.** Running Llama 3 with real image-recognition capability locally needs far more compute than my machine had; the on-device vision path was "largely unsuccessful." The documented next step was moving inference to **Azure** (Llama 3.2 11B Vision-Instruct) rather than fighting local resource limits.
-- **Single-texture ceiling.** Detection handled one material class at a time (wood in the demo). Real facades are multi-material, so the honest fix is a **segmentation + classification** stage *before* description — not a bigger prompt.
+- **Local vision LLMs were impractical.** Running Llama 3 with real image-recognition capability locally needs far more compute than my machine had; the on-device vision path was "largely unsuccessful." The documented next step was moving inference to Azure (Llama 3.2 11B Vision-Instruct) rather than fighting local resource limits.
+- **Single-texture ceiling.** Detection handled one material class at a time (wood in the demo). Real facades are multi-material, so the honest fix is a segmentation + classification stage *before* description — not a bigger prompt.
 - **The web UI wasn't the right shell.** A browser window floating over a renderer proved less intuitive than a dedicated local application would have been.
 - **The core blocker was data, not models.** There is no readily available *labeled* dataset of deteriorated architectural textures, and procedural attempts (Blender, diffusion) didn't reach a "scientifically plausible" bar for how materials actually age. That gap — not the generator — is what kept Interface 2 from shipping.
 
@@ -122,7 +131,7 @@ I read into adjacent work while scoping this: T2D2's facade damage-detection fra
 
 ## Honest status
 
-This is exploratory work, and I'm presenting it as such. The **premise holds up** — predictive material weathering as a design input rather than a post-hoc render effect — and the **analysis interface genuinely runs**. The **synthesis interface does not**, and the reasons why (compute, single-class detection, missing labeled data, plausibility of procedural aging) are documented rather than hidden. I'm keeping the card because the framing and the failure modes are worth revisiting in later thesis and material research, and because "here's exactly where it broke" is more useful to a reader than a polished demo of a thing that half-worked.
+This is exploratory work, and I'm presenting it as such. The **premise holds up** — predictive material weathering as a design input rather than a post-hoc render effect — and the analysis interface genuinely runs. The synthesis interface does not, and the reasons why (compute, single-class detection, missing labeled data, plausibility of procedural aging) are documented rather than hidden. I'm keeping the card because the framing and the failure modes are worth revisiting in later thesis and material research, and because "here's exactly where it broke" is more useful to a reader than a polished demo of a thing that half-worked.
 
 Solo work for 48-736 Master Independent Study, Fall 2024. Full progress report at `/assets/synthetic-texture-deterioration/progress-report.pdf`.
 

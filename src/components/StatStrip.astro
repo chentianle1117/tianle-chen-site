@@ -1,0 +1,59 @@
+---
+// StatStrip.astro — a scannable row of big numbers under the project dek.
+// Driven by a `stats:` frontmatter array so markdown bodies stay clean. This is
+// the NYT/editorial "stat callout" device: 3-4 load-bearing metrics a skimmer
+// grabs in one glance. Themed via CSS vars.
+interface Stat {
+  value: string;
+  label: string;
+}
+interface Props {
+  stats?: Stat[];
+}
+const { stats = [] } = Astro.props;
+const clean = (Array.isArray(stats) ? stats : []).filter(
+  (s) => s && s.value && s.label
+);
+---
+{clean.length > 0 && (
+  <dl class="stat-strip" aria-label="Key metrics">
+    {clean.map((s) => (
+      <div class="stat-cell">
+        <dd class="stat-value">{s.value}</dd>
+        <dt class="stat-label mono-label">{s.label}</dt>
+      </div>
+    ))}
+  </dl>
+)}
+
+<style>
+  .stat-strip {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.75rem 3rem;
+    margin: 2.25rem 0 0;
+    padding: 0;
+  }
+  .stat-cell {
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+  .stat-value {
+    margin: 0;
+    font-family: theme(fontFamily.display);
+    font-size: var(--step-3);
+    font-weight: 500;
+    line-height: 1;
+    color: rgb(var(--text-primary));
+    font-variant-numeric: tabular-nums;
+  }
+  /* First metric carries the accent so the eye lands there first. */
+  .stat-cell:first-child .stat-value {
+    color: rgb(var(--accent-rgb));
+  }
+  .stat-label {
+    max-width: 16ch;
+    line-height: 1.3;
+  }
+</style>

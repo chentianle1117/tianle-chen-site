@@ -8,6 +8,7 @@ import RelatedRail from "../../components/RelatedRail.astro";
 import PrevNextNav from "../../components/PrevNextNav.astro";
 import PlaceholderHero from "../../components/PlaceholderHero.astro";
 import SectionBreak from "../../components/SectionBreak.astro";
+import StatStrip from "../../components/StatStrip.astro";
 import { getCollection, render } from "astro:content";
 import { existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
@@ -68,6 +69,11 @@ const videoProposal: string | undefined = dataAny.video_proposal;
 
 // Lead paragraph: prefer summary if present.
 const lead: string | undefined = dataAny.summary || dataAny.lead || undefined;
+
+// Stat strip — source-grounded metrics from frontmatter (see StatStrip.astro).
+const projectStats: { value: string; label: string }[] = Array.isArray(dataAny.stats)
+  ? dataAny.stats
+  : [];
 
 // Mono kicker: categories joined
 const kicker = (data.categories ?? []).join(" · ");
@@ -225,18 +231,21 @@ const projectStructuredData = {
   )}
 
   {/* ============ LEAD BLOCK — zone-raised ============ */}
-  {lead && (
+  {(lead || projectStats.length > 0) && (
     <section class="zone-raised">
       <SectionBreak number="01" label="OVERVIEW" />
       <div class="container-meta pb-12 md:pb-16">
         {kicker && (
           <p class="mono-label mb-5">{kicker}</p>
         )}
-        <p
-          style="color: rgb(var(--text-secondary)); font-size: var(--step-1); font-weight: 350; line-height: 1.55;"
-        >
-          {lead}
-        </p>
+        {lead && (
+          <p
+            style="color: rgb(var(--text-secondary)); font-size: var(--step-1); font-weight: 350; line-height: 1.55;"
+          >
+            {lead}
+          </p>
+        )}
+        <StatStrip stats={projectStats} />
       </div>
     </section>
   )}

@@ -43,11 +43,11 @@ year: 2024
 
 ![membrane form 1](/assets/membrane-form-finding/membrane-1.png)
 
-The project turns an unused campus rooftop into a working farm and social space: a space where students learn and try different farming techniques, professors run workshops and research, and the intensive planting areas supply food for the serveries and local community. The roof reads as one continuous membrane landscape rather than a set of discrete buildings — the same tensile shell stretched, pinned, and dropped into different configurations to house each program.
+**An unused campus rooftop, turned into a working farm and social space** — a space where students learn and try different farming techniques, professors run workshops and research, and the intensive planting areas supply food for the serveries and local community. The roof reads as one continuous membrane landscape rather than a set of discrete buildings — the same tensile shell stretched, pinned, and dropped into different configurations to house each program.
 
 ## Form generation
 
-Rather than model the roof directly, the geometry is form-found. Controlled curves inside a 3×5 m cube generate a library of modular frameworks for the waterproof membrane, each module oriented with respect to the direction of rain-water runoff. Kangaroo dynamic relaxation then applies the membrane to that framework, and — this is the design move — the position of each planter acts as a gravitational load that pulls the surface down locally, deforming the shell into a funnel that gathers water toward the planter it feeds.
+Rather than model the roof directly, the geometry is form-found. Controlled curves inside a 3×5 m cube generate a library of modular frameworks for the waterproof membrane, each module oriented with respect to the direction of rain-water runoff. Kangaroo dynamic relaxation then applies the membrane to that framework, and — **this is the design move** — the position of each planter acts as a gravitational load that pulls the surface down locally, deforming the shell into a funnel that gathers water toward the planter it feeds.
 
 ![membrane form 2](/assets/membrane-form-finding/membrane-2.png)
 ![membrane form 3](/assets/membrane-form-finding/membrane-3.png)
@@ -59,15 +59,15 @@ The single modules combine into larger modulations, so the roof scales up as a p
 
 The membrane resolves into a family of planter typologies, each a variation on the same form-found shell:
 
-- **Soil planter** and **tree planter** — funnel geometries that drain toward a bed
-- **Hydroponics planter / greenhouse** — for soil-less intensive growing
-- **Inhabitable water enclosure / inhabitable space** — where the collected water and the shell define an occupiable room rather than just a planter
+- Soil planter and tree planter — funnel geometries that drain toward a bed
+- Hydroponics planter / greenhouse — for soil-less intensive growing
+- Inhabitable water enclosure / inhabitable space — where the collected water and the shell define an occupiable room rather than just a planter
 
 These are laid out across zones — intensive soil planting, a hydroponics greenhouse, a demonstration zone, and workshop and social areas — under one modulated canopy.
 
 ## Structure and environment
 
-The structural strategy carries the extra weight of the water-holding canopy on an elevated platform that transfers load to the lower load-bearing walls, with a combined system of cable-net and load-bearing columns stabilizing both the membrane and the planters. For the Houston climate, a layer of removable vertical membrane partitions controls airflow and radiation exposure across the rooftop, cutting the excess summer heat that builds along the sun-facing edges of the roof. The effect was tested with a Grasshopper Ladybug radiation study comparing the roof with and without the partitions over a 24-hour summer cycle.
+The structural strategy carries the extra weight of the water-holding canopy on an elevated platform that transfers load to the lower load-bearing walls, with a combined system of **cable-net and load-bearing columns** stabilizing both the membrane and the planters. For the Houston climate, a layer of removable vertical membrane partitions controls airflow and radiation exposure across the rooftop, cutting the excess summer heat that builds along the sun-facing edges of the roof. The effect was tested with a Grasshopper Ladybug radiation study comparing the roof with and without the partitions over a 24-hour summer cycle.
 
 Independent research at Rice University, 2021–2024, advised by Prof. Juan Jose Castellon as part of the broader CNT-fiber experimental-models lab. Companion to the [[2021-2024-Rice--fiber-based-pavilion|Fiber-based Pavilion]] — both share the parametric form-finding vocabulary, with the pavilion extending the membrane logic into a fabricated full-scale prototype.
 

@@ -1,0 +1,71 @@
+---
+// @ts-nocheck
+// Collection data typing collapses to `never` under the passthrough schema
+// (same as work/[slug].astro); bypass TS inference here.
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import Breadcrumb from "../../components/Breadcrumb.astro";
+import { getCollection, render } from "astro:content";
+
+export async function getStaticPaths() {
+  const posts = await getCollection("writing", ({ data }) => data.publish === true);
+  return posts.map((post) => ({
+    params: { slug: post.id.replace(/\.md$/, "") },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { data } = post;
+const { Content } = await render(post);
+
+function fmtDate(d: string): string {
+  const dt = new Date(`${d}T12:00:00`);
+  return dt.toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" });
+}
+
+const structuredData = {
+  "@type": "BlogPosting",
+  headline: data.title,
+  datePublished: data.date,
+  ...(data.summary ? { description: data.summary } : {}),
+  author: { "@id": new URL("/#person", Astro.site).toString() },
+  url: new URL(`/writing/${post.id.replace(/\.md$/, "")}`, Astro.site).toString(),
+};
+---
+
+<BaseLayout title={data.title} description={data.summary ?? data.title} structuredData={structuredData}>
+  <Breadcrumb category="Writing" title={data.title} />
+
+  <article class="container-reading pt-16 md:pt-24 pb-28">
+    <header class="mb-10">
+      <p class="mono-label mb-4" style="color: rgb(var(--text-mono));">
+        {fmtDate(data.date)}
+        {data.tags && data.tags.length > 0 && <span> · {data.tags.join(" · ")}</span>}
+      </p>
+      <h1 style="font-size: var(--step-4); font-weight: 400; line-height: 1.1; color: rgb(var(--text-primary)); letter-spacing: -0.01em;">
+        {data.title}
+      </h1>
+      {data.summary && (
+        <p class="mt-5" style="color: rgb(var(--text-secondary)); font-size: var(--step-1); font-weight: 350; line-height: 1.5;">
+          {data.summary}
+        </p>
+      )}
+    </header>
+
+    <div class="prose-custom">
+      <Content />
+    </div>
+
+    {(data.external_url || data.canonical_project) && (
+      <footer class="mt-14 pt-6 flex flex-wrap gap-4" style="border-top: 1px solid rgb(var(--surface-border));">
+        {data.external_url && (
+          <a href={data.external_url} target="_blank" rel="noopener noreferrer"
+             class="btn">Repository ↗</a>
+        )}
+        {data.canonical_project && (
+          <a href={`/work/${data.canonical_project}`} class="btn btn-ghost">Read the project ↗</a>
+        )}
+      </footer>
+    )}
+  </article>
+</BaseLayout>

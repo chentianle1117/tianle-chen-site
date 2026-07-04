@@ -75,17 +75,17 @@ year: 2024
 
 > Segmental post-tensioned hollow-ceramic columns — topology-optimized and robotically machined — paired with a kinematic folding canopy simulated as a digital twin. Co-authored with Prof. Juan José Castellón and published at the IASS 2024 Symposium.
 
-I worked on this as a **computational research assistant at Rice University (2021–2024)**, collaborating with **Professor Juan José Castellón**. The work was published at the IASS 2024 Symposium as **Castellón & Chen, _Segmental Ceramic Hollow Structures: Prefabricated post-tensioned columns for ecological urban infrastructures_** — I am the second author. My contribution was on the computational side: the topology-optimization pipeline that generated the column catalogue, the robotic-toolpath and fabrication simulation, and the Kangaroo form-finding / digital-twin of the kinematic canopy.
+**Co-authored research at IASS 2024** — I worked on this as a computational research assistant at Rice University (2021–2024), collaborating with Professor Juan José Castellón. The work was published at the IASS 2024 Symposium as Castellón & Chen, _Segmental Ceramic Hollow Structures: Prefabricated post-tensioned columns for ecological urban infrastructures_ — I am the second author. My contribution was on the computational side: the topology-optimization pipeline that generated the column catalogue, the robotic-toolpath and fabrication simulation, and the Kangaroo form-finding / digital-twin of the kinematic canopy.
 
 ## What it is
 
-The research develops **hollow building components that combine structural and ecological functions** — a load-bearing column that is simultaneously a rainwater collector, with aspects of climatic control and water storage built into the same hollow ceramic body. The structural system is a **segmental post-tensioned column composed of hollow ceramic components**: individually manufactured segments are stacked and drawn together by a post-tensioning tendon into a single monolithic column.
+The research develops **hollow building components that combine structural and ecological functions** — a load-bearing column that is simultaneously a rainwater collector, with aspects of climatic control and water storage built into the same hollow ceramic body. The structural system is a segmental post-tensioned column composed of hollow ceramic components: individually manufactured segments are stacked and drawn together by a post-tensioning tendon into a single monolithic column.
 
-The design language borrows from a specific precedent. In the 1960s, Spanish architect **Miguel Fisac** and engineer **Ricardo Barredo** developed **post-tensioned hollow concrete beams**; this project carries that idea into ceramic and into the age of robotic fabrication. The material distribution itself is bio-analogous — inspired by how **bone** places mass along load paths and hollows out where material is redundant.
+The design language borrows from a specific precedent. In the 1960s, Spanish architect Miguel Fisac and engineer Ricardo Barredo developed post-tensioned hollow concrete beams; this project carries that idea into ceramic and into the age of robotic fabrication. The material distribution itself is bio-analogous — inspired by how bone places mass along load paths and hollows out where material is redundant.
 
 ## The problem
 
-Solid masonry and concrete columns are structurally wasteful: most of the section carries little load, yet it is expensive to make, heavy to ship, and does nothing beyond standing up. The research asks whether a column can be (1) **material-efficient** — hollowed exactly where it can afford to be, (2) **prefabricated and modular** — made from repeatable segments rather than cast monoliths, and (3) **multi-functional** — earning its footprint by also collecting and storing water and moderating microclimate. Meeting all three at once is what makes it a fabrication problem as much as a design problem: the optimized geometry has to be something a workshop can actually produce.
+Solid masonry and concrete columns are structurally wasteful: most of the section carries little load, yet it is expensive to make, heavy to ship, and does nothing beyond standing up. The research asks whether a column can be (1) **material-efficient** — hollowed exactly where it can afford to be, (2) prefabricated and modular — made from repeatable segments rather than cast monoliths, and (3) multi-functional — earning its footprint by also collecting and storing water and moderating microclimate. Meeting all three at once is what makes it a fabrication problem as much as a design problem: the optimized geometry has to be something a workshop can actually produce.
 
 ## System overview
 
@@ -100,7 +100,7 @@ The two halves of the pavilion — the compression member and the shading surfac
 
 ## Topological column form-finding
 
-The column geometry is not drawn — it is **grown by topology optimization**. Starting from a solid rectangular blank meshed for finite-element analysis, the optimizer iteratively resolves the compression load path and removes material where it contributes little, keeping mass where forces concentrate. Over successive iterations the plain prism evolves into a **hollow hourglass profile with longitudinal void slots** — the visible read of the underlying stress field.
+The column geometry is not drawn — it is **grown by topology optimization**. Starting from a solid rectangular blank meshed for finite-element analysis, the optimizer iteratively resolves the compression load path and removes material where it contributes little, keeping mass where forces concentrate. Over successive iterations the plain prism evolves into a hollow hourglass profile with longitudinal void slots — the visible read of the underlying stress field.
 
 The FE-meshed iteration steps below show that evolution directly: a solid block, triangulated, with the red stress-density field intensifying along the retained load paths as the section is progressively hollowed toward a bone-like distribution.
 
@@ -122,7 +122,7 @@ Because the process is parametric, one run yields not a single answer but a **fa
 
 ## Robotic fabrication and post-tensioned assembly (with Cerámica Cumella)
 
-Fabrication was carried out in collaboration with the ceramic manufacturer **Cerámica Cumella**. The paper is explicit about the two-step manufacturing route: the hollow components are made through **conventional extrusion** and then finished by **robotic subtractive methods** — a collaborative robotic arm mills the topology-optimized voids and profile into the extruded blank.
+Fabrication was carried out in collaboration with the ceramic manufacturer Cerámica Cumella. The paper is explicit about the **two-step manufacturing route**: the hollow components are made through conventional extrusion and then finished by robotic subtractive methods — a collaborative robotic arm mills the topology-optimized voids and profile into the extruded blank.
 
 The pipeline runs digital-first: the optimized CAD geometry is converted into a robot toolpath, verified in a simulation of the machining sequence, and only then executed on the physical segment.
 
@@ -148,30 +148,30 @@ stack segments  ──►  post-tension tendon  ──►  monolithic column
 
 The finished segments stack vertically; a post-tensioning tendon runs through the hollow core and compresses the joints, turning discrete ceramic pieces into a single structural column. The same hollow core is what lets the unit double as a water collector and store.
 
-**Fabrication video:** [youtube.com/watch?v=ATiN7TGZwvQ](https://www.youtube.com/watch?v=ATiN7TGZwvQ)
+Fabrication video: [youtube.com/watch?v=ATiN7TGZwvQ](https://www.youtube.com/watch?v=ATiN7TGZwvQ)
 
 ## Kinematic canopy form-finding
 
-The canopy is a **rigid-foldable origami surface** that seats onto the column capital. Its motion is developed in **Kangaroo for Grasshopper**: a dynamic-relaxation solver relaxes the fold under goal constraints so the surface can move between open and closed states while staying geometrically consistent. The motion is tuned against environmental inputs — **sunlight and wind** — so the canopy can adapt its geometry while maintaining structural stability and aesthetic coherence.
+The canopy is a **rigid-foldable origami surface** that seats onto the column capital. Its motion is developed in Kangaroo for Grasshopper: a dynamic-relaxation solver relaxes the fold under goal constraints so the surface can move between open and closed states while staying geometrically consistent. The motion is tuned against environmental inputs — sunlight and wind — so the canopy can adapt its geometry while maintaining structural stability and aesthetic coherence.
 
 Rather than build the canopy physically, the research delivers it as a **digital twin**: the simulation captures and visualizes the kinematic stages of the moving adaptive canopy, integrated with the column so that structure and shading read as a single pavilion.
 
-**Canopy video:** [youtube.com/watch?v=ne-7-3s7RPQ](https://www.youtube.com/watch?v=ne-7-3s7RPQ)
+Canopy video: [youtube.com/watch?v=ne-7-3s7RPQ](https://www.youtube.com/watch?v=ne-7-3s7RPQ)
 
 ## My contribution
 
 - Built the **topology-optimization pipeline** that generated the column geometry and the parametric catalogue of optimized variants.
-- Produced the **robotic-toolpath and machining simulation** feeding the subtractive fabrication with Cerámica Cumella.
-- Developed the **Kangaroo dynamic-relaxation form-finding and digital-twin** of the kinematic folding canopy.
-- **Co-author** on the IASS 2024 paper (Castellón & Chen).
+- Produced the robotic-toolpath and machining simulation feeding the subtractive fabrication with Cerámica Cumella.
+- Developed the Kangaroo dynamic-relaxation form-finding and digital-twin of the kinematic folding canopy.
+- Co-author on the IASS 2024 paper (Castellón & Chen).
 
 ## Outcomes
 
 - **Peer-reviewed publication** at IASS 2024 (International Association for Shell and Spatial Structures) — the only published research on this portfolio.
-- A **parametric catalogue** of topology-optimized hollow-column variants, structurally derived rather than stylistically drawn.
-- A working **robotic subtractive-fabrication route** — extrusion → toolpath → simulation → machined ceramic segments — validated on physical prototypes at Cerámica Cumella.
-- A **kinematic canopy digital twin** with environmentally-tuned (sunlight/wind) motion.
-- A single dual-function component: **structural column + water collector** with climatic control and water storage.
+- A parametric catalogue of topology-optimized hollow-column variants, structurally derived rather than stylistically drawn.
+- A working robotic subtractive-fabrication route — extrusion → toolpath → simulation → machined ceramic segments — validated on physical prototypes at Cerámica Cumella.
+- A kinematic canopy digital twin with environmentally-tuned (sunlight/wind) motion.
+- A single dual-function component: structural column + water collector with climatic control and water storage.
 
 ## Links
 
