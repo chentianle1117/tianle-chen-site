@@ -42,7 +42,7 @@ export default function Canvas3D({ data, reducedMotion }: Canvas3DProps) {
     return () => window.removeEventListener("theme-change", handler);
   }, []);
 
-  const bgColor = "#0b0d0f";
+  const bgColor = "rgb(var(--surface-bg))";
   void theme;
 
   const presetCache = useMemo(
@@ -55,8 +55,8 @@ export default function Canvas3D({ data, reducedMotion }: Canvas3DProps) {
       className="relative h-[78vh] min-h-[640px] w-full"
       style={{
         background: bgColor,
-        borderTop: "1px solid rgba(94, 99, 107, 0.40)",
-        borderBottom: "1px solid rgba(94, 99, 107, 0.40)",
+        borderTop: "1px solid rgb(var(--surface-border) / 0.40)",
+        borderBottom: "1px solid rgb(var(--surface-border) / 0.40)",
       }}
     >
       <Canvas
@@ -102,8 +102,8 @@ export default function Canvas3D({ data, reducedMotion }: Canvas3DProps) {
         style={{
           backdropFilter: "blur(12px)",
           WebkitBackdropFilter: "blur(12px)",
-          background: "rgba(11,13,15,0.72)",
-          borderColor: "rgba(94, 99, 107, 0.30)",
+          background: "rgb(var(--surface-1-rgb) / 0.72)",
+          borderColor: "rgb(var(--surface-border) / 0.30)",
           zIndex: 30,
         }}
       >

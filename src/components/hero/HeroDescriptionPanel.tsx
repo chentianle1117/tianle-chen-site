@@ -17,10 +17,10 @@ interface Props {
   data: LayoutDataBundle;
 }
 
-const HAIRLINE = "rgba(94, 99, 107, 0.40)";
-const TEXT_PRIMARY = "#e6e7e9";
-const TEXT_SECONDARY = "#b2b6bb";
-const TEXT_MUTED = "#888c92";
+const HAIRLINE = "rgb(var(--surface-border) / 0.40)";
+const TEXT_PRIMARY = "rgb(var(--text-primary))";
+const TEXT_SECONDARY = "rgb(var(--text-mono))";
+const TEXT_MUTED = "rgb(var(--text-mono))";
 const ACCENT = "#cf7f54";
 
 function findProject(
@@ -56,7 +56,7 @@ export default function HeroDescriptionPanel({ data }: Props) {
     <div
       className="hero-description-strip"
       style={{
-        background: "#0b0d0f",
+        background: "rgb(var(--surface-bg))",
         borderBottom: `1px solid ${HAIRLINE}`,
       }}
     >

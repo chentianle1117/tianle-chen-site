@@ -8,7 +8,7 @@
  *
  * Spec (Phase 2 contract):
  *   - 11px mono, uppercase weight on title via tracking
- *   - bg rgba(11,13,15,0.92) with backdrop-blur(12px)
+ *   - bg rgb(var(--surface-1-rgb) / 0.92) with backdrop-blur(12px)
  *   - 1px border, 4px radius, padding 6px 10px
  *   - z-index above all sprites and overlays
  */
@@ -51,21 +51,21 @@ export default function Tooltip({ projects }: TooltipProps) {
         top: pos.y + 14,
         backdropFilter: "blur(12px)",
         WebkitBackdropFilter: "blur(12px)",
-        background: "rgba(11,13,15,0.92)",
-        border: "1px solid rgba(94, 99, 107, 0.45)",
+        background: "rgb(var(--surface-1-rgb) / 0.92)",
+        border: "1px solid rgb(var(--surface-border) / 0.45)",
         borderRadius: "4px",
         padding: "6px 10px",
         fontSize: "11px",
-        color: "#c8ccd0",
+        color: "rgb(var(--text-secondary))",
         maxWidth: "260px",
       }}
     >
-      <div style={{ color: "#f4f5f6", letterSpacing: "0.02em" }}>
+      <div style={{ color: "rgb(var(--text-primary))", letterSpacing: "0.02em" }}>
         {project.title}
       </div>
       <div
         style={{
-          color: "#969ba2",
+          color: "rgb(var(--text-mono))",
           marginTop: "2px",
           fontSize: "10px",
           letterSpacing: "0.14em",

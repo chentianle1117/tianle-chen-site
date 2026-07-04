@@ -23,8 +23,8 @@ import * as THREE from "three";
 import { useNavStore } from "../../lib/nav-store";
 import type { ThesisAxisPreset } from "../../lib/layoutData";
 
-const GRAPHITE_500 = "#5e636b";
-const GRAPHITE_600 = "#3f4248";
+const GRAPHITE_500 = "rgb(var(--surface-border))";
+const GRAPHITE_600 = "rgb(var(--surface-border))";
 const OXIDE_500 = "#f28a4a";
 
 const POS_END = 1.05;

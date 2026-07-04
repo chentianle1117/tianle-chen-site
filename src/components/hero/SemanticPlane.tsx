@@ -67,15 +67,15 @@ const SPRITE_PX_MOBILE = 48;
 const CAPTION_MAX_CHARS = 36;
 
 // Color tokens — hero stays dark in both themes per contracts.
-const PLANE_BG = "#0b0d0f";
-const HAIRLINE = "rgba(94, 99, 107, 0.40)";
+const PLANE_BG = "rgb(var(--surface-bg))";
+const HAIRLINE = "rgb(var(--surface-border) / 0.40)";
 // Bumped from 0.04 -> 0.10 alpha for visible coordinate-system grid (eval #9).
-const GRID = "rgba(94, 99, 107, 0.10)";
-const TICK_COLOR = "rgba(180, 185, 192, 0.65)";
+const GRID = "rgb(var(--surface-border) / 0.10)";
+const TICK_COLOR = "rgb(var(--text-mono) / 0.65)";
 // Bumped axis-label contrast from graphite-400-ish to graphite-200 (eval #23, #40).
-const LABEL_COLOR = "#d8dadd";
-const LABEL_DIM = "#a8acb1";
-const SPRITE_BORDER = "rgba(150, 155, 162, 0.30)";
+const LABEL_COLOR = "rgb(var(--text-secondary))";
+const LABEL_DIM = "rgb(var(--text-mono))";
+const SPRITE_BORDER = "rgb(var(--surface-border) / 0.30)";
 const SPRITE_BORDER_HOVER = "rgba(184, 98, 63, 0.85)"; // oxide
 
 function easeInOutCubic(t: number): number {
@@ -675,7 +675,7 @@ function AxisDropdown({
           color: open ? "#cf7f54" : LABEL_COLOR,
           background: open
             ? "rgba(207, 127, 84, 0.12)"
-            : "rgba(11, 13, 15, 0.65)",
+            : "rgb(var(--surface-1-rgb) / 0.65)",
           border: `1px solid ${open ? "#cf7f54" : "rgba(207, 127, 84, 0.40)"}`,
           borderRadius: 4,
           padding: "6px 14px",
@@ -698,7 +698,7 @@ function AxisDropdown({
               "rgba(207, 127, 84, 0.40)";
             (e.currentTarget as HTMLButtonElement).style.color = LABEL_COLOR;
             (e.currentTarget as HTMLButtonElement).style.background =
-              "rgba(11, 13, 15, 0.65)";
+              "rgb(var(--surface-1-rgb) / 0.65)";
           }
         }}
       >
@@ -759,8 +759,8 @@ function AxisDropdown({
             transform: vertical
               ? "translate(-50%, 0%)"
               : "translate(-50%, -100%)",
-            background: "rgba(11, 13, 15, 0.97)",
-            border: "1px solid rgba(94, 99, 107, 0.55)",
+            background: "rgb(var(--surface-1-rgb) / 0.97)",
+            border: "1px solid rgb(var(--surface-border) / 0.55)",
             borderRadius: 4,
             boxShadow: "0 12px 28px -8px rgba(0,0,0,0.7)",
             padding: 4,
@@ -802,7 +802,7 @@ function AxisDropdown({
                     : "transparent",
                   border: `1px solid ${active ? "#cf7f54" : "transparent"}`,
                   borderRadius: 3,
-                  color: active ? "#cf7f54" : "#d8dadd",
+                  color: active ? "#cf7f54" : "rgb(var(--text-secondary))",
                   cursor: "pointer",
                   whiteSpace: "nowrap",
                   transition: "all 140ms ease",
@@ -810,7 +810,7 @@ function AxisDropdown({
                 onMouseEnter={(e) => {
                   if (!active) {
                     (e.currentTarget as HTMLButtonElement).style.background =
-                      "rgba(94, 99, 107, 0.18)";
+                      "rgb(var(--surface-border) / 0.18)";
                   }
                 }}
                 onMouseLeave={(e) => {
@@ -896,7 +896,7 @@ function PlotFrame({
     padding: "5px 10px",
     border: `1px solid ${HAIRLINE}`,
     borderRadius: 3,
-    background: "rgba(11, 13, 15, 0.78)",
+    background: "rgb(var(--surface-1-rgb) / 0.78)",
   };
   const arrowStyle: React.CSSProperties = {
     fontSize: "16px",
@@ -1392,19 +1392,19 @@ function Sprite({
           letterSpacing: "0.02em",
           lineHeight: 1.25,
           color: isHovered
-            ? "#f0f1f2"
-            : `rgba(232, 234, 237, ${0.55 + 0.4 * ringOpacity})`,
+            ? "rgb(var(--text-primary))"
+            : `rgb(var(--text-primary) / ${0.55 + 0.4 * ringOpacity})`,
           textAlign: "center",
           maxWidth: TILE_MAX_W,
           minWidth: 64,
           padding: isHovered ? "7px 11px" : "6px 10px",
           background: isHovered
-            ? "rgba(20, 24, 28, 0.96)"
-            : "rgba(11, 13, 15, 0.78)",
+            ? "rgb(var(--surface-1-rgb) / 0.96)"
+            : "rgb(var(--surface-1-rgb) / 0.78)",
           border: `1px solid ${
             isHovered
               ? categoryColor
-              : `rgba(94, 99, 107, ${0.35 + 0.35 * ringOpacity})`
+              : `rgb(var(--surface-border) / ${0.35 + 0.35 * ringOpacity})`
           }`,
           borderBottom: `2px solid ${categoryColor}${
             isHovered ? "ff" : Math.round(ringOpacity * 255).toString(16).padStart(2, "0")
@@ -1421,7 +1421,7 @@ function Sprite({
           cursor: "pointer",
           outline: "none",
           pointerEvents: "auto",
-          textShadow: "0 1px 2px rgba(11, 13, 15, 0.9)",
+          textShadow: "0 1px 2px rgb(var(--surface-1-rgb) / 0.9)",
           transform: isHovered ? "scale(1.18)" : "scale(1)",
           transformOrigin: "center",
           transition: reduced
@@ -1450,7 +1450,7 @@ function Sprite({
                 : 0.5
               : 0.85,
           transition: reduced ? "none" : "opacity 220ms ease",
-          textShadow: "0 1px 2px rgba(11, 13, 15, 0.9)",
+          textShadow: "0 1px 2px rgb(var(--surface-1-rgb) / 0.9)",
         }}
       >
         {CATEGORY_LABELS[projectCategory]}
@@ -1496,7 +1496,7 @@ function Sprite({
             width: CARD_WIDTH_PX,
             minHeight: CARD_MIN_HEIGHT_PX,
             padding: 0,
-            background: "rgba(11, 13, 15, 0.96)",
+            background: "rgb(var(--surface-1-rgb) / 0.96)",
             backdropFilter: "blur(14px)",
             WebkitBackdropFilter: "blur(14px)",
             border: `1px solid ${categoryColor}66`,
@@ -1504,7 +1504,7 @@ function Sprite({
             boxShadow: `0 18px 44px -10px rgba(0, 0, 0, 0.75), 0 0 0 1px ${categoryColor}33`,
             zIndex: 1100,
             pointerEvents: "auto",
-            color: "#e6e7e9",
+            color: "rgb(var(--text-primary))",
             fontFamily:
               "'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
             animation: reduced ? "none" : "hoverCardIn 180ms cubic-bezier(0.22, 1, 0.36, 1) both",
@@ -1528,7 +1528,7 @@ function Sprite({
               display: "flex",
               flexDirection: "column",
               gap: 2,
-              background: "#0b0d0f",
+              background: "rgb(var(--surface-bg))",
               borderRight: cardOnLeft ? "none" : `1px solid ${categoryColor}55`,
               borderLeft: cardOnLeft ? `1px solid ${categoryColor}55` : "none",
             }}
@@ -1556,7 +1556,7 @@ function Sprite({
                       minHeight: 0,
                       position: "relative",
                       overflow: "hidden",
-                      background: "#0b0d0f",
+                      background: "rgb(var(--surface-bg))",
                     }}
                   >
                     <img
@@ -1619,7 +1619,7 @@ function Sprite({
                 letterSpacing: "-0.005em",
                 margin: 0,
                 marginBottom: 12,
-                color: "#f0f1f2",
+                color: "rgb(var(--text-primary))",
               }}
             >
               {project.title}
@@ -1629,7 +1629,7 @@ function Sprite({
                 style={{
                   fontSize: 13,
                   lineHeight: 1.55,
-                  color: "#b2b6bb",
+                  color: "rgb(var(--text-mono))",
                   margin: 0,
                   marginBottom: 14,
                   flex: 1,
@@ -1660,7 +1660,7 @@ function Sprite({
                       padding: "2px 6px",
                       border: `1px solid ${SPRITE_BORDER}`,
                       borderRadius: 3,
-                      color: "#b2b6bb",
+                      color: "rgb(var(--text-mono))",
                     }}
                   >
                     {c}

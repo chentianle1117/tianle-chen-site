@@ -87,8 +87,8 @@ export default function ProjectionDiagram({ presets, count }: Props) {
     <div
       style={{
         width: "100%",
-        background: "rgba(11, 13, 15, 0.8)",
-        border: "1px solid rgba(94, 99, 107, 0.30)",
+        background: "rgb(var(--surface-1-rgb) / 0.8)",
+        border: "1px solid rgb(var(--surface-border) / 0.30)",
         borderRadius: 4,
         padding: 12,
         overflow: "hidden",
@@ -101,7 +101,7 @@ export default function ProjectionDiagram({ presets, count }: Props) {
           fontSize: 10,
           letterSpacing: "0.14em",
           textTransform: "uppercase",
-          color: "#a8acb1",
+          color: "rgb(var(--text-mono))",
           marginBottom: 10,
           display: "flex",
           justifyContent: "space-between",
@@ -188,22 +188,22 @@ export default function ProjectionDiagram({ presets, count }: Props) {
             ? "#cf7f54"
             : passed
               ? "#7aa15c"
-              : "rgba(94, 99, 107, 0.45)";
+              : "rgb(var(--surface-border) / 0.45)";
           const fill = active
             ? "rgba(207, 127, 84, 0.12)"
             : passed
               ? "rgba(122, 161, 92, 0.08)"
-              : "rgba(11, 13, 15, 0.4)";
+              : "rgb(var(--surface-1-rgb) / 0.4)";
           const titleColor = active
-            ? "#f0f1f2"
+            ? "rgb(var(--text-primary))"
             : passed
-              ? "#d8dadd"
-              : "#7e828a";
+              ? "rgb(var(--text-secondary))"
+              : "rgb(var(--text-mono))";
           const subColor = active
             ? "#cf7f54"
             : passed
               ? "#7aa15c"
-              : "#5a5e66";
+              : "rgb(var(--text-mono))";
           return (
             <g key={node.key}>
               <rect
@@ -259,7 +259,7 @@ export default function ProjectionDiagram({ presets, count }: Props) {
           y={PADDING + NODE_H + 24}
           fontFamily="'IBM Plex Mono', ui-monospace, monospace"
           fontSize="10"
-          fill="#a8acb1"
+          fill="rgb(var(--text-mono))"
           letterSpacing="1"
         >
           x ← <tspan fill="#cf7f54">{xLabel}</tspan>
@@ -270,7 +270,7 @@ export default function ProjectionDiagram({ presets, count }: Props) {
           textAnchor="end"
           fontFamily="'IBM Plex Mono', ui-monospace, monospace"
           fontSize="10"
-          fill="#a8acb1"
+          fill="rgb(var(--text-mono))"
           letterSpacing="1"
         >
           y ← <tspan fill="#cf7f54">{yLabel}</tspan>

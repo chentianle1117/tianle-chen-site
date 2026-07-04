@@ -19,9 +19,9 @@ interface MobileStripProps {
   data: LayoutDataBundle;
 }
 
-const PLANE_BG = "#0b0d0f";
-const HAIRLINE = "rgba(94, 99, 107, 0.40)";
-const SPRITE_BORDER = "rgba(150, 155, 162, 0.30)";
+const PLANE_BG = "rgb(var(--surface-bg))";
+const HAIRLINE = "rgb(var(--surface-border) / 0.40)";
+const SPRITE_BORDER = "rgb(var(--surface-border) / 0.30)";
 
 /** Pick 6 representative projects: flagship first, then variety. */
 function pickFeatured(projects: ProjectEmbedding[]): ProjectEmbedding[] {
@@ -81,7 +81,7 @@ export default function MobileStrip({ data }: MobileStripProps) {
           fontSize: "11px",
           letterSpacing: "0.14em",
           textTransform: "uppercase",
-          color: "#c8ccd0",
+          color: "rgb(var(--text-secondary))",
         }}
       >
         Selected · Tap to explore
@@ -134,7 +134,7 @@ export default function MobileStrip({ data }: MobileStripProps) {
                   fontSize: "10px",
                   letterSpacing: "0.10em",
                   textTransform: "uppercase",
-                  color: "#e6e7e9",
+                  color: "rgb(var(--text-primary))",
                   textShadow: "0 1px 2px rgba(0,0,0,0.85)",
                   whiteSpace: "nowrap",
                   overflow: "hidden",
@@ -158,7 +158,7 @@ export default function MobileStrip({ data }: MobileStripProps) {
           fontSize: "10px",
           letterSpacing: "0.14em",
           textTransform: "uppercase",
-          color: "#5e636b",
+          color: "rgb(var(--surface-border))",
         }}
       >
         Tap to explore · Scroll ↗
@@ -167,7 +167,7 @@ export default function MobileStrip({ data }: MobileStripProps) {
       <style>{`
         .hero-mobile-strip-scroll::-webkit-scrollbar { height: 4px; }
         .hero-mobile-strip-scroll::-webkit-scrollbar-thumb {
-          background: rgba(150, 155, 162, 0.25);
+          background: rgb(var(--surface-border) / 0.25);
           border-radius: 2px;
         }
         .hero-mobile-card:focus-visible {

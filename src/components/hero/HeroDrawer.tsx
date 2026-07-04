@@ -69,7 +69,7 @@ export default function HeroDrawer({ presets, count }: Props) {
 
       <style>{`
         .hero-drawer {
-          border-top: 1px solid rgba(94, 99, 107, 0.30);
+          border-top: 1px solid rgb(var(--surface-border) / 0.30);
           margin-top: 14px;
         }
         .hero-drawer-toggle {
@@ -85,11 +85,11 @@ export default function HeroDrawer({ presets, count }: Props) {
           font-size: 10.5px;
           letter-spacing: 0.16em;
           text-transform: uppercase;
-          color: #a8acb1;
+          color: rgb(var(--text-mono));
           transition: color 160ms ease;
         }
         .hero-drawer-toggle:hover {
-          color: #d8dadd;
+          color: rgb(var(--text-secondary));
         }
         .hero-drawer-caret {
           color: #cf7f54;
@@ -104,7 +104,7 @@ export default function HeroDrawer({ presets, count }: Props) {
           margin-left: auto;
           font-size: 9.5px;
           letter-spacing: 0.14em;
-          color: #5a5e66;
+          color: rgb(var(--text-mono));
           font-style: italic;
           text-transform: lowercase;
         }
@@ -123,9 +123,9 @@ export default function HeroDrawer({ presets, count }: Props) {
           text-transform: uppercase;
           padding: 4px 10px;
           background: transparent;
-          border: 1px solid rgba(94, 99, 107, 0.45);
+          border: 1px solid rgb(var(--surface-border) / 0.45);
           border-radius: 3px;
-          color: #a8acb1;
+          color: rgb(var(--text-mono));
           cursor: pointer;
           transition: all 160ms ease;
         }

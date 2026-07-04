@@ -129,9 +129,9 @@ export default function HeroNavigator() {
       <div
         className="aspect-[16/9] w-full"
         style={{
-          background: "#0b0d0f",
-          borderTop: "1px solid rgba(94, 99, 107, 0.40)",
-          borderBottom: "1px solid rgba(94, 99, 107, 0.40)",
+          background: "rgb(var(--surface-bg))",
+          borderTop: "1px solid rgb(var(--surface-border) / 0.40)",
+          borderBottom: "1px solid rgb(var(--surface-border) / 0.40)",
         }}
       >
         <div className="flex h-full items-center justify-center font-mono text-[12px] text-graphite-400">
@@ -146,9 +146,9 @@ export default function HeroNavigator() {
       <div
         className="aspect-[16/9] w-full"
         style={{
-          background: "#0b0d0f",
-          borderTop: "1px solid rgba(94, 99, 107, 0.40)",
-          borderBottom: "1px solid rgba(94, 99, 107, 0.40)",
+          background: "rgb(var(--surface-bg))",
+          borderTop: "1px solid rgb(var(--surface-border) / 0.40)",
+          borderBottom: "1px solid rgb(var(--surface-border) / 0.40)",
         }}
       >
         <div className="flex h-full items-center justify-center px-6 text-center font-mono text-[12px] leading-relaxed text-graphite-400">
@@ -177,9 +177,9 @@ export default function HeroNavigator() {
     <div
       className="hero-container relative w-full"
       style={{
-        background: "#0b0d0f",
-        borderTop: "1px solid rgba(94, 99, 107, 0.40)",
-        borderBottom: "1px solid rgba(94, 99, 107, 0.40)",
+        background: "rgb(var(--surface-bg))",
+        borderTop: "1px solid rgb(var(--surface-border) / 0.40)",
+        borderBottom: "1px solid rgb(var(--surface-border) / 0.40)",
       }}
     >
       <div className={`hero-split ${sidebarCollapsed ? "is-collapsed" : ""}`}>
@@ -257,11 +257,11 @@ export default function HeroNavigator() {
           align-items: center;
           gap: 6px;
           padding: 5px 10px;
-          background: rgba(11, 13, 15, 0.85);
+          background: rgb(var(--surface-1-rgb) / 0.85);
           border: 1px solid rgba(207, 127, 84, 0.45);
           border-radius: 3px;
           cursor: pointer;
-          color: #d8dadd;
+          color: rgb(var(--text-secondary));
           font-family: 'IBM Plex Mono', ui-monospace, monospace;
           font-size: 10px;
           letter-spacing: 0.16em;
@@ -287,11 +287,11 @@ export default function HeroNavigator() {
           justify-content: center;
           gap: 12px;
           padding: 16px 0;
-          background: rgba(11, 13, 15, 0.85);
+          background: rgb(var(--surface-1-rgb) / 0.85);
           border: 1px solid rgba(207, 127, 84, 0.45);
           border-radius: 3px;
           cursor: pointer;
-          color: #d8dadd;
+          color: rgb(var(--text-secondary));
           font-family: 'IBM Plex Mono', ui-monospace, monospace;
           font-size: 11px;
           letter-spacing: 0.18em;
@@ -325,7 +325,7 @@ export default function HeroNavigator() {
           .hero-side {
             flex: 0 0 320px;
             max-width: 320px;
-            border-right: 1px solid rgba(94, 99, 107, 0.30);
+            border-right: 1px solid rgb(var(--surface-border) / 0.30);
           }
           .hero-canvas {
             flex: 1 1 auto;

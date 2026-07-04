@@ -159,13 +159,13 @@ export default function HeroToolbar({ presetKeys, projects }: Props) {
                 aria-pressed={active}
                 className="hero-toolbar-chip"
                 style={{
-                  color: active ? "#f0f1f2" : dim ? "#5a5e66" : "#d8dadd",
+                  color: active ? "rgb(var(--text-primary))" : dim ? "rgb(var(--text-mono))" : "rgb(var(--text-secondary))",
                   background: active
                     ? `${CATEGORY_COLORS_LOCAL[key]}1a`
                     : "transparent",
                   borderColor: active
                     ? CATEGORY_COLORS_LOCAL[key]
-                    : "rgba(94, 99, 107, 0.30)",
+                    : "rgb(var(--surface-border) / 0.30)",
                 }}
               >
                 <span
@@ -179,7 +179,7 @@ export default function HeroToolbar({ presetKeys, projects }: Props) {
                 <span>{CATEGORY_LABELS[key]}</span>
                 <span
                   className="hero-toolbar-chip-count"
-                  style={{ color: dim ? "#3e4147" : "#7e828a" }}
+                  style={{ color: dim ? "rgb(var(--surface-border))" : "rgb(var(--text-mono))" }}
                 >
                   {String(n).padStart(2, "0")}
                 </span>
@@ -226,7 +226,7 @@ export default function HeroToolbar({ presetKeys, projects }: Props) {
           align-items: center;
           gap: 24px;
           padding: 14px 0 10px;
-          border-bottom: 1px solid rgba(94, 99, 107, 0.30);
+          border-bottom: 1px solid rgb(var(--surface-border) / 0.30);
           row-gap: 6px;
         }
         @media (max-width: 899px) {
@@ -251,14 +251,14 @@ export default function HeroToolbar({ presetKeys, projects }: Props) {
           background: transparent;
           border: none;
           border-bottom: 2px solid transparent;
-          color: #9b9fa6;
+          color: rgb(var(--text-mono));
           cursor: pointer;
           transition: all 160ms ease;
           font-weight: 500;
         }
         .hero-toolbar-tab[data-primary="true"] {
           font-weight: 600;
-          color: #d8dadd;
+          color: rgb(var(--text-secondary));
           border-bottom-color: rgba(207, 127, 84, 0.32);
         }
         .hero-toolbar-tab[data-active="true"] {
@@ -267,7 +267,7 @@ export default function HeroToolbar({ presetKeys, projects }: Props) {
           color: #cf7f54;
         }
         .hero-toolbar-tab:hover:not([data-active="true"]) {
-          color: #d8dadd;
+          color: rgb(var(--text-secondary));
         }
 
         /* Categories */
@@ -332,9 +332,9 @@ export default function HeroToolbar({ presetKeys, projects }: Props) {
           text-transform: uppercase;
           padding: 6px 12px;
           background: transparent;
-          border: 1px solid rgba(94, 99, 107, 0.55);
+          border: 1px solid rgb(var(--surface-border) / 0.55);
           border-radius: 3px;
-          color: #d8dadd;
+          color: rgb(var(--text-secondary));
           cursor: pointer;
           transition: all 180ms ease;
         }
@@ -350,7 +350,7 @@ export default function HeroToolbar({ presetKeys, projects }: Props) {
           font-family: 'Inter', system-ui, -apple-system, sans-serif;
           font-size: 12px;
           line-height: 1.5;
-          color: #a8acb1;
+          color: rgb(var(--text-mono));
         }
       `}</style>
     </div>

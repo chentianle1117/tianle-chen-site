@@ -205,7 +205,7 @@ export default function SidePanel({ presets, count, projects = [] }: Props) {
     <aside
       className="hero-sidepanel"
       style={{
-        background: "rgba(11, 13, 15, 0.92)",
+        background: "rgb(var(--surface-1-rgb) / 0.92)",
         padding: "32px 18px",
         display: "flex",
         flexDirection: "column",
@@ -229,7 +229,7 @@ export default function SidePanel({ presets, count, projects = [] }: Props) {
           style={{
             display: "flex",
             gap: 0,
-            borderBottom: "1px solid rgba(94, 99, 107, 0.30)",
+            borderBottom: "1px solid rgb(var(--surface-border) / 0.30)",
             marginBottom: 10,
           }}
         >
@@ -261,8 +261,8 @@ export default function SidePanel({ presets, count, projects = [] }: Props) {
                   color: active
                     ? "#cf7f54"
                     : isPrimary
-                      ? "#d8dadd"
-                      : "#9b9fa6",
+                      ? "rgb(var(--text-secondary))"
+                      : "rgb(var(--text-mono))",
                   cursor: "pointer",
                   marginBottom: -1,
                   transition: "all 160ms ease",
@@ -280,7 +280,7 @@ export default function SidePanel({ presets, count, projects = [] }: Props) {
               "'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif",
             fontSize: 12,
             lineHeight: 1.5,
-            color: "#a8acb1",
+            color: "rgb(var(--text-mono))",
             margin: 0,
           }}
         >
@@ -302,7 +302,7 @@ export default function SidePanel({ presets, count, projects = [] }: Props) {
               fontSize: 10,
               letterSpacing: "0.16em",
               textTransform: "uppercase",
-              color: "#a8acb1",
+              color: "rgb(var(--text-mono))",
               marginBottom: 8,
               display: "flex",
               alignItems: "baseline",
@@ -371,7 +371,7 @@ export default function SidePanel({ presets, count, projects = [] }: Props) {
                       "'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace",
                     fontSize: 11,
                     letterSpacing: "0.06em",
-                    color: active ? "#f0f1f2" : dim ? "#5a5e66" : "#d8dadd",
+                    color: active ? "rgb(var(--text-primary))" : dim ? "rgb(var(--text-mono))" : "rgb(var(--text-secondary))",
                     background: active
                       ? `${CATEGORY_COLORS_LOCAL[key]}1a`
                       : "transparent",
@@ -405,7 +405,7 @@ export default function SidePanel({ presets, count, projects = [] }: Props) {
                   >
                     {CATEGORY_LABELS[key]}
                   </span>
-                  <span style={{ color: dim ? "#3e4147" : "#7e828a" }}>
+                  <span style={{ color: dim ? "rgb(var(--surface-border))" : "rgb(var(--text-mono))" }}>
                     {String(n).padStart(2, "0")}
                   </span>
                 </button>
@@ -418,7 +418,7 @@ export default function SidePanel({ presets, count, projects = [] }: Props) {
                 "'Inter', system-ui, -apple-system, BlinkMacSystemFont, sans-serif",
               fontSize: 10.5,
               lineHeight: 1.45,
-              color: "#7e828a",
+              color: "rgb(var(--text-mono))",
               marginTop: 6,
               marginBottom: 0,
               fontStyle: "italic",
@@ -445,7 +445,7 @@ export default function SidePanel({ presets, count, projects = [] }: Props) {
               fontSize: 10,
               letterSpacing: "0.16em",
               textTransform: "uppercase",
-              color: "#a8acb1",
+              color: "rgb(var(--text-mono))",
               marginBottom: 8,
             }}
           >
@@ -477,17 +477,17 @@ export default function SidePanel({ presets, count, projects = [] }: Props) {
                         "'IBM Plex Mono', ui-monospace, monospace",
                       fontSize: 12,
                       padding: "5px 8px",
-                      background: "rgba(11, 13, 15, 0.85)",
-                      border: "1px solid rgba(94, 99, 107, 0.55)",
+                      background: "rgb(var(--surface-1-rgb) / 0.85)",
+                      border: "1px solid rgb(var(--surface-border) / 0.55)",
                       borderRadius: 3,
-                      color: "#e6e7e9",
+                      color: "rgb(var(--text-primary))",
                       cursor: "pointer",
                     }}
                   >
                     {presetKeys.map((key) => {
                       const p = presets[key];
                       return (
-                        <option key={key} value={key} style={{ background: "#0b0d0f" }}>
+                        <option key={key} value={key} style={{ background: "rgb(var(--surface-bg))" }}>
                           {p.labels[1]} ↔ {p.labels[0]}
                         </option>
                       );
@@ -509,9 +509,9 @@ export default function SidePanel({ presets, count, projects = [] }: Props) {
                 textTransform: "uppercase",
                 padding: "5px 10px",
                 background: "transparent",
-                border: "1px solid rgba(94, 99, 107, 0.55)",
+                border: "1px solid rgb(var(--surface-border) / 0.55)",
                 borderRadius: 3,
-                color: "#d8dadd",
+                color: "rgb(var(--text-secondary))",
                 cursor: "pointer",
                 transition: "all 180ms ease",
               }}
@@ -520,8 +520,8 @@ export default function SidePanel({ presets, count, projects = [] }: Props) {
                 (e.currentTarget as HTMLButtonElement).style.color = "#cf7f54";
               }}
               onMouseLeave={(e) => {
-                (e.currentTarget as HTMLButtonElement).style.borderColor = "rgba(94, 99, 107, 0.55)";
-                (e.currentTarget as HTMLButtonElement).style.color = "#d8dadd";
+                (e.currentTarget as HTMLButtonElement).style.borderColor = "rgb(var(--surface-border) / 0.55)";
+                (e.currentTarget as HTMLButtonElement).style.color = "rgb(var(--text-secondary))";
               }}
             >
               ⚄ randomize
@@ -535,7 +535,7 @@ export default function SidePanel({ presets, count, projects = [] }: Props) {
               "'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace",
             fontSize: 10.5,
             letterSpacing: "0.10em",
-            color: "#7e828a",
+            color: "rgb(var(--text-mono))",
             margin: 0,
             fontStyle: "italic",
             opacity: 0.8,
@@ -563,7 +563,7 @@ export default function SidePanel({ presets, count, projects = [] }: Props) {
               fontSize: 10,
               letterSpacing: "0.16em",
               textTransform: "uppercase",
-              color: "#a8acb1",
+              color: "rgb(var(--text-mono))",
             }}
           >
             Inside the projection
@@ -588,9 +588,9 @@ export default function SidePanel({ presets, count, projects = [] }: Props) {
                     background: active
                       ? "rgba(207, 127, 84, 0.15)"
                       : "transparent",
-                    border: `1px solid ${active ? "#cf7f54" : "rgba(94, 99, 107, 0.45)"}`,
+                    border: `1px solid ${active ? "#cf7f54" : "rgb(var(--surface-border) / 0.45)"}`,
                     borderRadius: 3,
-                    color: active ? "#cf7f54" : "#a8acb1",
+                    color: active ? "#cf7f54" : "rgb(var(--text-mono))",
                     cursor: "pointer",
                     transition: "all 160ms ease",
                   }}

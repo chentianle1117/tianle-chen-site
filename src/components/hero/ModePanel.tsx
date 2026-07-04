@@ -80,9 +80,9 @@ function ThreeDHoverTip({
           "'IBM Plex Mono', ui-monospace, SFMono-Regular, Menlo, monospace",
         fontSize: "10px",
         letterSpacing: "0.10em",
-        color: "#e6e7e9",
-        background: "rgba(11,13,15,0.94)",
-        border: "1px solid rgba(94, 99, 107, 0.45)",
+        color: "rgb(var(--text-primary))",
+        background: "rgb(var(--surface-1-rgb) / 0.94)",
+        border: "1px solid rgb(var(--surface-border) / 0.45)",
         borderRadius: "4px",
         padding: "5px 8px",
         zIndex: 50,
@@ -215,8 +215,8 @@ export default function ModePanel({
         top: 220,
         backdropFilter: "blur(12px)",
         WebkitBackdropFilter: "blur(12px)",
-        background: "rgba(11,13,15,0.82)",
-        borderColor: "rgba(94, 99, 107, 0.30)",
+        background: "rgb(var(--surface-1-rgb) / 0.82)",
+        borderColor: "rgb(var(--surface-border) / 0.30)",
         zIndex: 30,
         // Opt back into pointer events; parent wrapper is pointer-events: none.
         pointerEvents: "auto",
@@ -246,7 +246,7 @@ export default function ModePanel({
                   style={
                     active
                       ? { background: "#b8623f" }
-                      : { boxShadow: "inset 0 0 0 1px #5a5e66" }
+                      : { boxShadow: "inset 0 0 0 1px rgb(var(--text-mono))" }
                   }
                 />
                 <span className="flex-1">
@@ -254,7 +254,7 @@ export default function ModePanel({
                   <span
                     className="mt-0.5 block text-[10px] leading-snug"
                     style={{
-                      color: active ? "rgba(207, 127, 84, 0.85)" : "rgba(168, 172, 177, 0.7)",
+                      color: active ? "rgba(207, 127, 84, 0.85)" : "rgb(var(--surface-border) / 0.7)",
                       letterSpacing: 0,
                       fontFamily:
                         "'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",

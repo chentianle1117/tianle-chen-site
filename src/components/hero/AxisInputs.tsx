@@ -83,8 +83,8 @@ export default function AxisInputs({
       ? {
           backdropFilter: "blur(12px)",
           WebkitBackdropFilter: "blur(12px)",
-          background: "rgba(11,13,15,0.78)",
-          borderColor: "rgba(94, 99, 107, 0.30)",
+          background: "rgb(var(--surface-1-rgb) / 0.78)",
+          borderColor: "rgb(var(--surface-border) / 0.30)",
           // z-index 30: sits above the sprite layer (z=10) — fixes eval #2.
           zIndex: 30,
           // Opt back into pointer events; the parent wrapper in HeroNavigator
@@ -143,7 +143,7 @@ export default function AxisInputs({
                   className="flex-1 cursor-pointer rounded border border-graphite-700 bg-transparent px-2 py-1 text-[13px] text-graphite-200 outline-none transition-colors duration-180 hover:border-oxide-500 focus:border-oxide-500"
                   style={
                     variant === "band"
-                      ? { background: "rgba(11,13,15,0.85)" }
+                      ? { background: "rgb(var(--surface-1-rgb) / 0.85)" }
                       : undefined
                   }
                 >

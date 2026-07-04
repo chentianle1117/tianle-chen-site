@@ -119,8 +119,8 @@ export default function EncodingConsole({ presets, count }: Props) {
         fontSize: 11,
         lineHeight: 1.55,
         color: "#7aa15c",  // sage green — terminal stdout
-        background: "rgba(11, 13, 15, 0.8)",
-        border: "1px solid rgba(94, 99, 107, 0.30)",
+        background: "rgb(var(--surface-1-rgb) / 0.8)",
+        border: "1px solid rgb(var(--surface-border) / 0.30)",
         borderRadius: 4,
         padding: "8px 12px",
         whiteSpace: "pre",
@@ -143,7 +143,7 @@ export default function EncodingConsole({ presets, count }: Props) {
         </div>
       ))}
       {done && (
-        <div style={{ color: "#a8acb1", marginTop: 2 }}>
+        <div style={{ color: "rgb(var(--text-mono))", marginTop: 2 }}>
           ✓ projection ready
           <span
             aria-hidden
@@ -152,7 +152,7 @@ export default function EncodingConsole({ presets, count }: Props) {
               display: "inline-block",
               width: 6,
               height: 12,
-              background: "#a8acb1",
+              background: "rgb(var(--text-mono))",
               verticalAlign: "middle",
               animation: "consoleBlink 1.1s steps(2) infinite",
             }}
