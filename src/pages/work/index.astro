@@ -4,11 +4,9 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import ProjectCard from "../../components/ProjectCard.astro";
 import FilterBar from "../../components/FilterBar.astro";
-import {
-  FILTER_CATEGORIES,
-  projectCategoryBuckets,
-} from "../../lib/categories";
+import { FILTER_CATEGORIES, domainForProject } from "../../lib/categories";
 import { getProjectCounts } from "../../lib/projectCounts";
+import overrides from "../../../scripts/project_overrides.json";
 
 // Round-5 Fix 4: route every page's count strings through projectCounts.ts so
 // /work, /architecture, /dashboard, and /home agree.
@@ -37,10 +35,16 @@ const kicker = `${total} PROJECTS · ${FILTER_CATEGORIES.length} CATEGORIES · $
 
 // Pre-compute the bucket attribute per project so the client filter can
 // match without re-running the matchers in the browser.
-const cardsWithBuckets = work.map((p) => ({
-  project: p,
-  buckets: projectCategoryBuckets(p.data.categories ?? []),
-}));
+// One filter bucket per card = its domain (primary_category), so /work filter
+// and the home scatter agree exactly.
+const cardsWithBuckets = work.map((p) => {
+  const slug = (p as any).slug ?? p.data.slug ?? p.id?.replace(/\.md$/, "");
+  const prim = (overrides as any)[slug]?.primary_category;
+  return {
+    project: p,
+    buckets: [domainForProject(prim, p.data.categories ?? [])],
+  };
+});
 ---
 
 <BaseLayout

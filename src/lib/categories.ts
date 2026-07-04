@@ -1,54 +1,50 @@
-// Filter categories for the /work index. Maps each surfaced category
-// to a list of substring matchers checked against a project's `categories`
-// array. Matching is case-insensitive. A project may live in multiple
-// buckets; the FilterBar treats this as an OR over selected buckets.
+// 2026 taxonomy — 4 domains + cross-cutting tags.
+// A DOMAIN is where a project lives (one per project, drives the scatter color
+// and the /work filter). Research / Thesis / Game / Data-Viz / Fabrication etc.
+// are TAGS that describe what a project IS, shown as pills on the card.
 
-export type FilterCategory = "ML/AI" | "Design" | "Interaction" | "Research";
+export type FilterCategory =
+  | "AI / ML"
+  | "Interactive"
+  | "Computational Design"
+  | "Architecture";
 
 export const FILTER_CATEGORIES: FilterCategory[] = [
-  "ML/AI",
-  "Design",
-  "Interaction",
-  "Research",
+  "AI / ML",
+  "Interactive",
+  "Computational Design",
+  "Architecture",
 ];
 
+// The authoritative domain lives in scripts/project_overrides.json as
+// `primary_category` (also drives the home scatter). This maps those keys to
+// the filter labels so /work and the scatter agree exactly.
+export const PRIMARY_TO_FILTER: Record<string, FilterCategory> = {
+  ml: "AI / ML",
+  interactive: "Interactive",
+  compdesign: "Computational Design",
+  architecture: "Architecture",
+};
+
+// Fallback keyword matchers for projects without an explicit primary_category
+// (also used by the dashboard donut). Maps free-form vault `categories` onto
+// the 4 domains.
 const matchers: Record<FilterCategory, string[]> = {
-  "ML/AI": [
-    "ML",
-    "AI",
-    "AI/ML",
-    "Deep Learning",
-    "Production ML",
-    "Computer Vision",
-    "Generative",
-    "Latent",
-    "CAD Generation",
+  "AI / ML": [
+    "ML", "AI", "AI/ML", "Deep Learning", "Computer Vision", "CAD Generation",
+    "Generative 3D", "Agent", "Latent",
   ],
-  Design: [
-    "Design",
-    "Parametric",
-    "Interface",
-    "Procedural",
-    "Game",
-    "Digital Fabrication",
-    "Mixed Reality",
+  Interactive: [
+    "Interactive", "Interaction", "Projection Mapping", "Game",
+    "Data Visualization", "Data Engineering", "Desktop App", "Web App",
+    "Interface Design", "Personal",
   ],
-  Interaction: [
-    "Interaction",
-    "Interactive",
-    "Projection",
-    "Mapping",
-    "Web App",
-    "Desktop App",
-    "Tool",
+  "Computational Design": [
+    "Parametric", "Digital Fabrication", "Fabrication", "Mixed Reality",
+    "Form-finding", "Acoustic", "Procedural Generation", "Urban Planning",
+    "Computational",
   ],
-  Research: [
-    "Research",
-    "Thesis",
-    "Data Visualization",
-    "Visualization",
-    "Data Engineering",
-  ],
+  Architecture: ["Architecture", "Interior", "Urban Design"],
 };
 
 const norm = (s: string) => s.toLowerCase();
@@ -58,11 +54,22 @@ export function projectCategoryBuckets(categories: string[] = []): FilterCategor
   const out: FilterCategory[] = [];
   for (const bucket of FILTER_CATEGORIES) {
     const ms = matchers[bucket].map(norm);
-    if (lower.some((c) => ms.some((m) => c.includes(m)))) {
-      out.push(bucket);
-    }
+    if (lower.some((c) => ms.some((m) => c.includes(m)))) out.push(bucket);
   }
   return out;
+}
+
+/** Single domain for a project: explicit primary_category wins, else first
+ *  keyword-matched bucket, else Architecture. Used by /work so each card sits
+ *  in exactly one filter bucket, matching its scatter color. */
+export function domainForProject(
+  primaryCategory: string | undefined,
+  categories: string[] = []
+): FilterCategory {
+  if (primaryCategory && PRIMARY_TO_FILTER[primaryCategory]) {
+    return PRIMARY_TO_FILTER[primaryCategory];
+  }
+  return projectCategoryBuckets(categories)[0] ?? "Architecture";
 }
 
 export function bucketSlug(bucket: FilterCategory): string {
@@ -70,125 +77,56 @@ export function bucketSlug(bucket: FilterCategory): string {
 }
 
 // ─────────────────────────────────────────────────────────────
-// Round-4 Direction 4 — fixed tag-pill vocabulary for ProjectCard
-// Max 2 tags per project. Uppercase mono pills above the title.
+// Card tag pills — cross-cutting descriptors (max 2, most distinctive first).
+// RESEARCH is gated on an ACTUAL paper/publication signal — not the word
+// "Research" appearing in a studio project's categories. That is the
+// "research = papers" rule, made mechanical.
 // ─────────────────────────────────────────────────────────────
-
-export type ProjectTag =
-  | "THESIS"
-  | "ML TOOL"
-  | "RESEARCH"
-  | "ARCHITECTURE"
-  | "DESIGN SYSTEM"
-  | "EXPERIMENT"
-  | "PHYSICAL FAB";
-
-export const PROJECT_TAG_VOCAB: ProjectTag[] = [
-  "THESIS",
-  "ML TOOL",
-  "RESEARCH",
-  "ARCHITECTURE",
-  "DESIGN SYSTEM",
-  "EXPERIMENT",
-  "PHYSICAL FAB",
-];
 
 interface TagInferenceInput {
   categories?: string[];
-  priority?: string;
-  institution?: string;
   slug?: string;
-  year?: number;
+  publication?: string;
+  publication_url?: string;
+  reference_paper?: string;
+  github_upstream_url?: string;
 }
 
-/**
- * Map a project's `data.categories` (free-form vault strings) onto the
- * fixed 7-tag taxonomy used in the ProjectCard pills. Returns at most 2
- * tags, ordered by relevance.
- *
- * Heuristics (priority-ordered — first match wins for primary slot):
- *  1. priority === "flagship" + thesis category  → THESIS
- *  2. categories contain Architecture/Form-finding/Pavilion → ARCHITECTURE
- *  3. categories contain ML/AI/Generative/Latent/CV → ML TOOL
- *  4. categories contain Research/Thesis/Visualization → RESEARCH
- *  5. categories contain Design/Interface/System → DESIGN SYSTEM
- *  6. categories contain Fabrication/Robotic/Physical → PHYSICAL FAB
- *  7. categories contain Experiment/Game/Mixed Reality → EXPERIMENT
- *
- * Secondary tag is picked from remaining matches, deduped against primary.
- */
-export function getTagsForProject(data: TagInferenceInput | any): ProjectTag[] {
+export function getTagsForProject(data: TagInferenceInput | any): string[] {
   const cats: string[] = (data?.categories ?? []).map((c: string) => c.toLowerCase());
-  const isThesis = cats.some((c) => c.includes("thesis")) || data?.slug === "semantic-canvas";
-  const isFlagship = data?.priority === "flagship";
-  const isRiceArch = data?.institution === "Rice University";
+  const has = (needle: string) => cats.some((c) => c.includes(needle));
+  const isThesis = has("thesis") || data?.slug === "semantic-canvas";
+  const isAcademic = Boolean(
+    data?.publication || data?.publication_url || data?.reference_paper || data?.github_upstream_url
+  );
 
-  const matchers: Array<[ProjectTag, (c: string) => boolean]> = [
-    ["THESIS", (c) => c.includes("thesis")],
-    ["ARCHITECTURE", (c) =>
-      c.includes("architecture") ||
-      c.includes("pavilion") ||
-      c.includes("form-finding") ||
-      c.includes("urbanism") ||
-      c.includes("structural") ||
-      c.includes("parametric")],
-    ["ML TOOL", (c) =>
-      c.includes("ml") ||
-      c.includes("ai") ||
-      c.includes("generative") ||
-      c.includes("latent") ||
-      c.includes("computer vision") ||
-      c.includes("deep learning") ||
-      c.includes("cad generation")],
-    ["RESEARCH", (c) =>
-      c.includes("research") ||
-      c.includes("data visualization") ||
-      c.includes("visualization") ||
-      c.includes("data engineering")],
-    ["DESIGN SYSTEM", (c) =>
-      c.includes("design system") ||
-      c.includes("interface") ||
-      c.includes("desktop app") ||
-      c.includes("web app") ||
-      c.includes("tool")],
-    ["PHYSICAL FAB", (c) =>
-      c.includes("digital fabrication") ||
-      c.includes("fabrication") ||
-      c.includes("robotic") ||
-      c.includes("wire bending") ||
-      c.includes("ceramic")],
-    ["EXPERIMENT", (c) =>
-      c.includes("experiment") ||
-      c.includes("game") ||
-      c.includes("mixed reality") ||
-      c.includes("projection") ||
-      c.includes("mapping") ||
-      c.includes("interactive") ||
-      c.includes("interaction")],
+  // ordered by distinctiveness — the first two that match win
+  const tests: Array<[string, boolean]> = [
+    ["THESIS", isThesis],
+    ["RESEARCH", isAcademic],
+    ["AGENT", has("agent")],
+    ["GAME", has("game")],
+    ["DATA VIZ", has("data visualization") || has("data viz")],
+    ["MIXED REALITY", has("mixed reality")],
+    ["COMPUTER VISION", has("computer vision")],
+    ["GENERATIVE", has("generative") || has("procedural")],
+    ["FABRICATION", has("fabrication")],
+    ["PARAMETRIC", has("parametric")],
+    ["INSTALLATION", has("projection") || has("installation") || has("digital interaction")],
+    ["PERSONAL", has("personal")],
+    ["ML", has("ml") || has("ai") || has("deep learning") || has("cad generation")],
+    ["ACOUSTIC", has("acoustic")],
+    ["URBAN", has("urban")],
+    ["INTERIOR", has("interior")],
+    ["ARCHITECTURE", has("architecture")],
   ];
 
-  const out: ProjectTag[] = [];
-  for (const [tag, test] of matchers) {
-    if (cats.some(test) && !out.includes(tag)) {
+  const out: string[] = [];
+  for (const [tag, ok] of tests) {
+    if (ok && !out.includes(tag)) {
       out.push(tag);
       if (out.length >= 2) break;
     }
   }
-
-  // Forced primaries for distinctive cases
-  if (isThesis && !out.includes("THESIS")) {
-    out.unshift("THESIS");
-  }
-  if (isRiceArch && !out.includes("ARCHITECTURE")) {
-    if (out.length >= 2) out.pop();
-    out.push("ARCHITECTURE");
-  }
-  // Boost flagship ML projects up the list
-  if (isFlagship && cats.some((c) => c.includes("ml") || c.includes("ai")) && !out.includes("ML TOOL")) {
-    if (out.length >= 2) out.pop();
-    out.unshift("ML TOOL");
-  }
-
-  return out.slice(0, 2);
+  return out;
 }
-

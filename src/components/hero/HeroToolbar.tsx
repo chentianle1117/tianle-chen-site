@@ -26,9 +26,8 @@ import {
 
 const CATEGORY_COLORS_LOCAL: Record<CategoryKey, string> = {
   ml: "#9b6fc9",
-  research: "#7aa15c",
-  interaction: "#d49b50",
-  design: "#cf7f54",
+  interactive: "#d49b50",
+  compdesign: "#7aa15c",
   architecture: "#5fa0a6",
 };
 
@@ -70,9 +69,8 @@ export default function HeroToolbar({ presetKeys, projects }: Props) {
   const categoryCounts = useMemo<Array<[CategoryKey, number]>>(() => {
     const counts: Record<CategoryKey, number> = {
       ml: 0,
-      research: 0,
-      interaction: 0,
-      design: 0,
+      interactive: 0,
+      compdesign: 0,
       architecture: 0,
     };
     for (const p of projects) {
@@ -81,9 +79,8 @@ export default function HeroToolbar({ presetKeys, projects }: Props) {
     }
     const order: CategoryKey[] = [
       "ml",
-      "research",
-      "interaction",
-      "design",
+      "interactive",
+      "compdesign",
       "architecture",
     ];
     return order

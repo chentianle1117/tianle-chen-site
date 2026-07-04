@@ -6,7 +6,7 @@ year: 2026
 semester: Personal project
 categories:
   - Data Visualization
-  - Data Engineering
+  - Personal
   - Interactive Tool
 tags:
   - data-viz

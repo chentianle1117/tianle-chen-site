@@ -1061,49 +1061,42 @@ interface SpriteProps {
   reduced: boolean;
 }
 
-// Round-9l: 5-bucket palette, mapped 1:1 with CategoryKey.
+// 4-domain palette (2026 taxonomy). A domain is where a project LIVES;
+// Research / Thesis / Game / Data-Viz etc. are cross-cutting TAGS on the card.
 const CATEGORY_COLORS: Record<string, string> = {
-  ml: "#9b6fc9",              // violet — ML/AI pipelines
-  research: "#7aa15c",        // sage green — research / data viz
-  interaction: "#d49b50",     // warm amber — installation / MR / generative environments
-  design: "#cf7f54",          // oxide — game / craft / interactive design
-  architecture: "#5fa0a6",    // teal — built-form / parametric / urbanism
+  ml: "#9b6fc9",            // violet — AI / ML systems + tools
+  interactive: "#d49b50",   // warm amber — interactive tools, installations, games, data-viz
+  compdesign: "#7aa15c",    // sage green — computational / parametric / generative design + fab
+  architecture: "#5fa0a6",  // teal — architecture + urban studios
 };
 
-// Round-9l: 5 clean buckets keyed by an explicit `primary_category` field
-// in each project's metadata (overrides applied via apply_project_overrides
-// .mjs). Dropped THESIS/FABRICATION — there's only one thesis, and FAB was
-// a catch-all that didn't carry meaning. Keyword matching kept ONLY as a
-// fallback when primary_category is missing.
+// 4 clean domains keyed by an explicit `primary_category` field in each
+// project's metadata (overrides applied via apply_project_overrides.mjs).
+// Keyword matching kept ONLY as a fallback when primary_category is missing.
 export type CategoryKey =
   | "ml"
-  | "research"
-  | "interaction"
-  | "design"
+  | "interactive"
+  | "compdesign"
   | "architecture";
 
 export const CATEGORY_LABELS: Record<CategoryKey, string> = {
-  ml: "ML / AI",
-  research: "RESEARCH",
-  interaction: "INTERACTION",
-  design: "DESIGN",
-  architecture: "COMPUTATIONAL DESIGN",
+  ml: "AI / ML",
+  interactive: "INTERACTIVE",
+  compdesign: "COMPUTATIONAL DESIGN",
+  architecture: "ARCHITECTURE",
 };
 
 export function categoryKeyForProject(p: ProjectEmbedding): CategoryKey {
   const explicit = (p as ProjectEmbedding & { primary_category?: string })
     .primary_category;
-  if (explicit && (explicit as CategoryKey)) {
-    const k = explicit as CategoryKey;
-    if (k in CATEGORY_LABELS) return k;
+  if (explicit && (explicit as CategoryKey) in CATEGORY_LABELS) {
+    return explicit as CategoryKey;
   }
-  // Fallback keyword matcher (older entries / future projects without the
-  // override applied yet).
+  // Fallback keyword matcher (entries without the override applied yet).
   const cats = (p.categories ?? []).map((s) => s.toLowerCase());
-  if (cats.some((c) => c.includes("ml") || c.includes("ai") || c.includes("learning") || c.includes("cad generation"))) return "ml";
-  if (cats.some((c) => c.includes("research") || c.includes("data viz") || c.includes("visualiz"))) return "research";
-  if (cats.some((c) => c.includes("interact") || c.includes("mixed reality") || c.includes("installation"))) return "interaction";
-  if (cats.some((c) => c.includes("game") || c.includes("design"))) return "design";
+  if (cats.some((c) => c.includes("ml") || c.includes("ai") || c.includes("learning") || c.includes("cad generation") || c.includes("computer vision") || c.includes("agent"))) return "ml";
+  if (cats.some((c) => c.includes("interact") || c.includes("game") || c.includes("projection") || c.includes("data visualiz") || c.includes("data engineer") || c.includes("interface") || c.includes("web app") || c.includes("desktop app") || c.includes("installation"))) return "interactive";
+  if (cats.some((c) => c.includes("parametric") || c.includes("fabrication") || c.includes("form-finding") || c.includes("mixed reality") || c.includes("acoustic") || c.includes("procedural") || c.includes("generative") || c.includes("computational"))) return "compdesign";
   return "architecture";
 }
 

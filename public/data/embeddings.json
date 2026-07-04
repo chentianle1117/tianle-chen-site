@@ -4673,7 +4673,7 @@
         "col": 1,
         "size": 819
       },
-      "primary_category": "research",
+      "primary_category": "interactive",
       "semester": "spring",
       "semester_recency": 2026.33
     },
@@ -9347,7 +9347,7 @@
         "col": 3,
         "size": 819
       },
-      "primary_category": "design",
+      "primary_category": "interactive",
       "semester": "spring",
       "semester_recency": 2025.33
     },
@@ -18694,7 +18694,7 @@
         "col": 2,
         "size": 819
       },
-      "primary_category": "design",
+      "primary_category": "interactive",
       "semester": "fall",
       "semester_recency": 2024.83
     },
@@ -21029,7 +21029,7 @@
         "col": 3,
         "size": 819
       },
-      "primary_category": "interaction",
+      "primary_category": "interactive",
       "semester": "fall",
       "semester_recency": 2024.83
     },
@@ -23366,7 +23366,7 @@
         "col": 4,
         "size": 819
       },
-      "primary_category": "architecture",
+      "primary_category": "compdesign",
       "semester": "spring",
       "semester_recency": 2024.33
     },
@@ -25702,7 +25702,7 @@
         "col": 0,
         "size": 819
       },
-      "primary_category": "architecture",
+      "primary_category": "compdesign",
       "semester": "fall",
       "semester_recency": 2024.83
     },
@@ -28038,7 +28038,7 @@
         "col": 1,
         "size": 819
       },
-      "primary_category": "research",
+      "primary_category": "interactive",
       "semester": "fall",
       "semester_recency": 2024.83
     },
@@ -30374,7 +30374,7 @@
         "col": 2,
         "size": 819
       },
-      "primary_category": "ml",
+      "primary_category": "interactive",
       "semester": "fall",
       "semester_recency": 2024.83
     },
@@ -32709,7 +32709,7 @@
         "col": 3,
         "size": 819
       },
-      "primary_category": "research",
+      "primary_category": "ml",
       "semester": "fall",
       "semester_recency": 2024.83
     },
@@ -42055,7 +42055,7 @@
         "col": 2,
         "size": 819
       },
-      "primary_category": "interaction",
+      "primary_category": "compdesign",
       "semester": "fall",
       "semester_recency": 2024.83
     },
@@ -44390,7 +44390,7 @@
         "col": 3,
         "size": 819
       },
-      "primary_category": "architecture",
+      "primary_category": "compdesign",
       "semester": "spring",
       "semester_recency": 2023.33
     },
@@ -49063,7 +49063,7 @@
         "col": 0,
         "size": 819
       },
-      "primary_category": "architecture",
+      "primary_category": "compdesign",
       "semester": "spring",
       "semester_recency": 2023.33
     },
@@ -51398,7 +51398,7 @@
         "col": 1,
         "size": 819
       },
-      "primary_category": "architecture",
+      "primary_category": "compdesign",
       "semester": "fall",
       "semester_recency": 2022.83
     },
@@ -53735,7 +53735,7 @@
         "col": 2,
         "size": 819
       },
-      "primary_category": "architecture",
+      "primary_category": "compdesign",
       "semester": "spring",
       "semester_recency": 2022.33
     },

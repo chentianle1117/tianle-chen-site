@@ -7,7 +7,8 @@ import { execSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
 import pkg from "../../package.json";
-import { FILTER_CATEGORIES, projectCategoryBuckets } from "../lib/categories";
+import { FILTER_CATEGORIES, domainForProject } from "../lib/categories";
+import overrides from "../../scripts/project_overrides.json";
 import { getProjectCounts } from "../lib/projectCounts";
 
 // ── Build info ───────────────────────────────────────────────────────────
@@ -95,20 +96,21 @@ for (let y = minY; y <= maxY; y++) {
 // Category palette — matches the latent-space scatter legend; all mid-tone so
 // every wedge stays legible in BOTH themes (the old ramp ended in near-black
 // #1a1c20, which rendered as a stuck-dark wedge on the light dashboard).
+// 4-domain palette — matches the home scatter colors.
 const bucketColors: Record<string, string> = {
-  "ML/AI": "#9b6fc9",
-  Design: "#cf7f54",
-  Interaction: "#d49b50",
-  Research: "#7aa15c",
+  "AI / ML": "#9b6fc9",
+  Interactive: "#d49b50",
+  "Computational Design": "#7aa15c",
+  Architecture: "#5fa0a6",
 };
 const bucketCounts: Record<string, number> = Object.fromEntries(
   FILTER_CATEGORIES.map((b) => [b, 0])
 );
 for (const p of all) {
-  const cats = ((p.data as any).categories ?? []) as string[];
-  for (const b of projectCategoryBuckets(cats)) {
-    bucketCounts[b] = (bucketCounts[b] ?? 0) + 1;
-  }
+  const slug = (p as any).slug ?? (p.data as any).slug ?? p.id?.replace(/\.md$/, "");
+  const prim = (overrides as any)[slug]?.primary_category;
+  const b = domainForProject(prim, ((p.data as any).categories ?? []) as string[]);
+  bucketCounts[b] = (bucketCounts[b] ?? 0) + 1;
 }
 const donutData = FILTER_CATEGORIES.map((b) => ({
   label: b,
