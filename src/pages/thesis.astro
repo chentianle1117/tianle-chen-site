@@ -129,6 +129,29 @@ const stageImages = stageCandidates.filter(publicFileExists);
     </div>
   </section>
 
+  {/* ============ LIVE DEMO — moved to the top so it isn't missed (David 2026-07) ============ */}
+  {liveUrl && (
+    <section class="zone-base">
+      <SectionBreak number="01" label="LIVE DEMO" />
+      <div class="container-display py-10 md:py-14">
+        <div class="container-reading mx-0 px-0 mb-6" style="max-width: 72ch;">
+          <p style="color: rgb(var(--text-secondary)); line-height: 1.65;">
+            Try it first — no sign-up, runs entirely in your browser. Pick two semantic axes and
+            watch a shoe set reposition by meaning, or switch to the <strong>Design Lineage</strong>
+            tab. The embedded app's top bar is clipped so the portfolio chrome doesn't bleed in; open
+            it in a new tab for the full experience.
+          </p>
+        </div>
+        <div class="iframe-mask relative w-full" style="overflow: hidden; height: 720px; border: 1px solid rgb(var(--surface-border)); border-radius: 6px; background: rgb(var(--surface-1-rgb));">
+          <iframe src={liveUrl} title="Semantic Canvas live demo" loading="lazy" allow="clipboard-write; encrypted-media" class="absolute inset-x-0 w-full" style="top: -48px; height: 768px; border: 0;"></iframe>
+        </div>
+        <div class="mt-4">
+          <a href={liveUrl} target="_blank" rel="noopener noreferrer" class="mono-label" style="color: rgb(var(--accent-rgb));">Open live tool in new tab →</a>
+        </div>
+      </div>
+    </section>
+  )}
+
   {/* ============ TL;DR strip ============ */}
   <section class="zone-raised">
     <div class="container-display py-12 md:py-16">
@@ -157,7 +180,7 @@ const stageImages = stageCandidates.filter(publicFileExists);
 
   {/* ============ THE TOOL — zone-base ============ */}
   <section class="zone-base">
-    <SectionBreak number="01" label="THE TOOL" />
+    <SectionBreak number="02" label="THE TOOL" />
 
     <div class="container-display pb-12 md:pb-16">
     <div class="container-reading mx-0 px-0 mb-8" style="max-width: 72ch;">
@@ -189,7 +212,7 @@ const stageImages = stageCandidates.filter(publicFileExists);
 
   {/* ============ THE METHOD — zone-raised ============ */}
   <section class="zone-raised">
-    <SectionBreak number="02" label="THE METHOD" />
+    <SectionBreak number="03" label="THE METHOD" />
 
     <div class="container-reading prose-custom py-12 md:py-16">
     <h2>Latent space, made navigable</h2>
@@ -230,7 +253,7 @@ const stageImages = stageCandidates.filter(publicFileExists);
   {/* ============ OUTPUTS — zone-base ============ */}
   {outputImages.length > 0 && (
     <section class="zone-base">
-      <SectionBreak number="03" label="OUTPUTS" />
+      <SectionBreak number="04" label="OUTPUTS" />
       <div class="container-display pb-12 md:pb-16">
         <div class="container-reading mx-0 px-0 mb-8" style="max-width: 72ch;">
           <h2
@@ -259,7 +282,7 @@ const stageImages = stageCandidates.filter(publicFileExists);
 
   {/* ============ STUDY / PROCESS — zone-raised ============ */}
   <section class="zone-raised">
-    <SectionBreak number="04" label="THE STUDY" />
+    <SectionBreak number="05" label="THE STUDY" />
 
     <div class="container-reading prose-custom py-12 md:py-16">
     <p>
@@ -299,46 +322,6 @@ const stageImages = stageCandidates.filter(publicFileExists);
     </div>
     )}
   </section>
-
-  {/* ============ LIVE DEMO — embedded Semantic Canvas tool, zone-base ============ */}
-  {liveUrl && (
-    <section class="zone-base">
-      <SectionBreak number="05" label="LIVE DEMO" />
-      <div class="container-display pb-12 md:pb-16">
-        <div class="container-reading mx-0 px-0 mb-6" style="max-width: 72ch;">
-          <p style="color: rgb(var(--text-secondary)); line-height: 1.65;">
-            The live tool runs below. The top status bar of the embedded app is clipped so the
-            portfolio chrome doesn't bleed in — open the standalone deployment in a new tab for the
-            full experience.
-          </p>
-        </div>
-        <div
-          class="iframe-mask relative w-full"
-          style="overflow: hidden; height: 720px; border: 1px solid rgb(var(--surface-border)); border-radius: 6px; background: rgb(var(--surface-1-rgb));"
-        >
-          <iframe
-            src={liveUrl}
-            title="Semantic Canvas live demo"
-            loading="lazy"
-            allow="clipboard-write; encrypted-media"
-            class="absolute inset-x-0 w-full"
-            style="top: -48px; height: 768px; border: 0;"
-          ></iframe>
-        </div>
-        <div class="mt-4">
-          <a
-            href={liveUrl}
-            target="_blank"
-            rel="noopener noreferrer"
-            class="mono-label"
-            style="color: rgb(var(--accent-rgb));"
-          >
-            Open live tool in new tab →
-          </a>
-        </div>
-      </div>
-    </section>
-  )}
 
   {/* ============ META — zone-raised ============ */}
   <section class="zone-raised">
