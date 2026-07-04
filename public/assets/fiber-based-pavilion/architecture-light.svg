@@ -1,0 +1,147 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" width="1200" height="900" font-family="'IBM Plex Mono', ui-monospace, monospace">
+  <defs>
+    <marker id="fp-a" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L8,4.5 L0,9 Z" fill="#bf6a37" fill-opacity="0.85"/>
+    </marker>
+  </defs>
+  <rect width="1200" height="900" fill="#faf9f5"/>
+
+  <!-- faint grid -->
+  <g stroke="#8a8d93" stroke-opacity="0.10" stroke-width="1">
+    <line x1="600" y1="150" x2="600" y2="812"/>
+  </g>
+
+  <!-- Title -->
+  <text x="60" y="50" fill="#bf6a37" font-size="17" letter-spacing="3">FIBER-BASED PAVILION — FORM-FINDING &amp; FABRICATION WORKFLOW</text>
+  <text x="60" y="74" fill="#77726a" font-size="13">Segmental post-tensioned hollow-ceramic column + kinematic folding canopy · Castellón &amp; Chen, IASS 2024</text>
+
+  <!-- two-lane headers -->
+  <text x="60" y="122" fill="#77726a" font-size="13" letter-spacing="3">LANE A — TOPOLOGICAL COLUMN (compression member)</text>
+  <text x="628" y="122" fill="#77726a" font-size="13" letter-spacing="3">LANE B — KINEMATIC CANOPY (adaptive shading)</text>
+  <line x1="60" y1="132" x2="560" y2="132" stroke="#3c868c" stroke-opacity="0.30" stroke-width="1"/>
+  <line x1="628" y1="132" x2="1140" y2="132" stroke="#7a4fb0" stroke-opacity="0.30" stroke-width="1"/>
+
+  <!-- ============ LANE A ============ -->
+  <g font-size="14">
+    <!-- A1 precedent -->
+    <rect x="60" y="150" width="500" height="70" rx="5" fill="#f6f5f0" stroke="#8a8d93" stroke-opacity="0.55"/>
+    <text x="80" y="178" fill="#1a1714">PRECEDENT + BIO-ANALOGY</text>
+    <text x="80" y="200" fill="#5b564f" font-size="11.5">Fisac &amp; Barredo post-tensioned hollow beams (1960s) · bone-like</text>
+    <text x="80" y="214" fill="#5b564f" font-size="11.5">material/void distribution — mass where forces concentrate</text>
+
+    <!-- A2 topo opt -->
+    <rect x="60" y="252" width="500" height="86" rx="5" fill="#f6f5f0" stroke="#3c868c" stroke-opacity="0.8"/>
+    <text x="80" y="280" fill="#1a1714">TOPOLOGY OPTIMIZATION</text>
+    <text x="80" y="302" fill="#5b564f" font-size="11.5">FE-meshed solid → iterative density solve under compression</text>
+    <text x="80" y="316" fill="#5b564f" font-size="11.5">redundant material removed, load paths retained</text>
+    <text x="80" y="330" fill="#77726a" font-size="11">output: hollow hourglass profile w/ longitudinal void slots</text>
+
+    <!-- A3 catalogue -->
+    <rect x="60" y="370" width="500" height="70" rx="5" fill="#f6f5f0" stroke="#8a8d93" stroke-opacity="0.55"/>
+    <text x="80" y="398" fill="#1a1714">PARAMETRIC DESIGN CATALOGUE</text>
+    <text x="80" y="420" fill="#5b564f" font-size="11.5">family of optimized variants (perspective + elevation pairs)</text>
+    <text x="80" y="434" fill="#77726a" font-size="11">structurally viable, aesthetically distinct — one chosen to build</text>
+
+    <!-- A4 segmentation -->
+    <rect x="60" y="472" width="500" height="70" rx="5" fill="#f6f5f0" stroke="#8a8d93" stroke-opacity="0.55"/>
+    <text x="80" y="500" fill="#1a1714">SEGMENTATION FOR PREFABRICATION</text>
+    <text x="80" y="522" fill="#5b564f" font-size="11.5">column split into stackable hollow ceramic segments</text>
+    <text x="80" y="536" fill="#77726a" font-size="11">sized for the extrusion + machining envelope</text>
+  </g>
+
+  <!-- Lane A arrows -->
+  <g stroke="#bf6a37" stroke-opacity="0.45" stroke-width="1.6" fill="none">
+    <line x1="310" y1="220" x2="310" y2="252" marker-end="url(#fp-a)"/>
+    <line x1="310" y1="338" x2="310" y2="370" marker-end="url(#fp-a)"/>
+    <line x1="310" y1="440" x2="310" y2="472" marker-end="url(#fp-a)"/>
+  </g>
+
+  <!-- ============ LANE B ============ -->
+  <g font-size="14">
+    <!-- B1 origami -->
+    <rect x="628" y="150" width="512" height="70" rx="5" fill="#f6f5f0" stroke="#8a8d93" stroke-opacity="0.55"/>
+    <text x="648" y="178" fill="#1a1714">ORIGAMI FOLD PATTERN</text>
+    <text x="648" y="200" fill="#5b564f" font-size="11.5">rigid-foldable crease network defining the canopy surface</text>
+    <text x="648" y="214" fill="#77726a" font-size="11">seats onto the column capital as one adaptive pavilion</text>
+
+    <!-- B2 kangaroo -->
+    <rect x="628" y="252" width="512" height="86" rx="5" fill="#f6f5f0" stroke="#7a4fb0" stroke-opacity="0.8"/>
+    <text x="648" y="280" fill="#1a1714">KANGAROO FORM-FINDING (Grasshopper)</text>
+    <text x="648" y="302" fill="#5b564f" font-size="11.5">dynamic-relaxation solve of the fold under goal constraints</text>
+    <text x="648" y="316" fill="#5b564f" font-size="11.5">motion tuned to sunlight + wind while staying stable</text>
+    <text x="648" y="330" fill="#77726a" font-size="11">output: sequence of kinematic open↔closed states</text>
+
+    <!-- B3 digital twin -->
+    <rect x="628" y="370" width="512" height="70" rx="5" fill="#f6f5f0" stroke="#8a8d93" stroke-opacity="0.55"/>
+    <text x="648" y="398" fill="#1a1714">DIGITAL-TWIN SIMULATION</text>
+    <text x="648" y="420" fill="#5b564f" font-size="11.5">simulates + visualizes the moving canopy's kinematic stages</text>
+    <text x="648" y="434" fill="#77726a" font-size="11">documented as animation (video) — not physically built</text>
+
+    <!-- B4 integration -->
+    <rect x="628" y="472" width="512" height="70" rx="5" fill="#f6f5f0" stroke="#8a8d93" stroke-opacity="0.55"/>
+    <text x="648" y="500" fill="#1a1714">CAPITAL INTEGRATION</text>
+    <text x="648" y="522" fill="#5b564f" font-size="11.5">canopy geometry couples to the column top</text>
+    <text x="648" y="536" fill="#77726a" font-size="11">structure + shading resolved as a single system</text>
+  </g>
+
+  <!-- Lane B arrows -->
+  <g stroke="#bf6a37" stroke-opacity="0.45" stroke-width="1.6" fill="none">
+    <line x1="884" y1="220" x2="884" y2="252" marker-end="url(#fp-a)"/>
+    <line x1="884" y1="338" x2="884" y2="370" marker-end="url(#fp-a)"/>
+    <line x1="884" y1="440" x2="884" y2="472" marker-end="url(#fp-a)"/>
+  </g>
+
+  <!-- converge into fabrication band -->
+  <g stroke="#bf6a37" stroke-opacity="0.45" stroke-width="1.6" fill="none">
+    <path d="M310,542 L310,584 L470,584 L470,600" marker-end="url(#fp-a)"/>
+  </g>
+  <!-- canopy end note connector (dashed, non-fab path) -->
+  <path d="M884,542 L884,584 L560,584" stroke="#7a4fb0" stroke-opacity="0.4" stroke-width="1.4" stroke-dasharray="3 6" fill="none"/>
+  <text x="612" y="580" fill="#77726a" font-size="10.5" text-anchor="middle">canopy: digital only</text>
+
+  <!-- ============ FABRICATION BAND ============ -->
+  <text x="60" y="628" fill="#77726a" font-size="13" letter-spacing="3">FABRICATION &amp; ASSEMBLY — with Cerámica Cumella</text>
+  <line x1="60" y1="638" x2="1140" y2="638" stroke="#bf6a37" stroke-opacity="0.25" stroke-width="1"/>
+
+  <g font-size="14">
+    <!-- F1 extrusion -->
+    <rect x="60" y="654" width="250" height="96" rx="5" fill="#f6f5f0" stroke="#8a8d93" stroke-opacity="0.6"/>
+    <text x="80" y="682" fill="#1a1714">1 · EXTRUSION</text>
+    <text x="80" y="704" fill="#5b564f" font-size="11.5">conventional ceramic</text>
+    <text x="80" y="720" fill="#5b564f" font-size="11.5">extrusion of hollow</text>
+    <text x="80" y="736" fill="#5b564f" font-size="11.5">segment blanks</text>
+
+    <!-- F2 robotic subtractive -->
+    <rect x="332" y="654" width="270" height="96" rx="5" fill="#f9efe4" stroke="#bf6a37" stroke-width="2"/>
+    <text x="352" y="682" fill="#bf6a37">2 · ROBOTIC SUBTRACTIVE</text>
+    <text x="352" y="704" fill="#5b564f" font-size="11.5">UR arm mills the topo-</text>
+    <text x="352" y="720" fill="#5b564f" font-size="11.5">optimized voids + profile</text>
+    <text x="352" y="736" fill="#77726a" font-size="11">CAD geometry → toolpath</text>
+
+    <!-- F3 posttension -->
+    <rect x="624" y="654" width="250" height="96" rx="5" fill="#f6f5f0" stroke="#8a8d93" stroke-opacity="0.6"/>
+    <text x="644" y="682" fill="#1a1714">3 · STACK + POST-TENSION</text>
+    <text x="644" y="704" fill="#5b564f" font-size="11.5">segments stacked, tendon</text>
+    <text x="644" y="720" fill="#5b564f" font-size="11.5">compresses joints into</text>
+    <text x="644" y="736" fill="#5b564f" font-size="11.5">one monolithic column</text>
+
+    <!-- F4 dual function -->
+    <rect x="896" y="654" width="244" height="96" rx="5" fill="#f6f5f0" stroke="#5a8038" stroke-opacity="0.8"/>
+    <text x="916" y="682" fill="#1a1714">4 · DUAL-FUNCTION UNIT</text>
+    <text x="916" y="704" fill="#5b564f" font-size="11.5">structural column +</text>
+    <text x="916" y="720" fill="#5b564f" font-size="11.5">water collector w/ climatic</text>
+    <text x="916" y="736" fill="#5b564f" font-size="11.5">control &amp; water storage</text>
+  </g>
+
+  <g stroke="#bf6a37" stroke-opacity="0.45" stroke-width="1.6" fill="none">
+    <line x1="310" y1="702" x2="332" y2="702" marker-end="url(#fp-a)"/>
+    <line x1="602" y1="702" x2="624" y2="702" marker-end="url(#fp-a)"/>
+    <line x1="874" y1="702" x2="896" y2="702" marker-end="url(#fp-a)"/>
+  </g>
+
+  <!-- footer -->
+  <rect x="60" y="784" width="1080" height="72" rx="6" fill="#f6f5f0" stroke="#8a8d93" stroke-opacity="0.5"/>
+  <text x="80" y="812" fill="#38332e" font-size="13">OUTCOME — peer-reviewed at IASS 2024 (Int'l Association for Shell and Spatial Structures)</text>
+  <text x="80" y="834" fill="#77726a" font-size="11.5">Prototype hollow ceramic column segments machined + fabricated at Cerámica Cumella · canopy delivered as digital-twin animation</text>
+  <text x="80" y="850" fill="#77726a" font-size="11.5">David Chen (research assistant): computational form-finding, topology-optimization catalogue, robotic toolpath + digital-twin simulation · co-author</text>
+</svg>

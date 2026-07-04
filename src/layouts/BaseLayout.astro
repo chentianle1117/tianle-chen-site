@@ -86,21 +86,41 @@ const jsonLd = {
         class (legacy components). */}
     <script is:inline>
       (function () {
-        try {
-          // DARK is the canonical default. We intentionally do NOT consult
-          // prefers-color-scheme — the design is dark-first and respecting OS
-          // light caused jarring dark-hero / cream-body seams across the site.
-          // Users can toggle to light via ThemeToggle; that choice persists.
-          var stored = localStorage.getItem("theme");
-          var theme = stored || "dark";
+        // Convention-based light/dark image swap: hardcoded-dark SVGs (project
+        // covers + architecture diagrams) each have a `*-light.svg` twin. In
+        // light mode we point the <img> at the twin. No per-image markup needed.
+        var IMG_RE = /^(\/assets\/[^?#]*?(?:cover|architecture|d[1-4]-[a-z-]+))(-light)?\.svg$/;
+        function themeImages(theme) {
+          var imgs = document.images;
+          for (var i = 0; i < imgs.length; i++) {
+            var s = imgs[i].getAttribute("src") || "";
+            var m = s.match(IMG_RE);
+            if (!m) continue;
+            var want = m[1] + (theme === "light" ? "-light" : "") + ".svg";
+            if (s !== want) imgs[i].setAttribute("src", want);
+          }
+        }
+        function currentTheme() {
+          try { return localStorage.getItem("theme") || "dark"; } catch (e) { return "dark"; }
+        }
+        function applyTheme() {
+          var theme = currentTheme();
           var root = document.documentElement;
           root.setAttribute("data-theme", theme);
           root.classList.remove("dark", "light");
           root.classList.add(theme);
-        } catch (e) {
-          document.documentElement.setAttribute("data-theme", "dark");
-          document.documentElement.classList.add("dark");
+          themeImages(theme);
         }
+        applyTheme();
+        // Re-apply after every View-Transition navigation — WITHOUT this the
+        // swapped-in page ships its hardcoded class="dark" and the chosen theme
+        // silently reverts. after-swap runs before paint, so no flash.
+        document.addEventListener("astro:after-swap", applyTheme);
+        // Swap late/lazy images once loaded, and whenever the toggle fires.
+        document.addEventListener("astro:page-load", function () { themeImages(currentTheme()); });
+        window.addEventListener("theme-change", function (e) {
+          themeImages((e && e.detail && e.detail.theme) || currentTheme());
+        });
       })();
     </script>
 

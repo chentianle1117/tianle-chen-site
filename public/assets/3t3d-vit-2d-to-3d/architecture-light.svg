@@ -1,0 +1,170 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 900" width="1200" height="900" font-family="'IBM Plex Mono', ui-monospace, monospace">
+  <defs>
+    <marker id="a3-arrow" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L8,4.5 L0,9 Z" fill="#bf6a37" fill-opacity="0.9"/>
+    </marker>
+  </defs>
+  <rect width="1200" height="900" fill="#faf9f5"/>
+
+  <!-- faint grid -->
+  <g stroke="#8a8d93" stroke-opacity="0.10" stroke-width="1">
+    <line x1="0" y1="150" x2="1200" y2="150"/>
+    <line x1="0" y1="560" x2="1200" y2="560"/>
+  </g>
+
+  <!-- Title -->
+  <text x="48" y="46" fill="#bf6a37" font-size="17" letter-spacing="3">3T3D — SKETCH-TO-3D VISION TRANSFORMER</text>
+  <text x="48" y="70" fill="#77726a" font-size="13">3 orthographic sketches to DINOv2 encoder to fusion to transformer decoder to triplane to mesh · trained on a self-built architectural dataset</text>
+
+  <!-- ============ INFERENCE PIPELINE ============ -->
+  <text x="48" y="122" fill="#77726a" font-size="13" letter-spacing="3">INFERENCE PIPELINE  (single 2D-to-3D forward pass)</text>
+
+  <!-- Stage 1: Inputs -->
+  <rect x="48" y="150" width="176" height="150" rx="6" fill="#f6f5f0" stroke="#3c868c" stroke-opacity="0.75"/>
+  <text x="66" y="178" fill="#1a1714" font-size="14">INPUT VIEWS</text>
+  <text x="66" y="200" fill="#5b564f" font-size="11.5">3 orthographic edge maps</text>
+  <g font-size="12" fill="#5b564f">
+    <text x="66" y="228">v_front  (elevation)</text>
+    <text x="66" y="250">v_right  (side)</text>
+    <text x="66" y="272">v_top    (plan)</text>
+  </g>
+  <text x="66" y="292" fill="#77726a" font-size="10.5">256 to 512 · concat [B,C,H,W]</text>
+
+  <!-- Stage 2: DINOv2 encoder -->
+  <rect x="272" y="150" width="200" height="150" rx="6" fill="#f9efe4" stroke="#bf6a37" stroke-width="1.5"/>
+  <text x="290" y="178" fill="#bf6a37" font-size="14">ENCODER — DINOv2</text>
+  <text x="290" y="200" fill="#5b564f" font-size="11.5">frozen ViT (pretrained)</text>
+  <g font-size="11.5" fill="#5b564f">
+    <text x="290" y="228">per-view patch tokens</text>
+    <text x="290" y="250">cls token stripped</text>
+    <text x="290" y="272">patch grid P: 16x16</text>
+  </g>
+  <text x="290" y="292" fill="#77726a" font-size="10.5">out: 3 x [B, N, D_enc]</text>
+
+  <!-- Stage 3: Fusion -->
+  <rect x="520" y="150" width="184" height="150" rx="6" fill="#f6f5f0" stroke="#7a4fb0" stroke-opacity="0.8"/>
+  <text x="538" y="178" fill="#1a1714" font-size="14">FUSION</text>
+  <text x="538" y="200" fill="#5b564f" font-size="11.5">multi-view merge</text>
+  <g font-size="11.5" fill="#5b564f">
+    <text x="538" y="228">linear-project each view</text>
+    <text x="538" y="250">to D_dec, then SUM</text>
+    <text x="538" y="272">co-located patches add</text>
+  </g>
+  <text x="538" y="292" fill="#77726a" font-size="10.5">out: [B, N, D_dec]</text>
+
+  <!-- Stage 4: Decoder -->
+  <rect x="752" y="150" width="200" height="150" rx="6" fill="#f9efe4" stroke="#bf6a37" stroke-width="1.5"/>
+  <text x="770" y="178" fill="#bf6a37" font-size="14">DECODER</text>
+  <text x="770" y="200" fill="#5b564f" font-size="11.5">custom transformer</text>
+  <g font-size="11.5" fill="#5b564f">
+    <text x="770" y="228">6 layers · 8 heads</text>
+    <text x="770" y="250">self-attention, pre-norm</text>
+    <text x="770" y="272">+ 2D spatial pos-enc</text>
+  </g>
+  <text x="770" y="292" fill="#77726a" font-size="10.5">FFN 512 to 2048 to 512</text>
+
+  <!-- Stage 5: Upsampling neck -->
+  <rect x="1000" y="150" width="152" height="150" rx="6" fill="#f6f5f0" stroke="#5a8038" stroke-opacity="0.8"/>
+  <text x="1018" y="178" fill="#1a1714" font-size="14">UPSAMPLE</text>
+  <text x="1018" y="200" fill="#5b564f" font-size="11.5">neck (ConvTranspose)</text>
+  <g font-size="12" fill="#5b564f">
+    <text x="1018" y="228">R^16 to R^128</text>
+    <text x="1018" y="250">Conv 1x1 + Tanh</text>
+  </g>
+  <text x="1018" y="278" fill="#77726a" font-size="10.5">out: triplane grids</text>
+
+  <!-- arrows row 1 -->
+  <g stroke="#bf6a37" stroke-opacity="0.5" stroke-width="1.6" fill="none">
+    <line x1="224" y1="225" x2="272" y2="225" marker-end="url(#a3-arrow)"/>
+    <line x1="472" y1="225" x2="520" y2="225" marker-end="url(#a3-arrow)"/>
+    <line x1="704" y1="225" x2="752" y2="225" marker-end="url(#a3-arrow)"/>
+    <line x1="952" y1="225" x2="1000" y2="225" marker-end="url(#a3-arrow)"/>
+  </g>
+
+  <!-- Stage 6: Triplane representation -->
+  <rect x="272" y="336" width="430" height="176" rx="6" fill="#f6f5f0" stroke="#7a4fb0" stroke-opacity="0.8"/>
+  <text x="292" y="364" fill="#1a1714" font-size="14">PREDICTED TRIPLANE</text>
+  <text x="292" y="386" fill="#5b564f" font-size="11.5">3 orthogonal feature planes  F_xy · F_xz · F_yz</text>
+  <text x="292" y="416" fill="#bf6a37" font-size="12">query p=(x,y,z):  n_p = F_xy(x,y) + F_xz(x,z) + F_yz(y,z)</text>
+  <text x="292" y="438" fill="#bf6a37" font-size="12">decode:  NF(n_p) = MLP(n_p)</text>
+  <text x="292" y="470" fill="#5b564f" font-size="11.5">Two feature encodings explored:</text>
+  <text x="292" y="490" fill="#77726a" font-size="10.5">Binary occupancy (C=1, in/out) · Normal map + SDF (surface normals + signed distance)</text>
+
+  <!-- Stage 7: Mesh extraction -->
+  <rect x="752" y="336" width="200" height="176" rx="6" fill="#f9efe4" stroke="#bf6a37" stroke-width="1.5"/>
+  <text x="770" y="364" fill="#bf6a37" font-size="14">MESH EXTRACTION</text>
+  <text x="770" y="388" fill="#5b564f" font-size="11.5">Marching Cubes</text>
+  <g font-size="11.5" fill="#5b564f">
+    <text x="770" y="416">sample occupancy field</text>
+    <text x="770" y="438">from triplane query</text>
+    <text x="770" y="460">to surface iso-mesh</text>
+  </g>
+  <text x="770" y="490" fill="#77726a" font-size="10.5">output: 3D .obj mesh</text>
+
+  <!-- Stage 8: designer output note -->
+  <rect x="1000" y="336" width="152" height="176" rx="6" fill="#f6f5f0" stroke="#8a8d93" stroke-opacity="0.6"/>
+  <text x="1018" y="364" fill="#1a1714" font-size="13">DESIGNER</text>
+  <text x="1018" y="386" fill="#5b564f" font-size="11.5">3D massing to</text>
+  <text x="1018" y="404" fill="#5b564f" font-size="11.5">refine downstream</text>
+  <text x="1018" y="440" fill="#77726a" font-size="11">goal: real-time</text>
+  <text x="1018" y="458" fill="#77726a" font-size="11">sketch-to-form for</text>
+  <text x="1018" y="476" fill="#77726a" font-size="11">architects</text>
+
+  <!-- arrows from upsample down to triplane, then to mesh, then to designer -->
+  <g stroke="#bf6a37" stroke-opacity="0.5" stroke-width="1.6" fill="none">
+    <path d="M1076,300 L1076,318 L487,318 L487,336" marker-end="url(#a3-arrow)"/>
+    <line x1="702" y1="424" x2="752" y2="424" marker-end="url(#a3-arrow)"/>
+    <line x1="952" y1="424" x2="1000" y2="424" marker-end="url(#a3-arrow)"/>
+  </g>
+
+  <!-- ============ DATASET PIPELINE ============ -->
+  <text x="48" y="606" fill="#77726a" font-size="13" letter-spacing="3">SELF-BUILT TRAINING DATASET  (no suitable architectural dataset existed)</text>
+
+  <rect x="48" y="632" width="180" height="96" rx="6" fill="#f6f5f0" stroke="#8a8d93" stroke-opacity="0.6"/>
+  <text x="66" y="660" fill="#1a1714" font-size="13">SDXL</text>
+  <text x="66" y="682" fill="#5b564f" font-size="11">Stable Diffusion XL</text>
+  <text x="66" y="704" fill="#77726a" font-size="11">1800 building images</text>
+
+  <rect x="276" y="632" width="180" height="96" rx="6" fill="#f9efe4" stroke="#bf6a37" stroke-width="1.5"/>
+  <text x="294" y="660" fill="#bf6a37" font-size="13">TripoSR</text>
+  <text x="294" y="682" fill="#5b564f" font-size="11">image to .obj mesh</text>
+  <text x="294" y="704" fill="#77726a" font-size="11">best 500 kept</text>
+
+  <rect x="504" y="632" width="180" height="96" rx="6" fill="#f6f5f0" stroke="#8a8d93" stroke-opacity="0.6"/>
+  <text x="522" y="660" fill="#1a1714" font-size="13">RENDER VIEWS</text>
+  <text x="522" y="682" fill="#5b564f" font-size="11">front / top / side</text>
+  <text x="522" y="704" fill="#77726a" font-size="11">aligned orthographic</text>
+
+  <rect x="732" y="632" width="180" height="96" rx="6" fill="#f6f5f0" stroke="#8a8d93" stroke-opacity="0.6"/>
+  <text x="750" y="660" fill="#1a1714" font-size="13">EDGE MAPS</text>
+  <text x="750" y="682" fill="#5b564f" font-size="11">Informative Drawings</text>
+  <text x="750" y="704" fill="#77726a" font-size="11">views to sketches</text>
+
+  <rect x="960" y="632" width="192" height="96" rx="6" fill="#f9efe4" stroke="#bf6a37" stroke-width="1.5"/>
+  <text x="978" y="660" fill="#bf6a37" font-size="13">PAIRED SAMPLE</text>
+  <text x="978" y="682" fill="#5b564f" font-size="11">(3 sketches, mesh)</text>
+  <text x="978" y="704" fill="#77726a" font-size="11">to ground-truth triplane</text>
+
+  <g stroke="#bf6a37" stroke-opacity="0.5" stroke-width="1.6" fill="none">
+    <line x1="228" y1="680" x2="276" y2="680" marker-end="url(#a3-arrow)"/>
+    <line x1="456" y1="680" x2="504" y2="680" marker-end="url(#a3-arrow)"/>
+    <line x1="684" y1="680" x2="732" y2="680" marker-end="url(#a3-arrow)"/>
+    <line x1="912" y1="680" x2="960" y2="680" marker-end="url(#a3-arrow)"/>
+  </g>
+  <!-- link dataset back to training -->
+  <text x="48" y="756" fill="#77726a" font-size="11">Sketches feed the encoder above · ground-truth triplanes supervise the decoder — two-stage schedule: (1) freeze DINOv2, train decoder; (2) unfreeze, fine-tune with differentiated LRs.</text>
+
+  <!-- ============ RESULTS / TRAINING STRIP ============ -->
+  <rect x="48" y="784" width="1104" height="88" rx="6" fill="#f6f5f0" stroke="#8a8d93" stroke-opacity="0.5"/>
+  <text x="68" y="812" fill="#38332e" font-size="13">TRAINING &amp; EVALUATION</text>
+  <g font-size="11.5" fill="#5b564f">
+    <text x="68" y="834">Loss: BCE (occupancy) · L1 (normal+SDF)</text>
+    <text x="360" y="834">Compute: A100, 37 epochs, ~480 s/epoch (~5 h)</text>
+    <text x="720" y="834">Tracking: Weights &amp; Biases</text>
+  </g>
+  <g font-size="11.5" fill="#77726a">
+    <text x="68" y="856">Metric: bidirectional Chamfer Distance over 300 meshes</text>
+    <text x="500" y="856" fill="#bf6a37">Mean CD 0.200 · median 0.192 · min 0.075</text>
+    <text x="870" y="856">(One-2-3-45 0.227 · TripoSR 0.111)</text>
+  </g>
+</svg>
