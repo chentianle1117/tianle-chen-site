@@ -15,6 +15,13 @@ course_code: 48-652
 gif_hero: /assets/design-the-ambience/hero.gif
 github: null
 hero_image: /assets/design-the-ambience/hero.gif
+image_captions:
+- Iteration 3 — Physarum simulation layered with the "urban plan" prompt; StreamDiffusion
+  reconstructed Physarum trails as green space and untouched screen areas as urban blocks.
+- Iteration 2 — "urban plan" prompt; the human contour acts as negative space and organic
+  silhouettes are squared off into the city grid.
+- Iteration 1 — "plant" prompt; window edges read as architecture and the cursor square
+  morphs into plant forms, some blending into the real workspace.
 images:
 - /assets/design-the-ambience/trial-3-physarum.png
 - /assets/design-the-ambience/trial-2-urban-plan.png
@@ -80,13 +87,29 @@ The project pushes the boundaries of human-computer interaction by moving focus 
 
 The workflow begins with the user deciding to interact with the computer. This interaction is captured through inputs such as mouse and keyboard usage, as well as the user's physical movements. The inputs generate a range of system signals: cursor XY coordinates, cursor movement speed, keyboard typing speed, live PC screen captures, and human contour segmentation. Each input is processed and integrated into a computational pipeline, culminating in real-time generative visuals projected back into the user's environment.
 
-![System loop flowchart](/assets/design-the-ambience/system-loop-flowchart.png)
+<figure class="diagram">
+  <img src="/assets/design-the-ambience/architecture.svg" alt="Real-time feedback loop: mouse, keyboard, and body pose are captured (pyQt5/pynput over OSC, MediaPipe contour, live screen grab), each mapped to a distinct StreamDiffusion conditioning layer in TouchDesigner, rendered at ~16 fps / 514×514, projected onto the wall and the user's body via CamShnapper, and fed back as the ambient environment the user reacts to." />
+  <figcaption>The closed loop — four measured input channels plus the live screen feed condition every StreamDiffusion frame; the projection is what the user then reacts to, closing a circular-causality loop.</figcaption>
+</figure>
+
+The original hand-drawn flowchart the diagram is based on used **red lines for human input, grey for algorithmic processing, and green for the external projection back into the room** — a three-colour convention this rebuilt version preserves.
+
+### System stack at a glance
+
+| Stage | Component | Notes (from the build) |
+|---|---|---|
+| Cursor / keyboard capture | Python: `pyQt5` + `pynput` | Standalone script; cursor XY, cursor speed, typing speed |
+| Script → engine transport | TouchDesigner **OSC** module | Numeric channels streamed into the `.toe` project |
+| Screen + body ingest | TouchDesigner + MediaPipe | Live PC screen grab; `mediapipe-touchdesigner` (torinmb) for human-contour segmentation |
+| Real-time generation | **StreamDiffusion** (`StreamDiffusionTD-0.2.2.tox`) | Stable Diffusion img2img at ~16 fps, 514×514, fixed text prompt |
+| Projection mapping | **CamShnapper** module | Contour cast onto the user's back; rest onto the workspace |
+| Capture hardware | DJI Osmo camera, projector, laptops, main PC | Osmo feeds the contour segmentation |
 
 ### Input data capture and processing
 
 1. **Cursor and keyboard data.** Cursor position and movement speed, along with keyboard typing speed, are captured using Python libraries such as `pyQt5` and `pynput`. This data is processed in a standalone Python script and sent to a TouchDesigner project file via the OSC module in TouchDesigner.
 
-2. **Screen capture and image segmentation.** The PC's live screen is captured, and human contour segmentation is processed directly in TouchDesigner. These visual inputs provide additional parameters for the system to analyze and integrate into the generative output.
+2. **Screen capture and image segmentation.** The PC's live screen is captured, and human contour segmentation is processed directly in TouchDesigner using the `mediapipe-touchdesigner` integration. MediaPipe emits the detected person as a bounding box plus a confidence score — the project's `detection_data.json` shows the shape of that per-frame payload (`x`, `y`, `width`, `height`, `score`), which the pipeline reads to place and mask the human contour before it reaches StreamDiffusion. These visual inputs provide additional parameters for the system to analyze and integrate into the generative output.
 
 3. **Stream Diffusion pipeline.** After pre-processing, the data is fed into the StreamDiffusion pipeline, which leverages Stable Diffusion for real-time image generation. With a predetermined text prompt, StreamDiffusion synthesizes all the inputs to create a sequence of images at around 16 frames per second. The result is not merely displayed on screen but projected back into the physical workspace, bridging the digital and ambient environments.
 
@@ -186,4 +209,4 @@ Despite its strengths, the project faced several technical constraints that limi
 
 ## Related cards
 
-- [[2024-Fall--spectral-facades]] — same team + course, earlier assignment that introduced the gesture-to-diffusion approach before this final project scaled it into full ambient projection
+- [[spectral-facades]] — same team + course, earlier assignment that introduced the gesture-to-diffusion approach before this final project scaled it into full ambient projection

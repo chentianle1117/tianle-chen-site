@@ -11,7 +11,38 @@ categories:
 publish: true
 priority: standard
 summary: A four-stage structural exploration of bending — from a cantilevered bending plate to a controlled-bending frame, then a curved façade and roof, and finally a reinforced hanging structure that uses bent strings as both load-bearing roof and decorative façade.
-hero_image: /assets/spatial-bending/7b8b6ac7-2e94-4bb2-a02c-2655f0f70902_rw_1920.png
+hero_image: /assets/spatial-bending/cbad0bbe-42e6-4df7-8f77-c0136eb9f076_rw_3840.jpg
+image_captions:
+  - Four-stage axonometric sequence — bending plate, controlled-bending frame, curved facade and roof, reinforced hanging structure.
+  - Controlled-bending frame — chains draped across bent wooden strips as controllable weight, tuned against string counterweights.
+  - Final hanging-structure model, oblique — suspended floor plates carried by bent wire strings between paired post walls.
+  - Front elevation — laser-cut coffered floor plate and bent-string canopy read together.
+  - Bending-plate study — two stacked timber blocks cantilevered on an S-curved bending plate.
+  - Bending-plate study — a single timber block balanced at the tip of one curved plate.
+  - Bending-plate study — a block held above a low flattened arch.
+  - Bending-plate study — a tall block carried on a paired-strip arch.
+  - Bending-plate study — two stacked blocks held aloft on the S-curved plate, alternate view.
+  - Bending-plate study — a block resting on twin shallow arches.
+  - Bending-plate study — a tall stacked block on a laminated single arch.
+  - Controlled-bending frame — chains hung between two plywood frames to load the bent strips.
+  - Controlled-bending frame — chains sliding down the strips as the curvature shifts.
+  - Controlled-bending frame, oblique — bent strips arced between frames with clamps holding the base.
+  - Controlled-bending frame — rows of chain hanging from the strips at graduated depths.
+  - Controlled-bending frame, side — strips bowed into a deep curve, clamps at the far frame.
+  - Controlled-bending frame — chains draped along the length of the bending strips.
+  - Final model, interior — bent wire strings pass through the suspended floor with scale figures.
+  - Final model, elevation — layered floor plates between tall post walls, occupied by figures.
+  - Final model, aerial oblique — curved floor plates suspended within the string field.
+  - Final model, interior from below — figures beneath the hanging plates and wire strings.
+  - Final model, detail — wire strings routed over slotted post caps.
+  - Final model, interior — underside of a curved balcony plate and its supporting posts.
+  - Laser-cut coffered floor panels laid flat on the base board.
+  - Coffered floor plate set between post walls before the strings are strung.
+  - Coffered floor plate with strings strung between the post walls, elevation.
+  - Rendered interior — silhouetted figures and a grand piano under the coffered plates.
+  - Rendered detail — figures moving through the field of vertical string supports.
+  - Rendered interior — figures across the multi-level coffered floors.
+  - Rendered detail — figures seated and standing on the string-supported post caps.
 images:
   - /assets/spatial-bending/7b8b6ac7-2e94-4bb2-a02c-2655f0f70902_rw_1920.png
   - /assets/spatial-bending/6d1a5506-807c-4114-943f-7a710f4b0a7a_rw_3840.jpg
@@ -45,7 +76,15 @@ images:
   - /assets/spatial-bending/fbf194de-2a07-484c-9f61-a2ce4fd94646_rw_3840.jpg
 ---
 
-Spatial Bending walks through four stages of structural development:
+## Concept
+
+The project treats bending as a design method rather than a defect to be engineered out. Each stage is a physical experiment in what a curved, load-carrying member can hold, and the geometry of the building is read back out of those experiments instead of drawn first and rationalized later.
+
+The early studies are tabletop equilibrium tests, photographed against black to isolate the structure. A thin wooden plate is bent into an arch or an S-curve and asked to cantilever a stacked timber block far past its base — the whole point is to find how little material, bent well, can hold how much. The controlled-bending frame turns this into a tunable rig: lengths of steel chain hang from bent strips as adjustable weight while strings act as counterweight, so the curvature of each strip can be dialed in by hand rather than assumed.
+
+That physical logic scales up into an inhabited structure. Instead of columns and beams in compression, floor plates are suspended from a dense field of bent strings that serve at once as roof, facade, and structure; the upper floor hangs from the roof rather than standing on the floor below. In the final models the strings become taut wire arcs strung between paired post walls, and the floor plates read as laser-cut coffered slabs whose triangulated pattern lightens them where the hanging forces allow. Scale figures — walking, seated, at a piano — place the string field at building scale and test it as a space to occupy.
+
+## Four stages
 
 1. **Bending Plate** — extreme equilibrium of a cantilevering structure under single or multiple loads.
 2. **Controlled-Bending Frame** — chains as controllable weight, strings as controllable counterweight, modulating the curvature of wooden strips.

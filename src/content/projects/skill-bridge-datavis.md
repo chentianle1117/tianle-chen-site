@@ -29,6 +29,15 @@ images:
 - /assets/skill-bridge-datavis/Project Thumbnail.png
 - /assets/skill-bridge-datavis/Presentation 1.png
 - /assets/skill-bridge-datavis/Presentation 2.png
+image_captions:
+- Hovering a dashboard bar highlights the matching posting on the map and rescales the coordinated views.
+- Integrated dashboard — skill↔category selection drives log-scaled job counts, salary, and application bars.
+- Salary and application-volume comparison across tech and design subcategories.
+- Circular skill-job linkage — edge-bundled connections between 76 skills and job categories.
+- Remote vs. non-remote geolocations for postings, colored by Tech / Design.
+- Project thumbnail.
+- Interactive main dashboard overview.
+- Batch-selectable skill-to-job-category connections.
 live_url: /apps/skill-bridge/
 local_path: W:\CMU_Academics\Fall 2024 CMU\Data Visualization\Skill-Bridge-DataVis
 notion_url: https://www.notion.so/chentianle1117/Skill-Bridge-Data-Visualization-Interface-16a33d12d95a804f89f2cb345dac1b3d
@@ -74,9 +83,42 @@ year: 2024
 
 ## The dilemma for cross-field job seekers
 
-The labor market is evolving at an unprecedented pace. Emerging technologies and shifting demands are driving individuals to acquire new skills and transition into unfamiliar fields. This phenomenon is particularly evident among cross-field job seekers — those venturing into careers that differ significantly from their previous experience. While these individuals bring diverse perspectives and creativity, they often face challenges in aligning their skills with job requirements and navigating the vast job landscape.
+The labor market is evolving at an unprecedented pace. Emerging technologies and shifting demands are driving individuals to acquire new skills and transition into unfamiliar fields. This is particularly evident among cross-field job seekers — those venturing into careers that differ significantly from their previous experience. They bring diverse perspectives, but often struggle to align their existing skills with what a target role actually requires, and to see where in the country that demand concentrates.
 
-In this study we provide a data-driven understanding of the broader categories of jobs and how specific skills — particularly in tech and design — connect to these roles. We analyzed LinkedIn job postings from 2023, extracting skills from job descriptions and categorizing them into **nine overarching skill groups** (e.g. "Data Analysis", "Programming") and **23 job categories** (e.g. "Cloud DevOps", "Software Engineer", "Product Management"). Using a consistent keyword-mapping process, we ensured clarity and accuracy in linking skills to jobs. Our visualizations focus on revealing the connection between tech/design skills and job categories, as well as providing insight into salary trends and geographic distribution.
+We built a data-driven view of how specific skills — particularly in tech and design — connect to job categories, alongside how salaries, competition, and geography vary across those roles. Starting from LinkedIn job postings collected in 2023, we extracted skills from job descriptions and organized them into **nine overarching skill groups** and **23 job categories** spanning both a Tech and a Design track, using a consistent keyword-mapping process so the same skill string always resolves to the same node. The output is a single interactive interface that lets a career-changer start from a skill they already have — or a role they want — and follow the connections outward into demand, pay, and location.
+
+## What it is
+
+Three linked D3 views over the same cleaned dataset, coordinated so a selection in one filters the others:
+
+| View | What it answers | Technique |
+|---|---|---|
+| **Circular skill-job linkage** | Which roles pull on both tech *and* design skills? | Radial hierarchical edge bundling (`d3.cluster` + `curveBundle`) |
+| **Geographic demand map** | Where are these jobs, and which are remote? | Albers-USA projection over per-posting dot markers |
+| **Integrated dashboard** | For a chosen role/skill: how many openings, what pay, how much competition? | Bipartite skill↔category graph + log-scaled count, salary, and application bars |
+
+The data is real throughout — every dot on the map is a single posting with its own title, company, salary, and application count, surfaced on hover rather than aggregated away.
+
+## Architecture &amp; data pipeline
+
+<figure class="diagram">
+  <img src="/assets/skill-bridge-datavis/architecture.svg" alt="Data and interaction pipeline: raw LinkedIn CSV is cleaned and parsed in Python (title normalization, regex skill extraction, salary normalization, geocoding, and a skill-to-job linkage step) into two JSON artifacts — a skill graph and a geocoded jobs file — which feed three coordinated D3 views (circular edge-bundling, geographic demand map, integrated dashboard) that cross-filter each other through shared Svelte stores." />
+  <figcaption>From raw postings to three cross-filtered D3 views. The Svelte store layer is what keeps the views coordinated: a selection or zoom in any one of them re-filters the others.</figcaption>
+</figure>
+
+The interface is a **SvelteKit** app (Svelte 5, Vite 6) using **D3 v7** for every visualization and **topojson-client** for the US basemap; it ships as a static build to GitHub Pages. Upstream of the app, the raw postings are cleaned and parsed in Python before anything reaches the browser.
+
+**Preprocessing.** The raw `ai_ml_jobs_linkedin.csv` carries free-text title, location, company, description, and application-count columns. The pipeline (1) normalizes messy job titles into 23 categories by clustering them into a `title_cluster` / `new_title` and tagging each posting Tech or Design; (2) extracts skills from descriptions with a regex keyword-map, splitting them into *required* vs. *preferred* and tagging each by skill group; (3) normalizes heterogeneous pay strings into a single `normalized_yearly_salary` and keeps the raw application count; (4) geocodes each location to latitude/longitude (plus a FIPS code) and drops skills mentioned in fewer than 50 postings to cut long-tail noise.
+
+**Two artifacts drive the front end.** The skill-graph file (`filtered_nonpop_1129_50.json`) holds **76 skills** across **9 skill groups** and **24 subcategory nodes**, each skill carrying its own `required` / `preferred` connection list — this edge list is what both the circular graph and the dashboard render. The geocoded jobs file (`jobs_with_coordinates_formatted_1113.json`) holds **4,725 postings** (3,423 Tech / 1,302 Design; 1,098 flagged remote), each with salary, application count, skills-by-category, and coordinates.
+
+**Coordinated views.** Rather than three isolated charts, the views share a small set of Svelte stores — `selectedSkills`, `selectedSubcategories`, `visibleJobs`, `cachedJobs`, `hoveredJobCategory`. Selecting skills or categories in the dashboard writes to the stores; the map reacts by fading non-matching dots to ~5% opacity and rescaling its salary/application bars, and the linkage graph highlights the relevant edges. Zooming the map narrows `visibleJobs` by geographic bounds, which in turn filters what the dashboard summarizes. Category selection is capped at four to keep the comparison legible.
+
+### Selected engineering details
+
+- **Circular linkage (edge bundling).** Skills and job categories are arranged on a radial `d3.cluster` layout; connections are drawn as bundled splines with `d3.curveBundle.beta(0.85)`, so co-terminating edges visually group and the tech/design overlap on a role reads as edge density. Hovering a node raises its incident edges and dims the rest.
+- **Geographic map.** A `geoAlbersUsa` projection places one marker per posting over a `us-atlas` TopoJSON basemap; markers are colored blue (Tech) / pink (Design), remote roles are pulled into stacked side panels, and marker radius scales with zoom. State-level zoom-to-bounds and per-dot tooltips (title, company, location, salary) give the macro→micro drill-down.
+- **Dashboard bars.** Job counts per subcategory use a `d3.scaleLog` so Software Engineering's volume doesn't flatten the smaller categories, split into remote vs. on-site segments. Salary and application bars sample down to a bounded number of bars per category and connect a hovered bar back to its dot on the map with a folded leader line.
 
 ## Key results
 
@@ -127,13 +169,15 @@ Hover and multi-select functionality enables users to focus on specific nodes an
 
 Multiple data dimensions are seamlessly connected — integrating skills and job categories with geographic distribution and average salary. This allows users to explore relationships holistically: how specific skills, job types, and their geographical and salary distributions relate. Interactive linking lets users see how salaries and job locations are interconnected, making it easier to grasp overall trends and variability. Users can compare jobs across categories and use the skill-job connections to understand how different locations impact compensation and opportunities.
 
+## My role
+
+A two-person team with a flat structure (no group lead). The idea came from Risa's own move from a design background into tech, and mine from a parallel transition. We sourced and cleaned the dataset together, and I led the data preprocessing — the title normalization, skill extraction, salary normalization, and geocoding that produced the two JSON artifacts the whole front end reads. On the visualization side, Risa built the circular edge-bundling diagram, I built the GeoMap, and we collaborated on the skill dashboard. **Integrating the dashboard with the GeoMap was the hardest part** — the two views had been built against differently-shaped data — so we handed that integration entirely to me, and I owned reconciling the data structures and wiring the shared-store cross-filtering that keeps the views in sync.
+
 ## Reflection
 
-This project combined personal experience and technical collaboration to address challenges faced by cross-field job seekers. The idea was inspired by Risa's journey as a design-background student transitioning into tech, with support from David, who shared similar experiences. Together we sourced and cleaned the dataset, with David leading data preprocessing. Visualization tasks were split: Risa created the edge-bundling diagram, David handled the GeoMap, and both collaborated on the skill dashboard. Integrating the dashboard with the GeoMap proved challenging due to differing data structures, so we delegated the task entirely to David while Risa focused on earlier parts of the page.
+We originally planned to analyze long-term trends but dropped that once it was clear there wasn't comprehensive historical data to support it; focusing on a single recent year gave a cleaner, higher-quality snapshot of the current landscape instead. The honest limitation is dataset coverage — some categories bottom out at a handful of postings (3 for HVAC engineering, 1 for interior design), and the sub-50-mention skill filter drops real-but-rare design skills — so the interface is best read as a directional map of demand, not a census. Looking back, planning for one consistent data schema and more reusable components up front would have saved the painful late-stage GeoMap↔dashboard integration; that lesson is the reason the coordinated-store pattern here is something I'd reach for again.
 
-The project deviated from our original plan to analyze long-term trends due to lack of comprehensive historical data, leading us to focus on high-quality data from the most recent year. This shift provided a clear snapshot of the current job landscape. Looking back, better upfront planning for consistent data sources and reusable components would have streamlined the process. Moving forward, we aim to apply these lessons in future projects, emphasizing a unified global design and deepening our understanding of tools like Svelte and JavaScript for more efficient collaboration and storytelling.
-
-Built for 05-619 Data Visualization, Fall 2024 — Svelte, D3.js, LinkedIn 2023 job dataset.
+Built for 05-619 Data Visualization, Fall 2024 — SvelteKit, D3 v7, LinkedIn 2023 job dataset.
 
 ## Links
 

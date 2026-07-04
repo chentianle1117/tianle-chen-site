@@ -148,7 +148,7 @@ const stageImages = stageCandidates.filter(publicFileExists);
       <div>
         <p class="mono-label mb-3">CONTRIBUTION</p>
         <p style="color: rgb(var(--text-secondary)); line-height: 1.65;">
-          A latent-space instrument that externalizes the designer's mental categories so they can be inspected, argued with, and shared. Validated through a multi-participant study running through Spring 2026.
+          A latent-space instrument that externalizes the designer's mental categories so they can be inspected, argued with, and shared. Validated through a multi-participant study conducted across Fall 2025 and Spring 2026.
         </p>
       </div>
     </div>
@@ -263,7 +263,7 @@ const stageImages = stageCandidates.filter(publicFileExists);
 
     <div class="container-reading prose-custom py-12 md:py-16">
     <p>
-      The thesis hypothesis — <em>that legible latent space improves designer creativity over a flat generative tool</em> — is being tested with a multi-participant study running through Spring 2026. Each participant accesses a personal URL of the form <code>/?participant=Name</code>. The backend's <code>X-Participant-Id</code> header routes each request to an isolated <code>AppState</code> via FastAPI's <code>ContextVar</code> middleware.
+      The thesis hypothesis — <em>that legible latent space improves designer creativity over a flat generative tool</em> — was tested with a multi-participant study conducted across Fall 2025 and Spring 2026. Each participant accessed a personal URL of the form <code>/?participant=Name</code>. The backend's <code>X-Participant-Id</code> header routes each request to an isolated <code>AppState</code> via FastAPI's <code>ContextVar</code> middleware.
     </p>
     <p>
       Every interaction is recorded as a JSONL line per participant — sessions, generations, selections, axis edits, feedback notepad entries. JSONL because it's append-only, line-by-line analyzable, and survives crashes. The notepad floats as a quick-note FAB so designers can leave qualitative breadcrumbs without breaking flow.
@@ -411,10 +411,10 @@ const stageImages = stageCandidates.filter(publicFileExists);
             class="mb-1"
             style="font-family: theme(fontFamily.display); font-size: var(--step-2); font-weight: 380; color: rgb(var(--text-primary));"
           >
-            Coming Spring 2026
+            Deployed on Railway
           </p>
           <p style="color: rgb(var(--text-mono)); font-size: 0.875rem;">
-            Public deployment on Railway after study completes
+            Public deployment used for the multi-participant study
           </p>
         </div>
       )}

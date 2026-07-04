@@ -35,7 +35,7 @@ const work = workCollection
 
 // Round-7 Phase D: ALL published work projects on the home page (not a 6/10
 // subset). The scatter is the visual nav; the compact list below is the
-// categorical browse. Both surfaces show the same 10 projects.
+// categorical browse. Both surfaces show all published work projects.
 const featured = work;
 const totalCount = pc.work;
 const workYearRange = `${pcYears.work.min}—${pcYears.work.max}`;
@@ -217,7 +217,7 @@ const thesisIntro = thesisIntroRaw.slice(0, 380);
 
     {/* Round-7 Phase D: compact category-grouped list. Replaces the 6-card
         asymmetric grid that duplicated what's already in the scatter above.
-        Now the same 10 projects appear in both surfaces — scatter for visual
+        Now all published work projects appear in both surfaces — scatter for visual
         latent-space browse, list for categorical scan. */}
     <div class="compact-work-list" data-stagger>
       {groupedRows.map(({ category, rows }) => (
@@ -439,24 +439,28 @@ const thesisIntro = thesisIntroRaw.slice(0, 380);
     <SectionBreak number="03" label="ARCHITECTURE" />
 
     <div class="container-reading pb-12 md:pb-16" aria-labelledby="architecture-placeholder">
-      <p class="mono-label mb-4">RICE UNIVERSITY · 2021—2024 · IN MIGRATION</p>
+      <p class="mono-label mb-4">RICE UNIVERSITY · 2021—2024 · {pc.arch} PROJECTS</p>
       <h2
         id="architecture-placeholder"
         class="mb-5"
         style="font-family: theme(fontFamily.display); font-size: var(--step-3); font-weight: 380; line-height: 1.1; letter-spacing: -0.01em; color: rgb(var(--text-primary));"
       >
-        Studio archive coming soon.
+        Architecture.
       </h2>
       <p class="mb-4" style="color: rgb(var(--text-secondary)); line-height: 1.65;">
-        Architectural studio work from the BArch — typological studies,
-        site-specific buildings, drawings, models — is being migrated from
-        the Notion vault and will live here once curated.
+        Studio work from the Rice B.Arch — typological studies,
+        site-specific buildings, and coastal and urban research — in
+        drawings, models, and renderings.
       </p>
-      <p style="color: rgb(var(--text-secondary)); line-height: 1.65;">
-        The four computational-design pieces previously listed here (parametric
-        pavilion, membrane form-finding, generative urbanism, robotic wire
-        bending) have moved to <a href="/work" style="color: rgb(var(--accent-rgb)); text-decoration: underline; text-underline-offset: 4px;">Work</a> &mdash; they are computational design, not built architecture.
+      <p class="mb-8" style="color: rgb(var(--text-secondary)); line-height: 1.65;">
+        The computational-design pieces (parametric pavilion, membrane
+        form-finding, generative urbanism, robotic wire-bending) live under
+        <a href="/work" style="color: rgb(var(--accent-rgb)); text-decoration: underline; text-underline-offset: 4px;">Projects</a> &mdash; they are computation, not built architecture.
       </p>
+      <a href="/architecture" class="btn-ghost mono-label" style="display: inline-flex; align-items: center; gap: 0.5rem;">
+        View architecture
+        <span aria-hidden="true">&rarr;</span>
+      </a>
     </div>
   </section>
 

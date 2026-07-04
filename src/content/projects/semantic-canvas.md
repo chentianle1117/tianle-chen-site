@@ -150,8 +150,8 @@ Research frame: CMU MSCD thesis, 2025–2026, on AI-augmented footwear design �
 ## Architecture
 
 <figure class="diagram">
-  <img src="/assets/semantic-canvas/architecture.svg" alt="Semantic Canvas architecture — projection pipeline (embed → project → normalize → render) and BFF service architecture (React/D3 frontend, FastAPI backend, Jina/fal.ai/Gemini)" />
-  <figcaption>Projection pipeline (embed → project → normalize → render) + the BFF service architecture and multi-user study instrumentation.</figcaption>
+  <img src="/assets/semantic-canvas/architecture.svg" alt="Semantic Canvas architecture — three lanes: (1) semantic-axis projection (NL endpoints → Gemini expands to 4 variants → ensemble axis → normalize(pos−neg) direction → dot-project 1024-D Jina CLIP v2 embeddings → grid-snap → D3 render); (2) BFF service (React/D3 frontend, FastAPI backend, Jina/fal.ai/Gemini external services, plus the client-only demo); (3) multi-user study instrumentation (personal URL → ContextVar-isolated AppState → JSONL event log → Railway persistent volume)." />
+  <figcaption>Three lanes: the semantic-axis projection pipeline (NL endpoints → Gemini-expanded ensemble axes → dot-project against 1024-D CLIP embeddings → grid-snap → D3), the BFF service architecture, and the per-participant study instrumentation.</figcaption>
 </figure>
 
 ```

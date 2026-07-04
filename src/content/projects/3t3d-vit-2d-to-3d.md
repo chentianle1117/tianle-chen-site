@@ -26,6 +26,15 @@ images:
 - /assets/3t3d-vit-2d-to-3d/comparison.jpg
 - /assets/3t3d-vit-2d-to-3d/dataset_creation1.jpg
 - /assets/3t3d-vit-2d-to-3d/val_train_loss.png
+image_captions:
+- Dataset samples — front/right/top edge-map sketches generated from rendered mesh views
+  via Informative Drawings.
+- Full system diagram — inference pipeline (sketches → DINOv2 → fusion → decoder → triplane
+  → mesh) and the self-built dataset pipeline.
+- Model output vs ground truth for an example building.
+- Dataset-generation pipeline — input image → TripoSR mesh → rendered front/right/top views
+  → converted edge-map sketches.
+- Training and validation loss curves from the final run (Weights & Biases), 37 epochs on an A100.
 live_video: https://www.youtube.com/watch?v=DEXX0CsDG4U
 local_path: W:\CMU_Academics\2025 Spring\11685 Intro to DL\Final Projects Models
 priority: flagship
@@ -45,10 +54,11 @@ role: team-member
 semester: Spring 2025
 slug: 3t3d-vit-2d-to-3d
 status: ready
-summary: A vision-transformer pipeline that lifts a single 2D architectural floorplan
-  into a structured 3D massing model. Trained on a synthetic dataset of paired plans
-  and meshes generated procedurally in Grasshopper. Tests whether ViT attention can
-  learn architectural priors directly from 2D-3D pairs.
+summary: A vision-transformer pipeline that lifts three orthographic architectural
+  sketches (plan + elevations) into a 3D massing model via a triplane representation
+  and Marching Cubes. A frozen DINOv2 encoder feeds a custom 6-layer transformer decoder;
+  trained on a self-built dataset (SDXL → TripoSR → edge maps) and evaluated with Chamfer
+  Distance (mean CD 0.200). First-author CMU 11-685 deep-learning final project.
 tags:
 - vision-transformer
 - dinov2
@@ -61,7 +71,7 @@ tags:
 - wandb
 team:
 - Graham Felton
-- Chia Hui Yan
+- Chia Hui Yen
 - David Chen
 - Karthick Raja
 team_hierarchy: flat (no group leader)
@@ -72,61 +82,88 @@ writeup_overleaf: https://www.overleaf.com/project/680ad1d4af18bc319d37a756
 year: 2025
 ---
 
-> Given three orthographic "napkin sketches" (top, side, front view) of a building, can a deep model produce a detailed 3D model of that architecture? Built a Vision Transformer (DINOv2-based) encoder + custom decoder that maps sketches to triplane representations. Trained on a custom dataset we generated ourselves because nothing existing was good enough.
+> Given three orthographic "napkin sketches" (top, side, front view) of a building, can a deep model produce a detailed 3D model of that architecture? We built a Vision Transformer pipeline — a frozen DINOv2 encoder plus a custom transformer decoder — that maps the three sketches to a triplane 3D representation, from which a mesh is extracted with Marching Cubes. Trained on a dataset we generated ourselves because no existing architectural 3D dataset was good enough.
 
 ![architecture](/assets/3t3d-vit-2d-to-3d/arch_diagram.jpg)
 
-Designers think in sketches. Three orthographic napkin sketches — top, side, front — capture most of what a building wants to be. We asked whether a 2D-to-3D transformer could produce a detailed 3D model from just those three inputs, and built one to find out: DINOv2 multi-view embeddings, patch fusion, and a custom transformer decoder that outputs triplane features the designer can refine downstream.
+Designers think in sketches. Three orthographic napkin sketches — plan (top), elevation (front), and side — capture most of what a building wants to be. Existing 3D-synthesis models are built for object-centric domains (chairs, cars, ShapeNet categories) and struggle to hold the structural integrity and spatial coherence architecture needs. 3T3D asks whether a ViT-based, sketch-conditioned model can do better for buildings, and how you'd build one end to end when the training data doesn't exist yet.
 
-This was the 11-685 Introduction to Deep Learning final project (Spring 2025), built with three other CMU students. The same core trio reunited in Fall 2025 for the [[2025-Fall--l43d-cad-mllm|CAD-MLLM L43D project]] — 3T3D was the DL warm-up, L43D the multimodal sequel.
+This was the 11-685 Introduction to Deep Learning final project (Spring 2025), a four-person team of CMU architecture/computational-design students. I am first author on the writeup. The same core trio reunited in Fall 2025 for the [[2025-Fall--l43d-cad-mllm|CAD-MLLM L43D project]] — 3T3D was the DL warm-up, L43D the multimodal sequel.
+
+## Problem & framing
+
+- **Goal.** A design tool an architect could use to generate 3D iterations of simple sketches in near real time — three inputs (plan + two elevations) chosen deliberately so the designer keeps full control of the resulting form.
+- **Why it's hard.** 3D-aware generative models are optimized for object-centric tasks and don't preserve the spatial/hierarchical relationships buildings require. We frame this as controlled 2D→3D generation conditioned on sketches.
+- **Relation to prior work.** We build on the 3D-aware conditional-synthesis idea from **pix2pix3D** (Deng et al.), but condition on *sketches* rather than label/segmentation maps, and adopt the **triplane** 3D representation from **Neural Field Diffusion** (Shue et al.) — swapping their diffusion generator for a ViT encoder-decoder.
 
 ## Architecture
 
 <figure class="diagram">
-  <img src="/assets/3t3d-vit-2d-to-3d/architecture.svg" alt="3T3D architecture — model pipeline (3 sketches → DINOv2 → fusion → transformer decoder → triplane) and the custom dataset-generation pipeline" />
-  <figcaption>Model pipeline (sketches → DINOv2 → fusion → decoder → triplane) + the from-scratch dataset-generation pipeline and training setup.</figcaption>
+  <img src="/assets/3t3d-vit-2d-to-3d/architecture.svg" alt="3T3D system diagram — inference pipeline (3 sketches → frozen DINOv2 → fusion → transformer decoder → upsampling → triplane → Marching Cubes mesh) plus the self-built SDXL→TripoSR→edge-map dataset pipeline and the training/evaluation setup" />
+  <figcaption>The full system at a glance: the inference pipeline (sketches → DINOv2 → fusion → decoder → upsampling → triplane → mesh), the from-scratch dataset pipeline (SDXL → TripoSR → rendered views → edge maps), and the training/evaluation setup.</figcaption>
 </figure>
 
-Four stages, end-to-end:
+The model is a ViT encoder-decoder that maps three sketches to a triplane, following the stage breakdown from the writeup's architecture table (B = batch, N = patches, D = feature dim):
 
-### 1. Input Processing
-- **3 orthographic sketches** representing top / side / front views (analogous to floorplan + elevations)
+| Stage | Operation | Detail | Output shape |
+|---|---|---|---|
+| Encoder | Input encoder | 3 image views → DINOv2 ViT | 3 × `[B, N, D_enc]` |
+| Decoder | Input fusion | Linear-project each view to `D_dec`, then **sum** | `[B, N, D_dec]` |
+| Decoder | Core decoder | Reshape, add 2D spatial pos-enc, transformer layers | `[B, N, D_dec]` |
+| Upsampling | Upsampling neck | Reshape + ConvTranspose stages | `[B, C_neck, H_out, W_out]` |
+| Output | Output layer | Conv 1×1 + Tanh → triplane channels | `[B, C_out, H_out, W_out]` |
+
+### 1. Input processing
+- **3 orthographic sketches** — plan (top), front elevation, side (analogous to a floorplan + elevations)
 - Rescaled from 256×256 → **512×512** for the encoder
-- Concatenated along channel dim: tensors of shape `[B, C, H, W]`
+- Concatenated along the channel dim into tensors of shape `[B, C, H, W]`
 
 ### 2. Encoder — DINOv2 (frozen)
-- Pretrained [DINOv2](https://arxiv.org/abs/2304.07193) Vision Transformer
-- Each view split into patches → patches become tokens
-- Patch embeddings extracted per view
+- Pretrained [DINOv2](https://arxiv.org/abs/2304.07193) Vision Transformer, chosen for its positionally grounded multi-view patch embeddings and its implicit understanding of scene geometry
+- Each view is split into patches; patches become tokens; patch embeddings are extracted per view
 - The `cls` token is stripped (no classes in our training data)
 
 ### 3. Fusion
-- Patches from the three views that correspond to the same 3D location are **summed into a single embedding**
-- This yields a single fused feature vector passed to the decoder
+- Each patch embedding produced by the ViT is assumed to correspond to the same location in 3D across the three views
+- Fusion linear-projects each view's embeddings to the decoder dimension and **sums the co-located patches** into a single fused feature vector, which is passed to the decoder
 
 ![fusion](/assets/3t3d-vit-2d-to-3d/fusion_diagram.jpg)
 
-### 4. Decoder — Custom Transformer
-- 6 decoder layers, 8 attention heads each, self-attention
-- Tuned balance between runtime, model size, and output quality
+### 4. Decoder — custom transformer
+- **6 decoder layers, 8 attention heads each**, self-attention, pre-norm
+- `d_model = 512`, per-head `d = 64`, feed-forward `512 → 2048 → 512` with ReLU + dropout (from the decoder-layer diagram)
+- Sized as a deliberate trade-off between runtime, model size, and output quality — "where we had to do the most engineering"
 
 ![decoder](/assets/3t3d-vit-2d-to-3d/decoder_diagram.jpg)
 
-### 5. Progressive Upsampling
-- R¹⁶ → R¹²⁸ via progressive upsampling
-- Output: **triplane representation** of the 3D object
+### 5. Upsampling → triplane → mesh
+- The decoded features are progressively upsampled by the ConvTranspose **neck (R¹⁶ → R¹²⁸)** and projected with a Conv 1×1 + Tanh to the **triplane representation**
+- A 3D surface mesh is extracted with **Marching Cubes** by sampling and combining the occupancy field derived from the triplane
+
+### Triplane representation (the 3D encoding)
+Following Shue et al., each 3D object is decomposed into three orthogonal 2D feature planes `F_xy`, `F_xz`, `F_yz`. To query a point `p = (x, y, z)`, the model samples each plane and sums, then decodes with a shared MLP:
+
+```
+n_p  = F_xy(x, y) + F_xz(x, z) + F_yz(y, z)
+NF(p) = MLP(n_p)          # neural field value at p
+```
+
+We experimented with **two ways to encode geometry into the triplanes**:
+
+1. **Binary occupancy** — each plane stores a single channel (`C = 1`); the value at `(u, v)` is 1 if the projected point is inside the object, 0 if outside. Trained with **BCE loss**.
+2. **Normal map + SDF** — each plane stores 3D surface-normal vectors, combined with the object's **Signed Distance Field** (shortest signed distance to the surface). A richer target meant to teach finer geometry; trained with **L1 loss** (continuous regression).
 
 ## Dataset — built from scratch
 
-No existing dataset was suitable for architectural design quality. We built a custom pipeline:
+Existing 3D architectural datasets were unusable for us — too much detail granularity, or not enough quality for form exploration. So we generated our own paired sketch-to-mesh corpus:
 
 ![dataset creation](/assets/3t3d-vit-2d-to-3d/dataset_creation1.jpg)
 
-1. Generate **thousands of architectural renderings** programmatically
-2. Run [**TripoSR**](https://github.com/VAST-AI-Research/TripoSR) on each rendering to get a 3D model
-3. Render top / front / side views of each 3D model
-4. Convert each view into a sketchy line drawing via [**Informative Drawings**](https://github.com/carolineec/informative-drawings)
-5. Result: triplets of (sketch front, sketch right, sketch top) paired with a 3D mesh (`.obj`)
+1. Generate **1,800 building images** with [**Stable Diffusion XL**](https://arxiv.org/abs/2307.01952)
+2. Convert each image to an `.obj` mesh with [**TripoSR**](https://github.com/VAST-AI-Research/TripoSR); **keep the best ~500 candidates**
+3. Render aligned **front / top (plan) / side (elevation)** views of each mesh
+4. Convert each rendered view into a sketch-like edge map via [**Informative Drawings**](https://github.com/carolineec/informative-drawings)
+5. Result: triplets of (front, right, top) edge-map sketches paired with a 3D mesh (`.obj`), each converted to a ground-truth triplane target
 
 **Dataset samples:**
 
@@ -149,49 +186,71 @@ Dataset/
 
 ## Training
 
-- **Loss:** L1 between predicted triplane features and ground-truth triplane features
-- **Two-stage schedule:**
-  1. Freeze DINOv2 encoder; train decoder only until predictions are good
-  2. Unfreeze entire model; fine-tune with *differentiated learning rates* (low for encoder, higher for decoder)
-- **Compute:** 37 epochs on a single **A100**; avg ~480 s/epoch; ~5 hours total
-- **Tracking:** Weights & Biases
+- **Loss.** Depends on the triplane encoding: **BCE** for binary occupancy (per-voxel occupied/empty probability), **L1** for the normal-map + SDF triplanes (continuous regression). The Triplanar DDPM baseline used cross-entropy.
+- **Two-stage schedule.**
+  1. Freeze the DINOv2 encoder; train the decoder only until predictions are good
+  2. Unfreeze the entire model; fine-tune with *differentiated learning rates* (low for the pretrained encoder, higher for the decoder)
+- **Compute.** 37 epochs on a single **A100**, ~480 s/epoch, ~5 hours total.
+- **Tracking.** Weights & Biases.
 
 ![training loss](/assets/3t3d-vit-2d-to-3d/val_train_loss.png)
 
 ## Results
 
-Model learns triplane representations — slowly but steadily. With better LR scheduling + hyperparameter tuning, we believe the score could improve substantially. Example output vs ground truth:
+We report **bidirectional Chamfer Distance (CD)** between predicted and ground-truth meshes — a fairer comparison than pixel losses given the idiosyncratic output. The **binary-occupancy** model performed best; the normal-map + SDF variant produced plausible SDFs but smoothed normals, suggesting the richer target needs more architecture/optimization work.
+
+| Metric (binary-occupancy model) | Value |
+|---|---|
+| `.obj` models evaluated | 300 |
+| Mean CD | **0.200** |
+| Median CD | 0.192 |
+| Min CD | 0.075 |
+| Max CD | 0.429 |
+
+Against reference models (lower CD is better) — 3T3D is competitive with the closest baseline but well short of dedicated single-image reconstructors:
+
+| Model | CD |
+|---|---|
+| TripoSR | 0.111 |
+| TGS | 0.122 |
+| ZeroShape | 0.160 |
+| OpenLRM | 0.180 |
+| **3T3D (ours)** | **0.200** |
+| One-2-3-45 | 0.227 |
+
+An analysis of CD vs ground-truth mesh complexity showed mean CD *decreasing* as vertex count grew — the model reconstructs more complex geometries with lower error within the tested range. The loss curves fall slowly but steadily; the team's honest read is that hyperparameter optimization and longer training would close much of the gap. Example output vs ground truth:
 
 ![comparison](/assets/3t3d-vit-2d-to-3d/comparison.jpg)
 
-## Outcomes
+## Outcomes & honest assessment
 
-- **Novel contribution:** a VT-based, 3-view sketch-to-3D model specifically for architectural design — not just object-level like most prior 2D→3D work
-- **Custom dataset pipeline** (architectural renderings → TripoSR → sketchy views → triplane 3D) is reusable
-- **Published dataset** on Google Drive
-- **Final writeup** in vault at `/assets/3t3d-vit-2d-to-3d/3t3d_writeup.pdf` (1.8 MB, 2025-04-28 final)
-- **Final presentation video** on [YouTube](https://www.youtube.com/watch?v=DEXX0CsDG4U)
-- **Flagship portfolio piece** — David's most substantial ML systems work alongside [[2025-Fall--l43d-cad-mllm|L43D CAD-MLLM]]; pairs nicely since they share 3/4 team members and continue the same "designer-facing generative 3D" thread
+- **Feasibility demonstrated.** 3T3D shows a ViT + triplane pipeline *can* do sketch-to-3D for architecture — a domain most 2D→3D work ignores in favor of object categories — with a mean CD of 0.200 that beats one baseline (One-2-3-45) while trailing dedicated single-image reconstructors.
+- **What didn't work yet.** The richer normal-map + SDF encoding was harder to learn than binary occupancy; the model trains slowly. The writeup is candid that architecture refinement, hyperparameter optimization, and longer training are the open work — this was a course project under a hard deadline, not a finished system.
+- **Reusable dataset pipeline.** SDXL → TripoSR → rendered views → Informative Drawings edge maps → triplane targets is a repeatable recipe for building paired sketch/mesh corpora when none exist.
+- **Published dataset** on Google Drive; **final writeup PDF** (`/assets/3t3d-vit-2d-to-3d/3t3d_writeup.pdf`); **final presentation** on [YouTube](https://www.youtube.com/watch?v=DEXX0CsDG4U).
+- **Flagship portfolio piece** — my most substantial ML-systems work alongside [[2025-Fall--l43d-cad-mllm|L43D CAD-MLLM]]; the two share 3/4 team members and continue the same "designer-facing generative 3D" thread.
 
-## David's contributions
+## My contribution
 
-From WhatsApp chat evidence + team discussion:
-- Literature review: shared CLIP, TripoSR, DINOv2 papers (arXiv:2109.14124, arXiv:1807.06358)
-- **Dataset management** — David provisioned + shared Google Drive folders on 2025-03-29 and during iteration
-- Overleaf report co-authoring (team explicitly called David "our overleaf master")
-- Reference-research + experiment tracking
+Four-person team, flat structure (no group lead). I am **first author on the writeup**, and my work concentrated on the data, evaluation framing, and the paper:
 
-(David's GitHub commits don't all attribute to his `chentianle1117` username — Colab sessions often commit under alt identities.)
+- **Dataset provisioning & management** — built and shared the paired sketch/mesh corpus, provisioned the Google Drive folders the team trained from.
+- **Literature review** — surveyed the sketch-to-3D and triplane landscape (CLIP, TripoSR, DINOv2, pix2pix3D, Neural Field Diffusion) to select the encoder backbone, 3D representation, and baselines.
+- **Experiment tracking** and the **technical writeup** (the team's "Overleaf master").
+
+The other three (Graham Felton, Chia Hui Yen, Karthick Raja) drove much of the model/decoder engineering and the training runs. Note: not all GitHub commits attribute to my `chentianle1117` username — Colab sessions often committed under alternate identities.
 
 ## Reference lineage
 
 | Reference | Use |
 |---|---|
-| [DINOv2 (arXiv:2304.07193)](https://arxiv.org/abs/2304.07193) | Encoder backbone |
-| [TripoSR (arXiv:2311.04400)](https://arxiv.org/abs/2311.04400) | Dataset generation |
-| [Informative Drawings](https://github.com/carolineec/informative-drawings) | Sketch conversion |
-| [pix2pix3D](https://github.com/dunbar12138/pix2pix3D) | Related-work baseline |
-| [Triplane representations (arXiv:2302.08509)](https://arxiv.org/abs/2302.08509) | Output representation |
+| [DINOv2 (arXiv:2304.07193)](https://arxiv.org/abs/2304.07193) | Encoder backbone (frozen ViT) |
+| [Stable Diffusion XL (arXiv:2307.01952)](https://arxiv.org/abs/2307.01952) | Building-image generation for the dataset |
+| [TripoSR (arXiv:2311.04400)](https://arxiv.org/abs/2311.04400) | Image→mesh step of the dataset pipeline |
+| [Informative Drawings](https://github.com/carolineec/informative-drawings) | Rendered views → edge-map sketches |
+| [Triplane diffusion (arXiv:2302.08509)](https://arxiv.org/abs/2302.08509) | Triplane 3D representation (Shue et al.) |
+| [pix2pix3D](https://github.com/dunbar12138/pix2pix3D) | Conditional-synthesis baseline (Deng et al.) |
+| Marching Cubes | Mesh extraction from the occupancy field |
 | [CLIP](https://github.com/openai/CLIP) | Considered for early pipeline |
 | [Hunyuan3D-2](https://github.com/Tencent/Hunyuan3D-2) | Considered |
 | [TriplaneGaussian](https://github.com/VAST-AI-Research/TriplaneGaussian) | Considered |

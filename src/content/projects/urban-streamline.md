@@ -9,8 +9,8 @@ categories:
   - Urban Design
 publish: true
 priority: standard
-summary: An urban resiliency research center sited at the junction of a horizontal urban plaza and a continuous urban band — formally inspired by the streamlines of railway terminals and the congregation scale of Buenos Aires's Villa 31.
-hero_image: /assets/urban-streamline/9ddc5c51-6eb6-4dce-82f6-b118e41bd2c1_rw_3840.jpg
+summary: A blue carbon research center in Buenos Aires, sited on the transformation point between the informal settlement of Villa 31 and the city's railway terminal. A streamline pattern drawn from the fanning rail lines organizes structure, circulation, program, and a flood-mitigating landscape.
+hero_image: /assets/urban-streamline/01baf033-a8f2-4927-865b-f8dc91332d10_rw_3840.jpg
 images:
   - /assets/urban-streamline/9ddc5c51-6eb6-4dce-82f6-b118e41bd2c1_rw_3840.jpg
   - /assets/urban-streamline/ec8d2b37-be5b-4f2e-b9c3-cc32ee10f858_rw_3840.jpg
@@ -26,6 +26,33 @@ images:
   - /assets/urban-streamline/82fdfffc-af9c-4c28-b020-2f5a1786baaa_rw_3840.jpg
   - /assets/urban-streamline/83cd39bf-f843-4405-ae10-dd395482bbd4_rw_3840.jpg
   - /assets/urban-streamline/932ad34f-e319-4145-ab96-c87d7496bb4d_rw_3840.jpg
+image_captions:
+  - Site diagram — the plaza band separates Villa 31 from the railway terminal; the site sits at the turning point where the fanning rail lines meet the city grid
+  - Flood mitigation strategy — a section stepping programs above street level over sunken reservoirs, with a map projecting a +20ft sea-level rise across the port and Villa 31
+  - Formal strategy — Villa 31's aggregated living blocks combined with the rail track's streamlines, and the wall typologies (landscape, circulation, dividers, structure) they resolve into; aerial axon between Villa 31 and the train station
+  - Landscape site plan (1:500) — detention ponds, marshlands, and walkable landscape woven between the volumes, with a long section through the site
+  - Three-stage detention — an axonometric tracing roof and sidewalk runoff through water detention, filtration, and shallow marshes
+  - Two flood states — the walkable landscape collecting rainwater runoff (left) and the same ground submerged during serious flooding (right)
+  - Exterior render from the marsh — grass-lined walkways and retention ponds threading up to the concrete research center
+  - Circulation diagram — streamlines read as repeating thresholds, gradating program from scattered research labs to offices to unified public spaces
+  - First-floor program plan (1:500) — labs, research and closed offices, exhibition, restaurant, and auditorium, with the building section below
+  - Second-floor program plan (1:500) — open offices, cafe, classrooms, and meeting rooms, with the building section below
+  - White massing aerial — the streamlined volumes stepping down between the plaza and the rail cut
+  - Retention pond and marshes landscape (left); office and public offices entrance under the concrete stair (right)
+  - Multi-purpose building interior — restaurant and cafe, exhibition hall, and the History of Blue Carbon under a folded concrete stair
+  - Structural assembly — coffered shear-wall panels with cast openings, exploded into floor slabs and beams, shear walls, and glazing
 ---
 
-The Urban Streamline sits at the junction of a horizontal urban plaza and a continuous urban band cutting across, generating a turning point at the front of the site. The streamline pattern, drawn from the formal language of railway terminals and the congregation scale of Buenos Aires's Villa 31, serves as the project's organizing logic — generating supporting structure, exterior and interior divisions, circulation routes, and the integration of landscape.
+## Concept
+
+The site is a transportation hub where two opposing urban fabrics meet. A band of plazas separates the informal settlement of Villa 31 and the railway terminal on one side from a stretching band of high-rises on the other — one side a horizontal aggregation of infrastructure and self-built construction, the other a vertical wall of towers. The blue carbon research center is placed exactly at this transformation point, where the shift between the two is physically legible. The first move of the project is to negotiate that seam: to build continuity across two fabrics that otherwise have nothing in common.
+
+The organizing device is the *streamline* — the pattern of rail lines fanning out of the terminal, read together with the congregation scale and block aggregation of Villa 31. Rather than treat the streamline as image, the project solidifies it into a working system: the same set of lines becomes retaining walls, circulation, programmatic dividers, and supporting structure depending on where it lands. Program is gradated along the grain, moving from scattered research labs, through offices, to the public spaces — restaurant, exhibition, auditorium — that read as a unifying whole, while circulation runs perpendicular to the streamlines and crosses every threshold.
+
+## Resilience
+
+Because the entire Buenos Aires coastline is prone to flash flooding — worsened by dredging and artificial changes to the river canal, with a projected +20ft (7m) sea-level rise capable of swallowing the port, the rail lines, and Villa 31 — resilience is built into the ground rather than added on. Building programs are lifted above street level and the space below is given over to reservoirs. A three-stage detention landscape carries roof and sidewalk runoff into deep water-detention ponds, then filtration ponds, then shallow marshes; wall gutters feed the retention ponds at grade. When the water isn't needed for defense, the reservoirs are walkable public landscape and marsh — and when serious flooding comes, that same landscape is designed to submerge.
+
+## Tectonics
+
+The building is assembled from shear walls, floor slabs, beams, and glazing running in two directions. Instead of simply cutting holes, the concrete shear-wall panels carry a coffer-like imprint that echoes the stepped water ponds in the landscape, giving the walls both a readable thickness and a sculptural quality. Openings shift across the panels to vary the apertures seen from inside and out; slots at the top and protrusions at the bottom ease installation and double as roof drainage — carrying the water logic of the site down into the detail of the wall.
