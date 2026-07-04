@@ -1,156 +1,92 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 860" width="1200" height="860" font-family="'IBM Plex Mono', ui-monospace, monospace">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 500" width="1200" height="500" font-family="'IBM Plex Mono', ui-monospace, monospace">
   <defs>
     <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
-      <path d="M0,0 L8,4.5 L0,9 Z" fill="#cf7f54" fill-opacity="0.85"/>
+      <path d="M0,0 L8,4.5 L0,9 Z" fill="#cf7f54" fill-opacity="0.8"/>
     </marker>
     <marker id="ar-dim" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
-      <path d="M0,0 L8,4.5 L0,9 Z" fill="#7e828a" fill-opacity="0.7"/>
+      <path d="M0,0 L8,4.5 L0,9 Z" fill="#7e828a" fill-opacity="0.75"/>
     </marker>
   </defs>
 
-  <rect width="1200" height="860" fill="#0b0d0f"/>
-
-  <!-- faint grid -->
-  <g stroke="#5e636b" stroke-opacity="0.10" stroke-width="1">
-    <line x1="0" y1="215" x2="1200" y2="215"/>
-    <line x1="0" y1="600" x2="1200" y2="600"/>
-  </g>
+  <rect width="1200" height="500" fill="#0b0d0f"/>
 
   <!-- Title -->
-  <text x="60" y="52" fill="#cf7f54" font-size="17" letter-spacing="3">TEXTURE DETERIORATION — SYSTEM PIPELINE</text>
-  <text x="60" y="76" fill="#7e828a" font-size="13">Real-time facade texture capture &amp; analysis (built) · generative deterioration synthesis (explored) · Fall 2024 independent study</text>
+  <text x="48" y="46" fill="#cf7f54" font-size="16" letter-spacing="3">TEXTURE DETERIORATION · SYSTEM</text>
+  <text x="48" y="70" fill="#7e828a" font-size="12.5">A working real-time analysis loop feeds an explored, unbuilt aging-synthesis interface.</text>
 
-  <!-- ================= LANE A: BUILT — real-time analysis loop ================= -->
-  <text x="60" y="122" fill="#7e828a" font-size="13" letter-spacing="3">INTERFACE 1 — REAL-TIME ANALYSIS LOOP  <tspan fill="#7aa15c">[ WORKING PROTOTYPE ]</tspan></text>
+  <!-- ===== LANE 1 — BUILT ===== -->
+  <text x="48" y="126" fill="#a8acb1" font-size="12.5" letter-spacing="2">INTERFACE 1 · REAL-TIME ANALYSIS  —  BUILT</text>
 
-  <g font-size="15">
-    <!-- Source render -->
-    <rect x="60" y="146" width="196" height="86" rx="5" fill="#12161a" stroke="#5fa0a6" stroke-opacity="0.8"/>
-    <text x="78" y="176" fill="#e8eaed">RENDER SOURCE</text>
-    <text x="78" y="198" fill="#a8acb1" font-size="11.5">V-Ray frame buffer</text>
-    <text x="78" y="216" fill="#7e828a" font-size="11.5">or existing facade images</text>
-
+  <g text-anchor="middle">
     <!-- Screen capture -->
-    <rect x="292" y="146" width="196" height="86" rx="5" fill="#12161a" stroke="#5e636b" stroke-opacity="0.7"/>
-    <text x="310" y="176" fill="#e8eaed">SCREEN CAPTURE</text>
-    <text x="310" y="198" fill="#a8acb1" font-size="11.5">pyautogui / PIL ImageGrab</text>
-    <text x="310" y="216" fill="#7e828a" font-size="11.5">bbox region · ~10 fps loop</text>
+    <rect x="48" y="146" width="196" height="72" rx="5" fill="#12161a" stroke="#5e636b" stroke-opacity="0.7"/>
+    <text x="146" y="182" fill="#e8eaed" font-size="14">Screen capture</text>
+    <text x="146" y="202" fill="#a8acb1" font-size="10.5">live render region</text>
 
     <!-- Classifier -->
-    <rect x="524" y="146" width="196" height="86" rx="5" fill="#12161a" stroke="#5e636b" stroke-opacity="0.7"/>
-    <text x="542" y="176" fill="#e8eaed">CLASSIFIER</text>
-    <text x="542" y="198" fill="#a8acb1" font-size="11.5">Teachable Machine .h5</text>
-    <text x="542" y="216" fill="#7e828a" font-size="11.5">224/448 window · stride 112</text>
+    <rect x="292" y="146" width="196" height="72" rx="5" fill="#12161a" stroke="#5e636b" stroke-opacity="0.7"/>
+    <text x="390" y="182" fill="#e8eaed" font-size="14">Classifier</text>
+    <text x="390" y="202" fill="#a8acb1" font-size="10.5">sliding window + NMS</text>
 
-    <!-- NMS -->
-    <rect x="756" y="146" width="196" height="86" rx="5" fill="#12161a" stroke="#5e636b" stroke-opacity="0.7"/>
-    <text x="774" y="176" fill="#e8eaed">DETECT + MERGE</text>
-    <text x="774" y="198" fill="#a8acb1" font-size="11.5">conf &gt; 0.7 · NMS IoU 0.5</text>
-    <text x="774" y="216" fill="#7e828a" font-size="11.5">bounding boxes per ROI</text>
+    <!-- VLM describe -->
+    <rect x="536" y="146" width="196" height="72" rx="5" fill="#12161a" stroke="#5e636b" stroke-opacity="0.7"/>
+    <text x="634" y="182" fill="#e8eaed" font-size="14">Describe</text>
+    <text x="634" y="202" fill="#a8acb1" font-size="10.5">Ollama Llama 3</text>
 
-    <!-- VLM -->
-    <rect x="988" y="146" width="152" height="86" rx="5" fill="#12161a" stroke="#9b6fc9" stroke-opacity="0.85"/>
-    <text x="1006" y="176" fill="#e8eaed">VLM DESCRIBE</text>
-    <text x="1006" y="198" fill="#a8acb1" font-size="11.5">Ollama · Llama 3</text>
-    <text x="1006" y="216" fill="#7e828a" font-size="11.5">per-ROI prompt</text>
+    <!-- Extract -->
+    <rect x="780" y="146" width="196" height="72" rx="5" fill="#12161a" stroke="#5e636b" stroke-opacity="0.7"/>
+    <text x="878" y="182" fill="#e8eaed" font-size="14">Extract fields</text>
+    <text x="878" y="202" fill="#a8acb1" font-size="10.5">material · surface · age</text>
+
+    <!-- Svelte UI (focal, oxide) -->
+    <rect x="1004" y="146" width="148" height="72" rx="5" fill="#1a130e" stroke="#cf7f54" stroke-width="2"/>
+    <text x="1078" y="182" fill="#cf7f54" font-size="14">Svelte UI</text>
+    <text x="1078" y="202" fill="#a8acb1" font-size="10.5">live texture log</text>
   </g>
 
   <g stroke="#cf7f54" stroke-opacity="0.5" stroke-width="1.6" fill="none">
-    <line x1="256" y1="189" x2="292" y2="189" marker-end="url(#ar)"/>
-    <line x1="488" y1="189" x2="524" y2="189" marker-end="url(#ar)"/>
-    <line x1="720" y1="189" x2="756" y2="189" marker-end="url(#ar)"/>
-    <line x1="952" y1="189" x2="988" y2="189" marker-end="url(#ar)"/>
+    <line x1="244" y1="182" x2="292" y2="182" marker-end="url(#ar)"/>
+    <line x1="488" y1="182" x2="536" y2="182" marker-end="url(#ar)"/>
+    <line x1="732" y1="182" x2="780" y2="182" marker-end="url(#ar)"/>
+    <line x1="976" y1="182" x2="1004" y2="182" marker-end="url(#ar)"/>
   </g>
 
-  <!-- Transport + extraction row -->
-  <g font-size="14">
-    <rect x="60" y="270" width="428" height="76" rx="5" fill="#101418" stroke="#cf7f54" stroke-opacity="0.7"/>
-    <text x="78" y="298" fill="#cf7f54" font-size="14">BACKEND — FastAPI + WebSocket</text>
-    <text x="78" y="320" fill="#a8acb1" font-size="11.5">async capture task · streams JPEG frames + boxes to UI</text>
-    <text x="78" y="338" fill="#7e828a" font-size="11.5">commands: set_area / start·stop capture / start·stop analysis / abort</text>
+  <!-- ===== LANE 2 — EXPLORED ===== -->
+  <text x="48" y="326" fill="#7e828a" font-size="12.5" letter-spacing="2">INTERFACE 2 · AGING SYNTHESIS  —  EXPLORED, NOT BUILT</text>
 
-    <rect x="524" y="270" width="428" height="76" rx="5" fill="#101418" stroke="#5e636b" stroke-opacity="0.6"/>
-    <text x="542" y="298" fill="#e8eaed" font-size="14">KEYWORD EXTRACTION</text>
-    <text x="542" y="320" fill="#a8acb1" font-size="11.5">regex over VLM text →  material · surface · estimated age</text>
-    <text x="542" y="338" fill="#7e828a" font-size="11.5">e.g. "vertical wood strips · smooth · 5 years"</text>
+  <g text-anchor="middle">
+    <!-- Decay params -->
+    <rect x="48" y="346" width="220" height="72" rx="5" fill="#12161a" stroke="#5e636b" stroke-opacity="0.4"/>
+    <text x="158" y="382" fill="#a8acb1" font-size="14">Decay parameters</text>
+    <text x="158" y="402" fill="#7e828a" font-size="10.5">material · exposure · target age</text>
 
-    <rect x="988" y="270" width="152" height="76" rx="5" fill="#1a130e" stroke="#cf7f54" stroke-width="2"/>
-    <text x="1006" y="298" fill="#cf7f54" font-size="14">SVELTE UI</text>
-    <text x="1006" y="320" fill="#a8acb1" font-size="11.5">live preview +</text>
-    <text x="1006" y="338" fill="#7e828a" font-size="11.5">captured-texture log</text>
+    <!-- Conditioning -->
+    <rect x="316" y="346" width="220" height="72" rx="5" fill="#12161a" stroke="#5e636b" stroke-opacity="0.4"/>
+    <text x="426" y="382" fill="#a8acb1" font-size="14">Conditioning</text>
+    <text x="426" y="402" fill="#7e828a" font-size="10.5">ControlNet · holds geometry</text>
+
+    <!-- Diffusion -->
+    <rect x="584" y="346" width="220" height="72" rx="5" fill="#12161a" stroke="#5e636b" stroke-opacity="0.4"/>
+    <text x="694" y="382" fill="#a8acb1" font-size="14">Diffusion</text>
+    <text x="694" y="402" fill="#7e828a" font-size="10.5">Flux via ComfyUI</text>
+
+    <!-- Aged facade -->
+    <rect x="852" y="346" width="220" height="72" rx="5" fill="#12161a" stroke="#5e636b" stroke-opacity="0.4"/>
+    <text x="962" y="382" fill="#a8acb1" font-size="14">Aged facade</text>
+    <text x="962" y="402" fill="#7e828a" font-size="10.5">before / after pair</text>
   </g>
 
-  <g stroke="#cf7f54" stroke-opacity="0.45" stroke-width="1.6" fill="none">
-    <!-- VLM down into extraction -->
-    <path d="M1064 232 L1064 252 L738 252 L738 270" marker-end="url(#ar)"/>
-    <!-- extraction to UI -->
-    <line x1="952" y1="308" x2="988" y2="308" marker-end="url(#ar)"/>
-    <!-- backend feeds UI (frames) — dashed feedback up -->
-  </g>
-  <g stroke="#7e828a" stroke-opacity="0.55" stroke-width="1.4" fill="none" stroke-dasharray="5 4">
-    <!-- UI websocket back down to backend (control commands) -->
-    <path d="M1064 346 L1064 372 L274 372 L274 232" marker-end="url(#ar-dim)"/>
-    <text x="470" y="366" fill="#7e828a" font-size="11" stroke="none">WebSocket · frames ↑  ·  commands ↓</text>
+  <g stroke="#7e828a" stroke-opacity="0.45" stroke-width="1.4" fill="none">
+    <line x1="268" y1="382" x2="316" y2="382" marker-end="url(#ar-dim)"/>
+    <line x1="536" y1="382" x2="584" y2="382" marker-end="url(#ar-dim)"/>
+    <line x1="804" y1="382" x2="852" y2="382" marker-end="url(#ar-dim)"/>
   </g>
 
-  <!-- ================= LANE B: EXPLORED — generative synthesis ================= -->
-  <text x="60" y="446" fill="#7e828a" font-size="13" letter-spacing="3">INTERFACE 2 — DETERIORATION SYNTHESIS  <tspan fill="#cf7f54">[ EXPLORED / NOT INTEGRATED ]</tspan></text>
-
-  <g font-size="15">
-    <!-- decay params -->
-    <rect x="60" y="470" width="252" height="110" rx="5" fill="#12161a" stroke="#9b6fc9" stroke-opacity="0.8"/>
-    <text x="78" y="500" fill="#e8eaed">DECAY PARAMETERS</text>
-    <text x="78" y="524" fill="#a8acb1" font-size="11.5">material class · geospatial site</text>
-    <text x="78" y="544" fill="#a8acb1" font-size="11.5">exposure: moisture / sun / pollution</text>
-    <text x="78" y="564" fill="#7e828a" font-size="11.5">target age (years) → oxidation · biofilm · weathering</text>
-
-    <!-- conditioning -->
-    <rect x="348" y="470" width="252" height="110" rx="5" fill="#12161a" stroke="#5e636b" stroke-opacity="0.7"/>
-    <text x="366" y="500" fill="#e8eaed">CONDITIONING</text>
-    <text x="366" y="524" fill="#a8acb1" font-size="11.5">ControlNet — Depth + Canny</text>
-    <text x="366" y="544" fill="#a8acb1" font-size="11.5">preserves facade geometry</text>
-    <text x="366" y="564" fill="#7e828a" font-size="11.5">source render as structure map</text>
-
-    <!-- diffusion -->
-    <rect x="636" y="470" width="252" height="110" rx="5" fill="#12161a" stroke="#5e636b" stroke-opacity="0.7"/>
-    <text x="654" y="500" fill="#e8eaed">DIFFUSION</text>
-    <text x="654" y="524" fill="#a8acb1" font-size="11.5">Flux via ComfyUI graph</text>
-    <text x="654" y="544" fill="#a8acb1" font-size="11.5">aged-texture generation</text>
-    <text x="654" y="564" fill="#7e828a" font-size="11.5">result-evaluation loop</text>
-
-    <!-- output -->
-    <rect x="924" y="470" width="216" height="110" rx="5" fill="#1a130e" stroke="#cf7f54" stroke-width="2"/>
-    <text x="942" y="500" fill="#cf7f54">AGED FACADE</text>
-    <text x="942" y="524" fill="#a8acb1" font-size="11.5">before / after pair</text>
-    <text x="942" y="544" fill="#a8acb1" font-size="11.5">"deteriorated years" control</text>
-    <text x="942" y="564" fill="#7e828a" font-size="11.5">visualized in Svelte panel</text>
+  <!-- handoff: detected material+age seeds the explored lane (dashed return/bridge) -->
+  <g stroke="#7e828a" stroke-opacity="0.6" stroke-width="1.4" fill="none" stroke-dasharray="5 4">
+    <path d="M878 218 L878 268 L158 268 L158 346" marker-end="url(#ar-dim)"/>
   </g>
+  <text x="512" y="262" fill="#7e828a" font-size="10.5">detected material + age  →  seeds the explored lane</text>
 
-  <g stroke="#cf7f54" stroke-opacity="0.5" stroke-width="1.6" fill="none">
-    <line x1="312" y1="525" x2="348" y2="525" marker-end="url(#ar)"/>
-    <line x1="600" y1="525" x2="636" y2="525" marker-end="url(#ar)"/>
-    <line x1="888" y1="525" x2="924" y2="525" marker-end="url(#ar)"/>
-  </g>
-
-  <!-- handoff from analysis into synthesis -->
-  <g stroke="#7e828a" stroke-opacity="0.55" stroke-width="1.4" fill="none" stroke-dasharray="5 4">
-    <path d="M274 346 L274 420 L186 420 L186 470" marker-end="url(#ar-dim)"/>
-    <text x="196" y="414" fill="#7e828a" font-size="11" stroke="none">detected material + age  →  seeds decay params</text>
-  </g>
-
-  <!-- ================= HONEST STATUS FOOTER ================= -->
-  <rect x="60" y="632" width="1080" height="176" rx="6" fill="#12161a" stroke="#5e636b" stroke-opacity="0.5"/>
-  <text x="80" y="662" fill="#d8dadd" font-size="14" letter-spacing="2">SEMESTER OUTCOME — HONEST STATUS</text>
-
-  <g font-size="12" fill="#a8acb1">
-    <text x="80" y="690"><tspan fill="#7aa15c">BUILT ·</tspan> Svelte/Vite + FastAPI WebSocket app; screen capture over a live render; sliding-window classifier</text>
-    <text x="80" y="710">with NMS; Ollama Llama 3 descriptions parsed to material / surface / age; captured-texture table.</text>
-
-    <text x="80" y="740"><tspan fill="#cf7f54">BLOCKED ·</tspan> local Llama 3 vision impractical on-device (compute) → planned move to Azure Llama 3.2</text>
-    <text x="80" y="760">Vision-Instruct. Detection limited to a single class (wood); needs segmentation for multi-material.</text>
-
-    <text x="80" y="790"><tspan fill="#7e828a">CORE GAP ·</tspan> no labeled dataset of real deteriorated textures; procedural aging is not yet scientifically plausible — the tool stayed a design, not a shipped feature.</text>
-  </g>
-
-  <text x="60" y="838" fill="#7e828a" font-size="12">Thesis-adjacent premise: treat weathering as a <tspan fill="#cf7f54">design input</tspan> — anticipate how a material ages, not just how it looks new.</text>
+  <text x="48" y="474" fill="#7e828a" font-size="11.5">Fall 2024 independent study · analysis interface runs; synthesis stayed a design (compute, single-class detection, no labeled aging data).</text>
 </svg>

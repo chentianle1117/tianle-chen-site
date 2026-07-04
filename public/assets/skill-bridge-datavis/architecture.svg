@@ -1,136 +1,72 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 860" width="1200" height="860" font-family="'IBM Plex Mono', ui-monospace, monospace">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 720" width="1200" height="720" font-family="'IBM Plex Mono', ui-monospace, monospace">
   <defs>
     <marker id="sb-a" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
-      <path d="M0,0 L8,4.5 L0,9 Z" fill="#cf7f54" fill-opacity="0.85"/>
+      <path d="M0,0 L8,4.5 L0,9 Z" fill="#cf7f54" fill-opacity="0.8"/>
+    </marker>
+    <marker id="sb-d" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L8,4.5 L0,9 Z" fill="#a8acb1" fill-opacity="0.8"/>
     </marker>
   </defs>
-  <rect width="1200" height="860" fill="#0b0d0f"/>
+  <rect width="1200" height="720" fill="#0b0d0f"/>
 
-  <!-- faint grid -->
-  <g stroke="#5e636b" stroke-opacity="0.10" stroke-width="1">
-    <line x1="0" y1="215" x2="1200" y2="215"/>
-    <line x1="0" y1="470" x2="1200" y2="470"/>
-    <line x1="600" y1="120" x2="600" y2="470"/>
-  </g>
+  <text x="80" y="52" fill="#cf7f54" font-size="16" letter-spacing="3">SKILL-BRIDGE · DATA PIPELINE</text>
+  <text x="80" y="78" fill="#7e828a" font-size="12.5">One cleaned dataset splits into two JSON artifacts that feed three D3 views, kept in sync by a shared store.</text>
 
-  <text x="60" y="50" fill="#cf7f54" font-size="17" letter-spacing="3">SKILL-BRIDGE — DATA + INTERACTION PIPELINE</text>
-  <text x="60" y="74" fill="#7e828a" font-size="13" letter-spacing="1">LinkedIn 2023 postings → parse &amp; link → three coordinated D3 views · cross-filtered through shared Svelte stores</text>
+  <!-- 1 · SOURCE -->
+  <rect x="480" y="118" width="240" height="64" rx="5" fill="#12161a" stroke="#5e636b" stroke-opacity="0.7"/>
+  <text x="600" y="147" fill="#e8eaed" font-size="14" text-anchor="middle">Raw LinkedIn CSV</text>
+  <text x="600" y="167" fill="#a8acb1" font-size="10.5" text-anchor="middle">2023 job postings</text>
 
-  <!-- lane headers -->
-  <text x="60"  y="112" fill="#7e828a" font-size="13" letter-spacing="3">SOURCE</text>
-  <text x="300" y="112" fill="#7e828a" font-size="13" letter-spacing="3">CLEAN &amp; PARSE  (Python · pandas · regex)</text>
-  <text x="880" y="112" fill="#7e828a" font-size="13" letter-spacing="3">STRUCTURED ARTIFACTS (JSON)</text>
+  <line x1="600" y1="182" x2="600" y2="212" stroke="#cf7f54" stroke-opacity="0.5" stroke-width="1.6" fill="none" marker-end="url(#sb-a)"/>
 
-  <!-- ===== SOURCE ===== -->
-  <rect x="60" y="128" width="200" height="86" rx="5" fill="#12161a" stroke="#5fa0a6" stroke-opacity="0.75"/>
-  <text x="76" y="154" fill="#e8eaed" font-size="14">Raw CSV</text>
-  <text x="76" y="176" fill="#a8acb1" font-size="11">ai_ml_jobs_linkedin.csv</text>
-  <text x="76" y="193" fill="#7e828a" font-size="11">title · location · company ·</text>
-  <text x="76" y="208" fill="#7e828a" font-size="11">description · applications · workType</text>
+  <!-- 2 · CLEAN & PARSE -->
+  <rect x="440" y="214" width="320" height="64" rx="5" fill="#12161a" stroke="#5e636b" stroke-opacity="0.7"/>
+  <text x="600" y="243" fill="#e8eaed" font-size="14" text-anchor="middle">Clean &amp; parse (Python)</text>
+  <text x="600" y="263" fill="#a8acb1" font-size="10.5" text-anchor="middle">normalize titles, extract skills, geocode</text>
 
-  <!-- ===== CLEAN & PARSE (four stacked stages) ===== -->
-  <g font-size="13">
-    <rect x="300" y="128" width="520" height="52" rx="4" fill="#12161a" stroke="#5e636b" stroke-opacity="0.7"/>
-    <text x="316" y="150" fill="#e8eaed">1 · Title normalization → 23 job categories (Tech / Design)</text>
-    <text x="316" y="169" fill="#7e828a" font-size="11">raw titles clustered into new_title / title_cluster → subcategory + job_category label</text>
+  <!-- split to two artifacts -->
+  <path d="M540,278 L540,300 L340,300 L340,322" stroke="#cf7f54" stroke-opacity="0.5" stroke-width="1.6" fill="none" marker-end="url(#sb-a)"/>
+  <path d="M660,278 L660,300 L860,300 L860,322" stroke="#cf7f54" stroke-opacity="0.5" stroke-width="1.6" fill="none" marker-end="url(#sb-a)"/>
 
-    <rect x="300" y="192" width="520" height="52" rx="4" fill="#12161a" stroke="#5e636b" stroke-opacity="0.7"/>
-    <text x="316" y="214" fill="#e8eaed">2 · Skill extraction → 9 skill groups, 76 skills</text>
-    <text x="316" y="233" fill="#7e828a" font-size="11">regex keyword-map over descriptions → required vs. preferred, tagged by category</text>
+  <!-- 3 · TWO ARTIFACTS -->
+  <rect x="200" y="324" width="280" height="64" rx="5" fill="#12161a" stroke="#5e636b" stroke-opacity="0.7"/>
+  <text x="340" y="353" fill="#e8eaed" font-size="14" text-anchor="middle">Skill-graph JSON</text>
+  <text x="340" y="373" fill="#a8acb1" font-size="10.5" text-anchor="middle">76 skills, 9 groups, required/preferred edges</text>
 
-    <rect x="300" y="256" width="520" height="52" rx="4" fill="#12161a" stroke="#5e636b" stroke-opacity="0.7"/>
-    <text x="316" y="278" fill="#e8eaed">3 · Salary normalization + applications parse</text>
-    <text x="316" y="297" fill="#7e828a" font-size="11">hourly / monthly / yearly → normalized_yearly_salary · applies count retained</text>
+  <rect x="720" y="324" width="280" height="64" rx="5" fill="#12161a" stroke="#5e636b" stroke-opacity="0.7"/>
+  <text x="860" y="353" fill="#e8eaed" font-size="14" text-anchor="middle">Geocoded jobs JSON</text>
+  <text x="860" y="373" fill="#a8acb1" font-size="10.5" text-anchor="middle">4,725 postings, salary, applies, lat/lng</text>
 
-    <rect x="300" y="320" width="520" height="52" rx="4" fill="#12161a" stroke="#5e636b" stroke-opacity="0.7"/>
-    <text x="316" y="342" fill="#e8eaed">4 · Geocode → lat/lng + FIPS · &lt;50-mention skill filter</text>
-    <text x="316" y="361" fill="#7e828a" font-size="11">location → coordinates; rare skills dropped to cut long-tail noise</text>
+  <!-- artifacts to views -->
+  <path d="M300,388 L300,410 L200,410 L200,440" stroke="#cf7f54" stroke-opacity="0.5" stroke-width="1.6" fill="none" marker-end="url(#sb-a)"/>
+  <path d="M400,388 L400,410 L600,410 L600,440" stroke="#cf7f54" stroke-opacity="0.5" stroke-width="1.6" fill="none" marker-end="url(#sb-a)"/>
+  <path d="M800,388 L800,410 L600,410" stroke="#cf7f54" stroke-opacity="0.5" stroke-width="1.6" fill="none"/>
+  <path d="M900,388 L900,410 L1000,410 L1000,440" stroke="#cf7f54" stroke-opacity="0.5" stroke-width="1.6" fill="none" marker-end="url(#sb-a)"/>
 
-    <!-- link-build stage spanning bottom of parse lane -->
-    <rect x="300" y="396" width="520" height="52" rx="4" fill="#1a130e" stroke="#cf7f54" stroke-width="1.6"/>
-    <text x="316" y="418" fill="#cf7f54" font-size="13">5 · Skill ⇄ job linkage graph (required / preferred edges)</text>
-    <text x="316" y="437" fill="#d8dadd" font-size="11">per-skill connections → edge list feeding the circular linkage + dashboard bipartite view</text>
-  </g>
+  <!-- 4 · THREE VIEWS -->
+  <rect x="80" y="442" width="240" height="72" rx="5" fill="#12161a" stroke="#5e636b" stroke-opacity="0.7"/>
+  <text x="200" y="474" fill="#e8eaed" font-size="14" text-anchor="middle">Circular linkage</text>
+  <text x="200" y="494" fill="#a8acb1" font-size="10.5" text-anchor="middle">edge-bundled skill-job graph</text>
 
-  <!-- vertical arrows through parse stages -->
-  <g stroke="#cf7f54" stroke-opacity="0.5" stroke-width="1.6" fill="none">
-    <line x1="560" y1="180" x2="560" y2="192" marker-end="url(#sb-a)"/>
-    <line x1="560" y1="244" x2="560" y2="256" marker-end="url(#sb-a)"/>
-    <line x1="560" y1="308" x2="560" y2="320" marker-end="url(#sb-a)"/>
-    <line x1="560" y1="372" x2="560" y2="396" marker-end="url(#sb-a)"/>
-  </g>
-  <!-- source into stage 1 -->
-  <line x1="260" y1="154" x2="300" y2="154" stroke="#cf7f54" stroke-opacity="0.5" stroke-width="1.6" fill="none" marker-end="url(#sb-a)"/>
+  <rect x="480" y="442" width="240" height="72" rx="5" fill="#12161a" stroke="#5e636b" stroke-opacity="0.7"/>
+  <text x="600" y="474" fill="#e8eaed" font-size="14" text-anchor="middle">Geographic map</text>
+  <text x="600" y="494" fill="#a8acb1" font-size="10.5" text-anchor="middle">one dot per posting, remote flagged</text>
 
-  <!-- ===== STRUCTURED ARTIFACTS ===== -->
-  <rect x="880" y="192" width="260" height="86" rx="5" fill="#12161a" stroke="#9b6fc9" stroke-opacity="0.8"/>
-  <text x="896" y="218" fill="#e8eaed" font-size="14">Skill graph JSON</text>
-  <text x="896" y="240" fill="#a8acb1" font-size="11">filtered_nonpop_1129_50.json</text>
-  <text x="896" y="257" fill="#7e828a" font-size="11">76 skills + 24 subcategory nodes,</text>
-  <text x="896" y="272" fill="#7e828a" font-size="11">each with required / preferred edges</text>
+  <rect x="880" y="442" width="240" height="72" rx="5" fill="#12161a" stroke="#5e636b" stroke-opacity="0.7"/>
+  <text x="1000" y="474" fill="#e8eaed" font-size="14" text-anchor="middle">Integrated dashboard</text>
+  <text x="1000" y="494" fill="#a8acb1" font-size="10.5" text-anchor="middle">counts, salary, applications</text>
 
-  <rect x="880" y="320" width="260" height="86" rx="5" fill="#12161a" stroke="#9b6fc9" stroke-opacity="0.8"/>
-  <text x="896" y="346" fill="#e8eaed" font-size="14">Geocoded jobs JSON</text>
-  <text x="896" y="368" fill="#a8acb1" font-size="11">jobs_with_coordinates_...1113.json</text>
-  <text x="896" y="385" fill="#7e828a" font-size="11">4,725 jobs · Tech 3,423 / Design 1,302</text>
-  <text x="896" y="400" fill="#7e828a" font-size="11">1,098 remote · salary · applies · lat/lng</text>
+  <!-- views to shared store -->
+  <line x1="200" y1="514" x2="200" y2="576" stroke="#cf7f54" stroke-opacity="0.5" stroke-width="1.6" fill="none" marker-end="url(#sb-a)"/>
+  <line x1="600" y1="514" x2="600" y2="576" stroke="#cf7f54" stroke-opacity="0.5" stroke-width="1.6" fill="none" marker-end="url(#sb-a)"/>
+  <line x1="1000" y1="514" x2="1000" y2="576" stroke="#cf7f54" stroke-opacity="0.5" stroke-width="1.6" fill="none" marker-end="url(#sb-a)"/>
 
-  <!-- artifacts arrows from parse lane -->
-  <line x1="820" y1="222" x2="880" y2="230" stroke="#cf7f54" stroke-opacity="0.5" stroke-width="1.6" fill="none" marker-end="url(#sb-a)"/>
-  <line x1="820" y1="346" x2="880" y2="352" stroke="#cf7f54" stroke-opacity="0.5" stroke-width="1.6" fill="none" marker-end="url(#sb-a)"/>
-  <line x1="820" y1="422" x2="850" y2="422" stroke="#cf7f54" stroke-opacity="0.45" stroke-width="1.6" fill="none"/>
-  <path d="M850,422 L850,262 L880,262" stroke="#cf7f54" stroke-opacity="0.45" stroke-width="1.6" fill="none" marker-end="url(#sb-a)"/>
+  <!-- 5 · SHARED STORE (focal) -->
+  <rect x="80" y="578" width="1040" height="72" rx="6" fill="#1a130e" stroke="#cf7f54" stroke-width="1.6"/>
+  <text x="600" y="610" fill="#cf7f54" font-size="14" text-anchor="middle" letter-spacing="1">Shared Svelte store · coordinated cross-filtering</text>
+  <text x="600" y="632" fill="#a8acb1" font-size="10.5" text-anchor="middle">a selection or zoom in any view re-filters the other two</text>
 
-  <!-- ===== VIEWS LANE ===== -->
-  <text x="60" y="512" fill="#7e828a" font-size="13" letter-spacing="3">THREE COORDINATED D3 VIEWS  (Svelte 5 + d3 v7)</text>
-
-  <!-- View 1: circular edge bundling -->
-  <rect x="60" y="528" width="352" height="150" rx="6" fill="#12161a" stroke="#5fa0a6" stroke-opacity="0.8"/>
-  <text x="80" y="556" fill="#e8eaed" font-size="14">A · Circular skill-job linkage</text>
-  <text x="80" y="578" fill="#a8acb1" font-size="11">EdgeBundling · d3.cluster + curveBundle(β .85)</text>
-  <text x="80" y="596" fill="#7e828a" font-size="11">radial hierarchy of skills &amp; job categories;</text>
-  <text x="80" y="612" fill="#7e828a" font-size="11">hover a node → its edges highlight, others dim.</text>
-  <text x="80" y="636" fill="#7e828a" font-size="11">Reveals which roles pull both tech + design</text>
-  <text x="80" y="651" fill="#7e828a" font-size="11">skills (e.g. Software Engineer) vs. single-field.</text>
-  <text x="80" y="670" fill="#7e828a" font-size="11" font-style="italic">source: skill graph JSON</text>
-
-  <!-- View 2: geo map -->
-  <rect x="424" y="528" width="352" height="150" rx="6" fill="#12161a" stroke="#7aa15c" stroke-opacity="0.8"/>
-  <text x="444" y="556" fill="#e8eaed" font-size="14">B · Geographic demand map</text>
-  <text x="444" y="578" fill="#a8acb1" font-size="11">GeoMap · d3.geoAlbersUsa + us-atlas TopoJSON</text>
-  <text x="444" y="596" fill="#7e828a" font-size="11">one dot per posting, blue Tech / pink Design;</text>
-  <text x="444" y="612" fill="#7e828a" font-size="11">remote roles stacked in side panels.</text>
-  <text x="444" y="636" fill="#7e828a" font-size="11">Zoom-to-state; hover a dot → title, company,</text>
-  <text x="444" y="651" fill="#7e828a" font-size="11">salary tooltip. Bottom bars: salary + applies.</text>
-  <text x="444" y="670" fill="#7e828a" font-size="11" font-style="italic">source: geocoded jobs JSON</text>
-
-  <!-- View 3: integrated dashboard -->
-  <rect x="788" y="528" width="352" height="150" rx="6" fill="#12161a" stroke="#9b6fc9" stroke-opacity="0.8"/>
-  <text x="808" y="556" fill="#e8eaed" font-size="14">C · Integrated dashboard</text>
-  <text x="808" y="578" fill="#a8acb1" font-size="11">SkillsDashboard · bipartite skills ↔ categories</text>
-  <text x="808" y="596" fill="#7e828a" font-size="11">brush or click to select up to 4 categories;</text>
-  <text x="808" y="612" fill="#7e828a" font-size="11">log-scaled job-count bars (remote vs. on-site),</text>
-  <text x="808" y="636" fill="#7e828a" font-size="11">per-category salary distribution + applications.</text>
-  <text x="808" y="651" fill="#7e828a" font-size="11">Ties skills, geography, salary into one panel.</text>
-  <text x="808" y="670" fill="#7e828a" font-size="11" font-style="italic">source: both artifacts</text>
-
-  <!-- artifact -> view arrows -->
-  <g stroke="#cf7f54" stroke-opacity="0.45" stroke-width="1.6" fill="none">
-    <path d="M910,406 L910,470 L236,470 L236,528" marker-end="url(#sb-a)"/>
-    <path d="M1010,406 L1010,494 L600,494 L600,528" marker-end="url(#sb-a)"/>
-    <line x1="964" y1="470" x2="964" y2="528" marker-end="url(#sb-a)"/>
-  </g>
-
-  <!-- ===== CROSS-FILTER BUS ===== -->
-  <rect x="60" y="726" width="1080" height="86" rx="6" fill="#1a130e" stroke="#cf7f54" stroke-width="1.6"/>
-  <text x="80" y="752" fill="#cf7f54" font-size="14" letter-spacing="2">SHARED STATE ✦ Svelte stores — coordinated cross-filtering</text>
-  <text x="80" y="774" fill="#d8dadd" font-size="12">selectedSkills · selectedSubcategories · visibleJobs · cachedJobs · hoveredJobCategory</text>
-  <text x="80" y="795" fill="#7e828a" font-size="11">A selection or map-zoom in any view writes the stores; the other views react — dots dim, bars rescale, edges highlight — so all three stay in sync.</text>
-
-  <!-- bidirectional links views <-> bus -->
-  <g stroke="#cf7f54" stroke-opacity="0.5" stroke-width="1.6" fill="none">
-    <line x1="236" y1="678" x2="236" y2="726" marker-start="url(#sb-a)" marker-end="url(#sb-a)"/>
-    <line x1="600" y1="678" x2="600" y2="726" marker-start="url(#sb-a)" marker-end="url(#sb-a)"/>
-    <line x1="964" y1="678" x2="964" y2="726" marker-start="url(#sb-a)" marker-end="url(#sb-a)"/>
-  </g>
+  <!-- feedback return arc: store re-filters views (single dashed distinct arc) -->
+  <path d="M80,614 L48,614 L48,478 L80,478" stroke="#a8acb1" stroke-opacity="0.55" stroke-width="1.5" stroke-dasharray="6 5" fill="none" marker-end="url(#sb-d)"/>
+  <text x="30" y="546" fill="#7e828a" font-size="10.5" text-anchor="middle" transform="rotate(-90 30 546)">re-filters views</text>
 </svg>

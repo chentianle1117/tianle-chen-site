@@ -1,150 +1,40 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 860" width="1200" height="860" font-family="'IBM Plex Mono', ui-monospace, monospace">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 380" width="1200" height="380" font-family="'IBM Plex Mono', ui-monospace, monospace">
   <defs>
     <marker id="ta-a" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
-      <path d="M0,0 L8,4.5 L0,9 Z" fill="#cf7f54" fill-opacity="0.85"/>
+      <path d="M0,0 L8,4.5 L0,9 Z" fill="#cf7f54" fill-opacity="0.8"/>
     </marker>
   </defs>
-  <rect width="1200" height="860" fill="#0b0d0f"/>
+  <rect width="1200" height="380" fill="#0b0d0f"/>
 
-  <!-- faint grid -->
-  <g stroke="#5e636b" stroke-opacity="0.10">
-    <line x1="0" y1="215" x2="1200" y2="215"/>
-    <line x1="0" y1="560" x2="1200" y2="560"/>
-    <line x1="600" y1="120" x2="600" y2="560"/>
-  </g>
+  <text x="60" y="52" fill="#cf7f54" font-size="16" letter-spacing="3">TRAVEL ATLAS · DATA PIPELINE</text>
+  <text x="60" y="76" fill="#7e828a" font-size="12.5">This shows that a travel map is reconstructed from my own Notion reviews, no manual entry.</text>
 
-  <text x="60" y="50" fill="#cf7f54" font-size="17" letter-spacing="3">TRAVEL ATLAS — PERSONAL-DATA PIPELINE</text>
-  <text x="60" y="74" fill="#7e828a" font-size="13">Built entirely from my own data — no manual entry. Two provenance-preserving sources → one merged dataset → an interactive map.</text>
+  <!-- Node 1: Notion source -->
+  <rect x="60" y="150" width="230" height="92" rx="6" fill="#12161a" stroke="#5e636b" stroke-opacity="0.7"/>
+  <text x="175" y="192" fill="#e8eaed" font-size="14" text-anchor="middle">Notion reviews</text>
+  <text x="175" y="214" fill="#a8acb1" font-size="10.5" text-anchor="middle">weekly + daily pages</text>
 
-  <!-- ============ LANE HEADERS ============ -->
-  <text x="60"  y="120" fill="#7e828a" font-size="13" letter-spacing="3">SOURCE A · NOTION REVIEWS (via MCP)</text>
-  <text x="640" y="120" fill="#7e828a" font-size="13" letter-spacing="3">SOURCE B · iCLOUD PHOTOS (metadata only)</text>
+  <!-- Node 2: Title-mining -->
+  <rect x="350" y="150" width="230" height="92" rx="6" fill="#12161a" stroke="#5e636b" stroke-opacity="0.7"/>
+  <text x="465" y="192" fill="#e8eaed" font-size="14" text-anchor="middle">Title-mined weeks</text>
+  <text x="465" y="214" fill="#a8acb1" font-size="10.5" text-anchor="middle">places parsed from titles</text>
 
-  <!-- ============ SOURCE A: NOTION ============ -->
-  <g font-size="14.5">
-    <rect x="60" y="138" width="245" height="86" rx="5" fill="#12161a" stroke="#5fa0a6" stroke-opacity="0.8"/>
-    <text x="80" y="168" fill="#e8eaed">WEEKLY REVIEWS</text>
-    <text x="80" y="190" fill="#a8acb1" font-size="11.5">~249 pages, date-filtered</text>
-    <text x="80" y="208" fill="#a8acb1" font-size="11.5">Notion MCP enumerate + fetch</text>
+  <!-- Node 3: Geocode -->
+  <rect x="640" y="150" width="230" height="92" rx="6" fill="#12161a" stroke="#5e636b" stroke-opacity="0.7"/>
+  <text x="755" y="192" fill="#e8eaed" font-size="14" text-anchor="middle">Geocode</text>
+  <text x="755" y="214" fill="#a8acb1" font-size="10.5" text-anchor="middle">city / park centroids</text>
 
-    <rect x="60" y="240" width="245" height="86" rx="5" fill="#12161a" stroke="#5fa0a6" stroke-opacity="0.8"/>
-    <text x="80" y="270" fill="#e8eaed">DAILY REVIEWS</text>
-    <text x="80" y="292" fill="#a8acb1" font-size="11.5">~1,330 scanned → 146 trip-days</text>
-    <text x="80" y="310" fill="#a8acb1" font-size="11.5">catches trips titles missed</text>
-  </g>
+  <!-- Node 4: Leaflet render (focal) -->
+  <rect x="930" y="150" width="230" height="92" rx="6" fill="#1a130e" stroke="#cf7f54" stroke-width="2"/>
+  <text x="1045" y="192" fill="#cf7f54" font-size="14" text-anchor="middle">Leaflet map</text>
+  <text x="1045" y="214" fill="#a8acb1" font-size="10.5" text-anchor="middle">timeline scrubber</text>
 
-  <!-- title-mining -->
-  <rect x="345" y="188" width="235" height="90" rx="5" fill="#12161a" stroke="#5e636b" stroke-opacity="0.6"/>
-  <text x="365" y="216" fill="#e8eaed" font-size="14.5">TITLE-MINING</text>
-  <text x="365" y="238" fill="#a8acb1" font-size="11.5">parse locations from page titles</text>
-  <text x="365" y="256" fill="#a8acb1" font-size="11.5">era-infer home base for untitled</text>
-  <text x="365" y="272" fill="#7e828a" font-size="11">"9.27-10.3, 2021" → date + place</text>
-
+  <!-- arrows -->
   <g stroke="#cf7f54" stroke-opacity="0.5" stroke-width="1.6" fill="none">
-    <line x1="305" y1="181" x2="345" y2="215" marker-end="url(#ta-a)"/>
-    <line x1="305" y1="283" x2="345" y2="248" marker-end="url(#ta-a)"/>
+    <path d="M290,196 L350,196" marker-end="url(#ta-a)"/>
+    <path d="M580,196 L640,196" marker-end="url(#ta-a)"/>
+    <path d="M870,196 L930,196" marker-end="url(#ta-a)"/>
   </g>
 
-  <!-- ============ SOURCE B: iCLOUD ============ -->
-  <g font-size="14.5">
-    <rect x="640" y="138" width="255" height="86" rx="5" fill="#12161a" stroke="#9b6fc9" stroke-opacity="0.8"/>
-    <text x="660" y="168" fill="#e8eaed">pyicloud — CloudKit</text>
-    <text x="660" y="190" fill="#a8acb1" font-size="11.5">73,009 items paged, metadata only</text>
-    <text x="660" y="208" fill="#a8acb1" font-size="11.5">Apple ID + 2FA · zero image bytes</text>
-  </g>
-
-  <rect x="935" y="138" width="205" height="86" rx="5" fill="#12161a" stroke="#9b6fc9" stroke-opacity="0.8"/>
-  <text x="955" y="164" fill="#e8eaed" font-size="14.5">EXIF GPS DECODE</text>
-  <text x="955" y="185" fill="#a8acb1" font-size="11.5">mediaMetaDataEnc →</text>
-  <text x="955" y="201" fill="#a8acb1" font-size="11.5">base64 → binary plist</text>
-  <text x="955" y="217" fill="#7e828a" font-size="11">{GPS} dict · S/W sign flip</text>
-
-  <rect x="640" y="240" width="255" height="86" rx="5" fill="#12161a" stroke="#5e636b" stroke-opacity="0.6"/>
-  <text x="660" y="268" fill="#e8eaed" font-size="14.5">DENSITY CELLS</text>
-  <text x="660" y="290" fill="#a8acb1" font-size="11.5">22,663 geotagged → round(3dp)</text>
-  <text x="660" y="308" fill="#a8acb1" font-size="11.5">4,122 GPS cells · null-island filtered</text>
-
-  <g stroke="#cf7f54" stroke-opacity="0.5" stroke-width="1.6" fill="none">
-    <line x1="895" y1="181" x2="935" y2="181" marker-end="url(#ta-a)"/>
-    <line x1="1037" y1="224" x2="800" y2="240" marker-end="url(#ta-a)"/>
-  </g>
-
-  <!-- ============ MERGE ============ -->
-  <text x="60" y="380" fill="#7e828a" font-size="13" letter-spacing="3">MERGE + CORRECT (merge.py · idempotent rebuild)</text>
-
-  <rect x="60" y="398" width="245" height="88" rx="5" fill="#12161a" stroke="#5e636b" stroke-opacity="0.6"/>
-  <text x="80" y="426" fill="#e8eaed" font-size="14.5">weekly-data.json</text>
-  <text x="80" y="448" fill="#a8acb1" font-size="11.5">pure weekly (home base)</text>
-  <text x="80" y="466" fill="#a8acb1" font-size="11.5">preserved on first run</text>
-
-  <rect x="60" y="498" width="245" height="52" rx="5" fill="#12161a" stroke="#5e636b" stroke-opacity="0.6"/>
-  <text x="80" y="526" fill="#e8eaed" font-size="14.5">daily-raw.json</text>
-  <text x="200" y="526" fill="#a8acb1" font-size="11.5">trip-days</text>
-
-  <rect x="345" y="416" width="235" height="118" rx="6" fill="#1a130e" stroke="#cf7f54" stroke-width="2"/>
-  <text x="365" y="444" fill="#cf7f54" font-size="14.5">merge.py</text>
-  <text x="365" y="468" fill="#a8acb1" font-size="11.5">weekly + daily → sort by date</text>
-  <text x="365" y="488" fill="#a8acb1" font-size="11.5">dedupe place tables (newPlaces)</text>
-  <text x="365" y="508" fill="#a8acb1" font-size="11.5">correct China-summer error:</text>
-  <text x="365" y="524" fill="#7e828a" font-size="11">17 wks Houston→Shanghai (arr. 08-23)</text>
-
-  <g stroke="#cf7f54" stroke-opacity="0.5" stroke-width="1.6" fill="none">
-    <line x1="305" y1="442" x2="345" y2="458" marker-end="url(#ta-a)"/>
-    <line x1="305" y1="524" x2="345" y2="500" marker-end="url(#ta-a)"/>
-    <line x1="462" y1="278" x2="462" y2="416" marker-end="url(#ta-a)"/>
-  </g>
-
-  <!-- travel-data.json output -->
-  <rect x="640" y="416" width="255" height="118" rx="6" fill="#12161a" stroke="#7aa15c" stroke-opacity="0.85"/>
-  <text x="660" y="444" fill="#e8eaed" font-size="14.5">travel-data.json</text>
-  <text x="660" y="468" fill="#a8acb1" font-size="11.5">395 events · 103 places · 10 countries</text>
-  <text x="660" y="488" fill="#a8acb1" font-size="11.5">2021-06 → 2026-05 · {date, places, label}</text>
-  <text x="660" y="508" fill="#a8acb1" font-size="11.5">+ newPlaces geocode table</text>
-  <text x="660" y="526" fill="#7e828a" font-size="11">photos.json ships alongside (density)</text>
-
-  <g stroke="#cf7f54" stroke-opacity="0.5" stroke-width="1.6" fill="none">
-    <line x1="580" y1="475" x2="640" y2="475" marker-end="url(#ta-a)"/>
-    <line x1="767" y1="326" x2="767" y2="416" marker-end="url(#ta-a)"/>
-  </g>
-
-  <!-- ============ CLIENT / RENDER ============ -->
-  <text x="60" y="600" fill="#7e828a" font-size="13" letter-spacing="3">CLIENT — SINGLE-FILE index.html (auto-loads travel-data.json)</text>
-
-  <g font-size="14.5">
-    <rect x="60" y="618" width="255" height="110" rx="5" fill="#12161a" stroke="#5e636b" stroke-opacity="0.6"/>
-    <text x="80" y="646" fill="#e8eaed">GEOCODE + NORMALIZE</text>
-    <text x="80" y="668" fill="#a8acb1" font-size="11.5">exact-spelling PLACES table</text>
-    <text x="80" y="686" fill="#a8acb1" font-size="11.5">alias map ("Santa Barbra" etc.)</text>
-    <text x="80" y="704" fill="#a8acb1" font-size="11.5">city / park centroids</text>
-
-    <rect x="345" y="618" width="255" height="110" rx="5" fill="#12161a" stroke="#5e636b" stroke-opacity="0.6"/>
-    <text x="365" y="646" fill="#e8eaed">LEAFLET MAP</text>
-    <text x="365" y="668" fill="#a8acb1" font-size="11.5">CARTO dark tiles</text>
-    <text x="365" y="686" fill="#a8acb1" font-size="11.5">circleMarkers: size+color = weeks</text>
-    <text x="365" y="704" fill="#a8acb1" font-size="11.5">bezier arcs = road / flight / unsure</text>
-
-    <rect x="630" y="618" width="255" height="110" rx="5" fill="#12161a" stroke="#5e636b" stroke-opacity="0.6"/>
-    <text x="650" y="646" fill="#e8eaed">TIMELINE SCRUBBER</text>
-    <text x="650" y="668" fill="#a8acb1" font-size="11.5">drag / Play across 395 events</text>
-    <text x="650" y="686" fill="#a8acb1" font-size="11.5">cumulative vs 6-week window</text>
-    <text x="650" y="704" fill="#a8acb1" font-size="11.5">re-aggregates dwell per frame</text>
-
-    <rect x="915" y="618" width="225" height="110" rx="5" fill="#1a130e" stroke="#cf7f54" stroke-width="2"/>
-    <text x="935" y="646" fill="#cf7f54">LIVE ATLAS</text>
-    <text x="935" y="668" fill="#a8acb1" font-size="11.5">103 places · 10 countries</text>
-    <text x="935" y="686" fill="#a8acb1" font-size="11.5">Houston 126w · Pittsburgh 80w</text>
-    <text x="935" y="704" fill="#a8acb1" font-size="11.5">stats · legend · journey mode</text>
-  </g>
-
-  <g stroke="#cf7f54" stroke-opacity="0.5" stroke-width="1.6" fill="none">
-    <line x1="315" y1="673" x2="345" y2="673" marker-end="url(#ta-a)"/>
-    <line x1="600" y1="673" x2="630" y2="673" marker-end="url(#ta-a)"/>
-    <line x1="885" y1="673" x2="915" y2="673" marker-end="url(#ta-a)"/>
-    <line x1="767" y1="534" x2="767" y2="618" marker-end="url(#ta-a)"/>
-  </g>
-
-  <!-- footer -->
-  <rect x="60" y="760" width="1080" height="70" rx="6" fill="#12161a" stroke="#5e636b" stroke-opacity="0.5"/>
-  <text x="80" y="788" fill="#d8dadd" font-size="14">PROVENANCE + PRIVACY</text>
-  <text x="80" y="810" fill="#7e828a" font-size="12">Every dot traces to a review I wrote or a photo I took. The iCloud harvest is metadata-only — GPS + date decoded from CloudKit, <tspan fill="#cf7f54">no image ever downloaded</tspan>.</text>
+  <text x="60" y="318" fill="#7e828a" font-size="12">103 places across 10 countries, every dot traced to a review I wrote.</text>
 </svg>

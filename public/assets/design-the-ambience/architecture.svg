@@ -1,146 +1,50 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 760" width="1200" height="760" font-family="'IBM Plex Mono', ui-monospace, monospace">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 440" width="1200" height="440" font-family="'IBM Plex Mono', ui-monospace, monospace">
   <defs>
-    <marker id="da-a" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
-      <path d="M0,0 L8,4.5 L0,9 Z" fill="#cf7f54" fill-opacity="0.9"/>
+    <marker id="ar" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L8,4.5 L0,9 Z" fill="#cf7f54" fill-opacity="0.8"/>
     </marker>
-    <marker id="da-g" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
-      <path d="M0,0 L8,4.5 L0,9 Z" fill="#7aa15c" fill-opacity="0.9"/>
+    <marker id="ar-g" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+      <path d="M0,0 L8,4.5 L0,9 Z" fill="#7aa15c" fill-opacity="0.85"/>
     </marker>
   </defs>
-  <rect width="1200" height="760" fill="#0b0d0f"/>
+  <rect width="1200" height="440" fill="#0b0d0f"/>
 
   <!-- title -->
-  <text x="60" y="48" fill="#cf7f54" font-size="17" letter-spacing="3">DESIGN THE AMBIENCE — REAL-TIME FEEDBACK LOOP</text>
-  <text x="60" y="72" fill="#7e828a" font-size="13">Body / cursor / keyboard in physical space → StreamDiffusion in TouchDesigner → projection → user reacts → loop · ~16 fps · 514×514</text>
+  <text x="60" y="48" fill="#cf7f54" font-size="16" letter-spacing="3">DESIGN THE AMBIENCE · REAL-TIME FEEDBACK LOOP</text>
+  <text x="60" y="72" fill="#7e828a" font-size="12.5">This shows that physical inputs condition StreamDiffusion, whose projection becomes the room the user reacts to.</text>
 
-  <!-- lane headers -->
-  <text x="60"  y="120" fill="#7e828a" font-size="13" letter-spacing="3">HUMAN INPUT (physical)</text>
-  <text x="340" y="120" fill="#7e828a" font-size="13" letter-spacing="3">CAPTURE + PRE-PROCESS</text>
-  <text x="628" y="120" fill="#7e828a" font-size="13" letter-spacing="3">TOUCHDESIGNER GENERATIVE PIPELINE</text>
-  <text x="1010" y="120" fill="#7e828a" font-size="13" letter-spacing="3">AMBIENT OUTPUT</text>
+  <!-- ===== INPUTS ===== -->
+  <rect x="60" y="140" width="220" height="150" rx="6" fill="#12161a" stroke="#5e636b" stroke-opacity="0.7"/>
+  <text x="170" y="176" fill="#e8eaed" font-size="14" text-anchor="middle">Physical inputs</text>
+  <text x="170" y="204" fill="#a8acb1" font-size="10.5" text-anchor="middle">cursor · keyboard</text>
+  <text x="170" y="224" fill="#a8acb1" font-size="10.5" text-anchor="middle">body pose · movement</text>
+  <text x="170" y="252" fill="#a8acb1" font-size="10.5" text-anchor="middle">live PC screen</text>
 
-  <!-- ===== HUMAN INPUT column ===== -->
-  <g font-size="14">
-    <rect x="60" y="150" width="230" height="66" rx="5" fill="#1a130e" stroke="#cf7f54" stroke-width="1.4"/>
-    <text x="78" y="182" fill="#e8eaed">Human decision to interact</text>
-    <text x="78" y="202" fill="#a8acb1" font-size="11">seated user · body posture · movement</text>
+  <!-- ===== CAPTURE ===== -->
+  <rect x="370" y="140" width="220" height="150" rx="6" fill="#12161a" stroke="#5e636b" stroke-opacity="0.7"/>
+  <text x="480" y="200" fill="#e8eaed" font-size="14" text-anchor="middle">Capture</text>
+  <text x="480" y="228" fill="#a8acb1" font-size="10.5" text-anchor="middle">Python + OSC · MediaPipe</text>
 
-    <rect x="60" y="240" width="230" height="58" rx="5" fill="#12161a" stroke="#e06f5f" stroke-opacity="0.7"/>
-    <text x="78" y="266" fill="#e8eaed">Mouse input</text>
-    <text x="78" y="285" fill="#a8acb1" font-size="11">cursor XY · movement speed</text>
+  <!-- ===== STREAMDIFFUSION (focal) ===== -->
+  <rect x="680" y="140" width="220" height="150" rx="6" fill="#1a130e" stroke="#cf7f54" stroke-width="1.6"/>
+  <text x="790" y="200" fill="#cf7f54" font-size="14" text-anchor="middle">StreamDiffusion</text>
+  <text x="790" y="228" fill="#a8acb1" font-size="10.5" text-anchor="middle">in TouchDesigner · ~16 fps</text>
 
-    <rect x="60" y="316" width="230" height="58" rx="5" fill="#12161a" stroke="#e06f5f" stroke-opacity="0.7"/>
-    <text x="78" y="342" fill="#e8eaed">Keyboard input</text>
-    <text x="78" y="361" fill="#a8acb1" font-size="11">typing speed / rhythm</text>
+  <!-- ===== PROJECTION ===== -->
+  <rect x="990" y="140" width="150" height="150" rx="6" fill="#12161a" stroke="#5e636b" stroke-opacity="0.7"/>
+  <text x="1065" y="200" fill="#e8eaed" font-size="14" text-anchor="middle">Projection</text>
+  <text x="1065" y="228" fill="#a8acb1" font-size="10.5" text-anchor="middle">onto wall + body</text>
 
-    <rect x="60" y="392" width="230" height="58" rx="5" fill="#12161a" stroke="#e06f5f" stroke-opacity="0.7"/>
-    <text x="78" y="418" fill="#e8eaed">User movement</text>
-    <text x="78" y="437" fill="#a8acb1" font-size="11">body in front of camera</text>
+  <!-- forward arrows (oxide) -->
+  <g fill="none" stroke="#cf7f54" stroke-opacity="0.5" stroke-width="1.6">
+    <path d="M280,215 L370,215" marker-end="url(#ar)"/>
+    <path d="M590,215 L680,215" marker-end="url(#ar)"/>
+    <path d="M900,215 L990,215" marker-end="url(#ar)"/>
   </g>
 
-  <!-- ===== CAPTURE column ===== -->
-  <g font-size="13.5">
-    <rect x="340" y="240" width="250" height="86" rx="5" fill="#12161a" stroke="#5fa0a6" stroke-opacity="0.8"/>
-    <text x="358" y="266" fill="#e8eaed" font-size="14">Python capture script</text>
-    <text x="358" y="288" fill="#a8acb1" font-size="11">pyQt5 + pynput · reads cursor + keys</text>
-    <text x="358" y="308" fill="#a8acb1" font-size="11">→ OSC out to TouchDesigner</text>
-
-    <rect x="340" y="150" width="250" height="66" rx="5" fill="#12161a" stroke="#5fa0a6" stroke-opacity="0.8"/>
-    <text x="358" y="180" fill="#e8eaed" font-size="14">Live PC screen capture</text>
-    <text x="358" y="200" fill="#a8acb1" font-size="11">windows + icons → composition</text>
-
-    <rect x="340" y="392" width="250" height="86" rx="5" fill="#12161a" stroke="#5fa0a6" stroke-opacity="0.8"/>
-    <text x="358" y="418" fill="#e8eaed" font-size="14">DJI Osmo video camera</text>
-    <text x="358" y="440" fill="#a8acb1" font-size="11">MediaPipe contour segmentation</text>
-    <text x="358" y="460" fill="#a8acb1" font-size="11">bbox + score (detection_data.json)</text>
-  </g>
-
-  <!-- ===== TOUCHDESIGNER pipeline ===== -->
-  <rect x="628" y="138" width="330" height="360" rx="8" fill="none" stroke="#5e636b" stroke-opacity="0.28" stroke-dasharray="4 4"/>
-  <g font-size="13">
-    <rect x="648" y="158" width="290" height="46" rx="4" fill="#12161a" stroke="#5e636b" stroke-opacity="0.5"/>
-    <text x="666" y="186" fill="#e8eaed">Cursor XY → colored square (size ∝ speed)</text>
-
-    <rect x="648" y="214" width="290" height="46" rx="4" fill="#12161a" stroke="#5e636b" stroke-opacity="0.5"/>
-    <text x="666" y="242" fill="#e8eaed">Keyboard speed → crystallized texture</text>
-
-    <rect x="648" y="270" width="290" height="46" rx="4" fill="#12161a" stroke="#5e636b" stroke-opacity="0.5"/>
-    <text x="666" y="298" fill="#e8eaed">Screen capture → base composition</text>
-
-    <rect x="648" y="326" width="290" height="46" rx="4" fill="#12161a" stroke="#5e636b" stroke-opacity="0.5"/>
-    <text x="666" y="354" fill="#e8eaed">Human contour → white negative space</text>
-
-    <rect x="648" y="392" width="290" height="86" rx="5" fill="#1a130e" stroke="#cf7f54" stroke-width="1.6"/>
-    <text x="666" y="420" fill="#cf7f54" font-size="14">StreamDiffusion (SD img2img)</text>
-    <text x="666" y="442" fill="#a8acb1" font-size="11">StreamDiffusionTD 0.2.2 · fixed text prompt</text>
-    <text x="666" y="462" fill="#a8acb1" font-size="11">~16 fps · 514×514 latent stream</text>
-  </g>
-
-  <!-- ===== OUTPUT column ===== -->
-  <g font-size="14">
-    <rect x="1000" y="270" width="160" height="96" rx="5" fill="#1a130e" stroke="#cf7f54" stroke-width="1.4"/>
-    <text x="1018" y="300" fill="#cf7f54">Projection</text>
-    <text x="1018" y="320" fill="#a8acb1" font-size="11">CamShnapper</text>
-    <text x="1018" y="338" fill="#a8acb1" font-size="11">mapping module</text>
-    <text x="1018" y="356" fill="#a8acb1" font-size="11">projector → wall + body</text>
-
-    <rect x="1000" y="150" width="160" height="80" rx="5" fill="#12161a" stroke="#7aa15c" stroke-opacity="0.8"/>
-    <text x="1018" y="182" fill="#e8eaed" font-size="13.5">Ambient working</text>
-    <text x="1018" y="202" fill="#e8eaed" font-size="13.5">environment</text>
-    <text x="1018" y="221" fill="#a8acb1" font-size="11">shared, reactive space</text>
-  </g>
-
-  <!-- connectors: human input -> capture (oxide) -->
-  <g stroke="#cf7f54" stroke-opacity="0.45" stroke-width="1.6" fill="none">
-    <path d="M290,183 C315,183 320,183 340,183" marker-end="url(#da-a)"/>
-    <path d="M290,269 C312,269 320,183 340,190" marker-end="url(#da-a)"/>
-    <path d="M290,345 C312,345 320,283 340,283" marker-end="url(#da-a)"/>
-    <path d="M290,421 C315,421 320,435 340,435" marker-end="url(#da-a)"/>
-  </g>
-
-  <!-- capture -> pipeline (oxide) -->
-  <g stroke="#cf7f54" stroke-opacity="0.45" stroke-width="1.6" fill="none">
-    <path d="M590,183 C612,183 626,293 648,293" marker-end="url(#da-a)"/>
-    <path d="M590,283 C610,283 626,183 648,181" marker-end="url(#da-a)"/>
-    <path d="M590,283 C610,283 626,237 648,237" marker-end="url(#da-a)"/>
-    <path d="M590,435 C612,435 626,349 648,349" marker-end="url(#da-a)"/>
-  </g>
-
-  <!-- pipeline inner -> StreamDiffusion -->
-  <g stroke="#cf7f54" stroke-opacity="0.35" stroke-width="1.4" fill="none">
-    <path d="M793,204 C793,215 793,380 793,392" marker-end="url(#da-a)"/>
-    <path d="M793,260 C793,300 793,380 793,392" marker-end="url(#da-a)"/>
-    <path d="M793,316 C793,350 793,380 793,392" marker-end="url(#da-a)"/>
-    <path d="M793,372 C793,380 793,384 793,392" marker-end="url(#da-a)"/>
-  </g>
-
-  <!-- StreamDiffusion -> projection -->
-  <g stroke="#cf7f54" stroke-opacity="0.5" stroke-width="1.8" fill="none">
-    <path d="M938,435 C968,435 980,318 1000,318" marker-end="url(#da-a)"/>
-  </g>
-  <!-- projection -> ambient (green) -->
-  <g stroke="#7aa15c" stroke-opacity="0.7" stroke-width="1.8" fill="none">
-    <path d="M1080,270 C1080,250 1080,235 1080,230" marker-end="url(#da-g)"/>
-  </g>
-
-  <!-- ===== external feedback loop (green, bottom) ===== -->
-  <g stroke="#7aa15c" stroke-opacity="0.75" stroke-width="2" fill="none">
-    <path d="M1080,230 C1080,560 1080,600 1080,600" />
-    <path d="M1080,600 L175,600" />
-    <path d="M175,600 C175,560 175,240 175,216" marker-end="url(#da-g)"/>
-  </g>
-  <rect x="470" y="582" width="260" height="34" rx="5" fill="#0b0d0f"/>
-  <text x="600" y="604" fill="#7aa15c" font-size="13" letter-spacing="3" text-anchor="middle">EXTERNAL FEEDBACK</text>
-
-  <!-- legend -->
-  <g font-size="11.5">
-    <rect x="60" y="668" width="1080" height="64" rx="6" fill="#12161a" stroke="#5e636b" stroke-opacity="0.4"/>
-    <line x1="80" y1="690" x2="112" y2="690" stroke="#e06f5f" stroke-opacity="0.8" stroke-width="2"/>
-    <text x="122" y="694" fill="#a8acb1">human input</text>
-    <line x1="230" y1="690" x2="262" y2="690" stroke="#cf7f54" stroke-opacity="0.6" stroke-width="2"/>
-    <text x="272" y="694" fill="#a8acb1">algorithmic / data flow</text>
-    <line x1="452" y1="690" x2="484" y2="690" stroke="#7aa15c" stroke-opacity="0.8" stroke-width="2"/>
-    <text x="494" y="694" fill="#a8acb1">external projection back into the room</text>
-    <text x="80" y="718" fill="#7e828a">Four measured channels — cursor XY, cursor speed, typing speed, MediaPipe body contour — plus the live screen feed condition every StreamDiffusion frame.</text>
-  </g>
+  <!-- feedback return arc (green, dashed) -->
+  <path d="M1065,290 C1065,370 1065,392 590,392 L170,392 C170,340 170,312 170,290"
+        fill="none" stroke="#7aa15c" stroke-opacity="0.75" stroke-width="1.8" stroke-dasharray="6 5" marker-end="url(#ar-g)"/>
+  <rect x="540" y="376" width="200" height="30" rx="5" fill="#0b0d0f"/>
+  <text x="640" y="396" fill="#7aa15c" font-size="11.5" letter-spacing="2" text-anchor="middle">USER REACTS · CLOSES LOOP</text>
 </svg>
