@@ -222,7 +222,10 @@
   @media (min-width: 1024px) { .layout-with-rails { padding-inline: 3rem; } }
   @media (max-width: 1023px) {
     .layout-with-rails {
-      grid-template-columns: 1fr;
+      /* minmax(0,1fr) not 1fr: a plain 1fr is minmax(auto,1fr), which lets the
+         92vw break-out diagram expand the column and eat the right padding,
+         pushing body text flush to the viewport edge on mobile. */
+      grid-template-columns: minmax(0, 1fr);
       gap: 1.5rem;
     }
   }
