@@ -5,6 +5,7 @@ summary: "A multi-agent, provider-agnostic system that runs a real job search en
 year: 2026
 semester: Personal project
 role: sole engineer
+github_url: https://github.com/chentianle1117/job-search-copilot
 categories:
   - AI/ML
   - Interactive Tool
@@ -226,5 +227,8 @@ doubt, stop safe and surface it, never degrade quietly.
 I built this under real stakes, not as a demo — which is exactly why it taught me
 the most. The reusable core — the provider-agnostic router, the ATS handler
 framework, the deterministic quality-gate harness, and the fresh-context auditor
-pattern — is being extracted into an open-source project, with all
-candidate-specific data removed.
+pattern — is **open-sourced (MIT)** at
+[github.com/chentianle1117/job-search-copilot](https://github.com/chentianle1117/job-search-copilot):
+the engine only, with every candidate-specific value supplied privately at runtime.
+Anyone can clone it, point it at their own profile, and run the demo end-to-end —
+no personal data ever enters the repo.
