@@ -1,6 +1,7 @@
 ---
 import type { CollectionEntry } from "astro:content";
 import PlaceholderHero from "./PlaceholderHero.astro";
+import MethodBadge from "./MethodBadge.astro";
 import { getTagsForProject } from "../lib/categories";
 import { existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
@@ -117,6 +118,7 @@ const tagPills: string[] = getTagsForProject(data);
           row 1: TAG pills — type identification
           row 2: title — display serif
           row 3: YEAR · CONTEXT — mono kicker (muted) */}
+    <MethodBadge slug={slug} variant="card" />
     {tagPills.length > 0 && (
       <div class="flex flex-wrap" style="gap: 6px;">
         {tagPills.map((tag) => (

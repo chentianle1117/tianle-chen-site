@@ -7,7 +7,13 @@ import { execSync } from "node:child_process";
 import fs from "node:fs";
 import path from "node:path";
 import pkg from "../../package.json";
-import { FILTER_CATEGORIES, domainForProject } from "../lib/categories";
+import {
+  FILTER_CATEGORIES,
+  domainForProject,
+  METHODS,
+  methodsForProject,
+  MATRIX_LABS,
+} from "../lib/categories";
 import overrides from "../../scripts/project_overrides.json";
 import { getProjectCounts } from "../lib/projectCounts";
 
@@ -118,6 +124,24 @@ const donutData = FILTER_CATEGORIES.map((b) => ({
   color: bucketColors[b],
 }));
 
+// ── Method-depth split — the technique-kind dimension (see categories.ts) ──
+// Counts projects + lab instruments per method (primary or secondary), in the
+// depth-ordered spectrum so the range from model-training to interface craft
+// is visible here too.
+const methodSplit = METHODS.map((m) => {
+  let count = 0;
+  for (const p of all) {
+    const slug =
+      (p as any).slug ?? (p.data as any).slug ?? p.id?.replace(/\.md$/, "");
+    if (methodsForProject(slug).includes(m.key)) count++;
+  }
+  for (const lab of MATRIX_LABS) {
+    if (methodsForProject(lab.slug).includes(m.key)) count++;
+  }
+  return { ...m, count };
+});
+const methodMax = Math.max(1, ...methodSplit.map((m) => m.count));
+
 // ── Latency placeholders (honest measured-where-possible) ─────────────────
 let routeCount = 0;
 try {
@@ -222,6 +246,37 @@ const stack = [
       {/* 4 — Category split */}
       <DashboardPanel label="Category split" span={5}>
         <Donut data={donutData} size={180} />
+      </DashboardPanel>
+
+      {/* 4b — Method depth (technique-kind dimension) */}
+      <DashboardPanel label="Method depth" span={12}>
+        <p class="mono-label mb-4" style="color: rgb(var(--text-mono));">
+          MODEL-BUILDING → INTERFACE CRAFT · projects + labs per technique
+        </p>
+        <div class="space-y-2.5 font-mono text-sm">
+          {methodSplit.map((m) => (
+            <div class="grid grid-cols-[8.5rem_1fr_1.75rem] gap-3 items-center">
+              <span
+                class="mono-label"
+                style={`color: ${m.tier === "ml" ? "rgb(var(--accent-rgb))" : "rgb(var(--text-mono))"};`}
+              >
+                {m.chip}
+              </span>
+              <div
+                style="height: 8px; border-radius: 3px; background: rgb(var(--surface-2-rgb)); overflow: hidden;"
+              >
+                <div
+                  style={`height: 100%; width: ${(m.count / methodMax) * 100}%; min-width: 3px; border-radius: 3px; background: ${m.tier === "ml" ? "rgb(var(--accent-rgb))" : "rgb(var(--text-muted))"};`}
+                ></div>
+              </div>
+              <span
+                style="text-align: right; color: rgb(var(--text-primary)); font-variant-numeric: tabular-nums;"
+              >
+                {m.count}
+              </span>
+            </div>
+          ))}
+        </div>
       </DashboardPanel>
 
       {/* 5 — Built with */}

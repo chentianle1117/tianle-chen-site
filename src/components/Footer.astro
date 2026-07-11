@@ -1,11 +1,13 @@
 ---
 const buildDate = new Date().toISOString().slice(0, 10);
 
+// Round-10: footer is the "secondary / discoverable" home for surfaces pulled
+// out of the top nav — Latent Space (full page) + Dashboard live here. Dropped
+// Architecture (now a /work domain filter).
 const primaryLinks = [
   { href: "/latent-space", label: "Latent Space" },
   { href: "/work", label: "Projects" },
   { href: "/labs", label: "Labs" },
-  { href: "/architecture", label: "Architecture" },
   { href: "/thesis", label: "Thesis" },
   { href: "/about", label: "About" },
   { href: "/dashboard", label: "Dashboard" },

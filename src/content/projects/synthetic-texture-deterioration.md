@@ -23,10 +23,10 @@ local_path: W:\CMU_Academics\Fall 2024 CMU\Independent Study\new-texture-analyze
 notion_url: https://www.notion.so/chentianle1117/Synthetic-Tool-for-Visualizing-Texture-Deterioration-16933d12d95a81dfbb4ad317fa136701
 priority: experimental
 progress_report: /assets/synthetic-texture-deterioration/progress-report.pdf
-publish: true
+publish: false
 semester: Fall 2024
 slug: synthetic-texture-deterioration
-status: ready
+status: draft
 summary: A working real-time prototype captures a live architectural render off-screen,
   classifies the material with a sliding-window model, and asks a local vision LLM to
   describe it and estimate its age — treating facade weathering as a design input. A

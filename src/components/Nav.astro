@@ -6,11 +6,13 @@ const currentPath = Astro.url.pathname;
 // Round-9c: dropped Dashboard from primary nav (still accessible via /dashboard
 // directly or from About); renamed "Work" → "Projects" since the page now
 // holds both ML/AI work and computational design pieces, not just one type.
+// Round-10: streamlined IA (Option 1). Dropped "Latent Space" (the home hero
+// IS that instrument; the full page stays reachable via the footer) and
+// "Architecture" (a subset of /work — reachable as a domain filter there).
+// One canonical work browse (Projects) instead of 4 competing corpus lenses.
 const links = [
-  { href: "/latent-space", label: "Latent Space" },
   { href: "/work", label: "Projects" },
   { href: "/labs", label: "Labs" },
-  { href: "/architecture", label: "Architecture" },
   { href: "/thesis", label: "Thesis" },
   { href: "/writing", label: "Writing" },
   { href: "/about", label: "About" },

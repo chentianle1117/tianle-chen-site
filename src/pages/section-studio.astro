@@ -1,6 +1,7 @@
 ---
 // @ts-nocheck
 import BaseLayout from "../layouts/BaseLayout.astro";
+import MethodBadge from "../components/MethodBadge.astro";
 // @ts-ignore - React island (WebGL, client-only)
 import SectionStudio from "../components/section-studio/SectionStudio";
 
@@ -39,6 +40,8 @@ const structuredData = {
       >
         Section Studio.
       </h1>
+
+      <MethodBadge slug="section-studio" variant="inline" />
 
       {/* THESIS — the single idea, not a feature list */}
       <p

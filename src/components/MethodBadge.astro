@@ -1,0 +1,106 @@
+---
+// MethodBadge — surfaces a project's technique-depth method tag(s).
+// The METHOD dimension is orthogonal to the 4 domains: it tells a viewer
+// what KIND of ML/technique work a project is, so real model training reads
+// differently from interface/API work at a glance. ML-tier methods get the
+// accent treatment; the "interface" catch-all stays muted.
+import { methodsForProject, methodMeta, type MethodKey } from "../lib/categories";
+
+interface Props {
+  /** Look methods up by slug… */
+  slug?: string;
+  /** …or pass them explicitly (wins over slug). */
+  methods?: MethodKey[];
+  /** card = inline chips on a grid card · rail = labelled sidebar block · inline = hero row */
+  variant?: "card" | "rail" | "inline";
+}
+
+const { slug, methods, variant = "card" } = Astro.props;
+const keys: MethodKey[] = methods ?? methodsForProject(slug);
+const defs = keys.map(methodMeta).filter(Boolean);
+---
+
+{defs.length > 0 && (
+  <div class:list={["method-badge", `method-badge--${variant}`]}>
+    {variant === "rail" && (
+      <div class="method-rail-label mono-label">METHOD</div>
+    )}
+    {variant === "inline" && (
+      <span class="method-inline-label mono-label">METHOD</span>
+    )}
+    <div class="method-chips">
+      {defs.map((m) => (
+        <span
+          class:list={["method-chip", `method-chip--${m.tier}`]}
+          title={m.blurb}
+        >
+          {m.tier === "ml" && <span class="method-dot" aria-hidden="true"></span>}
+          {m.chip}
+        </span>
+      ))}
+    </div>
+  </div>
+)}
+
+<style>
+  .method-badge--rail {
+    display: block;
+  }
+  .method-badge--inline {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem 0.75rem;
+    margin-top: 0.85rem;
+  }
+  .method-rail-label {
+    color: rgb(var(--text-mono));
+    opacity: 0.6;
+    margin-bottom: 0.35rem;
+  }
+  .method-inline-label {
+    color: rgb(var(--text-mono));
+    opacity: 0.7;
+  }
+
+  .method-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  .method-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-family: theme(fontFamily.mono);
+    font-size: 10.5px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    padding: 2px 7px;
+    border-radius: 4px;
+    border: 1px solid rgb(var(--surface-border));
+    white-space: nowrap;
+    line-height: 1.5;
+  }
+  /* ML-tier — the depth signal. Accent-tinted so training / fine-tuning /
+     embeddings / agentic / CV work pops out of a grid of design cards. */
+  .method-chip--ml {
+    color: rgb(var(--accent-rgb));
+    border-color: rgb(var(--accent-rgb) / 0.4);
+    background: rgb(var(--accent-rgb) / 0.07);
+  }
+  /* Craft-tier — the honest "little-to-no ML" catch-all. Deliberately quiet. */
+  .method-chip--craft {
+    color: rgb(var(--text-mono));
+    border-color: rgb(var(--surface-border));
+    background: rgb(var(--surface-1-rgb) / 0.4);
+  }
+  .method-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    background: rgb(var(--accent-rgb));
+    flex: none;
+  }
+</style>

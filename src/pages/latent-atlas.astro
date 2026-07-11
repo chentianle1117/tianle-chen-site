@@ -3,6 +3,7 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import SectionBreak from "../components/SectionBreak.astro";
 import StatStrip from "../components/StatStrip.astro";
+import MethodBadge from "../components/MethodBadge.astro";
 // @ts-ignore - LatentAtlas is a React island (client:only)
 import LatentAtlas from "../components/latent-atlas/LatentAtlas";
 
@@ -54,6 +55,8 @@ const creativeWork = {
       <h1 class="mt-4 h1-fluid" style="max-width: 18ch;">
         Latent Atlas.
       </h1>
+
+      <MethodBadge slug="latent-atlas" variant="inline" />
       <p
         class="mt-5"
         style="font-family: theme(fontFamily.sans); font-size: var(--step-1); font-weight: 350; line-height: 1.5; color: rgb(var(--text-secondary)); max-width: 62ch;"

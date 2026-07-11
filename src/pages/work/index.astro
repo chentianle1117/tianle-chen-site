@@ -4,13 +4,14 @@
 import BaseLayout from "../../layouts/BaseLayout.astro";
 import ProjectCard from "../../components/ProjectCard.astro";
 import FilterBar from "../../components/FilterBar.astro";
+import CapabilityMatrix from "../../components/CapabilityMatrix.astro";
 import { FILTER_CATEGORIES, domainForProject } from "../../lib/categories";
 import { getProjectCounts } from "../../lib/projectCounts";
 import overrides from "../../../scripts/project_overrides.json";
 
 // Round-5 Fix 4: route every page's count strings through projectCounts.ts so
 // /work, /architecture, /dashboard, and /home agree.
-const { work: workCollection, counts, years: yearRanges } = await getProjectCounts();
+const { work: workCollection, all: allProjects, counts, years: yearRanges } = await getProjectCounts();
 
 // Default "Featured" order: priority tier first (flagship → standard →
 // experimental), then year desc within a tier. Matches FilterBar's featured
@@ -45,6 +46,14 @@ const cardsWithBuckets = work.map((p) => {
     buckets: [domainForProject(prim, p.data.categories ?? [])],
   };
 });
+
+// Method-depth matrix input — slug + title for EVERY published project
+// (incl. the 8 architecture-tier pieces that live on /architecture but whose
+// /work/<slug> detail pages still exist), so the technique span is complete.
+const matrixProjects = allProjects.map((p) => ({
+  slug: (p as any).slug ?? p.data.slug ?? p.id?.replace(/\.md$/, ""),
+  title: p.data.title,
+}));
 ---
 
 <BaseLayout
@@ -74,6 +83,9 @@ const cardsWithBuckets = work.map((p) => {
       </h1>
     </div>
   </section>
+
+  {/* Method-depth span — training → fine-tuning → embeddings → agentic → CV → interface */}
+  <CapabilityMatrix projects={matrixProjects} />
 
   <section class="zone-raised">
     <div class="container-wide py-8 md:py-12 pb-24 md:pb-32">

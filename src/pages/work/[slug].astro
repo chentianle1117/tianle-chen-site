@@ -9,6 +9,7 @@ import PrevNextNav from "../../components/PrevNextNav.astro";
 import PlaceholderHero from "../../components/PlaceholderHero.astro";
 import SectionBreak from "../../components/SectionBreak.astro";
 import StatStrip from "../../components/StatStrip.astro";
+import MethodBadge from "../../components/MethodBadge.astro";
 import { getCollection, render } from "astro:content";
 import { existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
@@ -259,6 +260,9 @@ const projectStructuredData = {
     <div class="layout-with-rails py-12 md:py-16">
     <aside class="rail-left hidden lg:block">
       <div class="sticky space-y-5" style="top: 6rem;">
+        {/* — Method depth — the technique-kind signal, first in the rail — */}
+        <MethodBadge slug={slugVal} variant="rail" />
+
         {/* — Project metadata — */}
         <div class="space-y-1.5">
           {data.year && (

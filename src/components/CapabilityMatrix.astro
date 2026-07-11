@@ -1,0 +1,280 @@
+---
+// CapabilityMatrix — the "method depth" span band. Lays the whole body of
+// work out along the technique spectrum (model training → fine-tuning →
+// embeddings → agentic → CV inference → interface craft) so a hiring manager
+// sees the RANGE and DEPTH in one glance — and can tell real model training
+// from interface/API work. Editorial, evidence-based, honest.
+//
+// Row-per-method layout: the spectrum reads top→bottom, ML-depth rows carry
+// the accent, and each row's project chips wrap freely (no cramped columns).
+import {
+  METHODS,
+  methodsForProject,
+  MATRIX_LABS,
+  type MethodKey,
+} from "../lib/categories";
+
+interface Props {
+  /** Every published project, in any order. */
+  projects: { slug: string; title: string }[];
+}
+
+const { projects } = Astro.props;
+
+interface LaneItem {
+  slug: string;
+  title: string;
+  href: string;
+  isLab: boolean;
+  isPrimary: boolean;
+}
+
+const MAX_CHIPS = 8;
+
+const lanes = METHODS.map((m) => {
+  const items: LaneItem[] = [];
+
+  for (const p of projects) {
+    const keys = methodsForProject(p.slug);
+    if (keys.includes(m.key)) {
+      items.push({
+        slug: p.slug,
+        title: p.title,
+        href: `/work/${p.slug}`,
+        isLab: false,
+        isPrimary: keys[0] === m.key,
+      });
+    }
+  }
+  for (const lab of MATRIX_LABS) {
+    const keys = methodsForProject(lab.slug);
+    if (keys.includes(m.key)) {
+      items.push({
+        slug: lab.slug,
+        title: lab.title,
+        href: lab.href,
+        isLab: true,
+        isPrimary: keys[0] === m.key,
+      });
+    }
+  }
+
+  // primary matches lead, then secondary.
+  items.sort((a, b) => Number(b.isPrimary) - Number(a.isPrimary));
+
+  return { def: m, items };
+});
+---
+
+<section class="cap-matrix zone-base" style="border-top: 1px solid rgb(var(--surface-border));">
+  <div class="container-wide py-10 md:py-14">
+    <p class="mono-label mb-3" style="color: rgb(var(--accent-rgb));">
+      METHOD DEPTH
+    </p>
+    <h2 class="cap-title">From model training to interface craft.</h2>
+    <p class="cap-dek">
+      A second axis over the same work — not <em>where</em> a project lives but
+      <strong>what kind of technique</strong> it is. Top to bottom: building and
+      adapting model weights, then working in latent space, orchestrating agents,
+      running models at inference, and finally pure interface and geometry craft.
+      Tags are evidence-based; a
+      <span class="cap-legend-inline"><span class="cap-legend-dot cap-legend-dot--sec"></span>hollow marker</span>
+      is a secondary method.
+    </p>
+
+    <div class="cap-rows" role="list">
+      {lanes.map(({ def, items }, i) => (
+        <div class:list={["cap-row", `cap-row--${def.tier}`]} role="listitem">
+          <div class="cap-row-head">
+            <div class="cap-row-top">
+              <span class="cap-row-num mono-label">{String(i + 1).padStart(2, "0")}</span>
+              <span class="cap-row-count">{items.length}</span>
+            </div>
+            <h3 class="cap-row-label">{def.label}</h3>
+            <p class="cap-row-blurb">{def.blurb}</p>
+          </div>
+          <div class="cap-row-items">
+            {items.slice(0, MAX_CHIPS).map((it) => (
+              <a
+                href={it.href}
+                class:list={["cap-chip", { "cap-chip--sec": !it.isPrimary }]}
+                title={`${it.title}${it.isPrimary ? "" : " · secondary method"}`}
+              >
+                <span class="cap-chip-dot" aria-hidden="true"></span>
+                <span class="cap-chip-title">{it.title}</span>
+                {it.isLab && <span class="cap-chip-lab">LAB</span>}
+              </a>
+            ))}
+            {items.length > MAX_CHIPS && (
+              <span class="cap-chip cap-chip--more">+{items.length - MAX_CHIPS} more</span>
+            )}
+            {items.length === 0 && <span class="cap-empty mono-label">—</span>}
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+
+<style>
+  .cap-title {
+    font-family: theme(fontFamily.display);
+    font-size: var(--step-3);
+    font-weight: 380;
+    line-height: 1.1;
+    letter-spacing: -0.01em;
+    color: rgb(var(--text-primary));
+    max-width: 24ch;
+  }
+  .cap-dek {
+    margin-top: 0.9rem;
+    max-width: 72ch;
+    font-size: var(--step-0);
+    line-height: 1.6;
+    color: rgb(var(--text-secondary));
+  }
+  .cap-dek strong { color: rgb(var(--text-primary)); font-weight: 600; }
+  .cap-dek em { color: rgb(var(--text-primary)); font-style: italic; }
+  .cap-legend-inline {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    white-space: nowrap;
+  }
+  .cap-legend-dot--sec {
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    display: inline-block;
+    border: 1px solid rgb(var(--accent-rgb) / 0.7);
+    background: transparent;
+  }
+
+  .cap-rows {
+    margin-top: 2rem;
+    border-top: 1px solid rgb(var(--surface-border));
+  }
+  .cap-row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 0.85rem 1.5rem;
+    padding: 1.25rem 0;
+    border-bottom: 1px solid rgb(var(--surface-border));
+    align-items: start;
+  }
+  @media (min-width: 760px) {
+    .cap-row { grid-template-columns: minmax(210px, 260px) 1fr; }
+  }
+
+  .cap-row-head {
+    position: relative;
+    padding-left: 14px;
+  }
+  .cap-row-head::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 3px;
+    bottom: 3px;
+    width: 3px;
+    border-radius: 2px;
+    background: rgb(var(--surface-border));
+  }
+  .cap-row--ml .cap-row-head::before { background: rgb(var(--accent-rgb)); }
+
+  .cap-row-top {
+    display: flex;
+    align-items: baseline;
+    gap: 0.6rem;
+  }
+  .cap-row-num { color: rgb(var(--text-muted)); }
+  .cap-row-count {
+    font-family: theme(fontFamily.display);
+    font-size: var(--step-2);
+    font-weight: 500;
+    line-height: 1;
+    color: rgb(var(--text-primary));
+    font-variant-numeric: tabular-nums;
+  }
+  .cap-row--ml .cap-row-count { color: rgb(var(--accent-rgb)); }
+
+  .cap-row-label {
+    margin-top: 0.35rem;
+    font-family: theme(fontFamily.mono);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-size: 11.5px;
+    line-height: 1.3;
+    color: rgb(var(--text-primary));
+  }
+  .cap-row-blurb {
+    margin-top: 0.35rem;
+    font-size: 0.77rem;
+    line-height: 1.45;
+    color: rgb(var(--text-mono));
+    max-width: 36ch;
+  }
+
+  .cap-row-items {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    align-content: flex-start;
+  }
+  .cap-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    max-width: 100%;
+    font-size: 0.8rem;
+    line-height: 1.3;
+    color: rgb(var(--text-secondary));
+    text-decoration: none;
+    padding: 3px 9px;
+    border: 1px solid rgb(var(--surface-border));
+    border-radius: 5px;
+    background: rgb(var(--surface-1-rgb) / 0.4);
+    transition: color 180ms ease, border-color 180ms ease;
+  }
+  .cap-chip-dot {
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+    flex: none;
+    background: rgb(var(--accent-rgb));
+  }
+  .cap-row--craft .cap-chip-dot { background: rgb(var(--text-muted)); }
+  .cap-chip--sec .cap-chip-dot {
+    background: transparent;
+    border: 1px solid rgb(var(--accent-rgb) / 0.7);
+  }
+  .cap-row--craft .cap-chip--sec .cap-chip-dot {
+    border-color: rgb(var(--text-muted));
+  }
+  .cap-chip-title {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    max-width: 32ch;
+  }
+  .cap-chip:hover {
+    color: rgb(var(--accent-rgb));
+    border-color: rgb(var(--accent-rgb) / 0.5);
+  }
+  .cap-chip-lab {
+    font-family: theme(fontFamily.mono);
+    font-size: 8.5px;
+    letter-spacing: 0.08em;
+    padding: 1px 4px;
+    border-radius: 3px;
+    border: 1px solid rgb(var(--accent-rgb) / 0.4);
+    color: rgb(var(--accent-rgb));
+    flex: none;
+  }
+  .cap-chip--more {
+    border-style: dashed;
+    color: rgb(var(--text-muted));
+  }
+  .cap-empty { color: rgb(var(--text-muted)); }
+</style>

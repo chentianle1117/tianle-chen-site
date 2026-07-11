@@ -2,6 +2,7 @@
 // @ts-nocheck
 import BaseLayout from "../layouts/BaseLayout.astro";
 import SectionBreak from "../components/SectionBreak.astro";
+import MethodBadge from "../components/MethodBadge.astro";
 // @ts-ignore - VisionLab is a React island
 import VisionLab from "../components/vision-lab/VisionLab";
 
@@ -33,6 +34,8 @@ const structuredData = {
       >
         Vision Lab.
       </h1>
+
+      <MethodBadge slug="vision-lab" variant="inline" />
 
       {/* One-line THESIS — the single idea */}
       <p class="vl-thesis">
