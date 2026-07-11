@@ -1,0 +1,558 @@
+---
+// @ts-nocheck
+import BaseLayout from "../layouts/BaseLayout.astro";
+// @ts-ignore - React island (WebGL, client-only)
+import SectionStudio from "../components/section-studio/SectionStudio";
+
+const structuredData = {
+  "@type": "SoftwareSourceCode",
+  name: "Section Studio",
+  abstract:
+    "An in-browser sectioning instrument built on a single idea: one cutting plane feeds two independent pipelines — a GPU visual clip that renders the solid cut open, and a CPU plane–mesh intersection that measures the exact section (area, perimeter, bounds) and redraws it as exportable SVG. The render and the measurement must agree.",
+  programmingLanguage: "TypeScript",
+  keywords: [
+    "computational geometry",
+    "WebGL",
+    "Three.js",
+    "cross-section",
+    "plane-mesh intersection",
+    "marching tetrahedra",
+    "clipping planes",
+  ],
+};
+---
+
+<BaseLayout
+  title="Section Studio — one plane, two pipelines"
+  description="Drag a plane through a solid: the GPU clips the mesh so you see the cut while the CPU intersects every triangle to measure the exact section — area, perimeter, bounds — and exports it as SVG. Render and measure, driven by the same plane equation."
+  structuredData={structuredData}
+>
+  {/* ── Hero ─────────────────────────────────────────────────────────── */}
+  <section class="zone-base hero-block">
+    <div class="container-display pt-10 md:pt-16 pb-6 md:pb-8">
+      <p class="mono-label" style="color: rgb(var(--text-mono));">
+        INTERACTIVE · WEBGL + COMPUTATIONAL GEOMETRY · REAL-TIME
+      </p>
+      <h1
+        class="mt-3 h1-fluid font-display"
+        style="max-width: 20ch; color: rgb(var(--text-primary));"
+      >
+        Section Studio.
+      </h1>
+
+      {/* THESIS — the single idea, not a feature list */}
+      <p
+        class="mt-5 font-display ss-thesis"
+        style="font-size: var(--step-2); font-weight: 380; line-height: 1.28; color: rgb(var(--text-primary)); max-width: 34ch;"
+      >
+        One plane equation, computed two ways — a <strong>GPU visual cut</strong>
+        and a <strong>CPU-measured contour</strong> — forced to agree.
+      </p>
+
+      <div class="ss-lead mt-5" style="max-width: 64ch;">
+        <p
+          style="font-size: var(--step-0); line-height: 1.65; color: rgb(var(--text-secondary));"
+        >
+          Drag a cutting plane through a procedurally-generated solid and two
+          things happen in the same frame. The GPU clips the mesh so you
+          <strong>see</strong> it cut open. On the CPU, every triangle is
+          intersected with that same plane to recover the <strong>exact</strong>
+          section contour — which is measured for area, perimeter, and bounds,
+          drawn as a crisp 2D line, and exported as SVG. <strong>Same plane, two
+          pipelines, one truth.</strong>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  {/* ── Framing: problem · idea · usefulness ─────────────────────────── */}
+  <section class="zone-raised">
+    <div class="container-display py-12 md:py-16 ss-frame">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
+        <div>
+          <p class="mono-label mb-3">THE PROBLEM</p>
+          <p style="color: rgb(var(--text-secondary)); line-height: 1.65;">
+            To reason about a solid you <strong>slice</strong> it — a floor plate
+            in a massing, wall thickness in a machined part, strut density in a
+            lattice. But a rendered cut only <em>looks</em> right: it gives you a
+            picture, not a number. And a bare list of numbers with no visible cut
+            is impossible to trust or explain.
+          </p>
+        </div>
+        <div>
+          <p class="mono-label mb-3">THE IDEA</p>
+          <p style="color: rgb(var(--text-secondary)); line-height: 1.65;">
+            Drive <strong>one cutting plane</strong> into <strong>two
+            independent pipelines</strong>: a GPU clip that renders the cut, and
+            a CPU solver that measures it. Because both consume the identical
+            plane equation, the picture and the numbers must describe the
+            <strong>same locus</strong> — each is a live check on the other.
+          </p>
+        </div>
+        <div>
+          <p class="mono-label mb-3">WHY IT'S USEFUL</p>
+          <p style="color: rgb(var(--text-secondary)); line-height: 1.65;">
+            The read-outs and the SVG export are what turn a demo into an
+            <strong>instrument</strong>. The section updates continuously as the
+            plane moves, and the exported contour is a resolution-independent
+            drawing suitable for drafting or documentation.
+          </p>
+        </div>
+      </div>
+
+      <div class="ss-stats" role="list" aria-label="Key facts">
+        <div class="ss-stat-cell" role="listitem">
+          <span class="ss-stat-value">2</span>
+          <span class="ss-stat-label mono-label">independent pipelines</span>
+        </div>
+        <div class="ss-stat-cell" role="listitem">
+          <span class="ss-stat-value">1</span>
+          <span class="ss-stat-label mono-label">shared plane equation</span>
+        </div>
+        <div class="ss-stat-cell" role="listitem">
+          <span class="ss-stat-value">0</span>
+          <span class="ss-stat-label mono-label">model files — all procedural</span>
+        </div>
+        <div class="ss-stat-cell" role="listitem">
+          <span class="ss-stat-value">3</span>
+          <span class="ss-stat-label mono-label">solids, each a different stress test</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {/* ── The instrument ───────────────────────────────────────────────── */}
+  <section class="zone-base">
+    <div class="container-display py-8 md:py-12">
+      <SectionStudio client:only="react" />
+      <p
+        class="mt-4 mono-label"
+        style="color: rgb(var(--text-mono)); letter-spacing: 0.1em;"
+      >
+        ↑ PICK A SOLID · SET THE PLANE AXIS · DRAG OFFSET · ORBIT THE VIEW ·
+        EXPORT THE SECTION
+      </p>
+    </div>
+  </section>
+
+  {/* ── The idea, drawn ──────────────────────────────────────────────── */}
+  <section class="zone-raised">
+    <div class="container-display py-12 md:py-16">
+      <div class="section-break-mono" style="margin-top: 0;">
+        <span class="label"><span class="num">01</span> <span class="title">RENDER vs. MEASURE — THE SPINE</span></span>
+      </div>
+
+      <div class="container-reading mx-auto px-0" style="margin-inline: 0;">
+        <div class="prose-custom" style="max-width: 74ch;">
+          <p>
+            The interesting engineering here is not that a solid can be cut open
+            on screen, nor that a polygon's area can be computed. It is that
+            <strong>one movable plane</strong> is asked to do both jobs through
+            <strong>two pipelines that never talk to each other</strong> — and
+            the results have to line up exactly. The GPU path is fast and
+            approximate-feeling; the CPU path is exact and slower. Running them
+            off the same <code>n·x = d</code> turns each into a sanity check on
+            the other. <strong>That duality is the idea; everything else is
+            plumbing.</strong>
+          </p>
+        </div>
+      </div>
+
+      {/* ── Teaching diagram: ONE plane → TWO representations ─────────── */}
+      <figure class="ss-diagram">
+        <div class="ss-diagram-panel">
+          <svg
+            viewBox="0 0 1200 640"
+            role="img"
+            aria-labelledby="ss-diagram-title ss-diagram-desc"
+            style="width: 100%; height: auto; display: block; color: rgb(var(--text-secondary));"
+            xmlns="http://www.w3.org/2000/svg"
+            font-family="'IBM Plex Mono', ui-monospace, monospace"
+          >
+            <title id="ss-diagram-title">
+              One cutting plane driving two independent pipelines: a GPU visual
+              cut and a CPU-measured contour that must agree.
+            </title>
+            <desc id="ss-diagram-desc">
+              The plane equation n dot x equals d fans into two rows. The top
+              row (render, GPU) feeds material clipping planes, the GPU discards
+              the far half-space, and a cut-open mesh is rendered. The bottom row
+              (measure, CPU) computes a signed distance per triangle, finds edge
+              crossings, welds and stitches closed loops, and measures area,
+              perimeter, and bounding box plus an SVG export. Both rows converge
+              on a node marked "must agree — one locus, two proofs".
+            </desc>
+
+            <defs>
+              <marker id="ss-arw" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+                <path d="M0,0 L8,4.5 L0,9 Z" fill="currentColor" opacity="0.5" />
+              </marker>
+              <marker id="ss-arw-acc" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+                <path d="M0,0 L8,4.5 L0,9 Z" fill="rgb(var(--accent-rgb))" />
+              </marker>
+            </defs>
+
+            {/* title */}
+            <text x="40" y="46" fill="rgb(var(--accent-rgb))" font-size="16" letter-spacing="3">ONE PLANE · TWO PIPELINES</text>
+            <text x="40" y="72" fill="currentColor" opacity="0.6" font-size="13">The same plane equation n·x = d drives a GPU visual cut and a CPU-measured contour — and the two must agree.</text>
+
+            {/* row labels */}
+            <text x="300" y="134" fill="rgb(var(--accent-rgb))" font-size="12" letter-spacing="2">RENDER · GPU — WHAT YOU SEE</text>
+            <text x="300" y="600" fill="rgb(var(--accent-rgb))" font-size="12" letter-spacing="2">MEASURE · CPU — WHAT YOU CAN TRUST</text>
+
+            {/* shared plane node — focal (accent) */}
+            <rect x="44" y="298" width="176" height="92" rx="8" fill="rgb(var(--accent-rgb) / 0.12)" stroke="rgb(var(--accent-rgb))" stroke-width="1.5" />
+            <text x="132" y="332" text-anchor="middle" fill="rgb(var(--accent-rgb))" font-size="12" letter-spacing="1.5">CUTTING PLANE</text>
+            <text x="132" y="366" text-anchor="middle" fill="rgb(var(--accent-rgb))" font-size="23">n·x = d</text>
+
+            {/* fan arrows out of the plane (accent — the shared input) */}
+            <g fill="none" stroke="rgb(var(--accent-rgb))" stroke-opacity="0.75" stroke-width="1.6">
+              <path d="M220,322 C262,300 270,214 300,196" marker-end="url(#ss-arw-acc)" />
+              <path d="M220,366 C262,388 270,470 300,488" marker-end="url(#ss-arw-acc)" />
+            </g>
+            <text x="266" y="250" text-anchor="middle" fill="currentColor" opacity="0.55" font-size="10">same n, d</text>
+            <text x="266" y="438" text-anchor="middle" fill="currentColor" opacity="0.55" font-size="10">same n, d</text>
+
+            {/* ── TOP ROW · GPU ─────────────────────────────────────── */}
+            <g fill="rgb(var(--surface-2-rgb))" stroke="currentColor" stroke-opacity="0.3" stroke-width="1">
+              <rect x="300" y="152" width="214" height="88" rx="7" />
+              <rect x="556" y="152" width="196" height="88" rx="7" />
+              <rect x="792" y="152" width="196" height="88" rx="7" />
+            </g>
+            {/* G1 */}
+            <text x="407" y="192" text-anchor="middle" fill="currentColor" font-size="12">material.clippingPlanes</text>
+            <text x="407" y="214" text-anchor="middle" fill="currentColor" opacity="0.6" font-size="10">localClippingEnabled</text>
+            {/* G2 */}
+            <text x="654" y="192" text-anchor="middle" fill="currentColor" font-size="12">GPU discards far side</text>
+            <text x="654" y="214" text-anchor="middle" fill="currentColor" opacity="0.6" font-size="10">per fragment · per frame</text>
+            {/* G3 — output */}
+            <text x="890" y="190" text-anchor="middle" fill="currentColor" font-size="13">Cut-open mesh</text>
+            <text x="890" y="212" text-anchor="middle" fill="currentColor" opacity="0.6" font-size="10">rendered solid + cap</text>
+
+            {/* GPU internal arrows */}
+            <g fill="none" stroke="currentColor" stroke-opacity="0.45" stroke-width="1.6">
+              <path d="M514,196 L556,196" marker-end="url(#ss-arw)" />
+              <path d="M752,196 L792,196" marker-end="url(#ss-arw)" />
+            </g>
+
+            {/* ── BOTTOM ROW · CPU ──────────────────────────────────── */}
+            <g fill="rgb(var(--surface-2-rgb))" stroke="currentColor" stroke-opacity="0.3" stroke-width="1">
+              <rect x="300" y="444" width="139" height="88" rx="7" />
+              <rect x="477" y="444" width="139" height="88" rx="7" />
+              <rect x="654" y="444" width="139" height="88" rx="7" />
+              <rect x="831" y="444" width="139" height="88" rx="7" />
+            </g>
+            {/* C1 */}
+            <text x="369" y="482" text-anchor="middle" fill="currentColor" font-size="12">Signed distance</text>
+            <text x="369" y="502" text-anchor="middle" fill="currentColor" opacity="0.6" font-size="10">per triangle</text>
+            {/* C2 */}
+            <text x="546" y="482" text-anchor="middle" fill="currentColor" font-size="12">Edge crossings</text>
+            <text x="546" y="502" text-anchor="middle" fill="currentColor" opacity="0.6" font-size="10">→ segments</text>
+            {/* C3 */}
+            <text x="723" y="482" text-anchor="middle" fill="currentColor" font-size="12">Weld + stitch</text>
+            <text x="723" y="502" text-anchor="middle" fill="currentColor" opacity="0.6" font-size="10">→ closed loops</text>
+            {/* C4 — output */}
+            <text x="900" y="478" text-anchor="middle" fill="currentColor" font-size="13">Measure</text>
+            <text x="900" y="498" text-anchor="middle" fill="currentColor" opacity="0.6" font-size="10">area · perim · bbox</text>
+            <text x="900" y="514" text-anchor="middle" fill="currentColor" opacity="0.6" font-size="10">+ SVG export</text>
+
+            {/* CPU internal arrows */}
+            <g fill="none" stroke="currentColor" stroke-opacity="0.45" stroke-width="1.6">
+              <path d="M439,488 L477,488" marker-end="url(#ss-arw)" />
+              <path d="M616,488 L654,488" marker-end="url(#ss-arw)" />
+              <path d="M793,488 L831,488" marker-end="url(#ss-arw)" />
+            </g>
+
+            {/* ── convergence node — payoff (accent) ─────────────────── */}
+            <rect x="1030" y="300" width="150" height="88" rx="8" fill="rgb(var(--accent-rgb) / 0.12)" stroke="rgb(var(--accent-rgb))" stroke-width="1.5" />
+            <text x="1105" y="336" text-anchor="middle" fill="rgb(var(--accent-rgb))" font-size="13" letter-spacing="1">MUST AGREE</text>
+            <text x="1105" y="358" text-anchor="middle" fill="currentColor" opacity="0.7" font-size="10">one locus, two proofs</text>
+
+            {/* converge arrows (accent) */}
+            <g fill="none" stroke="rgb(var(--accent-rgb))" stroke-opacity="0.75" stroke-width="1.6">
+              <path d="M988,196 C1030,224 1000,300 1026,318" marker-end="url(#ss-arw-acc)" />
+              <path d="M970,484 C1030,452 1000,388 1026,372" marker-end="url(#ss-arw-acc)" />
+            </g>
+          </svg>
+        </div>
+        <figcaption class="mono-label ss-diagram-cap">
+          One cutting plane, two pipelines. The GPU clips the mesh so you see the
+          cut; the CPU intersects every triangle to measure it and redraw it as
+          an exportable contour. Because both consume the identical plane
+          equation, render and measurement describe the same locus — each
+          validates the other.
+        </figcaption>
+      </figure>
+    </div>
+  </section>
+
+  {/* ── What each pipeline does ──────────────────────────────────────── */}
+  <section class="zone-base">
+    <div class="container-reading py-12 md:py-16">
+      <div class="section-break-mono" style="margin-top: 0;">
+        <span class="label"><span class="num">02</span> <span class="title">WHAT EACH PIPELINE DOES</span></span>
+      </div>
+      <div class="prose-custom">
+        <h3>The GPU cut — what you see</h3>
+        <p>
+          The solid is rendered with <code>three</code> and
+          <code>@react-three/fiber</code>. A single world-space clipping plane is
+          handed to the material (<code>renderer.localClippingEnabled</code> +
+          <code>material.clippingPlanes</code>), so the GPU <strong>discards
+          every fragment on the far side of the cut, every frame</strong>, while
+          you orbit — no geometry is modified, the clip is purely a per-pixel
+          test. The cut face is then filled with a translucent cap so the model
+          reads as a genuine <strong>solid</strong> rather than a hollow shell.
+        </p>
+        <h3>The CPU section — what you can trust</h3>
+        <p>
+          The showcase is the section itself. For each triangle I compute the
+          <strong>signed distance</strong> of its three vertices to the plane,
+          find the edges that straddle it, and interpolate the crossing points
+          into a line segment. Thousands of these segments are then
+          <strong>welded at shared endpoints and stitched into closed contour
+          loops</strong> — the same marching-triangles idea that underpins
+          contouring and slicing. From the loops I derive section area
+          (hole-aware, via an even-odd nesting rule), perimeter, and the bounding
+          box. This path is <strong>exact</strong>: it is the answer I would
+          stake a measurement on.
+        </p>
+        <h3>An instrument, not an animation</h3>
+        <p>
+          The whole plane–mesh intersection reruns over the full triangle soup on
+          <strong>every frame the plane moves</strong> — comfortably real-time in
+          plain JavaScript. The claim I'll actually stand behind is the narrow
+          one: the inner per-triangle crossing math is
+          <strong>allocation-free</strong>, reusing three scratch slots and
+          touching no heap. The surrounding pass is not — the segment buffers and
+          the weld-and-stitch bookkeeping are <strong>rebuilt each frame</strong> —
+          but keeping the hottest loop tight is what buys the real-time feel. The
+          continuously-updating read-outs and the clean SVG export are what make
+          this a tool you could actually reason with, rather than a canned clip.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  {/* ── The three solids ─────────────────────────────────────────────── */}
+  <section class="zone-raised">
+    <div class="container-reading py-12 md:py-16">
+      <div class="section-break-mono" style="margin-top: 0;">
+        <span class="label"><span class="num">03</span> <span class="title">THE THREE SOLIDS</span></span>
+      </div>
+      <div class="prose-custom">
+        <p>
+          Each solid is chosen to exercise the sectioning in a different way —
+          all generated procedurally at load, with <strong>no model files</strong>:
+        </p>
+        <ul>
+          <li>
+            <strong>Stepped massing</strong> — stacked, set-back floor slabs. A
+            vertical cut traces the stepped silhouette across every floor plate
+            at once; a horizontal cut isolates the plate at whatever level the
+            plane sits.
+          </li>
+          <li>
+            <strong>Machined bracket</strong> — an extruded plate with a central
+            bore, mounting holes, and lightening reliefs. Scanning the plane
+            across it opens and closes holes, so the <strong>section count and
+            area jump</strong> as features come and go.
+          </li>
+          <li>
+            <strong>Gyroid lattice</strong> — a solid slice of the gyroid
+            triply-periodic minimal surface, meshed with a self-contained
+            marching-tetrahedra iso-surfacer. Its section is a field of
+            interlocking loops — the visual signature of a TPMS lattice, and a
+            deliberate <strong>stress test for the contour stitcher</strong>.
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  {/* ── Limitations & what's next ────────────────────────────────────── */}
+  <section class="zone-base">
+    <div class="container-reading py-12 md:py-16">
+      <div class="section-break-mono" style="margin-top: 0;">
+        <span class="label"><span class="num">04</span> <span class="title">LIMITATIONS & WHAT'S NEXT</span></span>
+      </div>
+      <div class="prose-custom">
+        <p>
+          The honest edges of the build — a senior tool states them plainly:
+        </p>
+        <ul>
+          <li>
+            <strong>Not eyeballed frame-by-frame.</strong> The 3D viewport needs
+            live WebGL, which the static build environment can't exercise. The
+            scene has been reasoned about and instrumented, but not visually QA'd
+            against a running GPU. What I <em>would</em> stake correctness on is
+            the CPU side — the measurements, the 2D contour, and the SVG export
+            are pure, deterministic functions of the triangle soup and the plane.
+          </li>
+          <li>
+            <strong>The measurement is exact; one visual is a heuristic.</strong>
+            Section area, perimeter, bounds, and the 2D drawing come straight
+            from the plane–triangle math and are correct for any watertight
+            input. The translucent <strong>3D cap</strong> that fills the cut
+            face is a secondary convenience, triangulated from the same loops via
+            an even-odd shape build; for the gyroid's many interlocking loops the
+            hole/nesting assignment is best-effort, so the cap can occasionally
+            mis-fill <em>even while the 2D section and the numbers stay right</em>.
+          </li>
+          <li>
+            <strong>Non-watertight input degrades gracefully, not silently.</strong>
+            Open meshes yield open polylines instead of closed loops; area is
+            only meaningful for closed contours, so it is reported as the
+            even-odd sum and can be misleading on genuinely non-solid input.
+          </li>
+        </ul>
+        <p>
+          <strong>What's next:</strong> a robust loop-nesting pass for the cap
+          (an explicit winding/containment tree rather than even-odd depth
+          parity), so the gyroid cap matches the always-correct 2D section; a
+          Web Worker to offload the intersection so very large soups keep a
+          steady frame rate; and a proper visual QA pass once a live GPU is in
+          the loop. A first ergonomic fix already shipped — the orbit camera
+          <strong>auto-reframes when you switch solids</strong>, since the three
+          differ in scale and the view previously stayed put.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  {/* ── Stack ────────────────────────────────────────────────────────── */}
+  <section class="zone-raised">
+    <div class="container-reading py-12 md:py-16">
+      <div class="section-break-mono" style="margin-top: 0;">
+        <span class="label"><span class="num">05</span> <span class="title">STACK</span></span>
+      </div>
+      <div class="prose-custom">
+        <p>
+          Astro island rendered <code>client:only</code> (WebGL can't
+          server-render), <code>three</code> +
+          <code>@react-three/fiber</code> + <code>@react-three/drei</code> for
+          the scene and orbit controls. The section solver, contour stitcher,
+          measurement code, marching-tetrahedra mesher, and SVG serializer are
+          <strong>hand-written TypeScript with no geometry libraries</strong>.
+          Every surrounding control and panel is painted with the site's design
+          tokens, so the whole instrument flips correctly between light and dark;
+          only the WebGL stage stays dark in both, on purpose, to hold geometry
+          contrast steady.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  {/* ── Onward ───────────────────────────────────────────────────────── */}
+  <section class="zone-base">
+    <div
+      class="container-display py-10 md:py-14 flex flex-wrap items-baseline gap-x-8 gap-y-3 justify-between"
+    >
+      <p class="mono-label" style="color: rgb(var(--text-mono));">
+        MORE INTERACTIVE WORK
+      </p>
+      <div class="flex flex-wrap gap-x-6 gap-y-2">
+        <a href="/latent-space" class="mono-label ss-onward">→ Latent space</a>
+        <a href="/thesis" class="mono-label ss-onward">→ Thesis (Semantic Canvas)</a>
+        <a href="/work" class="mono-label ss-onward">→ All projects</a>
+      </div>
+    </div>
+  </section>
+
+  <style>
+    /* Load-bearing phrases in non-prose narrative regions */
+    .ss-thesis strong,
+    .ss-lead strong,
+    .ss-frame strong {
+      color: rgb(var(--text-primary));
+      font-weight: 600;
+    }
+    .ss-thesis strong {
+      /* the two pipelines are the load-bearing pair — tint them */
+      color: rgb(var(--accent-rgb));
+      font-weight: 500;
+    }
+
+    /* Fact row under the framing columns */
+    .ss-stats {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.75rem 3rem;
+      margin-top: 3rem;
+      padding-top: 2rem;
+      border-top: 1px solid rgb(var(--surface-border));
+    }
+    .ss-stat-cell {
+      display: flex;
+      flex-direction: column;
+      gap: 0.4rem;
+    }
+    .ss-stat-value {
+      font-family: theme(fontFamily.display);
+      font-size: var(--step-3);
+      font-weight: 500;
+      line-height: 1;
+      color: rgb(var(--text-primary));
+      font-variant-numeric: tabular-nums;
+    }
+    .ss-stat-cell:first-child .ss-stat-value {
+      color: rgb(var(--accent-rgb));
+    }
+    .ss-stat-label {
+      max-width: 18ch;
+      line-height: 1.3;
+    }
+
+    /* Teaching diagram — framed exhibit, full display width */
+    .ss-diagram {
+      margin: 2.5rem 0 0;
+    }
+    .ss-diagram-panel {
+      border: 1px solid rgb(var(--surface-border));
+      border-radius: 12px;
+      background: rgb(var(--surface-1-rgb));
+      padding: clamp(0.75rem, 2.2vw, 1.75rem);
+      overflow-x: auto;
+    }
+    .ss-diagram-panel svg {
+      min-width: 640px;
+    }
+    .ss-diagram-cap {
+      margin: 0.95rem 0.25rem 0;
+      line-height: 1.55;
+      letter-spacing: 0.03em;
+      color: rgb(var(--text-mono));
+      max-width: 92ch;
+      text-transform: none;
+    }
+
+    .prose-custom ul {
+      margin-block: 1.1rem;
+      padding-left: 1.1rem;
+      list-style: none;
+    }
+    .prose-custom ul li {
+      position: relative;
+      margin-block: 0.7rem;
+      padding-left: 1rem;
+      line-height: 1.6;
+    }
+    .prose-custom ul li::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0.62em;
+      width: 6px;
+      height: 6px;
+      background: rgb(var(--accent-rgb));
+      border-radius: 1px;
+    }
+    .ss-onward {
+      color: rgb(var(--text-primary));
+      transition: color 200ms ease;
+    }
+    .ss-onward:hover {
+      color: rgb(var(--accent-rgb));
+    }
+  </style>
+</BaseLayout>

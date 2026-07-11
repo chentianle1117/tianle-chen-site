@@ -1,0 +1,588 @@
+---
+// @ts-nocheck
+import BaseLayout from "../layouts/BaseLayout.astro";
+import SectionBreak from "../components/SectionBreak.astro";
+// @ts-ignore - VisionLab is a React island
+import VisionLab from "../components/vision-lab/VisionLab";
+
+const structuredData = {
+  "@type": "SoftwareApplication",
+  name: "Vision Lab",
+  applicationCategory: "MultimediaApplication",
+  operatingSystem: "Web browser",
+  description:
+    "An in-browser computer-vision playground running real ML models fully client-side via transformers.js and ONNX Runtime Web — zero-shot CLIP classification and monocular depth estimation. No server, no API key, no uploads.",
+  offers: { "@type": "Offer", price: "0", priceCurrency: "USD" },
+};
+---
+
+<BaseLayout
+  title="Vision Lab — CV models in your browser"
+  description="A client-side computer-vision playground: run real ML models — zero-shot CLIP classification and monocular depth — entirely in your browser via transformers.js. No server, no API key, no uploads."
+  structuredData={structuredData}
+>
+  {/* ── Hero — thesis ─────────────────────────────────────────────── */}
+  <section class="zone-base" style="border-bottom: 1px solid rgb(var(--surface-border));">
+    <div class="container-display pt-8 md:pt-12 pb-8 md:pb-10">
+      <p class="mono-label" style="color: rgb(var(--text-mono));">
+        INTERACTIVE · CLIENT-SIDE INFERENCE · TRANSFORMERS.JS · WEBGPU / WASM
+      </p>
+      <h1
+        class="mt-3 h1-fluid"
+        style="font-size: var(--step-4); color: rgb(var(--text-primary)); max-width: 20ch;"
+      >
+        Vision Lab.
+      </h1>
+
+      {/* One-line THESIS — the single idea */}
+      <p class="vl-thesis">
+        The browser is the inference runtime. Real computer-vision models run
+        <strong>with no server, no API, and no data ever leaving the device</strong>
+        — because at this model size, they finally can.
+      </p>
+
+      <p class="vl-dek">
+        Pick a scene or drop your own image, then run <strong>zero-shot
+        classification with CLIP</strong> or estimate <strong>per-pixel
+        depth</strong>. The weights download <strong>once</strong> from the
+        Hugging Face hub and cache in your browser; every inference after that
+        is a local matrix multiply on your own hardware.
+      </p>
+
+      {/* Stat row — scannable, load-bearing numbers */}
+      <dl class="vl-stats" aria-label="Key facts">
+        <div class="vl-stat">
+          <dd class="vl-stat-v">2</dd>
+          <dt class="vl-stat-k mono-label">models · CLIP + Depth&nbsp;Anything</dt>
+        </div>
+        <div class="vl-stat">
+          <dd class="vl-stat-v">~173&nbsp;MB</dd>
+          <dt class="vl-stat-k mono-label">one-time download, then cached</dt>
+        </div>
+        <div class="vl-stat">
+          <dd class="vl-stat-v">0</dd>
+          <dt class="vl-stat-k mono-label">bytes of your image uploaded</dt>
+        </div>
+        <div class="vl-stat">
+          <dd class="vl-stat-v">100%</dd>
+          <dt class="vl-stat-k mono-label">on-device inference</dt>
+        </div>
+      </dl>
+    </div>
+  </section>
+
+  {/* ── TL;DR — problem · approach · insight ──────────────────────── */}
+  <section class="zone-raised">
+    <div class="container-display py-12 md:py-16">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8 md:gap-12">
+        <div>
+          <p class="mono-label mb-3">PROBLEM</p>
+          <p style="color: rgb(var(--text-secondary)); line-height: 1.65;">
+            The default assumption is that machine learning <strong>needs a
+            backend</strong>: a GPU server, an inference API, per-call cost, and
+            user data shipped off-device. That assumption quietly decides
+            <strong>who</strong> can ship ML and <strong>what data</strong> it is
+            allowed to touch.
+          </p>
+        </div>
+        <div>
+          <p class="mono-label mb-3">APPROACH</p>
+          <p style="color: rgb(var(--text-secondary)); line-height: 1.65;">
+            Take two real models, compile them to ONNX, and run them
+            <strong>in the tab</strong> via transformers.js on
+            <strong>ONNX Runtime Web</strong> — WebGPU where the browser exposes
+            it, WebAssembly (CPU) otherwise. Weights fetch once from the Hugging
+            Face hub and are cached; nothing else touches the network.
+          </p>
+        </div>
+        <div>
+          <p class="mono-label mb-3" style="color: rgb(var(--accent-rgb));">THE INSIGHT</p>
+          <p style="color: rgb(var(--text-secondary)); line-height: 1.65;">
+            Running the model in the browser <strong>inverts the usual
+            privacy/infra tradeoff</strong>: no server, no API cost, no data
+            egress. At this model size, <strong>the classic reasons you cannot
+            ship ML to users mostly dissolve</strong>.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {/* ── The instrument ────────────────────────────────────────────── */}
+  <section class="zone-base">
+    <div class="container-display pt-10 md:pt-14 pb-10 md:pb-14">
+      <p class="mono-label mb-2" style="color: rgb(var(--text-mono));">
+        THE INSTRUMENT
+      </p>
+      <p class="vl-lead">
+        Try it first. The first run downloads and warms the model — after that,
+        switching tasks or re-running is instant.
+      </p>
+      <VisionLab client:only="react" />
+    </div>
+  </section>
+
+  {/* ── How it works — the pipeline diagram ───────────────────────── */}
+  <SectionBreak number="01" label="HOW IT WORKS" tone="raised" />
+  <section class="zone-raised">
+    <div class="container-display pt-10 md:pt-12 pb-4">
+      <div class="container-reading mx-0 px-0" style="max-width: 74ch;">
+        <p class="prose-custom" style="margin-top: 0;">
+          Both tasks share <strong>one pipeline</strong> and diverge only at the
+          very end. The page pulls transformers.js at runtime, compiles each
+          model to <strong>ONNX Runtime Web</strong>, and executes it on
+          <strong>WebGPU</strong> when the browser exposes it — falling back
+          transparently to a <strong>WebAssembly (CPU)</strong> backend
+          otherwise. The status bar shows the <strong>target</strong> backend
+          before the first run and the <strong>confirmed</strong> one after.
+        </p>
+      </div>
+    </div>
+
+    {/* ── Inline SVG teaching diagram — themes via currentColor + CSS vars ── */}
+    <div class="container-display pb-6">
+      <figure class="vl-diagram-fig">
+        <div class="vl-diagram-plate">
+          <svg
+            viewBox="0 0 1200 460"
+            role="img"
+            aria-labelledby="vl-pipe-title vl-pipe-desc"
+            style="width: 100%; height: auto; color: rgb(var(--text-secondary)); display: block;"
+            xmlns="http://www.w3.org/2000/svg"
+            font-family="'IBM Plex Mono', ui-monospace, monospace"
+          >
+            <title id="vl-pipe-title">In-browser inference pipeline</title>
+            <desc id="vl-pipe-desc">
+              An image (sample or upload) is preprocessed to a tensor, run
+              through ONNX Runtime Web on WebGPU with a WASM fallback, and
+              post-processed into either a bar chart or a depth heatmap. Model
+              weights are fetched once from the Hugging Face hub and cached; the
+              image data never leaves the device.
+            </desc>
+
+            <defs>
+              <marker id="vl-arrow" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+                <path d="M0,0 L8,4.5 L0,9 Z" fill="currentColor" opacity="0.5" />
+              </marker>
+              <marker id="vl-arrow-accent" markerWidth="9" markerHeight="9" refX="7" refY="4.5" orient="auto">
+                <path d="M0,0 L8,4.5 L0,9 Z" fill="rgb(var(--accent-rgb))" />
+              </marker>
+              <linearGradient id="vl-turbo" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stop-color="rgb(48,18,59)" />
+                <stop offset="25%" stop-color="rgb(57,118,211)" />
+                <stop offset="50%" stop-color="rgb(63,189,135)" />
+                <stop offset="75%" stop-color="rgb(219,179,47)" />
+                <stop offset="100%" stop-color="rgb(169,33,19)" />
+              </linearGradient>
+            </defs>
+
+            {/* title */}
+            <text x="48" y="40" fill="rgb(var(--accent-rgb))" font-size="15" letter-spacing="3">IN-BROWSER INFERENCE PIPELINE</text>
+            <text x="48" y="63" fill="currentColor" opacity="0.55" font-size="12.5">one image · one runtime · two task heads · zero uploads</text>
+
+            {/* Hugging Face hub — the ONLY node outside the device */}
+            <rect x="445" y="78" width="210" height="50" rx="6" fill="rgb(var(--surface-2-rgb))" stroke="currentColor" stroke-opacity="0.4" />
+            <text x="550" y="100" text-anchor="middle" fill="currentColor" font-size="13">Hugging Face hub</text>
+            <text x="550" y="117" text-anchor="middle" fill="currentColor" opacity="0.55" font-size="10.5">model weights · CDN</text>
+
+            {/* weights fetch — crosses the boundary once, inbound only */}
+            <path d="M550,128 L550,192" fill="none" stroke="rgb(var(--accent-rgb))" stroke-width="1.6" marker-end="url(#vl-arrow-accent)" />
+            <text x="566" y="160" fill="rgb(var(--accent-rgb))" font-size="11">fetch once,</text>
+            <text x="566" y="174" fill="rgb(var(--accent-rgb))" font-size="11">then cached</text>
+
+            {/* device boundary */}
+            <rect x="40" y="142" width="1120" height="298" rx="16" fill="rgb(var(--accent-rgb) / 0.035)" stroke="currentColor" stroke-opacity="0.45" stroke-width="1.4" stroke-dasharray="6 6" />
+            <text x="60" y="170" fill="currentColor" opacity="0.6" font-size="12" letter-spacing="2">YOUR DEVICE · BROWSER TAB</text>
+            <text x="60" y="189" fill="rgb(var(--accent-rgb))" font-size="11">image data never crosses this dashed boundary</text>
+
+            {/* Node 1 — image */}
+            <rect x="64" y="204" width="150" height="92" rx="7" fill="rgb(var(--surface-2-rgb))" stroke="currentColor" stroke-opacity="0.35" />
+            <text x="139" y="246" text-anchor="middle" fill="currentColor" font-size="14">Image</text>
+            <text x="139" y="266" text-anchor="middle" fill="currentColor" opacity="0.6" font-size="10.5">sample or upload</text>
+
+            <path d="M214,250 L240,250" fill="none" stroke="currentColor" stroke-opacity="0.45" stroke-width="1.6" marker-end="url(#vl-arrow)" />
+
+            {/* Node 2 — preprocess */}
+            <rect x="244" y="204" width="176" height="92" rx="7" fill="rgb(var(--surface-2-rgb))" stroke="currentColor" stroke-opacity="0.35" />
+            <text x="332" y="240" text-anchor="middle" fill="currentColor" font-size="14">Preprocess</text>
+            <text x="332" y="260" text-anchor="middle" fill="currentColor" opacity="0.6" font-size="10.5">resize · normalize</text>
+            <text x="332" y="278" text-anchor="middle" fill="currentColor" opacity="0.6" font-size="10.5">→ tensor</text>
+
+            <path d="M420,250 L442,250" fill="none" stroke="currentColor" stroke-opacity="0.45" stroke-width="1.6" marker-end="url(#vl-arrow)" />
+
+            {/* Node 3 — ONNX Runtime Web (focal / accent) */}
+            <rect x="446" y="194" width="208" height="112" rx="7" fill="rgb(var(--accent-rgb) / 0.10)" stroke="rgb(var(--accent-rgb))" stroke-width="1.6" />
+            <text x="550" y="240" text-anchor="middle" fill="rgb(var(--accent-rgb))" font-size="15">ONNX Runtime Web</text>
+            <text x="550" y="262" text-anchor="middle" fill="rgb(var(--accent-rgb))" opacity="0.85" font-size="11.5">WebGPU · WASM fallback</text>
+            <text x="550" y="282" text-anchor="middle" fill="currentColor" opacity="0.6" font-size="10">executes on your hardware</text>
+
+            <path d="M654,250 L680,250" fill="none" stroke="currentColor" stroke-opacity="0.45" stroke-width="1.6" marker-end="url(#vl-arrow)" />
+
+            {/* Node 4 — postprocess */}
+            <rect x="684" y="204" width="150" height="92" rx="7" fill="rgb(var(--surface-2-rgb))" stroke="currentColor" stroke-opacity="0.35" />
+            <text x="759" y="246" text-anchor="middle" fill="currentColor" font-size="14">Postprocess</text>
+            <text x="759" y="266" text-anchor="middle" fill="currentColor" opacity="0.6" font-size="10">softmax · depth map</text>
+
+            {/* fork to two output heads */}
+            <path d="M834,242 L876,208" fill="none" stroke="currentColor" stroke-opacity="0.45" stroke-width="1.6" marker-end="url(#vl-arrow)" />
+            <path d="M834,258 L876,306" fill="none" stroke="currentColor" stroke-opacity="0.45" stroke-width="1.6" marker-end="url(#vl-arrow)" />
+
+            {/* Node 5a — classify head */}
+            <rect x="880" y="176" width="232" height="68" rx="7" fill="rgb(var(--surface-2-rgb))" stroke="currentColor" stroke-opacity="0.35" />
+            <text x="898" y="201" fill="currentColor" font-size="12">Classify</text>
+            <text x="898" y="219" fill="currentColor" opacity="0.55" font-size="10">CLIP similarities</text>
+            <rect x="1010" y="189" width="64" height="8" rx="2" fill="rgb(var(--accent-rgb))" />
+            <rect x="1010" y="203" width="44" height="8" rx="2" fill="rgb(var(--accent-rgb) / 0.5)" />
+            <rect x="1010" y="217" width="26" height="8" rx="2" fill="rgb(var(--accent-rgb) / 0.35)" />
+
+            {/* Node 5b — depth head */}
+            <rect x="880" y="272" width="232" height="68" rx="7" fill="rgb(var(--surface-2-rgb))" stroke="currentColor" stroke-opacity="0.35" />
+            <text x="898" y="299" fill="currentColor" font-size="12">Depth</text>
+            <text x="898" y="317" fill="currentColor" opacity="0.55" font-size="10">relative depth map</text>
+            <rect x="1010" y="294" width="86" height="22" rx="3" fill="url(#vl-turbo)" stroke="currentColor" stroke-opacity="0.2" />
+
+            {/* full-loop annotation */}
+            <text x="449" y="392" text-anchor="middle" fill="rgb(var(--accent-rgb))" opacity="0.85" font-size="11">image → tensor → result: the whole loop stays in the tab</text>
+          </svg>
+        </div>
+        <figcaption class="vl-diagram-cap mono-label">
+          The pipeline · an image is preprocessed to a tensor, run through ONNX
+          Runtime Web on WebGPU (WASM fallback), and post-processed into a bar
+          chart or depth heatmap. The only thing ever fetched from the network is
+          the model weights — once, then cached. Your image never leaves the tab.
+        </figcaption>
+      </figure>
+    </div>
+
+    {/* stack table + samples note */}
+    <div class="container-reading pb-12 md:pb-16">
+      <div class="vl-stack">
+        <div class="vl-stack-row">
+          <span class="vl-stack-k">Runtime</span>
+          <span class="vl-stack-v">transformers.js → ONNX Runtime Web (WebGPU / WASM)</span>
+        </div>
+        <div class="vl-stack-row">
+          <span class="vl-stack-k">Classify</span>
+          <span class="vl-stack-v">CLIP ViT-B/32 · zero-shot image ↔ text similarity · ~147 MB (q8)</span>
+        </div>
+        <div class="vl-stack-row">
+          <span class="vl-stack-k">Depth</span>
+          <span class="vl-stack-v">Depth Anything (small) · monocular relative depth · ~26 MB (q8)</span>
+        </div>
+        <div class="vl-stack-row">
+          <span class="vl-stack-k">Data path</span>
+          <span class="vl-stack-v">image → tensor → model → result, all in-tab · nothing leaves the device</span>
+        </div>
+      </div>
+      <p class="prose-custom" style="font-size: 0.82rem; color: rgb(var(--text-muted));">
+        Progress is a <strong>single aggregated bar</strong> weighted by byte
+        totals across every file the model needs, so the load reads as one smooth
+        number rather than a flickering per-file count. Sample scenes are
+        generated <strong>procedurally on a canvas</strong> in your browser —
+        there are no image assets to license or download.
+      </p>
+    </div>
+  </section>
+
+  {/* ── Why in-browser ────────────────────────────────────────────── */}
+  <SectionBreak number="02" label="WHY IN-BROWSER" tone="base" />
+  <section class="zone-base">
+    <div class="container-display pb-12 md:pb-16" style="padding-top: 2.5rem;">
+      <div class="container-reading mx-0 px-0 mb-10" style="max-width: 74ch;">
+        <p class="prose-custom" style="margin-top: 0;">
+          The tradeoff inversion is not abstract. Each of the three constraints
+          that normally block shipping ML to users — <strong>privacy, cost, and
+          latency</strong> — flips the moment the runtime is the client.
+        </p>
+      </div>
+      <div class="vl-why">
+        <div>
+          <p class="mono-label" style="color: rgb(var(--accent-rgb));">PRIVACY BY DEFAULT</p>
+          <p class="vl-why-body">
+            <strong>Pixels never leave the device.</strong> For medical, legal,
+            or personal imagery that alone can be the difference between a
+            shippable feature and a compliance non-starter.
+          </p>
+        </div>
+        <div>
+          <p class="mono-label" style="color: rgb(var(--accent-rgb));">ZERO INFRASTRUCTURE</p>
+          <p class="vl-why-body">
+            No inference server, no GPU fleet, no per-call cost, no cold starts.
+            <strong>The client is the runtime</strong> — it scales to every
+            visitor for the price of a static file host.
+          </p>
+        </div>
+        <div>
+          <p class="mono-label" style="color: rgb(var(--accent-rgb));">EDGE + OFFLINE</p>
+          <p class="vl-why-body">
+            Once cached, the model runs with <strong>no network at all</strong>.
+            Latency is a local matrix multiply, not a request — the difference
+            between an interactive tool and a laggy API.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {/* ── Limitations + what's next ─────────────────────────────────── */}
+  <SectionBreak number="03" label="LIMITATIONS + WHAT'S NEXT" tone="raised" />
+  <section class="zone-raised">
+    <div class="container-reading pb-12 md:pb-16">
+      <p class="prose-custom" style="margin-top: 2.5rem;">
+        Moving inference to the client is a genuine trade, not a free lunch.
+        The honest edges:
+      </p>
+      <div class="vl-limits">
+        <div class="vl-limit">
+          <p class="vl-limit-h">Cold start is heavy</p>
+          <p class="vl-limit-body">
+            The models are not small: CLIP quantized to q8 is <strong>~147 MB</strong>,
+            Depth&nbsp;Anything (small) <strong>~26 MB</strong> — about
+            <strong>173 MB the first time</strong>. That download is real; the
+            browser caches the weights so the second task and every later visit
+            are instant, but a first-time visitor on a slow mobile link waits.
+          </p>
+        </div>
+        <div class="vl-limit">
+          <p class="vl-limit-h">First inference lags, then it's fast</p>
+          <p class="vl-limit-body">
+            The very first run also compiles shaders and warms the runtime, so it
+            is slow. Subsequent runs are a <strong>local matrix multiply</strong>,
+            fast especially on WebGPU.
+          </p>
+        </div>
+        <div class="vl-limit">
+          <p class="vl-limit-h">WebGPU is not everywhere</p>
+          <p class="vl-limit-body">
+            On browsers without WebGPU the page falls back to the
+            <strong>WASM (CPU) backend</strong> — correct results, just slower.
+            GPU init can also fail on some drivers; that path degrades to WASM
+            rather than erroring. The status bar reports the backend actually in
+            use, so the claim is never overstated.
+          </p>
+        </div>
+        <div class="vl-limit">
+          <p class="vl-limit-h">Depth is relative, not metric</p>
+          <p class="vl-limit-body">
+            Depth&nbsp;Anything predicts <strong>ordinal</strong> depth — nearer
+            vs. farther — not meters. It is useful for masking, parallax, and
+            compositing; it is <strong>not a measurement</strong>.
+          </p>
+        </div>
+        <div class="vl-limit">
+          <p class="vl-limit-h">q8 trades a little accuracy for bytes</p>
+          <p class="vl-limit-body">
+            8-bit weights keep the download small and run on both backends;
+            full-precision would score marginally better at <strong>3–4× the
+            size</strong>. For a demo the trade is clearly worth it.
+          </p>
+        </div>
+        <div class="vl-limit">
+          <p class="vl-limit-h">Samples are synthetic on purpose</p>
+          <p class="vl-limit-body">
+            The built-in scenes are drawn on a canvas with deliberate depth cues
+            — clean licensing, and honest about being generated. <strong>Upload a
+            real photo</strong> to see both models on natural imagery.
+          </p>
+        </div>
+      </div>
+      <p class="prose-custom">
+        <strong>What's next:</strong> caching the weights behind a service worker
+        for true offline use, an <strong>fp16-on-WebGPU</strong> quality toggle
+        for machines that can afford it, and a third head — open-vocabulary
+        detection — that reuses the exact same pipeline up to the postprocess
+        step.
+      </p>
+    </div>
+  </section>
+
+  {/* ── What this demonstrates ────────────────────────────────────── */}
+  <SectionBreak number="04" label="WHAT THIS DEMONSTRATES" tone="base" />
+  <section class="zone-base">
+    <div class="container-reading pb-12 md:pb-16">
+      <p class="prose-custom" style="margin-top: 2.5rem;">
+        Shipping ML to the edge is its own discipline: <strong>quantizing models
+        small enough to download</strong>, negotiating heterogeneous execution
+        providers, streaming load progress, degrading gracefully when a backend
+        is missing, and keeping the whole thing legible as an interface. This
+        page is a compact proof of all of that in one artifact.
+      </p>
+      <p class="prose-custom">
+        The zero-shot task is also a small window into work I care about. CLIP
+        projects images and text into a <em>shared latent space</em>; the bar
+        chart is really a <strong>ranked list of cosine similarities</strong> in
+        that space. The same idea — treating embeddings as a navigable geometry —
+        drives my <a href="/latent-space">latent-space project view</a> and my
+        <a href="/thesis">MSCD thesis</a>. Here it's turned outward, so anyone
+        can type their own labels and watch the geometry respond.
+      </p>
+    </div>
+  </section>
+
+  {/* ── Onward ────────────────────────────────────────────────────── */}
+  <section class="zone-base" style="border-top: 1px solid rgb(var(--surface-border));">
+    <div class="container-display py-12 md:py-16 flex flex-wrap items-baseline gap-x-8 gap-y-3 justify-between">
+      <p class="mono-label" style="color: rgb(var(--text-mono));">
+        MORE ON EMBEDDINGS + TOOLING
+      </p>
+      <div class="flex flex-wrap gap-x-6 gap-y-2">
+        <a href="/latent-space" class="mono-label vl-onward">→ Latent space</a>
+        <a href="/thesis" class="mono-label vl-onward">→ Thesis</a>
+        <a href="/work" class="mono-label vl-onward">→ All projects</a>
+      </div>
+    </div>
+  </section>
+
+  <style>
+    /* Hero thesis — the single idea, serif, load-bearing clause bolded */
+    .vl-thesis {
+      font-family: theme(fontFamily.display);
+      font-size: var(--step-2);
+      font-weight: 400;
+      line-height: 1.28;
+      letter-spacing: -0.01em;
+      color: rgb(var(--text-primary));
+      max-width: 32ch;
+      margin-top: 1.25rem;
+    }
+    .vl-thesis strong { font-weight: 600; color: rgb(var(--text-primary)); }
+
+    .vl-dek {
+      font-family: theme(fontFamily.sans);
+      font-size: var(--step-1);
+      font-weight: 350;
+      line-height: 1.5;
+      color: rgb(var(--text-secondary));
+      max-width: 62ch;
+      margin-top: 1.1rem;
+    }
+    .vl-dek strong { font-weight: 500; color: rgb(var(--text-primary)); }
+
+    /* Stat row — editorial callout, first value carries the accent */
+    .vl-stats {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 1.5rem 3rem;
+      margin: 2.25rem 0 0;
+      padding: 0;
+    }
+    .vl-stat { display: flex; flex-direction: column; gap: 0.4rem; }
+    .vl-stat-v {
+      margin: 0;
+      font-family: theme(fontFamily.display);
+      font-size: var(--step-3);
+      font-weight: 500;
+      line-height: 1;
+      color: rgb(var(--text-primary));
+      font-variant-numeric: tabular-nums;
+    }
+    .vl-stat:first-child .vl-stat-v { color: rgb(var(--accent-rgb)); }
+    .vl-stat-k { max-width: 18ch; line-height: 1.3; }
+
+    .vl-lead {
+      font-family: theme(fontFamily.sans);
+      font-size: var(--step-0);
+      line-height: 1.6;
+      color: rgb(var(--text-secondary));
+      max-width: 60ch;
+      margin: 0 0 1.75rem;
+    }
+
+    /* Pipeline diagram — framed exhibit, theme-reactive plate */
+    .vl-diagram-fig { margin: 0.5rem 0 0; }
+    .vl-diagram-plate {
+      border: 1px solid rgb(var(--surface-border));
+      border-radius: 10px;
+      background: rgb(var(--surface-1-rgb));
+      padding: clamp(0.9rem, 2vw, 1.75rem);
+    }
+    .vl-diagram-cap {
+      margin: 0.85rem 0.25rem 0;
+      text-transform: none;
+      letter-spacing: 0.02em;
+      font-size: 0.74rem;
+      line-height: 1.55;
+      color: rgb(var(--text-mono));
+    }
+
+    /* Stack table */
+    .vl-stack {
+      margin: 2rem 0;
+      border-top: 1px solid rgb(var(--surface-border));
+    }
+    .vl-stack-row {
+      display: grid;
+      grid-template-columns: 8rem minmax(0, 1fr);
+      gap: 1rem;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid rgb(var(--surface-border));
+    }
+    .vl-stack-k {
+      font-family: theme(fontFamily.mono);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      font-size: var(--step--1);
+      color: rgb(var(--text-mono));
+    }
+    .vl-stack-v {
+      font-family: theme(fontFamily.mono);
+      font-size: 0.82rem;
+      line-height: 1.5;
+      color: rgb(var(--text-secondary));
+    }
+    @media (max-width: 560px) {
+      .vl-stack-row { grid-template-columns: 1fr; gap: 0.15rem; }
+    }
+
+    /* Why grid */
+    .vl-why {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2rem;
+    }
+    @media (min-width: 768px) {
+      .vl-why { grid-template-columns: repeat(3, 1fr); gap: 2.5rem; }
+    }
+    .vl-why-body {
+      margin-top: 0.6rem;
+      font-family: theme(fontFamily.sans);
+      font-size: var(--step-0);
+      line-height: 1.55;
+      color: rgb(var(--text-secondary));
+    }
+    .vl-why-body strong { color: rgb(var(--text-primary)); font-weight: 600; }
+
+    /* Limitations grid */
+    .vl-limits {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.75rem 2.5rem;
+      margin: 2rem 0 2.5rem;
+    }
+    @media (min-width: 640px) {
+      .vl-limits { grid-template-columns: repeat(2, 1fr); }
+    }
+    .vl-limit-h {
+      font-family: theme(fontFamily.mono);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      font-size: var(--step--1);
+      color: rgb(var(--text-primary));
+      margin: 0 0 0.4rem;
+    }
+    .vl-limit-body {
+      font-family: theme(fontFamily.sans);
+      font-size: 0.92rem;
+      line-height: 1.55;
+      color: rgb(var(--text-secondary));
+      margin: 0;
+    }
+    .vl-limit-body strong { color: rgb(var(--text-primary)); font-weight: 600; }
+
+    .vl-onward {
+      color: rgb(var(--text-primary));
+      transition: color 200ms ease;
+    }
+    .vl-onward:hover { color: rgb(var(--accent-rgb)); }
+  </style>
+</BaseLayout>
