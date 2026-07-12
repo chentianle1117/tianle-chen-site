@@ -31,8 +31,8 @@ stats:
     label: "deterministic gates"
   - value: "7"
     label: "safety layers"
-  - value: "8"
-    label: "pipeline stages"
+  - value: "~25–35%"
+    label: "lower cost at identical correctness (benchmark-proven)"
 stack:
   - Multi-agent orchestration (choreographer + workers)
   - Claude Code / Codex / Gemini (provider-agnostic router)

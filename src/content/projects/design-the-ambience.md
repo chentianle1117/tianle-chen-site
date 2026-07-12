@@ -34,6 +34,13 @@ publish: true
 role: team-member
 semester: Fall 2024
 slug: design-the-ambience
+stats:
+- value: "~16 fps"
+  label: "real-time diffusion img2img"
+- value: "5"
+  label: "live signals conditioning each frame"
+- value: "514×514"
+  label: "live output resolution"
 status: ready
 summary: A real-time generative environment that translates user behavior in physical
   space into projected imagery via StreamDiffusion + MediaPipe + TouchDesigner. Hand
@@ -93,6 +100,11 @@ The workflow begins with the user deciding to interact with the computer. This i
 </figure>
 
 The original hand-drawn flowchart the diagram is based on used red lines for human input, grey for algorithmic processing, and green for the external projection back into the room — a three-colour convention this rebuilt version preserves.
+
+<figure class="diagram">
+  <img src="/assets/design-the-ambience/system-loop-flowchart.png" alt="The original hand-drawn system-loop flowchart the rebuilt diagram is based on: red strokes trace human input (cursor, keyboard, posture), grey traces algorithmic processing through TouchDesigner and StreamDiffusion, and green traces the projection cast back into the room." />
+  <figcaption>The original hand-drawn flowchart behind the rebuilt diagram — red for human input, grey for algorithmic processing, green for the projection back into the room.</figcaption>
+</figure>
 
 ### System stack at a glance
 

@@ -23,6 +23,8 @@ github_url: https://github.com/chentianle1117/Semantic_Canvas
 hero_image: /assets/semantic-canvas/semantic-canvas-ui.png
 images:
 - /assets/semantic-canvas/p3-stage2-session2-composite.png
+- /assets/semantic-canvas/stage1-vs-stage2-comparison.png
+- /assets/semantic-canvas/session-summary.png
 - /assets/semantic-canvas/ui-screenshot.png
 - /assets/semantic-canvas/lineage-view-ui.png
 - /assets/semantic-canvas/p2-journey.png
@@ -43,6 +45,10 @@ images:
 - /assets/semantic-canvas/p1-longitudinal-lineage.png
 - /assets/semantic-canvas/p1-canvas.png
 - /assets/semantic-canvas/p1-longitudinal-semantic-canvas.png
+image_captions:
+- ''
+- 'Study result — per-participant comparison of Stage 1 vs. Stage 2 sessions (P1-P4) across three logged behaviors: images generated, semantic-axis changes, and ghost-node / agent-suggestion accepts.'
+- 'Study result — agent-acceptance rate plotted against design experience for each participant (P1-P5), bubbles sized by generation volume and annotated with per-participant CSI scores.'
 institution: Carnegie Mellon School of Design
 local_path: W:\CMU_Academics\2025 Fall\Thesis\Semantic_Canvas
 local_path_alt: W:\CMU_Academics\2025 Fall\Thesis Demo\Zappos50K_semantic_explorer
