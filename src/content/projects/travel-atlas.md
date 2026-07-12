@@ -15,6 +15,7 @@ priority: standard
 status: ready
 publish: true
 live_url: /apps/travel-atlas/
+gif_hero: /assets/travel-atlas/live-demo.gif
 hero_image: /assets/travel-atlas/hero.png
 images:
   - /assets/travel-atlas/hero.png

@@ -20,6 +20,7 @@ external_apis:
 - Google Gemini
 github: chentianle1117/Semantic_Canvas
 github_url: https://github.com/chentianle1117/Semantic_Canvas
+gif_hero: /assets/semantic-canvas/live-demo.gif
 hero_image: /assets/semantic-canvas/semantic-canvas-ui.png
 images:
 - /assets/semantic-canvas/p3-stage2-session2-composite.png
