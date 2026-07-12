@@ -215,39 +215,14 @@ const thesisIntro = thesisIntroRaw.slice(0, 380);
       </p>
     </div>
 
-    {/* Round-7 Phase D: compact category-grouped list. Replaces the 6-card
-        asymmetric grid that duplicated what's already in the scatter above.
-        Now all published work projects appear in both surfaces — scatter for visual
-        latent-space browse, list for categorical scan. */}
-    <div class="compact-work-list" data-stagger>
-      {groupedRows.map(({ category, rows }) => (
-        <section class="compact-cat-group">
-          <header class="compact-cat-header">
-            <span class="mono-label" style="color: rgb(var(--text-mono));">{category}</span>
-            <span class="mono-label" style="color: rgb(var(--text-muted)); margin-left: 0.5rem;">{String(rows.length).padStart(2, "0")}</span>
-          </header>
-          <ul class="compact-row-list">
-            {rows.map((row) => (
-              <li>
-                <a href={`/work/${row.slug}`} class="compact-row" data-reveal>
-                  <span class="compact-row-thumb" aria-hidden="true">
-                    {row.thumb ? (
-                      <img src={row.thumb} alt="" loading="lazy" decoding="async" />
-                    ) : (
-                      <span class="compact-row-thumb-fallback">
-                        {(row.title?.[0] ?? "·").toUpperCase()}
-                      </span>
-                    )}
-                  </span>
-                  <span class="compact-row-title">{row.title}</span>
-                  <span class="compact-row-summary">{row.summary ?? ""}</span>
-                  <span class="compact-row-year mono-label">{row.year ?? ""}</span>
-                  <span class="compact-row-arrow" aria-hidden="true">→</span>
-                </a>
-              </li>
-            ))}
-          </ul>
-        </section>
+    {/* Round-10: curated PREVIEW (6 featured) — the scatter above already maps
+        the full corpus, so this is a visual teaser, not a duplicate; the full
+        set lives in /work grid view. (Replaces an all-15 category-grouped list
+        whose bucket names no longer matched the 4-domain taxonomy, so it
+        rendered zero rows — the "empty section" bug.) */}
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-12">
+      {featured.slice(0, 6).map((project, i) => (
+        <ProjectCard project={project} eager={i < 3} />
       ))}
     </div>
 
