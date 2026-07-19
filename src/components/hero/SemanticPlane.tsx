@@ -66,7 +66,7 @@ const SPRITE_PX_DESKTOP = 64;
 const SPRITE_PX_MOBILE = 48;
 const CAPTION_MAX_CHARS = 36;
 
-// Color tokens — hero stays dark in both themes per contracts.
+// Color tokens — theme-reactive via CSS vars; the hero flips with the site theme.
 const PLANE_BG = "rgb(var(--surface-bg))";
 const HAIRLINE = "rgb(var(--surface-border) / 0.40)";
 // Bumped from 0.04 -> 0.10 alpha for visible coordinate-system grid (eval #9).

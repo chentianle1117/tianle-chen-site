@@ -132,8 +132,8 @@ const projectStructuredData = {
 
 <BaseLayout
   title={data.title}
-  description={data.title + (data.course ? ` — ${data.course}` : "")}
-  image={heroImg}
+  description={projectDescription}
+  image={heroExists ? heroImg : undefined}
   structuredData={projectStructuredData}
 >
   <Breadcrumb category={primaryCategory} title={data.title} />

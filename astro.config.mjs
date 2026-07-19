@@ -18,7 +18,7 @@ export default defineConfig({
   integrations: [
     tailwind({ applyBaseStyles: false }),
     mdx(),
-    sitemap(),
+    sitemap({ filter: (page) => !page.includes("/design-copilot") }),
     react(),
   ],
   markdown: {

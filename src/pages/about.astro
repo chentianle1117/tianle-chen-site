@@ -1,6 +1,10 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import SectionBreak from "../components/SectionBreak.astro";
+// Phosphor icon font — this page is the only consumer (ph-copy / ph-arrow-down /
+// ph-check). Scoped import here rather than global.css so the webfont only loads
+// on /about. Package export ./regular ships style.css + co-located Phosphor.woff2.
+import "@phosphor-icons/web/regular";
 import { getEntry } from "astro:content";
 import fs from "node:fs";
 import path from "node:path";

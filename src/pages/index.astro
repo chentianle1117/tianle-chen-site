@@ -11,7 +11,6 @@ import { getEntry } from "astro:content";
 import { existsSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { getProjectCounts } from "../lib/projectCounts";
-import { projectCategoryBuckets } from "../lib/categories";
 
 function publicFileExists(webPath) {
   if (!webPath) return false;
@@ -40,60 +39,6 @@ const featured = work;
 const totalCount = pc.work;
 const workYearRange = `${pcYears.work.min}—${pcYears.work.max}`;
 
-// Group projects by primary category for the compact list. Buckets mirror the
-// 7-tag taxonomy from src/lib/categories.ts but are simplified for browse.
-type GroupedRow = {
-  slug: string;
-  title: string;
-  year: number | null;
-  summary: string | null;
-  buckets: string[];
-  /** Round-9: thumbnail for the Selected Work list — gives the reader an
-   * immediate preview, matching the scatter above. Falls back to first
-   * images[] entry, then null (rendered as a category-tinted placeholder). */
-  thumb: string | null;
-};
-
-const grouped: Record<string, GroupedRow[]> = {};
-for (const p of work) {
-  const d: any = p.data;
-  const buckets = projectCategoryBuckets(d.categories ?? []);
-  const primary = buckets[0] ?? "OTHER";
-  const slug = (p as any).slug ?? d.slug ?? p.id?.replace(/\.md$/, "");
-  // Pick a thumbnail. Prefer hero_image, then gif_hero, then first images[]
-  // entry. Verify the file exists in /public so we don't ship broken <img>.
-  const candidates: Array<string | null | undefined> = [
-    d.hero_image,
-    d.gif_hero,
-    Array.isArray(d.images) && d.images.length ? d.images[0] : null,
-  ];
-  const thumb =
-    candidates.find((c) => typeof c === "string" && c.length > 0 && publicFileExists(c)) ?? null;
-  const row: GroupedRow = {
-    slug,
-    title: d.title,
-    year: d.year ?? null,
-    summary: typeof d.summary === "string" ? d.summary : null,
-    buckets,
-    thumb,
-  };
-  if (!grouped[primary]) grouped[primary] = [];
-  grouped[primary].push(row);
-}
-// Sort categories by a fixed display order; sort projects within by year desc.
-// Bucket names mirror FILTER_CATEGORIES from src/lib/categories.ts.
-const CATEGORY_ORDER = [
-  "ML/AI",
-  "Research",
-  "Interaction",
-  "Design",
-  "OTHER",
-];
-const groupedRows = CATEGORY_ORDER.filter((c) => grouped[c] && grouped[c].length).map((c) => ({
-  category: c.toUpperCase(),
-  rows: grouped[c].sort((a, b) => (b.year ?? 0) - (a.year ?? 0)),
-}));
-
 // Thesis teaser data
 const thesis: any = await getEntry("projects", "semantic-canvas");
 const thesisData = thesis?.data ?? {};
@@ -111,19 +56,6 @@ const thesisPosterCandidates = [
 ].filter(Boolean) as string[];
 const thesisPoster =
   thesisPosterCandidates.find((p) => publicFileExists(p)) ?? thesisData.hero_image;
-// Pull first ~350 chars from the thesis body content for a clean intro
-const thesisBody: string = (thesis?.body ?? "") as string;
-const thesisIntroRaw = thesisBody
-  .replace(/^---[\s\S]*?---/, "")
-  .replace(/^#.*$/gm, "")
-  .replace(/!\[[^\]]*\]\([^)]*\)/g, "")
-  .replace(/\[\[([^\]|]+)(\|[^\]]+)?\]\]/g, "")
-  .replace(/`[^`]+`/g, "")
-  .replace(/\*\*([^*]+)\*\*/g, "$1")
-  .replace(/\*([^*]+)\*/g, "$1")
-  .replace(/\s+/g, " ")
-  .trim();
-const thesisIntro = thesisIntroRaw.slice(0, 380);
 
 // Round-9c: dropped the home-page architecture rail (its 4 hardcoded slugs
 // have moved to Work). Section now shows a placeholder pointing to the
@@ -233,116 +165,6 @@ const thesisIntro = thesisIntroRaw.slice(0, 380);
       </a>
     </div>
 
-    <style>
-      .compact-work-list {
-        display: flex;
-        flex-direction: column;
-        gap: 1.75rem;
-      }
-      .compact-cat-group {
-        border-top: 1px solid rgb(var(--surface-border));
-        padding-top: 1rem;
-      }
-      .compact-cat-header {
-        display: flex;
-        align-items: baseline;
-        margin-bottom: 0.5rem;
-      }
-      .compact-row-list {
-        list-style: none;
-        padding: 0;
-        margin: 0;
-      }
-      .compact-row {
-        display: grid;
-        grid-template-columns: 88px minmax(180px, 22ch) 1fr 5ch 2ch;
-        align-items: center;
-        gap: 1rem;
-        padding: 0.75rem 0;
-        text-decoration: none;
-        color: rgb(var(--text-primary));
-        border-bottom: 1px solid rgb(var(--surface-border) / 0.4);
-        transition: background-color 220ms cubic-bezier(0.22, 1, 0.36, 1), border-color 220ms;
-      }
-      .compact-row:hover,
-      .compact-row:focus-visible {
-        background: rgb(var(--accent-rgb) / 0.08);
-        border-bottom-color: rgb(var(--accent-rgb) / 0.5);
-        outline: none;
-      }
-      .compact-row:hover .compact-row-arrow {
-        color: rgb(var(--accent-rgb));
-        transform: translateX(2px);
-      }
-      .compact-row:hover .compact-row-thumb img {
-        transform: scale(1.04);
-      }
-      .compact-row-thumb {
-        position: relative;
-        display: block;
-        width: 88px;
-        height: 64px;
-        overflow: hidden;
-        border-radius: 4px;
-        background: rgb(var(--surface-1-rgb));
-        border: 1px solid rgb(var(--surface-border));
-        flex-shrink: 0;
-      }
-      .compact-row-thumb img {
-        position: absolute;
-        inset: 0;
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        transition: transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
-      }
-      .compact-row-thumb-fallback {
-        position: absolute;
-        inset: 0;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-family: theme(fontFamily.mono);
-        font-size: 18px;
-        color: rgb(var(--text-muted));
-        letter-spacing: 0.04em;
-      }
-      .compact-row-title {
-        font-family: theme(fontFamily.display);
-        font-size: var(--step-1);
-        font-weight: 380;
-        line-height: 1.2;
-        letter-spacing: -0.005em;
-      }
-      .compact-row-summary {
-        font-family: theme(fontFamily.sans);
-        font-size: var(--step--1);
-        line-height: 1.5;
-        color: rgb(var(--text-secondary));
-        overflow: hidden;
-        display: -webkit-box;
-        -webkit-line-clamp: 2;
-        -webkit-box-orient: vertical;
-      }
-      .compact-row-year {
-        color: rgb(var(--text-mono));
-      }
-      .compact-row-arrow {
-        color: rgb(var(--text-muted));
-        transition: color 220ms, transform 220ms cubic-bezier(0.22, 1, 0.36, 1);
-        text-align: right;
-      }
-      @media (max-width: 720px) {
-        .compact-row {
-          grid-template-columns: 64px 1fr 5ch 2ch;
-          row-gap: 0.25rem;
-          column-gap: 0.75rem;
-        }
-        .compact-row-thumb { width: 64px; height: 48px; grid-row: 1 / 3; }
-        .compact-row-title { grid-column: 2 / 5; }
-        .compact-row-summary { grid-column: 2 / 5; }
-      }
-    </style>
     </div>
   </section>
 
