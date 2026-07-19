@@ -756,6 +756,13 @@
     opacity: 1;
     transform: none;
   }
+  /* Astro view-transition pseudo-elements are not descendants, so the * rule
+     above misses them — disable the crossfade explicitly under reduced motion. */
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
   /* Pause autoplay videos for users who opt out of motion */
   video[autoplay] {
     animation-play-state: paused;
